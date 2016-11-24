@@ -4,30 +4,11 @@ server.socket_port = 8084
 server.thread_pool = 10
 
 [/]
-tools.staticdir.root = .
+tools.staticdir.root = .	
 tools.encode.on = True
 tools.gzip.on = True
 
-[/css]
+[/static]
 tools.staticdir.on = True
-tools.staticdir.dir = css
+tools.staticdir.dir = static
 
-[/js]
-tools.staticdir.on = True
-tools.staticdir.dir = js
-
-[/img]
-tools.staticdir.on = True
-tools.staticdir.dir = img
-
-[/models]
-tools.staticdir.on = True
-tools.staticdir.dir = models
-
-[/bootflat-2.0.4]
-tools.staticdir.on = True
-tools.staticdir.dir = libs/bootflat-2.0.4
-
-[/bootstrap-datetimepicker-4.15.35]
-tools.staticdir.on = True
-tools.staticdir.dir = libs/bootstrap-datetimepicker-4.15.35
