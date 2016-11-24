@@ -1,0 +1,26 @@
+name: ddt
+
+channels:
+  - memex
+
+dependencies:
+    - elasticsearch
+    - supervisor
+    - meld3
+    - dateutil
+    - cython >=0.22
+    - ddt-word2vec
+    - maven
+    - nltk
+    - scipy
+    - numexpr >=2.4
+    - scikit-learn >=0.16.1
+    - pyelasticsearch >=1.2
+    - cherrypy
+    - requests
+    - ache >=0.3.1
+    - jinja2
+    - bokeh=0.10.0
+    - topik
+    - functools32
+    - networkx=1.11

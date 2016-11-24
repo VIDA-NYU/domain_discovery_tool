@@ -1,0 +1,21 @@
+.Menus-child{
+  margin: 0px 0px 0px 2px;
+}
+.View-body{
+  margin-left: -88px;
+  margin-top: 8px;
+  margin-right: -86px;
+  margin-bottom: 8px;
+  background-color: #FFFFFF;
+  border-radius: 10px 10px 10px 10px
+}
+.Menus-body{
+  background-color: #FFFFFF;
+  padding-top: 8px;
+  margin-left: -11px;
+}
+
+.boder {
+  width: 100%;
+  background-color: #FFFFFF;
+}

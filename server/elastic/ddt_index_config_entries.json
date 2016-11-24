@@ -1,0 +1,15 @@
+{
+    "entries": [
+    {
+	"id" : "1",
+	"domain_name": "Gun Control",
+	"index" : "gun_control"
+    },
+    {
+	"id" : "2",
+	"domain_name": "Ebola",
+	"index" : "ebola"
+    }
+    ]
+}
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+SCRIPT_PATH="${BASH_SOURCE[0]}";
+SCRIPT_DIR=$(dirname $SCRIPT_PATH)
+# ugly, but portable
+export DDT_HOME=$(python -c "import os, sys; sys.stdout.write(os.path.abspath('$SCRIPT_DIR/..')+'\n')")
+echo "DDT_HOME  : $DDT_HOME"
+export NLTK_DATA=$DDT_HOME/server/nltk_data
+echo "NLTK_DATA : $NLTK_DATA"
+export ACHE_HOME=$(dirname $(which ache))/../lib/ache/
+echo "ACHE_HOME : $ACHE_HOME"
+
+# ugly, but DDT doesn't really have a concept of installs
+export PYTHONPATH=$DDT_HOME:$DDT_HOME/server:$PYTHONPATH
+echo "PYTHONPATH: $PYTHONPATH"
+
+python $DDT_HOME/server/server.py

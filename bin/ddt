@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SCRIPT_PATH="${BASH_SOURCE[0]}";
+SCRIPT_DIR=$(dirname $SCRIPT_PATH)
+
+export NLTK_DATA=$SCRIPT_DIR/../lib/ddt/nltk_data
+export ACHE_HOME=$SCRIPT_DIR/../lib/ache/
+export DDT_HOME=$SCRIPT_DIR/../lib/ddt
+# ugly, but DDT doesn't really have a concept of installs
+export PYTHONPATH=$SCRIPT_DIR/../lib/ddt:$PYTHONPATH
+
+python $SCRIPT_DIR/../lib/ddt/vis/server.py

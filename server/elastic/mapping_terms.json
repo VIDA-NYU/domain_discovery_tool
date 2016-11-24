@@ -1,0 +1,21 @@
+{
+  "terms": {
+    "properties": {
+      "term": {
+        "type": "string"
+      },
+      "index": {
+        "type": "string"
+      },
+      "doc_type": {
+        "type": "string"
+      },
+      "tf": {
+        "type": "integer"
+      },
+      "tag": {
+        "type": "string"
+      }
+    }
+  }
+}
