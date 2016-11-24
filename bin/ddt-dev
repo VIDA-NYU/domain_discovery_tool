@@ -5,7 +5,7 @@ SCRIPT_DIR=$(dirname $SCRIPT_PATH)
 # ugly, but portable
 export DDT_HOME=$(python -c "import os, sys; sys.stdout.write(os.path.abspath('$SCRIPT_DIR/..')+'\n')")
 echo "DDT_HOME  : $DDT_HOME"
-export NLTK_DATA=$DDT_HOME/server/nltk_data
+export NLTK_DATA=$DDT_HOME/nltk_data
 echo "NLTK_DATA : $NLTK_DATA"
 export ACHE_HOME=$(dirname $(which ache))/../lib/ache/
 echo "ACHE_HOME : $ACHE_HOME"
