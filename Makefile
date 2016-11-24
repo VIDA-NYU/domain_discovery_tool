@@ -3,7 +3,7 @@
 # Type "make help" for a list of commands
 
 # Variables for the Makefile
-.PHONY = conda_environment cherrypy_config nltk_data word2vec_data npm
+.PHONY = conda_environment cherrypy_config nltk_data word2vec_data npm react
 SHELL := /bin/bash
 CONDA_ROOT := $(shell conda info --root)
 CONDA_ENV := $(CONDA_ROOT)/envs/ddt
@@ -14,7 +14,7 @@ CHERRY_PY_CONFIG_TARGET := server/config.conf
 GET_NLTK_DATA_TARGET := nltk_data/corpora nltk_data/tokenizers
 LINK_WORD2VEC_DATA_TARGET := server/ranking/D_cbow_pdw_8B.pkl
 INSTALL_NPM_TARGET := npm
-GET_REACT_DATA_TARGET := client/node_modules
+GET_REACT_DATA_TARGET := client/build/index.html
 
 # Makefile commands, see below for actual builds
 
@@ -60,14 +60,14 @@ $(DOWNLOADER_APP_TARGET): $(CONDA_ENV_TARGET) server/seeds_generator/pom.xml $(w
 	popd
 
 $(CHERRY_PY_CONFIG_TARGET): server/config.conf-in
-	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/html#g" server/config.conf-in > server/config.conf
+	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf
 
 $(GET_NLTK_DATA_TARGET): $(CONDA_ENV)
 	source activate ddt; \
 	python -m nltk.downloader -d ${PWD}/nltk_data stopwords brown punkt averaged_perceptron_tagger
 
 $(LINK_WORD2VEC_DATA_TARGET): $(CONDA_ENV)/data/D_cbow_pdw_8B.pkl
-	ln $(CONDA_ENV)/data/D_cbow_pdw_8B.pkl ${PWD}/ranking
+	ln $(CONDA_ENV)/data/D_cbow_pdw_8B.pkl ${PWD}/server/ranking
 
 $(INSTALL_NPM_TARGET) :
 	sudo apt-get install npm
@@ -75,4 +75,6 @@ $(INSTALL_NPM_TARGET) :
 $(GET_REACT_DATA_TARGET):
 	pushd client; \
 	npm install; \
+	npm run build; \
+	cp build/index.html build/domain_discovery_tool.html; \
 	popd
