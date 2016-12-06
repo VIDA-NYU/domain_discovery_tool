@@ -35,39 +35,65 @@ class Filters extends Component{
       super(props);
       this.state = {
         expanded: this.props.statedCard,
+        queriesFilter:this.props.queries,
+        tagsFilter:this.props.tags,
+        modelsFilter:this.props.models,
       };
-    };
+    }
 
-    componentWillMount = () => {
-     this.setState({expanded: this.props.statedCard, valueT: true,});
-    };
+    componentWillMount(){
+      console.log(this.state.queries);
+     this.setState({
+       expanded: this.props.statedCard,
+       valueT: true,
+       queriesFilter: this.props.queries,
+       tagsFilter: this.props.tags,
+       modelsFilter:this.props.models,
+       });
+       console.log(this.state.queries);
+    }
 
-    componentWillReceiveProps  = (newProps) => {
-         this.setState({expanded: this.props.statedCard}, function() {
-              this.setState({expanded: this.props.statedCard});
-         });
-     };
+    componentWillReceiveProps(nextProps) {
+        if (nextProps === this.props) {
+            return;
+        }
+        // Calculate new state
+        this.setState({expanded: this.props.statedCard}, function() {
+             this.setState({expanded: this.props.statedCard});
+        });
+        this.setState({
+          queriesFilter:this.props.queries,
+          tagsFilter:this.props.tags,
+          modelsFilter:this.props.models,
+        });
+    }
 
     handleExpandChange = (expanded) => {
       this.setState({expanded: expanded});
       if(expanded){
         this.props.setActiveMenu(expanded, 1);
       }
-    };
+    }
 
     handleToggle = (event, toggle) => {
       this.setState({expanded: toggle});
-    };
+    }
 
     handleExpand = () => {
       this.setState({expanded: true});
-    };
+    }
 
     handleReduce = () => {
       this.setState({expanded: false});
-    };
+    }
+    updateSession(newSession){
+      this.props.updateSession(newSession);
+    }
+
 
   render(){
+    console.log(this.props.queries);
+    console.log(this.state.queriesFilter);
     return(
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader
@@ -78,7 +104,7 @@ class Filters extends Component{
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <FiltersTabs />
+              <FiltersTabs queries={this.state.queriesFilter} tags={this.state.tagsFilter} models={this.state.modelsFilter} session={this.props.session} updateSession={this.updateSession.bind(this)}/>
            </CardMedia>
        </Card>
     )
