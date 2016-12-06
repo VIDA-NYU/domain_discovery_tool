@@ -27,12 +27,41 @@ const styles = {
 };
 
 class Views extends Component{
+
+  constructor(props){
+    super(props);
+    this.state={
+      flat:this.props.flat,
+      session: {},
+    }
+  }
+
+  componentWillMount(){
+    this.setState({
+        flat:this.props.flat,
+        session:this.props.session,
+    });
+  }
+
+  componentWillReceiveProps(nextProps){
+    if (nextProps === this.props) {
+        return;
+    }
+    console.log(this.props.flat);
+    console.log("view");
+    // Calculate new state
+    this.setState({
+        flat:this.props.flat,
+        session:this.props.session,
+    });
+  }
+
   render(){
+    console.log(this.props.flat);
     return(
       <Card initiallyExpanded={true} style={styles.card}>
-
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <ViewTabs />
+              <ViewTabs domainId={this.props.domainId} session={this.state.session}/>
            </CardMedia>
        </Card>
     )
