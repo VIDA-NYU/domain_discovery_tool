@@ -92,3 +92,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+client/build
+client/node_modules
+nltk_data
+node-v6.9.1-linux-x64
+server/ranking/D_cbow_pdw_8B.pkl
+results.txt

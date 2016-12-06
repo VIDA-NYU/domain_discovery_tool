@@ -68,124 +68,96 @@ const styles = {
   },
 
 };
+
 class ToolBarHeader extends Component {
 
   constructor(props){
-      super(props);
-      this.state = {
-          currentDomain:this.props.currentDomain,
-      };
+    super(props);
+    this.state = {
+      currentDomain:this.props.currentDomain,
+    };
   }
 
   componentWillReceiveProps  = (newProps) => {
-    console.log("1 "+ this.props.currentDomain);
-       this.setState({currentDomain: this.props.currentDomain}, function() {
-           console.log("2 "+ this.props.currentDomain);
-            this.setState({currentDomain: this.props.currentDomain});
-       });
-         console.log("3 "+ this.props.currentDomain);
-   };
+    this.setState({currentDomain: this.props.currentDomain}, function() {
+    });
+  };
 
   render() {
 
     return (
       <Toolbar style={styles.zeroMarginLeftRight}>
-          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
-               <ToolbarSeparator  />
-               <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} onClick={this.props.activeHeader()}> <Model />
-               </IconButton>
-               <Link to='/'>
-               <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
-               </IconButton>
-               </Link>
-               <ToolbarSeparator  />
+        <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
+        <ToolbarSeparator  />
+        <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
+      </IconButton>
+      <Link to='/'>
+        <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
+      </IconButton>
+    </Link>
+    <ToolbarSeparator  />
 
-                <FormControl style={{width:'40%', marginRight:'-150px', marginTop:5}} type="text" placeholder="Search ..." />
-                <IconButton style={{marginRight:'-25px'}}> <Search />
-                </IconButton>
-      </Toolbar>
-    );
-  }
+    <FormControl style={{width:'35%', marginRight:'-120px', marginTop:5}} type="text" placeholder="Search ..." />
+    <IconButton style={{marginRight:'-25px'}}> <Search />
+  </IconButton>
+</Toolbar>
+);
+}
 }
 
 class Header extends Component {
 
-
   constructor(props) {
-      super(props);
-      this.state = {
-          opened: true,
-          logged: false,
-          selectedIndex: 0,
-          currentDomain:this.props.route.currentDomain,
-          activeMenu:false,
-          header:<ToolBarHeader currentDomain={this.props.route.currentDomain} activeHeader={this.activeHeader.bind(this)}/>,
-      };
-  }
-
-  activeHeader = () => {
-    console.log("here home");
-    this.props.route.setActiveMenu("hello");
-  }
-
-  activeHeaderFromBody = () => {
-    console.log("here home");
-    this.props.route.setActiveMenu("hello");
-    this.setState({header:<ToolBarHeader activeHeader={this.activeHeader.bind(this)}/>,});
-  }
-
-  handleChange = (event, logged) => {
-    this.setState({logged: logged});
+    super(props);
+    this.state = {
+      opened: true,
+      logged: false,
+      selectedIndex: 0,
+      currentDomain:this.props.location.query.nameDomain,
+      activeMenu:false,
+      header:<ToolBarHeader currentDomain={this.props.location.query.nameDomain} />,
   };
+}
 
-  onOpen() {
-      this.setState({ barOpened: true });
-    }
+handleChange = (event, logged) => {
+  this.setState({logged: logged});
+};
 
-    onClose() {
-      this.setState({ barOpened: false });
-    }
+onOpen() {
+  this.setState({ barOpened: true });
+}
 
-    removeRecord = () => {
-       console.log("here");
-        this.setState({logged: true});
-        //Body.openDock1();
-    }
-
-    componentWillMount = () => {
-     this.setState({activeMenu: this.props.route.activeMenu,});
-    };
-
-    componentWillReceiveProps  = (newProps) => {
-      console.log("1 "+ this.props.route.activeMenu.toString());
-         this.setState({activeMenu: this.props.route.activeMenu}, function() {
-             console.log("2 "+ this.props.route.activeMenu.toString());
-              this.setState({activeMenu: this.props.route.activeMenu});
-         });
-           console.log("3 "+ this.props.route.activeMenu.toString());
-     };
+onClose() {
+  this.setState({ barOpened: false });
+}
 
 
-  render() {
+componentWillMount = () => {
+  console.log(this.props);
+};
 
-    return (
+componentWillReceiveProps  = (newProps) => {
+  this.setState({currentDomain: this.props.currentDomain}, function() {
+  });
+};
 
-      <div>
-        <AppBar showMenuIconButton={true}
-          style={styles.backgound}
-          title={  <span style={styles.titleText}> Domain Discovery Tool </span>}
-          //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
-          //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
+
+render() {
+  return (
+    <div>
+      <AppBar showMenuIconButton={true}
+        style={styles.backgound}
+        title={  <span style={styles.titleText}> Domain Discovery Tool </span>}
+        //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+        iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
+        //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
         >
         {this.state.header}
-
-        </AppBar>
-        {this.props.children}
-
-        </div>
-    );
-  }
+      </AppBar>
+      {this.props.children}
+    </div>
+  );
+}
 }
 
 export default Header;

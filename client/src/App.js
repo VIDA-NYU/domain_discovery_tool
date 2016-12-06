@@ -12,41 +12,30 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import {CrawlerVis} from './crawlervis.js';
 injectTapEventPlugin();
 
-
 class App extends Component {
+
   constructor(props){
-  super(props);
-  this.state = {
-    currentDomain:' s',
-    activeMenu: false,
-  };
-}
-
-setActiveMenu (variable) {
-  console.log("setActiveMenu App: " + variable);
-}
-
-setSelectedDomain(currentDomain1, active){
-  console.log("setSelectedDomainSonia" + currentDomain1 + ", " +active.toString());
-    this.setState({currentDomain:currentDomain1, activeMenu:active}, function() {
-         this.setState({currentDomain:currentDomain1, activeMenu:active});
-         this.forceUpdate();
-    });
-    this.forceUpdate();
-}
+    super(props);
+    this.state = {
+      currentDomain:'',
+      activeMenu: false,
+    };
+    // load domains
+  }
 
   render() {
     return (
       <MuiThemeProvider>
       <div>
-      <Router history={hashHistory}>
-        <Route path='/' currentDomain={this.state.currentDomain} activeMenu={this.state.activeMenu}  setActiveMenu={this.setActiveMenu.bind(this)} component={Header}>
-          <IndexRoute setSelectedDomain={this.setSelectedDomain.bind(this)} component={Home} />
-          <Route path='playerOne' header='Player One'  component={Body} />
+        <Router history={hashHistory}>
+        <Route path='/' component={Home} />
+        <Route path="/domain/:domainId" params={{valueDomain:"un"}} component={Header}>
+          <IndexRoute component={Body} />
         </Route>
-      </Router>
+        </Router>
       </div>
       </MuiThemeProvider>
     );
