@@ -1,7 +1,9 @@
 name: ddt
 
 channels:
+  - nodefaults
   - memex
+  - anaconda
 
 dependencies:
     - elasticsearch
@@ -24,3 +26,4 @@ dependencies:
     - topik
     - functools32
     - networkx=1.11
+    - nodejs

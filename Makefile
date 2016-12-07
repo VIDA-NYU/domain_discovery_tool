@@ -42,6 +42,7 @@ get_nltk_data: $(GET_NLTK_DATA_TARGET)
 ## link_word2vec_data : Hardlink the word2vec data from the conda environment
 link_word2vec_data: $(LINK_WORD2VEC_DATA_TARGET)
 
+
 ## install_npm    : Download npm
 #install_npm: $(INSTALL_NPM_TARGET)
 
@@ -74,7 +75,7 @@ $(LINK_WORD2VEC_DATA_TARGET): $(CONDA_ENV)/data/D_cbow_pdw_8B.pkl
 
 	#npm install; \
 	#npm run build;
-	
+
 $(GET_REACT_DATA_TARGET):
 	pushd client; \
 	cp build/index.html build/domain_discovery_tool.html; \
