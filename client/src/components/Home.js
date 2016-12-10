@@ -19,17 +19,26 @@ import $ from 'jquery';
 import AppBar from 'material-ui/AppBar';
 import logoNYU from '../images/nyu_logo_purple.png';
 
+const styles = {
+  listDomains:{
+    borderStyle: 'solid',
+    borderColor: '#C09ED7',
+    background: 'white',
+    borderRadius: '0px 0px 0px 0px',
+    borderWidth: '0px 0px 1px 0px',
+  },
+};
+
+
 class Home extends Component {
   constructor(props){
     super(props);
     this.state = {
-      currentDomain:null,
-      domains: [],
-      updateDomains:false,
+      domains: undefined,
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     //Get domains.
     $.post(
       '/getAvailableCrawlers',
@@ -40,68 +49,64 @@ class Home extends Component {
     );
   }
 
-  setSelectedDomain(variable){
-   console.log(variable);  
-  }
   render(){
-    var mydata = this.state.domains;
-
-    return (
-      <div>
-
-        <AppBar showMenuIconButton={true}
-          style={{background: "#50137A"}}
-          title={  <span style={{color: 'white'}}> Domain Discovery Tool </span>}
-          //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
-          //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
-        >
-        </AppBar>
-        <div className="jumbotron col-sm-12 text-center">
-          <div style={{ marginLeft:'25%'}}>
-            <Row>
-              <Col xs={6} md={6} style={{borderStyle: 'solid',
-              borderColor: '#C09ED7',
-              background: 'white',
-              borderRadius: '0px 0px 0px 0px',
-              borderWidth: '0px 0px 1px 0px'}}>
-                <List>
-                  <Subheader style={{color:'black'}}><h2>Domains</h2></Subheader>
-                  {Object.keys(mydata).map((k, index)=>{
-                    var str = (mydata[k].name).replace(/\s+/g, '');
-
-                    return <Link to={{ pathname: `/domain/${str}`, query: { nameDomain: mydata[k].name, idDomain: mydata[k].id} }}  text={"Machine Learning"}>
-                    <ListItem key={index} style={{textAlign: 'left'}}
-                    primaryText={mydata[k].name}
-                    rightIcon={<Forward />}
-                    onClick={this.setSelectedDomain.bind(this, mydata[k].name)}/>
-                    </Link>
-                  })}
-                </List>
-              </Col>
-              <Col xs={3} md={3}>
-                <Link to='/playerOne'>
-                  <FlatButton style={{margin:'70px 10px 10px 10px'}}
-                  backgroundColor="#26C6DA"
-                  hoverColor="#80DEEA"
-                  icon={<AddBox color={fullWhite} />}
-                  />
-                  <FlatButton style={{margin:20}}
-                  backgroundColor="#26C6DA"
-                  hoverColor="#80DEEA"
-                  icon={<DeleteForever color={fullWhite} />}
-                  />
-                  <FlatButton style={{margin:20}}
-                  backgroundColor="#26C6DA"
-                  hoverColor="#80DEEA"
-                  icon={<ContentCopy color={fullWhite} />}
-                  />
-                </Link>
-              </Col>
-            </Row>
+    console.log('home');
+    if(this.state.domains!==undefined){
+      console.log('home into if');
+      var mydata = this.state.domains;
+      return (
+        <div>
+          <AppBar showMenuIconButton={true}
+            style={{background: "#50137A"}}
+            title={  <span style={{color: 'white'}}> Domain Discovery Tool </span>}
+            //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+            iconElementLeft={<img src={logoNYU}  height='45' width='40' />}
+            //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
+          >
+          </AppBar>
+          <div className="jumbotron col-sm-12 text-center">
+            <div style={{ marginLeft:'25%'}}>
+              <Row>
+                <Col xs={6} md={6} style={styles.listDomains}>
+                  <List>
+                    <Subheader style={{color:'black'}}><h2>Domains</h2></Subheader>
+                    {Object.keys(mydata).map((k, index)=>{
+                      var str = (mydata[k].name).replace(/\s+/g, '');
+                      return <Link to={{ pathname: `/domain/${str}`, query: { nameDomain: mydata[k].name, idDomain: mydata[k].id} }}  text={"Machine Learning"}>
+                      <ListItem key={index} style={{textAlign: 'left'}}
+                      primaryText={mydata[k].name}
+                      rightIcon={<Forward />} />
+                      </Link>
+                    })}
+                  </List>
+                </Col>
+                <Col xs={3} md={3}>
+                  <Link to='/playerOne'>
+                    <FlatButton style={{margin:'70px 10px 10px 10px'}}
+                    backgroundColor="#26C6DA"
+                    hoverColor="#80DEEA"
+                    icon={<AddBox color={fullWhite} />}
+                    />
+                    <FlatButton style={{margin:20}}
+                    backgroundColor="#26C6DA"
+                    hoverColor="#80DEEA"
+                    icon={<DeleteForever color={fullWhite} />}
+                    />
+                    <FlatButton style={{margin:20}}
+                    backgroundColor="#26C6DA"
+                    hoverColor="#80DEEA"
+                    icon={<ContentCopy color={fullWhite} />}
+                    />
+                  </Link>
+                </Col>
+              </Row>
+            </div>
           </div>
         </div>
-      </div>
+      );
+    }
+    return(
+      <div></div>
     );
   }
 }

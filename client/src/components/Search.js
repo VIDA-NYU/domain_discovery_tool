@@ -40,7 +40,7 @@ class LoadSearch extends Component{
   };
 
   componentWillMount = () => {
-   this.setState({expanded: this.props.statedCard, valueT: true,});
+   this.setState({expanded: this.props.statedCard, });
   };
 
   componentWillReceiveProps  = (newProps) => {

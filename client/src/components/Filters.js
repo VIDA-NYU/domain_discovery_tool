@@ -34,37 +34,33 @@ class Filters extends Component{
     constructor(props) {
       super(props);
       this.state = {
-        expanded: this.props.statedCard,
-        queriesFilter:this.props.queries,
-        tagsFilter:this.props.tags,
-        modelsFilter:this.props.models,
+        expanded: undefined,
+        session: undefined,
+
       };
     }
 
     componentWillMount(){
-      console.log(this.state.queries);
+      console.log("filter componentWillMount");
      this.setState({
        expanded: this.props.statedCard,
-       valueT: true,
-       queriesFilter: this.props.queries,
-       tagsFilter: this.props.tags,
-       modelsFilter:this.props.models,
+       session:this.props.session,
        });
-       console.log(this.state.queries);
     }
 
     componentWillReceiveProps(nextProps) {
+      console.log("filter before componentWillReceiveProps");
         if (nextProps === this.props) {
             return;
         }
+        console.log("filter after componentWillReceiveProps");
         // Calculate new state
         this.setState({expanded: this.props.statedCard}, function() {
              this.setState({expanded: this.props.statedCard});
         });
         this.setState({
-          queriesFilter:this.props.queries,
-          tagsFilter:this.props.tags,
-          modelsFilter:this.props.models,
+          session:this.props.session,
+
         });
     }
 
@@ -87,13 +83,14 @@ class Filters extends Component{
       this.setState({expanded: false});
     }
     updateSession(newSession){
+      console.log('filter newSession');
+      console.log(newSession);
       this.props.updateSession(newSession);
     }
 
 
   render(){
-    console.log(this.props.queries);
-    console.log(this.state.queriesFilter);
+    console.log("Filters");
     return(
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader
@@ -104,7 +101,7 @@ class Filters extends Component{
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <FiltersTabs queries={this.state.queriesFilter} tags={this.state.tagsFilter} models={this.state.modelsFilter} session={this.props.session} updateSession={this.updateSession.bind(this)}/>
+              <FiltersTabs session={this.props.session} updateSession={this.updateSession.bind(this)}/>
            </CardMedia>
        </Card>
     )

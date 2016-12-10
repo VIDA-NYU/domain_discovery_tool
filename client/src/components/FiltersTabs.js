@@ -4,7 +4,9 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 //import {deepPurpleA400, orange300, blue400, indigoA400, blue900} from 'material-ui/styles/colors';
 import Checkbox from 'material-ui/Checkbox';
+import $ from 'jquery';
 
+import CircularProgress from 'material-ui/CircularProgress';
 
 const styles = {
   headline: {
@@ -29,12 +31,26 @@ const styles = {
   </div>
 }*/
 
+class CircularProgressSimple extends React.Component{
+  render(){
+
+    return(
+    <div style={{borderColor:"green", marginLeft:"50%"}}>
+      <CircularProgress size={60} thickness={7} />
+    </div>
+  );}
+}
+
+
 class FiltersTabs extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       slideIndex: 0,
+      session:undefined,
+
+
       currentQueries:undefined,
       currentTags:undefined,
       currentModels:undefined,
@@ -45,22 +61,43 @@ class FiltersTabs extends React.Component {
 
 componentWillMount(){
   console.log("create FiltersTabs");
-    this.setState({
-      currentQueries:this.props.queries,
-      currentTags:this.props.tags,
-      currentModels:this.props.models,
-    });
+  console.log(this.props.session);
+    $.post(
+      '/getAvailableQueries',
+      {'session': JSON.stringify(this.props.session)},
+      function(queriesDomain) {
+        console.log('currentQueries');
+        console.log(queriesDomain);
+        this.setState({currentQueries: queriesDomain});
+      }.bind(this)
+    );
+    $.post(
+      '/getAvailableTags',
+      {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+      function(tagsDomain) {
+        console.log('tagsDomain');
+        console.log(tagsDomain);
+        this.setState({currentTags: tagsDomain['tags']});
+      }.bind(this)
+    );
+    //getAvailableModelTags
+    //{'session': JSON.stringify(session)},
+    $.post(
+      '/getAvailableTags',
+      {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+      function(modelsDomain) {
+        console.log('modelsDomain');
+        console.log(modelsDomain);
+        this.setState({currentModels: modelsDomain});
+      }.bind(this)
+    );
+
+
 }
 componentWillReceiveProps(nextProps) {
     if (nextProps === this.props) {
         return;
     }
-    // Calculate new state
-    this.setState({
-      currentQueries:this.props.queries,
-      currentTags:this.props.tags,
-      currentModels:this.props.models,
-    });
 }
 
   handleChange = (value) => {
@@ -69,24 +106,6 @@ componentWillReceiveProps(nextProps) {
     });
   }
 
-  /*
-  if(vis.getCheckedValues('queries_checkbox').toString()!= "" && vis.getCheckedValues('tags_checkbox').toString() != ""){
-        session['selected_queries'] = vis.getCheckedValues('queries_checkbox').toString();
-        session['selected_tags']= vis.getCheckedValues('tags_checkbox').toString();
-        session['newPageRetrievelCriteria'] = "Queries,Tags,";
-      }
-      else{
-        session['newPageRetrievelCriteria'] = "one";
-        if (vis.getCheckedValues('queries_checkbox').toString()!= ""){ // if (pageRetrievalCriteria == 'Queries'){
-          session['pageRetrievalCriteria'] = "Queries";
-          session['selected_queries'] = vis.getCheckedValues('queries_checkbox').toString();
-        }
-        if (vis.getCheckedValues('tags_checkbox').toString()!= ""){//if (pageRetrievalCriteria == 'Tags' || pageRetrievalCriteria == 'More like'){
-          //if (pageRetrievalCriteria == 'More like') session['pageRetrievalCriteria'] = "More like";
-          //else
-          session['pageRetrievalCriteria'] = "Tags";
-          session['selected_tags'] = vis.getCheckedValues('tags_checkbox').toString();
-      */
 
   addQuery(labelQuery){
     var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
@@ -120,6 +139,9 @@ componentWillReceiveProps(nextProps) {
   }
 
   render() {
+    if(this.state.currentQueries!==undefined && this.state.currentTags!==undefined && this.state.currentModels!==undefined){
+
+
     console.log(this.props.queries);
     console.log(this.state.currentQueries);
     return (
@@ -157,6 +179,10 @@ componentWillReceiveProps(nextProps) {
       </div>
     );
   }
+  return(
+    <CircularProgressSimple />
+  );
+}
 }
 
 export default FiltersTabs;

@@ -17,26 +17,14 @@ injectTapEventPlugin();
 
 class App extends Component {
 
-  constructor(props){
-    super(props);
-    this.state = {
-      currentDomain:'',
-      activeMenu: false,
-    };
-    // load domains
-  }
-
   render() {
     return (
       <MuiThemeProvider>
-      <div>
         <Router history={hashHistory}>
         <Route path='/' component={Home} />
-        <Route path="/domain/:domainId" params={{valueDomain:"un"}} component={Header}>
-          <IndexRoute component={Body} />
-        </Route>
+            <Route path="/domain/:domainId" component={Header}>
+            </Route>
         </Router>
-      </div>
       </MuiThemeProvider>
     );
   }

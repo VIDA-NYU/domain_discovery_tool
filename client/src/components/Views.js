@@ -29,35 +29,55 @@ const styles = {
 class Views extends Component{
 
   constructor(props){
+    console.log("view constructor");
     super(props);
     this.state={
-      flat:this.props.flat,
       session: {},
     }
   }
 
   componentWillMount(){
+    console.log(this.props.session);
+    console.log("view componentWillMount");
     this.setState({
-        flat:this.props.flat,
         session:this.props.session,
     });
   }
 
   componentWillReceiveProps(nextProps){
-    if (nextProps === this.props) {
+    console.log("view before componentWillReceiveProps");
+      const ses = this.state.session;
+      const sess = nextProps.session;
+      console.log(ses);
+console.log(sess);
+    console.log(this.props.session);
+
+
+    if (nextProps.session === this.state.session) {
         return;
     }
-    console.log(this.props.flat);
-    console.log("view");
+    console.log(this.props.session);
+    console.log("view after componentWillReceiveProps");
     // Calculate new state
     this.setState({
-        flat:this.props.flat,
         session:this.props.session,
     });
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(this.state.session);
+  console.log(this.props.session);
+  console.log(nextProps.session);
+  console.log("view shouldComponentUpdate");
+    if (nextProps.session === this.state.session) {
+         return false;
+    }
+     return true;
+ }
+
+
   render(){
-    console.log(this.props.flat);
+    console.log('----view---');
     return(
       <Card initiallyExpanded={true} style={styles.card}>
            <CardMedia expandable={true} style={styles.cardMedia}>
@@ -77,5 +97,8 @@ export default Views;
    style={styles.cardHeader}
   actAsExpander={true}
   showExpandableButton={true}
+
+
+
 />
 */

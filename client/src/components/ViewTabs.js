@@ -45,43 +45,14 @@ const styles = {
 };
 
 
-
-class CircularProgressSimple extends React.Component{
-  render(){
-
-    return(
-    <div style={{borderColor:"green", marginLeft:"50%"}}>
-      <CircularProgress size={60} thickness={7} />
-    </div>
-  );}
-}
-
-class ViewTabs extends React.Component {
+class ViewTabSnippets extends React.Component{
 
   constructor(props){
     super(props);
     this.state = {
-      slideIndex: 0,
       pages:[],
       session:{},
-      chipData: [
-      {key: 0, label: 'Angular'},
-      {key: 1, label: 'JQuery'},
-      {key: 2, label: 'Polymer'},
-      {key: 3, label: 'ReactJS'},
-    ],
-      /*search_engine = "GOOG",
-      activeProjectionAlg = "Group by Correlation",
-      domainId = this.props.domainId,
-      pagesCap = "100",
-      fromDate = null,
-      toDate = null,
-      filter = null,
-      pageRetrievalCriteria = "Most Recent",
-      selected_morelike = "",
-      model = [],*/
-      //model['model']['positive'] = "Relevant";
-      //model['model']['nagative'] = "Irrelevant";
+      chipData: [],
     };
     this.styles = {
       chip: {
@@ -92,70 +63,21 @@ class ViewTabs extends React.Component {
         flexWrap: 'wrap',
       },
     };
-    this.processResults = this.processResults.bind(this)
-  }
-
-
-    handleRequestDelete = (key) => {
-      this.chipData = this.state.chipData;
-      const chipToDelete = this.chipData.map((chip) => chip.key).indexOf(key);
-      this.chipData.splice(chipToDelete, 1);
-      this.setState({chipData: this.chipData});
-    };
-//onTouchTap={handleTouchTap}
-    renderChip(data) {
-      return (
-        <Chip
-          key={data.key}
-          onRequestDelete={() => this.handleRequestDelete(data.key)}
-          style={this.styles.chip}
-        >
-          <Avatar src={data.avatar} />
-          {data.label}
-        </Chip>
-      );
-    }
-
-  processResults (error, data){
-      this.setState({"data":data});
-  }
-
-  /*createSession(domainId, search_engine, activeProjectionAlg, pagesCap,fromDate, toDate, filter, pageRetrievalCriteria,selected_morelike, model){
-    var session = {};
-    session['search_engine'] = search_engine;
-    session['activeProjectionAlg'] = activeProjectionAlg;
-    session['domainId'] = domainId;
-    session['pagesCap'] = pagesCap;
-    session['fromDate'] = fromDate;
-    session['toDate'] = toDate;
-    session['filter'] = filter;
-    session['pageRetrievalCriteria'] = pageRetrievalCriteria;
-    session['selected_morelike'] = selected_morelike;
-    session['model'] = {};
-    session['model']['positive'] = "Relevant";
-    session['model']['nagative'] = "Irrelevant";
-    return session;
-  }*/
-
-
-  componentWillMount(){
-    this.setState({session:this.props.session});
-    csv("https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv", this.processResults);
-  }
-
-  handleChange = (value) => {
-    this.setState({
-      slideIndex: value,
-    });
   };
 
+  componentWillMount(){
+    this.setState({
+        session:this.props.session,
+        pages:this.props.pages,
+    });
+  }
+
   componentWillReceiveProps(nextProps){
-    if (nextProps === this.props) {
+    if (nextProps.session === this.props.session) {
         return;
     }
     // Calculate new state
     console.log("viwtabs");
-    console.log(this.props.domainId);
     var session = this.props.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
     var queriesList =[];
     queriesList = session['selected_queries'].length>0 ? session['selected_queries'].split(",") : queriesList;
@@ -170,22 +92,131 @@ class ViewTabs extends React.Component {
     this.setState({
       chipData:newChip,
     });
+  }
+
+
+  handleRequestDelete = (key) => {
+        this.chipData = this.state.chipData;
+        const chipToDelete = this.chipData.map((chip) => chip.key).indexOf(key);
+        this.chipData.splice(chipToDelete, 1);
+        this.setState({chipData: this.chipData});
+  };
+  //onTouchTap={handleTouchTap}
+
+  renderChip(data) {
+        return (
+          <Chip
+            key={data.key}
+            onRequestDelete={() => this.handleRequestDelete(data.key)}
+            style={this.styles.chip}
+          >
+            <Avatar src={data.avatar} />
+            {data.label}
+          </Chip>
+        );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.session === this.props.session && nextState.pages === this.state.pages ) {
+         return false;
+    }
+     return true;
+  }
+
+
+  render(){
+    console.log(this.state.pages);
+    return (
+      <div>
+      {
+        <List>
+        <Subheader inset={true}>100 pages </Subheader>
+        {this.state.pages.map((page, index) => (
+          <ListItem key={index}
+          leftAvatar={<Avatar icon={<FileFolder />} />}
+          rightToggle={<Toggle />}
+          primaryText={page[0]}
+          secondaryText={"page[1]"}
+          />
+        ))}
+        <Divider inset={true} />
+        </List>
+      }
+    </div>
+  );
+  }
+}
+
+
+
+class CircularProgressSimple extends React.Component{
+  render(){
+    return(
+    <div style={{borderColor:"green", marginLeft:"50%"}}>
+      <CircularProgress size={60} thickness={7} />
+    </div>
+  );}
+}
+
+
+
+
+class ViewTabs extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      slideIndex: 0,
+      pages:[],
+      session:{},
+      chipData: [],
+    };
+    //this.processResults = this.processResults.bind(this)
+  }
+
+  processResults (error, data){
+      this.setState({"data":data});
+  }
+
+  componentWillMount(){
+    console.log("viwtabs componentWillMount");
     let paginas = [];
     $.post(
       '/getPages',
-      {'session': JSON.stringify(session)},
+      {'session': JSON.stringify(this.props.session)},
       function(pages) {
         paginas =pages["data"]["pages"];
-        this.setState({pages:paginas});
+        this.setState({session:this.props.session, pages:paginas,});
         //this.forceUpdate();
-        console.log(paginas);
       }.bind(this)
     );
-
+  //  csv("https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv", this.processResults);
   }
 
+  handleChange = (value) => {
+    this.setState({
+      slideIndex: value,
+    });
+  };
+
+  componentWillReceiveProps(nextProps){
+    if (nextProps.session === this.props.session) {
+        return;
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.session === this.props.session && nextState.pages === this.state.pages ) {
+        if(nextState.slideIndex === this.state.slideIndex){
+          return false;
+        }
+         return true;
+    }
+     return true;
+  }
+
+
   render() {
-    let dimensions= ["petal_length", "petal_width", "sepal_length", "sepal_width"];
+    /*let dimensions= ["petal_length", "petal_width", "sepal_length", "sepal_width"];
     let dnames = ["Petal Length", "Petal Width", "Sepal Length", "Sepal Width"];
     let pairs = [];
     for (let i = 0; i < dimensions.length-1; i++){
@@ -205,18 +236,16 @@ class ViewTabs extends React.Component {
             description: urlDescription[i],
         });
     }
-
-    console.log(this.state.pages);
-    if(this.state.pages!==undefined)
+*/
+    console.log('---viewTabs---');
+    /*if(this.state.pages!==undefined)
     var doubles = this.state.pages.map(function(page) {
-      console.log("pag: " + page[0]);
+      //console.log("pag: " + page[0]);
       return 0;
-    });
-    console.log(this.state.pages);
-
-    console.log(this.props.domainId);
+    });*/
     //console.log(this.state.currentPages);
     if(this.state.pages.length>0){
+      console.log('---into if viewTabs---');
       return (
         <div>
           <Tabs
@@ -230,41 +259,20 @@ class ViewTabs extends React.Component {
           </Tabs>
 
           <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
-                <div style={styles.headline}>
 
-                  <div style={this.styles.wrapper}>
-                     {this.state.chipData.map(this.renderChip, this)}
-                  </div>
+            <div style={styles.headline}>
+              <ViewTabSnippets session={this.state.session} pages={this.state.pages}/>
+            </div>
 
-                      {
-                        <List>
-                        <Subheader inset={true}>100 pages </Subheader>
-                        {this.state.pages.map((page, index) => (
-                          <ListItem key={index}
-                            leftAvatar={<Avatar icon={<FileFolder />} />}
-                            rightToggle={<Toggle />}
-                            primaryText={page[0]}
-                            secondaryText={"page[1]"}
-                          />
-                        ))}
-                        <Divider inset={true} />
-                      </List>
-                    }
-              </div>
-              <div style={styles.headline}>
-                    {pairs.map((p)=>{
-                        return (
-                            <Scatterplot title={p['names'][0] + " x " + p['names'][1]} data={this.state.data}
-                                xAcessor={(d)=>d[p['dimensions'][0]]} yAcessor={(d)=>d[p['dimensions'][1]]} labelAcessor={(d)=>d["species"]}
-                                xLabel={p['names'][0]} yLabel={p['names'][1]}/>
-                          )
-                    })}
-              </div>
-              <div style={styles.headline}>
-                    <Checkbox label="Neutral" style={styles.checkbox}  />
-                    <Checkbox label="Relevant" style={styles.checkbox}  />
-                    <Checkbox label="Irrelevante" style={styles.checkbox}  />
-              </div>
+            <div style={styles.headline}>
+            </div>
+
+            <div style={styles.headline}>
+              <Checkbox label="Neutral" style={styles.checkbox}  />
+              <Checkbox label="Relevant" style={styles.checkbox}  />
+              <Checkbox label="Irrelevante" style={styles.checkbox}  />
+            </div>
+
           </SwipeableViews>
         </div>
       );
@@ -277,3 +285,10 @@ class ViewTabs extends React.Component {
 }
 
 export default ViewTabs;
+/*  {pairs.map((p)=>{
+      return (
+          <Scatterplot title={p['names'][0] + " x " + p['names'][1]} data={this.state.data}
+              xAcessor={(d)=>d[p['dimensions'][0]]} yAcessor={(d)=>d[p['dimensions'][1]]} labelAcessor={(d)=>d["species"]}
+              xLabel={p['names'][0]} yLabel={p['names'][1]}/>
+        )
+  })}*/

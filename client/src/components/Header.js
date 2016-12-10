@@ -24,7 +24,7 @@ import Search from 'material-ui/svg-icons/action/search';
 //import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 //import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
-
+import Body from './Body';
 
 const styles = {
   backgound: {
@@ -33,7 +33,7 @@ const styles = {
   titleText: {
     color: 'white'
   },
-  zeroMarginLeftRight: {
+  toolBarHeader: {
     width:'70%',
     height:45,
     marginTop:8,
@@ -74,19 +74,32 @@ class ToolBarHeader extends Component {
   constructor(props){
     super(props);
     this.state = {
-      currentDomain:this.props.currentDomain,
+      currentDomain:'',
     };
   }
-
-  componentWillReceiveProps  = (newProps) => {
-    this.setState({currentDomain: this.props.currentDomain}, function() {
-    });
+  componentWillMount(){
+    this.setState({currentDomain: this.props.currentDomain});
   };
 
-  render() {
+  componentWillReceiveProps  = (newProps) => {
+    if(newProps.currentDomain ===this.state.currentDomain){
+      return;
+    }
+    this.setState({currentDomain: this.props.currentDomain});
+  };
 
+  shouldComponentUpdate(nextProps, nextState) {
+     if (nextProps.currentDomain === this.state.currentDomain) {
+          return false;
+     }
+     return true;
+  }
+
+
+
+  render() {
     return (
-      <Toolbar style={styles.zeroMarginLeftRight}>
+      <Toolbar style={styles.toolBarHeader}>
         <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
         <ToolbarSeparator  />
         <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
@@ -110,39 +123,32 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      opened: true,
-      logged: false,
-      selectedIndex: 0,
-      currentDomain:this.props.location.query.nameDomain,
-      activeMenu:false,
-      header:<ToolBarHeader currentDomain={this.props.location.query.nameDomain} />,
+      idDomain:'',
   };
-}
-
-handleChange = (event, logged) => {
-  this.setState({logged: logged});
 };
 
-onOpen() {
-  this.setState({ barOpened: true });
-}
-
-onClose() {
-  this.setState({ barOpened: false });
-}
-
-
-componentWillMount = () => {
-  console.log(this.props);
+componentWillMount(){
+    this.setState({idDomain: this.props.location.query.idDomain});
 };
 
 componentWillReceiveProps  = (newProps) => {
-  this.setState({currentDomain: this.props.currentDomain}, function() {
-  });
+  if(newProps.location.query.idDomain ===this.state.idDomain){
+    return;
+  }
+  this.setState({idDomain: this.props.location.query.idDomain});
+};
+
+shouldComponentUpdate(nextProps, nextState) {
+ console.log("view shouldComponentUpdate");
+  if(nextProps.location.query.idDomain ===this.state.idDomain){
+        return false;
+   }
+    return true;
 };
 
 
 render() {
+  console.log("header");
   return (
     <div>
       <AppBar showMenuIconButton={true}
@@ -151,15 +157,15 @@ render() {
         //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
-        >
-        {this.state.header}
+      >
+      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} />
       </AppBar>
-      {this.props.children}
+
+      <Body currentDomain={this.state.idDomain} />
+
     </div>
   );
 }
 }
 
 export default Header;
-
-//<ToolBarHeader currentDomain={this.props.route.currentDomain} activeHeader={this.activeHeader.bind(this)}/>

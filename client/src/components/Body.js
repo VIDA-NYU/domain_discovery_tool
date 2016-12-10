@@ -4,6 +4,7 @@ import DomainInfo from './DomainInfo';
 import Search from './Search';
 import Filters from './Filters';
 import Views from './Views';
+import SidebarMenu from './SidebarMenu';
 import '../css/Components.css';
 
 import Sidebar from 'react-sidebar';
@@ -42,6 +43,7 @@ const styles = {
 class Body extends Component{
 
   constructor(props) {
+      console.log("body constructor");
       super(props);
       this.state = {
         docked: true,
@@ -55,17 +57,15 @@ class Body extends Component{
         size:350,
         iconDomainInfo:null,
         stateDomainInfoCard:false,
-        stateSearchCard:true,
-        stateFiltersCard:false,
+        stateSearchCard:false,
+        stateFiltersCard:true,
         sizeAvatar:25,
+        currentDomain:'',
         //
-        queries:undefined,
-        tags:undefined,
-        models:undefined,
-        pagesFlat:false,
 
-        session:{},
+        sessionBody:undefined,
     };
+    this.sessionB={};
   }
 
 /*consultaQueries: {"search_engine":"GOOG","activeProjectionAlg":"Group by Correlation"
@@ -95,32 +95,39 @@ class Body extends Component{
 
   //Get queries, tags, urls from a speficic domain.
   componentWillMount() {
-    var session = this.createSession(this.props.location.query.idDomain);
-    this.setState({session:session});
-    $.post(
-      '/getAvailableQueries',
-      {'session': JSON.stringify(session)},
-      function(queriesDomain) {
-        this.setState({queries: queriesDomain});
-      }.bind(this)
-    );
-    $.post(
-      '/getAvailableTags',
-      {'session': JSON.stringify(session), 'event': 'Tags'},
-      function(tagsDomain) {
-        this.setState({tags: tagsDomain['tags']});
-      }.bind(this)
-    );
-    //getAvailableModelTags
-    //{'session': JSON.stringify(session)},
-    $.post(
-      '/getAvailableTags',
-      {'session': JSON.stringify(session), 'event': 'Tags'},
-      function(modelsDomain) {
-        this.setState({models: modelsDomain,   pagesFlat:true,});
-      }.bind(this)
-    );
+    console.log("body componentWillMount");
+    this.setState({currentDomain: this.props.currentDomain, sessionBody: this.createSession(this.props.currentDomain), });
 
+  }
+
+  componentWillReceiveProps  = (newProps) => {
+    console.log("body componentWillReceiveProps");
+    if(newProps.currentDomain === this.state.currentDomain){
+      return;
+    }
+    this.setState({currentDomain: this.props.currentDomain});
+  };
+
+  shouldComponentUpdate(nextProps, nextState) {
+
+    console.log(this.state.stateDomainInfoCard);
+    console.log(this.state.stateSearchCard);
+    console.log(this.state.stateFiltersCard);
+
+    console.log(nextState.stateDomainInfoCard);
+    console.log(nextState.stateSearchCard);
+    console.log(nextState.stateFiltersCard);
+
+    console.log("body shouldComponentUpdate");
+    console.log(this.state.sessionBody);
+    console.log(nextState.sessionBody);
+     if (nextState.sessionBody  === this.state.sessionBody ) {
+       if(nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
+         return true;
+       }
+          return false;
+     }
+      return true;
   }
 
 
@@ -171,12 +178,12 @@ class Body extends Component{
   }
 
   updateSession(newSession){
-    this.setState({session:newSession});
+    console.log(this.state.sessionBody);
+    console.log('body newSession');
   }
 
   render(){
-    console.log(this.state.queries);
-    console.log("------tags----------");
+    console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
       <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:350, background:"white"}}>
         <Row className="Menus-child">
@@ -186,7 +193,7 @@ class Body extends Component{
           <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
         </Row>
         <Row className="Menus-child">
-          <Filters queries={this.state.queries} tags={this.state.tags} models={this.state.models} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.session} updateSession={this.updateSession.bind(this)}/>
+          <Filters statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)}/>
         </Row>
         <Row className="Menus-child">
           <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
@@ -212,11 +219,12 @@ class Body extends Component{
     onSetOpen: this.onSetOpen,
   };
 
+console.log(this.state.sessionBody);
   return (
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views flat={this.state.pagesFlat} domainId={this.props.location.query.idDomain} session={this.state.session} />
+          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} />
         </Row>
       </div>
     </Sidebar>
