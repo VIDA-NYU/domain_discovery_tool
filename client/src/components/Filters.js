@@ -35,8 +35,9 @@ class Filters extends Component{
       super(props);
       this.state = {
         expanded: undefined,
+        sessionString:"",
         session: undefined,
-
+        sizeAvatar:undefined,
       };
     }
 
@@ -45,24 +46,40 @@ class Filters extends Component{
      this.setState({
        expanded: this.props.statedCard,
        session:this.props.session,
+       sessionString:JSON.stringify(this.props.session),
+       sizeAvatar:this.props.sizeAvatar,
        });
     }
 
     componentWillReceiveProps(nextProps) {
       console.log("filter before componentWillReceiveProps");
-        if (nextProps === this.props) {
+      if(JSON.stringify(nextProps.session) === this.state.sessionString || nextProps.statedCard === this.state.statedCard) {
             return;
-        }
-        console.log("filter after componentWillReceiveProps");
+      }
+      console.log("filter after componentWillReceiveProps");
         // Calculate new state
-        this.setState({expanded: this.props.statedCard}, function() {
-             this.setState({expanded: this.props.statedCard});
+      if(nextProps.statedCard !== this.state.statedCard){
+        this.setState({expanded: nextProps.statedCard}, function() {
+             this.setState({expanded: nextProps.statedCard});
         });
+      }
+      if(JSON.stringify(nextProps.session) !== this.state.sessionString){
         this.setState({
-          session:this.props.session,
-
+          session:nextProps.session,
+          sessionString:JSON.stringify(this.props.session),
         });
+      }
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+      console.log("filter before shouldComponentUpdate");
+      if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
+            return true;
+      }
+      console.log("filter after shouldComponentUpdate");
+      return false;
+    }
+
 
     handleExpandChange = (expanded) => {
       this.setState({expanded: expanded});
@@ -82,9 +99,13 @@ class Filters extends Component{
     handleReduce = () => {
       this.setState({expanded: false});
     }
+
     updateSession(newSession){
       console.log('filter newSession');
-      console.log(newSession);
+      this.setState({
+        session:newSession,
+        sessionString:JSON.stringify(newSession),
+      });
       this.props.updateSession(newSession);
     }
 
@@ -95,13 +116,13 @@ class Filters extends Component{
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader
              title="Filters"
-             avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<CheckList />} />}
+             avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<CheckList />} />}
              style={styles.cardHeader}
              actAsExpander={true}
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <FiltersTabs session={this.props.session} updateSession={this.updateSession.bind(this)}/>
+              <FiltersTabs session={this.state.session} updateSession={this.updateSession.bind(this)}/>
            </CardMedia>
        </Card>
     )

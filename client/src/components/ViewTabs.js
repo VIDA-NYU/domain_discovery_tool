@@ -44,15 +44,13 @@ const styles = {
 
 };
 
-
-class ViewTabSnippets extends React.Component{
-
+class ChipViewTab extends React.Component{
   constructor(props){
     super(props);
-    this.state = {
-      pages:[],
-      session:{},
+    this.state={
       chipData: [],
+      sessionString:"",
+      session:{},
     };
     this.styles = {
       chip: {
@@ -63,45 +61,84 @@ class ViewTabSnippets extends React.Component{
         flexWrap: 'wrap',
       },
     };
-  };
+  }
 
   componentWillMount(){
     this.setState({
-        session:this.props.session,
-        pages:this.props.pages,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session)
     });
   }
 
-  componentWillReceiveProps(nextProps){
-    if (nextProps.session === this.props.session) {
+  componentWillReceiveProps(nextProps, nextState){
+    console.log("ChipViewTab componentWillReceiveProps before");
+    if (JSON.stringify(nextProps.session) === this.state.sessionString ) {
         return;
     }
     // Calculate new state
-    console.log("viwtabs");
-    var session = this.props.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
-    var queriesList =[];
-    queriesList = session['selected_queries'].length>0 ? session['selected_queries'].split(",") : queriesList;
-    var tagsList=session['selected_tags'].length>0 ? queriesList.concat(session['selected_tags'].split(",")) : queriesList  ;
+    console.log("ChipViewTab componentWillReceiveProps after");
+    var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
+    var queriesList =[], tagsList =[];
+    queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
+    tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
+
     var newChip = [];
     for(var i=0; i<queriesList.length && queriesList.length>0; i++){
-      newChip.push({key: i, label: queriesList[i], avatar: Qicon});
+      newChip.push({key: i, type: 0, label: queriesList[i], avatar: Qicon});
     }
-    for(var i=0; i<tagsList.length && queriesList.length>0; i++){
-      newChip.push({key: i, label: tagsList[i], avatar:Ticon});
+    for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
+    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length ), type: 2, label: session['filter'] , avatar: Qicon});
+    }
+
     this.setState({
-      chipData:newChip,
+      chipData:newChip, pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
     });
+  }
+
+  removeString(currentType, currentKey){
+    var currentString = "";
+    var anyFilter = false;
+    this.state.chipData.map((chip) => {
+      if(chip.type == currentType && chip.key != currentKey)
+        currentString = currentString + chip.label + ",";
+    });
+    if(currentString != "") return currentString.substring(0, currentString.length-1);
+    return currentString;
   }
 
 
   handleRequestDelete = (key) => {
-        this.chipData = this.state.chipData;
-        const chipToDelete = this.chipData.map((chip) => chip.key).indexOf(key);
-        this.chipData.splice(chipToDelete, 1);
-        this.setState({chipData: this.chipData});
+        const sessionTemp =  this.state.session;
+        const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
+        switch (this.state.chipData[chipToDelete].type) {
+          case 0: //query
+              sessionTemp['selected_queries']= this.removeString(0, key);
+              if(sessionTemp['selected_queries'] === "") {
+                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['pageRetrievalCriteria'] = "Tags";
+              }
+              break;
+          case 1://tags
+              sessionTemp['selected_tags']= this.removeString(1, key);
+              if(sessionTemp['selected_tags'] === "") {
+                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['pageRetrievalCriteria'] = "Queries";
+              }
+              break;
+          case 2://filter
+              sessionTemp['filter']= null;
+              break;
+        }
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === ""){
+           sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+        }
+
+        console.log(JSON.stringify(sessionTemp));
+        this.state.chipData.splice(chipToDelete, 1);
+        this.setState({chipData: this.state.chipData});
+        this.props.deletedFilter(sessionTemp);
   };
-  //onTouchTap={handleTouchTap}
 
   renderChip(data) {
         return (
@@ -117,14 +154,63 @@ class ViewTabSnippets extends React.Component{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.session === this.props.session && nextState.pages === this.state.pages ) {
-         return false;
-    }
-     return true;
+      console.log("ChipViewTab shouldComponentUpdate before");
+      if(JSON.stringify(nextProps.session)!== this.state.sessionString) {
+        return true;
+      }
+      console.log("ChipViewTab shouldComponentUpdate after");
+      return false;
   }
 
+  render(){
+    console.log("--------------ChipViewTab--------------");
+    return (
+      <div style={this.styles.wrapper}>
+       {this.state.chipData.map(this.renderChip, this)}
+      </div>
+    );
+  }
+}
+
+
+class ViewTabSnippets extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      pages:[],
+      sessionString:"",
+      session:{},
+    };
+  }
+
+  componentWillMount(){
+    this.setState({
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages,
+    });
+  }
+
+  componentWillReceiveProps(nextProps, nextState){
+    console.log("ViewTabSnippets componentWillReceiveProps before");
+    if (JSON.stringify(nextProps.session) === this.state.sessionString || nextProps.pages === this.state.pages ) {
+        return;
+    }
+    console.log("ViewTabSnippets componentWillReceiveProps after");
+    this.setState({
+      pages:nextProps.pages, pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("ViewTabSnippets shouldComponentUpdate before");
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  && nextState.pages !== this.state.pages) { //
+         return true;
+    }
+    console.log("ViewTabSnippets shouldComponentUpdate after");
+     return false;
+  }
 
   render(){
+    console.log("------------------ViewTabSnippets-----------------");
     console.log(this.state.pages);
     return (
       <div>
@@ -167,6 +253,7 @@ class ViewTabs extends React.Component {
     this.state = {
       slideIndex: 0,
       pages:[],
+      sessionString:"",
       session:{},
       chipData: [],
     };
@@ -185,7 +272,7 @@ class ViewTabs extends React.Component {
       {'session': JSON.stringify(this.props.session)},
       function(pages) {
         paginas =pages["data"]["pages"];
-        this.setState({session:this.props.session, pages:paginas,});
+        this.setState({session:this.props.session, pages:paginas, sessionString: JSON.stringify(this.props.session)});
         //this.forceUpdate();
       }.bind(this)
     );
@@ -199,19 +286,50 @@ class ViewTabs extends React.Component {
   };
 
   componentWillReceiveProps(nextProps){
-    if (nextProps.session === this.props.session) {
+    console.log("viwtabs componentWillReceiveProps before");
+    if (JSON.stringify(nextProps.session) === this.state.sessionString) {
         return;
     }
+    console.log("viwtabs componentWillReceiveProps after");
+    let paginas = [];
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(nextProps.session)},
+      function(pages) {
+        paginas =pages["data"]["pages"];
+        this.setState({session:nextProps.session, pages:paginas, sessionString: JSON.stringify(nextProps.session)});
+        //this.forceUpdate();
+      }.bind(this)
+    );
+  }
+
+  deletedFilter(sessionTemp){
+    let paginas = [];
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(sessionTemp)},
+      function(pages) {
+        paginas =pages["data"]["pages"];
+        this.setState({session:sessionTemp, pages:paginas, sessionString: JSON.stringify(sessionTemp)});
+        //this.forceUpdate();
+      }.bind(this)
+    );
+    this.props.deletedFilter(sessionTemp);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.session === this.props.session && nextState.pages === this.state.pages ) {
-        if(nextState.slideIndex === this.state.slideIndex){
-          return false;
-        }
-         return true;
+    console.log("viwtabs shouldComponentUpdate before");
+    console.log("NEXT PAGES");
+    console.log(nextState.pages);
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || nextState.slideIndex !== this.state.slideIndex) { //
+          return true;
     }
-     return true;
+    console.log('viwtabs shouldComponentUpdate after');
+    console.log(JSON.stringify(nextProps.session));
+    console.log(this.state.sessionString);
+    console.log(nextState.pages);
+    console.log(this.state.pages);
+     return false;
   }
 
 
@@ -237,13 +355,7 @@ class ViewTabs extends React.Component {
         });
     }
 */
-    console.log('---viewTabs---');
-    /*if(this.state.pages!==undefined)
-    var doubles = this.state.pages.map(function(page) {
-      //console.log("pag: " + page[0]);
-      return 0;
-    });*/
-    //console.log(this.state.currentPages);
+    console.log('-------viewTabs------');
     if(this.state.pages.length>0){
       console.log('---into if viewTabs---');
       return (
@@ -255,12 +367,13 @@ class ViewTabs extends React.Component {
             tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
               <Tab label="Snippets" value={0} style={styles.tab} />
               <Tab label="Visualizations" value={1} style={styles.tab} />
-              <Tab label="Model" value={2} style={styles.tab} />
+              <Tab label="Model" value={2} style={styles.tab} />/#/domain/DataClassification?idDomain=AVbn5nq4HqwA5r9bnKWr&nameDomain=Data+Classification
           </Tabs>
 
           <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
 
             <div style={styles.headline}>
+              <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
               <ViewTabSnippets session={this.state.session} pages={this.state.pages}/>
             </div>
 

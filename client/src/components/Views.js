@@ -32,47 +32,43 @@ class Views extends Component{
     console.log("view constructor");
     super(props);
     this.state={
+      sessionString:"",
       session: {},
     }
   }
 
   componentWillMount(){
-    console.log(this.props.session);
     console.log("view componentWillMount");
     this.setState({
-        session:this.props.session,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session)
     });
   }
 
   componentWillReceiveProps(nextProps){
     console.log("view before componentWillReceiveProps");
-      const ses = this.state.session;
-      const sess = nextProps.session;
-      console.log(ses);
-console.log(sess);
-    console.log(this.props.session);
-
-
-    if (nextProps.session === this.state.session) {
+    if(JSON.stringify(nextProps.session) === this.state.sessionString) {
         return;
     }
-    console.log(this.props.session);
     console.log("view after componentWillReceiveProps");
     // Calculate new state
     this.setState({
-        session:this.props.session,
+        session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
     });
   }
 
+  deletedFilter(sessionTemp){
+    this.setState({
+        session:sessionTemp, sessionString: JSON.stringify(sessionTemp)
+    });
+    this.props.deletedFilter(sessionTemp);
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(this.state.session);
-  console.log(this.props.session);
-  console.log(nextProps.session);
-  console.log("view shouldComponentUpdate");
-    if (nextProps.session === this.state.session) {
-         return false;
+    console.log("view shouldComponentUpdate");
+    if(JSON.stringify(nextState.session) === this.state.sessionString) {
+           return false;//false
     }
-     return true;
+    return true;
  }
 
 
@@ -81,7 +77,7 @@ console.log(sess);
     return(
       <Card initiallyExpanded={true} style={styles.card}>
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <ViewTabs domainId={this.props.domainId} session={this.state.session}/>
+              <ViewTabs domainId={this.props.domainId} session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
            </CardMedia>
        </Card>
     )

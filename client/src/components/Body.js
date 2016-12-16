@@ -63,7 +63,8 @@ class Body extends Component{
         currentDomain:'',
         //
 
-        sessionBody:undefined,
+        sessionBody:{},
+        sessionString:"",
     };
     this.sessionB={};
   }
@@ -83,8 +84,8 @@ class Body extends Component{
     session['filter'] = null;
     session['pageRetrievalCriteria'] = "Most Recent";
     session['selected_morelike'] = "";
-    session['selected_queries']=[];
-    session['selected_tags']=[];
+    session['selected_queries']="";
+    session['selected_tags']="";
     session['model'] = {};
     session['model']['positive'] = "Relevant";
     session['model']['nagative'] = "Irrelevant";
@@ -96,12 +97,19 @@ class Body extends Component{
   //Get queries, tags, urls from a speficic domain.
   componentWillMount() {
     console.log("body componentWillMount");
-    this.setState({currentDomain: this.props.currentDomain, sessionBody: this.createSession(this.props.currentDomain), });
+    this.setState({currentDomain: this.props.currentDomain, sessionBody: this.createSession(this.props.currentDomain), sessionString: JSON.stringify(this.createSession(this.props.currentDomain)) });
 
   }
 
   componentWillReceiveProps  = (newProps) => {
     console.log("body componentWillReceiveProps");
+    console.log(newProps.filterKeyword);
+    console.log(newProps.currentDomain);
+    if(newProps.filterKeyword !== '' || newProps.filterKeyword !== null){
+      const sessionTemp =  this.state.sessionBody;
+      sessionTemp['filter']= newProps.filterKeyword;
+      this.setState({sessionBody: sessionTemp, sessionString: JSON.stringify(sessionTemp)});
+    }
     if(newProps.currentDomain === this.state.currentDomain){
       return;
     }
@@ -119,10 +127,10 @@ class Body extends Component{
     console.log(nextState.stateFiltersCard);
 
     console.log("body shouldComponentUpdate");
-    console.log(this.state.sessionBody);
-    console.log(nextState.sessionBody);
-     if (nextState.sessionBody  === this.state.sessionBody ) {
-       if(nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
+    console.log(this.state.sessionString);
+    console.log(nextState.sessionString);
+     if (nextState.sessionString  === this.state.sessionString) {
+       if(nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
        }
           return false;
@@ -177,12 +185,23 @@ class Body extends Component{
     ( menu===1 ? this.setState({stateFiltersCard: expanded, stateSearchCard: !expanded, stateDomainInfoCard:!expanded}) : this.setState({ stateDomainInfoCard:expanded, stateFiltersCard: !expanded, stateSearchCard: !expanded}));
   }
 
+  deletedFilter(sessionTemp){
+    this.setState({
+        sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp)
+    });
+  }
+
   updateSession(newSession){
     console.log(this.state.sessionBody);
+    console.log(this.state.sessionString);
+    console.log(JSON.stringify(newSession));
     console.log('body newSession');
+    this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
+    this.forceUpdate();
   }
 
   render(){
+    console.log(this.state.sessionBody);
     console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
       <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:350, background:"white"}}>
@@ -224,7 +243,7 @@ console.log(this.state.sessionBody);
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} />
+          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
       </div>
     </Sidebar>

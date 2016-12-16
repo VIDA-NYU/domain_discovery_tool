@@ -25,6 +25,8 @@ import Search from 'material-ui/svg-icons/action/search';
 //import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import Body from './Body';
+import TextField from 'material-ui/TextField';
+
 
 const styles = {
   backgound: {
@@ -75,48 +77,63 @@ class ToolBarHeader extends Component {
     super(props);
     this.state = {
       currentDomain:'',
+      term:'',
     };
   }
   componentWillMount(){
     this.setState({currentDomain: this.props.currentDomain});
   };
 
-  componentWillReceiveProps  = (newProps) => {
-    if(newProps.currentDomain ===this.state.currentDomain){
+  componentWillReceiveProps  = (nextProps) => {
+    if(nextProps.currentDomain ===this.state.currentDomain){
       return;
     }
-    this.setState({currentDomain: this.props.currentDomain});
+    this.setState({currentDomain: nextProps.currentDomain});
   };
 
   shouldComponentUpdate(nextProps, nextState) {
      if (nextProps.currentDomain === this.state.currentDomain) {
-          return false;
+       if(nextState.term !==this.state.term){ return true; }
+       return false;
      }
      return true;
   }
 
+   filterKeyword(terms){
+     this.props.filterKeyword(terms);
+   }
 
-
-  render() {
-    return (
-      <Toolbar style={styles.toolBarHeader}>
-        <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
-        <ToolbarSeparator  />
-        <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
-      </IconButton>
-      <Link to='/'>
-        <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
-      </IconButton>
-    </Link>
-    <ToolbarSeparator  />
-
-    <FormControl style={{width:'35%', marginRight:'-120px', marginTop:5}} type="text" placeholder="Search ..." />
-    <IconButton style={{marginRight:'-25px'}}> <Search />
-  </IconButton>
-</Toolbar>
-);
-}
-}
+   render() {
+     console.log("ToolBarHeader render");
+     return (
+       <Toolbar style={styles.toolBarHeader}>
+         <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
+         <ToolbarSeparator  />
+         <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
+         </IconButton>
+         <Link to='/'>
+           <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
+           </IconButton>
+         </Link>
+         <ToolbarSeparator  />
+        <TextField
+         style={{width:'35%',marginRight:'-120px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+         hintText="Search ..."
+         hintStyle={{marginBottom:"-8px", marginLeft:10}}
+         inputStyle={{marginBottom:10, marginLeft:10}}
+          underlineShow={false}
+         value={this.state.term}
+         onChange={e => this.setState({ term: e.target.value })}
+        //  hintText="Hint Text"
+        //  onChange={this.handleChange.bind(this)}
+        />
+         <IconButton style={{marginRight:'-25px'}} onClick={this.filterKeyword.bind(this, this.state.term)}>
+          <Search />
+         </IconButton>
+       </Toolbar>
+     );
+   }
+ }
 
 class Header extends Component {
 
@@ -124,28 +141,38 @@ class Header extends Component {
     super(props);
     this.state = {
       idDomain:'',
+      filterKeyword:'',
   };
 };
 
 componentWillMount(){
+    console.log("header componentWillMount");
     this.setState({idDomain: this.props.location.query.idDomain});
 };
 
-componentWillReceiveProps  = (newProps) => {
+componentWillReceiveProps  = (newProps, nextState) => {
+  console.log("header componentWillReceiveProps");
   if(newProps.location.query.idDomain ===this.state.idDomain){
     return;
   }
   this.setState({idDomain: this.props.location.query.idDomain});
+
 };
 
 shouldComponentUpdate(nextProps, nextState) {
- console.log("view shouldComponentUpdate");
+ console.log("header shouldComponentUpdate");
   if(nextProps.location.query.idDomain ===this.state.idDomain){
         return false;
    }
     return true;
 };
 
+filterKeyword(newFilterKeyword){
+  if(this.state.filterKeyword !== newFilterKeyword){
+    this.setState({filterKeyword:newFilterKeyword});
+    this.forceUpdate();
+  }
+}
 
 render() {
   console.log("header");
@@ -158,10 +185,10 @@ render() {
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
       >
-      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} />
+      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} filterKeyword={this.filterKeyword.bind(this)} />
       </AppBar>
 
-      <Body currentDomain={this.state.idDomain} />
+      <Body currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>
 
     </div>
   );
