@@ -27,12 +27,57 @@ const styles = {
 };
 
 class Views extends Component{
+
+  constructor(props){
+    console.log("view constructor");
+    super(props);
+    this.state={
+      sessionString:"",
+      session: {},
+    }
+  }
+
+  componentWillMount(){
+    console.log("view componentWillMount");
+    this.setState({
+        session:this.props.session, sessionString: JSON.stringify(this.props.session)
+    });
+  }
+
+  componentWillReceiveProps(nextProps){
+    console.log("view before componentWillReceiveProps");
+    if(JSON.stringify(nextProps.session) === this.state.sessionString) {
+        return;
+    }
+    console.log("view after componentWillReceiveProps");
+    // Calculate new state
+    this.setState({
+        session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
+    });
+  }
+
+  deletedFilter(sessionTemp){
+    this.setState({
+        session:sessionTemp, sessionString: JSON.stringify(sessionTemp)
+    });
+    this.props.deletedFilter(sessionTemp);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("view shouldComponentUpdate");
+    if(JSON.stringify(nextState.session) === this.state.sessionString) {
+           return false;//false
+    }
+    return true;
+ }
+
+
   render(){
+    console.log('----view---');
     return(
       <Card initiallyExpanded={true} style={styles.card}>
-
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <ViewTabs />
+              <ViewTabs domainId={this.props.domainId} session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
            </CardMedia>
        </Card>
     )
@@ -48,5 +93,8 @@ export default Views;
    style={styles.cardHeader}
   actAsExpander={true}
   showExpandableButton={true}
+
+
+
 />
 */

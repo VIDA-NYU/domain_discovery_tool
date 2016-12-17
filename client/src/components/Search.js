@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Card, CardHeader, CardMedia} from 'material-ui/Card';
-import QueriesTabs from './QueriesTabs';
+import SearchTabs from './SearchTabs';
 import Avatar from 'material-ui/Avatar';
 import Assignment from 'material-ui/svg-icons/action/assignment-returned';
 
@@ -29,17 +29,18 @@ const styles = {
 
 };
 
-class LoadQueries extends Component{
+class LoadSearch extends Component{
 
   constructor(props) {
     super(props);
     this.state = {
       expanded: this.props.statedCard,
+
     };
   };
 
   componentWillMount = () => {
-   this.setState({expanded: this.props.statedCard, valueT: true,});
+   this.setState({expanded: this.props.statedCard, });
   };
 
   componentWillReceiveProps  = (newProps) => {
@@ -83,11 +84,11 @@ class LoadQueries extends Component{
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
 
-              <QueriesTabs />
+              <SearchTabs />
            </CardMedia>
        </Card>
     )
   }
 }
 
-export default LoadQueries;
+export default LoadSearch;

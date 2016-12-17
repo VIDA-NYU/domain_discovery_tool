@@ -16,7 +16,12 @@ import FileFolder from 'material-ui/svg-icons/file/folder';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import {blue500} from 'material-ui/styles/colors';
 import Toggle from 'material-ui/Toggle';
+import CircularProgress from 'material-ui/CircularProgress';
+import Chip from 'material-ui/Chip';
+import Qicon from '../images/qicon.png';
+import Ticon from '../images/ticon.png';
 
+import $ from 'jquery';
 
 const styles = {
   headline: {
@@ -39,14 +44,220 @@ const styles = {
 
 };
 
-class ViewTabs extends React.Component {
+class ChipViewTab extends React.Component{
+  constructor(props){
+    super(props);
+    this.state={
+      chipData: [],
+      sessionString:"",
+      session:{},
+    };
+    this.styles = {
+      chip: {
+        margin: 4,
+      },
+      wrapper: {
+        display: 'flex',
+        flexWrap: 'wrap',
+      },
+    };
+  }
 
+  componentWillMount(){
+    this.setState({
+        session:this.props.session, sessionString: JSON.stringify(this.props.session)
+    });
+  }
+
+  componentWillReceiveProps(nextProps, nextState){
+    console.log("ChipViewTab componentWillReceiveProps before");
+    if (JSON.stringify(nextProps.session) === this.state.sessionString ) {
+        return;
+    }
+    // Calculate new state
+    console.log("ChipViewTab componentWillReceiveProps after");
+    var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
+    var queriesList =[], tagsList =[];
+    queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
+    tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
+
+    var newChip = [];
+    for(var i=0; i<queriesList.length && queriesList.length>0; i++){
+      newChip.push({key: i, type: 0, label: queriesList[i], avatar: Qicon});
+    }
+    for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
+    }
+    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length ), type: 2, label: session['filter'] , avatar: Qicon});
+    }
+
+    this.setState({
+      chipData:newChip, pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
+    });
+  }
+
+  removeString(currentType, currentKey){
+    var currentString = "";
+    var anyFilter = false;
+    this.state.chipData.map((chip) => {
+      if(chip.type == currentType && chip.key != currentKey)
+        currentString = currentString + chip.label + ",";
+    });
+    if(currentString != "") return currentString.substring(0, currentString.length-1);
+    return currentString;
+  }
+
+
+  handleRequestDelete = (key) => {
+        const sessionTemp =  this.state.session;
+        const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
+        switch (this.state.chipData[chipToDelete].type) {
+          case 0: //query
+              sessionTemp['selected_queries']= this.removeString(0, key);
+              if(sessionTemp['selected_queries'] === "") {
+                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['pageRetrievalCriteria'] = "Tags";
+              }
+              break;
+          case 1://tags
+              sessionTemp['selected_tags']= this.removeString(1, key);
+              if(sessionTemp['selected_tags'] === "") {
+                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['pageRetrievalCriteria'] = "Queries";
+              }
+              break;
+          case 2://filter
+              sessionTemp['filter']= null;
+              break;
+        }
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === ""){
+           sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+        }
+
+        console.log(JSON.stringify(sessionTemp));
+        this.state.chipData.splice(chipToDelete, 1);
+        this.setState({chipData: this.state.chipData});
+        this.props.deletedFilter(sessionTemp);
+  };
+
+  renderChip(data) {
+        return (
+          <Chip
+            key={data.key}
+            onRequestDelete={() => this.handleRequestDelete(data.key)}
+            style={this.styles.chip}
+          >
+            <Avatar src={data.avatar} />
+            {data.label}
+          </Chip>
+        );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+      console.log("ChipViewTab shouldComponentUpdate before");
+      if(JSON.stringify(nextProps.session)!== this.state.sessionString) {
+        return true;
+      }
+      console.log("ChipViewTab shouldComponentUpdate after");
+      return false;
+  }
+
+  render(){
+    console.log("--------------ChipViewTab--------------");
+    return (
+      <div style={this.styles.wrapper}>
+       {this.state.chipData.map(this.renderChip, this)}
+      </div>
+    );
+  }
+}
+
+
+class ViewTabSnippets extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      pages:[],
+      sessionString:"",
+      session:{},
+    };
+  }
+
+  componentWillMount(){
+    this.setState({
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages,
+    });
+  }
+
+  componentWillReceiveProps(nextProps, nextState){
+    console.log("ViewTabSnippets componentWillReceiveProps before");
+    if (JSON.stringify(nextProps.session) === this.state.sessionString || nextProps.pages === this.state.pages ) {
+        return;
+    }
+    console.log("ViewTabSnippets componentWillReceiveProps after");
+    this.setState({
+      pages:nextProps.pages, pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("ViewTabSnippets shouldComponentUpdate before");
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  && nextState.pages !== this.state.pages) { //
+         return true;
+    }
+    console.log("ViewTabSnippets shouldComponentUpdate after");
+     return false;
+  }
+
+  render(){
+    console.log("------------------ViewTabSnippets-----------------");
+    console.log(this.state.pages);
+    return (
+      <div>
+      {
+        <List>
+        <Subheader inset={true}>100 pages </Subheader>
+        {this.state.pages.map((page, index) => (
+          <ListItem key={index}
+          leftAvatar={<Avatar icon={<FileFolder />} />}
+          rightToggle={<Toggle />}
+          primaryText={page[0]}
+          secondaryText={"page[1]"}
+          />
+        ))}
+        <Divider inset={true} />
+        </List>
+      }
+    </div>
+  );
+  }
+}
+
+
+
+class CircularProgressSimple extends React.Component{
+  render(){
+    return(
+    <div style={{borderColor:"green", marginLeft:"50%"}}>
+      <CircularProgress size={60} thickness={7} />
+    </div>
+  );}
+}
+
+
+
+
+class ViewTabs extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       slideIndex: 0,
+      pages:[],
+      sessionString:"",
+      session:{},
+      chipData: [],
     };
-    this.processResults = this.processResults.bind(this)
+    //this.processResults = this.processResults.bind(this)
   }
 
   processResults (error, data){
@@ -54,7 +265,18 @@ class ViewTabs extends React.Component {
   }
 
   componentWillMount(){
-    csv("https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv", this.processResults)
+    console.log("viwtabs componentWillMount");
+    let paginas = [];
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(this.props.session)},
+      function(pages) {
+        paginas =pages["data"]["pages"];
+        this.setState({session:this.props.session, pages:paginas, sessionString: JSON.stringify(this.props.session)});
+        //this.forceUpdate();
+      }.bind(this)
+    );
+  //  csv("https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv", this.processResults);
   }
 
   handleChange = (value) => {
@@ -63,8 +285,56 @@ class ViewTabs extends React.Component {
     });
   };
 
+  componentWillReceiveProps(nextProps){
+    console.log("viwtabs componentWillReceiveProps before");
+    if (JSON.stringify(nextProps.session) === this.state.sessionString) {
+        return;
+    }
+    console.log("viwtabs componentWillReceiveProps after");
+    let paginas = [];
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(nextProps.session)},
+      function(pages) {
+        paginas =pages["data"]["pages"];
+        this.setState({session:nextProps.session, pages:paginas, sessionString: JSON.stringify(nextProps.session)});
+        //this.forceUpdate();
+      }.bind(this)
+    );
+  }
+
+  deletedFilter(sessionTemp){
+    let paginas = [];
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(sessionTemp)},
+      function(pages) {
+        paginas =pages["data"]["pages"];
+        this.setState({session:sessionTemp, pages:paginas, sessionString: JSON.stringify(sessionTemp)});
+        //this.forceUpdate();
+      }.bind(this)
+    );
+    this.props.deletedFilter(sessionTemp);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("viwtabs shouldComponentUpdate before");
+    console.log("NEXT PAGES");
+    console.log(nextState.pages);
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || nextState.slideIndex !== this.state.slideIndex) { //
+          return true;
+    }
+    console.log('viwtabs shouldComponentUpdate after');
+    console.log(JSON.stringify(nextProps.session));
+    console.log(this.state.sessionString);
+    console.log(nextState.pages);
+    console.log(this.state.pages);
+     return false;
+  }
+
+
   render() {
-    let dimensions= ["petal_length", "petal_width", "sepal_length", "sepal_width"];
+    /*let dimensions= ["petal_length", "petal_width", "sepal_length", "sepal_width"];
     let dnames = ["Petal Length", "Petal Width", "Sepal Length", "Sepal Width"];
     let pairs = [];
     for (let i = 0; i < dimensions.length-1; i++){
@@ -84,61 +354,54 @@ class ViewTabs extends React.Component {
             description: urlDescription[i],
         });
     }
+*/
+    console.log('-------viewTabs------');
+    if(this.state.pages.length>0){
+      console.log('---into if viewTabs---');
+      return (
+        <div>
+          <Tabs
+            onChange={this.handleChange}
+            value={this.state.slideIndex}
+            inkBarStyle={{background: '#7940A0' ,height: '4px'}}
+            tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
+              <Tab label="Snippets" value={0} style={styles.tab} />
+              <Tab label="Visualizations" value={1} style={styles.tab} />
+              <Tab label="Model" value={2} style={styles.tab} />/#/domain/DataClassification?idDomain=AVbn5nq4HqwA5r9bnKWr&nameDomain=Data+Classification
+          </Tabs>
 
+          <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
 
-    return (
-      <div>
-        <Tabs
-          onChange={this.handleChange}
-          value={this.state.slideIndex}
-          inkBarStyle={{background: '#7940A0' ,height: '4px'}}
-          tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
-            <Tab label="Snippets" value={0} style={styles.tab} />
-            <Tab label="Visualizations" value={1} style={styles.tab} />
-            <Tab label="Model" value={2} style={styles.tab} />
-        </Tabs>
-
-        <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
-              <div style={styles.headline}>
-                    {
-                      <List>
-                      <Subheader inset={true}>100 pages </Subheader>
-                      {urls.map((url, index) => (
-                        <ListItem key={index}
-                          leftAvatar={<Avatar icon={<FileFolder />} />}
-                          rightToggle={<Toggle />}
-                          primaryText={url.name}
-                          secondaryText={url.description}
-                        />
-                      ))}
-                      <Divider inset={true} />
-                      <ListItem
-                        leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
-                        rightToggle={<Toggle />}
-                        primaryText="Home page escort"
-                        secondaryText="Jan 20, 2014Description Page .. Relevant words"
-                      />
-                    </List>
-                  }
-            </div>
             <div style={styles.headline}>
-                  {pairs.map((p)=>{
-                      return (
-                          <Scatterplot title={p['names'][0] + " x " + p['names'][1]} data={this.state.data}
-                              xAcessor={(d)=>d[p['dimensions'][0]]} yAcessor={(d)=>d[p['dimensions'][1]]} labelAcessor={(d)=>d["species"]}
-                              xLabel={p['names'][0]} yLabel={p['names'][1]}/>
-                        )
-                  })}
+              <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
+              <ViewTabSnippets session={this.state.session} pages={this.state.pages}/>
             </div>
+
             <div style={styles.headline}>
-                  <Checkbox label="Neutral" style={styles.checkbox}  />
-                  <Checkbox label="Relevant" style={styles.checkbox}  />
-                  <Checkbox label="Irrelevante" style={styles.checkbox}  />
             </div>
-        </SwipeableViews>
-      </div>
+
+            <div style={styles.headline}>
+              <Checkbox label="Neutral" style={styles.checkbox}  />
+              <Checkbox label="Relevant" style={styles.checkbox}  />
+              <Checkbox label="Irrelevante" style={styles.checkbox}  />
+            </div>
+
+          </SwipeableViews>
+        </div>
+      );
+    }
+    return(
+      <CircularProgressSimple />
     );
+
   }
 }
 
 export default ViewTabs;
+/*  {pairs.map((p)=>{
+      return (
+          <Scatterplot title={p['names'][0] + " x " + p['names'][1]} data={this.state.data}
+              xAcessor={(d)=>d[p['dimensions'][0]]} yAcessor={(d)=>d[p['dimensions'][1]]} labelAcessor={(d)=>d["species"]}
+              xLabel={p['names'][0]} yLabel={p['names'][1]}/>
+        )
+  })}*/

@@ -120,7 +120,7 @@ class Page:
   @cherrypy.expose
   def seedcrawler(self):
     # TODO Use SeedCrawlerModelAdapter self._crawler = SeedCrawlerModelAdapter()
-    return open(os.path.join(self._HTML_DIR, u"domain_discovery_tool.html"))
+    return open(os.path.join(self._HTML_DIR, u"index.html"))
 
   @cherrypy.expose
   def release(self):
@@ -139,6 +139,7 @@ class Page:
   # ]
   @cherrypy.expose
   def getAvailableCrawlers(self, type):
+    print "debug"
     res = self._crawler.getAvailableCrawlers()
     cherrypy.response.headers["Content-Type"] = "application/json;"
     return json.dumps({"crawlers":res, "type":type})
@@ -276,7 +277,7 @@ class Page:
     session = json.loads(session)
     data = self._crawler.getPages(session)
     colors = self._crawler.getTagColors(session['domainId'])
-    res = {"data": data, "plot": selection_plot(data, colors)}
+    res = {"data": data}#//, "plot": selection_plot(data, colors)}
     cherrypy.response.headers["Content-Type"] = "application/json;"
     return json.dumps(res)
 
@@ -329,7 +330,7 @@ class Page:
     session = json.loads(session)
     return self._crawler.updateOnlineClassifier(session)
 
-    
+
   # Delete terms from term window and from the ddt_terms index
   @cherrypy.expose
   def deleteTerm(self, term, session):

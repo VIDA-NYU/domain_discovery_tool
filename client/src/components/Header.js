@@ -24,6 +24,8 @@ import Search from 'material-ui/svg-icons/action/search';
 //import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 //import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+import Body from './Body';
+import TextField from 'material-ui/TextField';
 
 
 const styles = {
@@ -33,7 +35,7 @@ const styles = {
   titleText: {
     color: 'white'
   },
-  zeroMarginLeftRight: {
+  toolBarHeader: {
     width:'70%',
     height:45,
     marginTop:8,
@@ -68,126 +70,129 @@ const styles = {
   },
 
 };
+
 class ToolBarHeader extends Component {
 
   constructor(props){
-      super(props);
-      this.state = {
-          currentDomain:this.props.currentDomain,
-      };
+    super(props);
+    this.state = {
+      currentDomain:'',
+      term:'',
+    };
+  }
+  componentWillMount(){
+    this.setState({currentDomain: this.props.currentDomain});
+  };
+
+  componentWillReceiveProps  = (nextProps) => {
+    if(nextProps.currentDomain ===this.state.currentDomain){
+      return;
+    }
+    this.setState({currentDomain: nextProps.currentDomain});
+  };
+
+  shouldComponentUpdate(nextProps, nextState) {
+     if (nextProps.currentDomain === this.state.currentDomain) {
+       if(nextState.term !==this.state.term){ return true; }
+       return false;
+     }
+     return true;
   }
 
-  componentWillReceiveProps  = (newProps) => {
-    console.log("1 "+ this.props.currentDomain);
-       this.setState({currentDomain: this.props.currentDomain}, function() {
-           console.log("2 "+ this.props.currentDomain);
-            this.setState({currentDomain: this.props.currentDomain});
-       });
-         console.log("3 "+ this.props.currentDomain);
-   };
+   filterKeyword(terms){
+     this.props.filterKeyword(terms);
+   }
 
-  render() {
-
-    return (
-      <Toolbar style={styles.zeroMarginLeftRight}>
-          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
-               <ToolbarSeparator  />
-               <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} onClick={this.props.activeHeader()}> <Model />
-               </IconButton>
-               <Link to='/'>
-               <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
-               </IconButton>
-               </Link>
-               <ToolbarSeparator  />
-
-                <FormControl style={{width:'40%', marginRight:'-150px', marginTop:5}} type="text" placeholder="Search ..." />
-                <IconButton style={{marginRight:'-25px'}}> <Search />
-                </IconButton>
-      </Toolbar>
-    );
-  }
-}
+   render() {
+     console.log("ToolBarHeader render");
+     return (
+       <Toolbar style={styles.toolBarHeader}>
+         <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
+         <ToolbarSeparator  />
+         <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
+         </IconButton>
+         <Link to='/'>
+           <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
+           </IconButton>
+         </Link>
+         <ToolbarSeparator  />
+        <TextField
+         style={{width:'35%',marginRight:'-120px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+         hintText="Search ..."
+         hintStyle={{marginBottom:"-8px", marginLeft:10}}
+         inputStyle={{marginBottom:10, marginLeft:10}}
+          underlineShow={false}
+         value={this.state.term}
+         onChange={e => this.setState({ term: e.target.value })}
+        //  hintText="Hint Text"
+        //  onChange={this.handleChange.bind(this)}
+        />
+         <IconButton style={{marginRight:'-25px'}} onClick={this.filterKeyword.bind(this, this.state.term)}>
+          <Search />
+         </IconButton>
+       </Toolbar>
+     );
+   }
+ }
 
 class Header extends Component {
 
-
   constructor(props) {
-      super(props);
-      this.state = {
-          opened: true,
-          logged: false,
-          selectedIndex: 0,
-          currentDomain:this.props.route.currentDomain,
-          activeMenu:false,
-          header:<ToolBarHeader currentDomain={this.props.route.currentDomain} activeHeader={this.activeHeader.bind(this)}/>,
-      };
-  }
-
-  activeHeader = () => {
-    console.log("here home");
-    this.props.route.setActiveMenu("hello");
-  }
-
-  activeHeaderFromBody = () => {
-    console.log("here home");
-    this.props.route.setActiveMenu("hello");
-    this.setState({header:<ToolBarHeader activeHeader={this.activeHeader.bind(this)}/>,});
-  }
-
-  handleChange = (event, logged) => {
-    this.setState({logged: logged});
+    super(props);
+    this.state = {
+      idDomain:'',
+      filterKeyword:'',
   };
+};
 
-  onOpen() {
-      this.setState({ barOpened: true });
-    }
+componentWillMount(){
+    console.log("header componentWillMount");
+    this.setState({idDomain: this.props.location.query.idDomain});
+};
 
-    onClose() {
-      this.setState({ barOpened: false });
-    }
+componentWillReceiveProps  = (newProps, nextState) => {
+  console.log("header componentWillReceiveProps");
+  if(newProps.location.query.idDomain ===this.state.idDomain){
+    return;
+  }
+  this.setState({idDomain: this.props.location.query.idDomain});
 
-    removeRecord = () => {
-       console.log("here");
-        this.setState({logged: true});
-        //Body.openDock1();
-    }
+};
 
-    componentWillMount = () => {
-     this.setState({activeMenu: this.props.route.activeMenu,});
-    };
+shouldComponentUpdate(nextProps, nextState) {
+ console.log("header shouldComponentUpdate");
+  if(nextProps.location.query.idDomain ===this.state.idDomain){
+        return false;
+   }
+    return true;
+};
 
-    componentWillReceiveProps  = (newProps) => {
-      console.log("1 "+ this.props.route.activeMenu.toString());
-         this.setState({activeMenu: this.props.route.activeMenu}, function() {
-             console.log("2 "+ this.props.route.activeMenu.toString());
-              this.setState({activeMenu: this.props.route.activeMenu});
-         });
-           console.log("3 "+ this.props.route.activeMenu.toString());
-     };
-
-
-  render() {
-
-    return (
-
-      <div>
-        <AppBar showMenuIconButton={true}
-          style={styles.backgound}
-          title={  <span style={styles.titleText}> Domain Discovery Tool </span>}
-          //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
-          //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
-        >
-        {this.state.header}
-
-        </AppBar>
-        {this.props.children}
-
-        </div>
-    );
+filterKeyword(newFilterKeyword){
+  if(this.state.filterKeyword !== newFilterKeyword){
+    this.setState({filterKeyword:newFilterKeyword});
+    this.forceUpdate();
   }
 }
 
-export default Header;
+render() {
+  console.log("header");
+  return (
+    <div>
+      <AppBar showMenuIconButton={true}
+        style={styles.backgound}
+        title={  <span style={styles.titleText}> Domain Discovery Tool </span>}
+        //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+        iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
+        //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
+      >
+      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} filterKeyword={this.filterKeyword.bind(this)} />
+      </AppBar>
 
-//<ToolBarHeader currentDomain={this.props.route.currentDomain} activeHeader={this.activeHeader.bind(this)}/>
+      <Body currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>
+
+    </div>
+  );
+}
+}
+
+export default Header;
