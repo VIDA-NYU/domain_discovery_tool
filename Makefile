@@ -78,5 +78,7 @@ $(LINK_WORD2VEC_DATA_TARGET): $(CONDA_ENV)/data/D_cbow_pdw_8B.pkl
 
 $(GET_REACT_DATA_TARGET):
 	pushd client; \
+	npm install; \
+	npm run build; \
 	cp build/index.html build/domain_discovery_tool.html; \
 	popd
