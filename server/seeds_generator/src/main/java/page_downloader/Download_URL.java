@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 import java.net.URI;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,6 +18,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -47,6 +52,85 @@ public class Download_URL implements Runnable {
 	    this.es_index = es_index;
 	if(!es_doc_type.isEmpty())
 	    this.es_doc_type = es_doc_type;
+    }
+
+    public String getDescription(String responseBody, String content_text){
+	// try to extract og:description or the first <meta name="description"> tag available in the html
+	responseBody = responseBody.trim().toLowerCase();
+
+	String desc = "";
+	Pattern p = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\"(.*?)/>");
+	Matcher m = p.matcher(responseBody);
+
+	if(m.find()) desc = m.group(1);
+	else {
+	    p = Pattern.compile("<meta content=\"(.*?)\" property=\"og:description\"(.*?)");
+	    m = p.matcher(responseBody);
+	    
+	    if(m.find()) {
+		desc = m.group(1);
+		desc = desc.substring(desc.lastIndexOf("\"")+1);
+	    }
+	    else {
+		p = Pattern.compile("<meta name=\"Description\"(.*?)content=\"(.*?)\"(.*?)>");
+		m = p.matcher(responseBody);
+		if(m.find()) desc = m.group(2);
+	    }
+	}
+
+	String clean = "";
+	if(!desc.equals("")) {
+            clean = desc + " " + content_text;
+	} else {
+            clean = content_text; 
+	}
+
+	clean = clean.replace("\\n"," ");
+	clean = clean.replace("\\s\\s+", " " );
+
+	return clean;
+    }
+
+    public String getImage(String responseBody, URL url){
+	// try to extract og:image or the first <img> tag available in the html
+	responseBody = responseBody.trim().toLowerCase();
+	
+	String img_url = "";
+	Pattern p = Pattern.compile("<meta property=\"og:image\" content=\"(.*?)\"");
+	Matcher m = p.matcher(responseBody);
+
+	if(m.find()) img_url = m.group(1);
+	else {
+	    p = Pattern.compile("<meta content=\"(.*?)\" property=\"og:image\"");
+	    m = p.matcher(responseBody);
+
+	    if(m.find()) img_url = m.group(1);
+	    else {
+		p = Pattern.compile("<img(.*?)src=\"(.*?)\"");
+		m = p.matcher(responseBody);
+		if(m.find())
+		    img_url = m.group(2);
+		else return "";
+	    }
+	}
+
+	// could find a image
+	// try to fix or resolve relative URLs
+	if(img_url.indexOf("http://") == 0 ||
+	   img_url.indexOf("https://") == 0) { // complete URL found
+	    return img_url;
+	}
+	if(img_url.indexOf("//") == 0) { // URL without protocol found
+	    return "http:"+img_url;
+	}
+	//relative URL found
+	try{
+	    img_url = new URL(url, img_url).toString();
+	}catch (MalformedURLException e){
+	    System.out.println("MalformedURLException " + e.getMessage());
+	}
+
+	return img_url;
     }
 
     public void run() {
@@ -98,6 +182,9 @@ public class Download_URL implements Runnable {
 			.execute()
 			.actionGet();
 
+		    String description = getDescription(responseBody, content_text);
+		    String imageUrl = getImage(responseBody, url.toURL());
+
 		    SearchHit[] hits = searchResponse.getHits().getHits();
 		    for (SearchHit hit : searchResponse.getHits()) {
 			Map map = hit.getSource();
@@ -113,6 +200,8 @@ public class Download_URL implements Runnable {
 				     .field("length", content_length)
 				     .field("query", query_list)
 				     .field("retrieved", timestamp)
+				     .field("image_url", new URI(imageUrl))
+				     .field("description", description)
 				     .endObject());
 			    this.client.update(updateRequest).get();
 			} else{
@@ -124,6 +213,8 @@ public class Download_URL implements Runnable {
 				     .field("title", title)
 				     .field("length", content_length)
 				     .field("retrieved", timestamp)
+				     .field("image_url", new URI(imageUrl))
+				     .field("description", description)
 				     .endObject());
 			    this.client.update(updateRequest).get();
 			}
@@ -140,6 +231,8 @@ public class Download_URL implements Runnable {
 				       .field("length", content_length)
 				       .field("query", new String[]{this.query})
 				       .field("retrieved", timestamp)
+				       .field("image_url", new URI(imageUrl))
+				       .field("description", description)
 				       .endObject()
 				       )
 			    .execute()
