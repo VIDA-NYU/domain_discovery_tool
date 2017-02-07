@@ -28,7 +28,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.SearchHit; 
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -66,13 +66,13 @@ public class Download_URL implements Runnable {
 	else {
 	    p = Pattern.compile("<meta content=\"(.*?)\" property=\"og:description\"(.*?)");
 	    m = p.matcher(responseBody);
-	    
+
 	    if(m.find()) {
 		desc = m.group(1);
 		desc = desc.substring(desc.lastIndexOf("\"")+1);
 	    }
 	    else {
-		p = Pattern.compile("<meta name=\"Description\"(.*?)content=\"(.*?)\"(.*?)>");
+		p = Pattern.compile("<meta name=\"description\"(.*?)content=\"(.*?)\"(.*?)>");
 		m = p.matcher(responseBody);
 		if(m.find()) desc = m.group(2);
 	    }
@@ -82,7 +82,7 @@ public class Download_URL implements Runnable {
 	if(!desc.equals("")) {
             clean = desc + " " + content_text;
 	} else {
-            clean = content_text; 
+            clean = content_text;
 	}
 
 	clean = clean.replace("\\n"," ");
@@ -94,7 +94,7 @@ public class Download_URL implements Runnable {
     public String getImage(String responseBody, URL url){
 	// try to extract og:image or the first <img> tag available in the html
 	responseBody = responseBody.trim().toLowerCase();
-	
+
 	String img_url = "";
 	Pattern p = Pattern.compile("<meta property=\"og:image\" content=\"(.*?)\"");
 	Matcher m = p.matcher(responseBody);
@@ -141,9 +141,9 @@ public class Download_URL implements Runnable {
 	CloseableHttpClient httpclient = HttpClients.createDefault();
 	// Perform a GET request
 	HttpUriRequest request = new HttpGet(url);
-	
+
 	System.out.println("Executing request " + request.getURI());
-	
+
 	HttpResponse response = null;
 	try{
 	    response = httpclient.execute(request);
@@ -163,13 +163,13 @@ public class Download_URL implements Runnable {
 			Extract extract = new Extract();
 			extracted_content = extract.process(responseBody);
 		    }
-		    
+
 		    String content_text = (String)extracted_content.get("content");
 		    String title = (String)extracted_content.get("title");
 
 		    SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 		    date_format.setTimeZone(TimeZone.getTimeZone("UTC"));
-		    String timestamp = date_format.format(new Date()); 
+		    String timestamp = date_format.format(new Date());
 
 		    URI url = request.getURI();
 		    SearchResponse searchResponse = null;
@@ -219,7 +219,7 @@ public class Download_URL implements Runnable {
 			    this.client.update(updateRequest).get();
 			}
 		    }
-		    
+
 		    if(hits.length == 0){
 			IndexResponse indexresponse = this.client.prepareIndex(this.es_index, this.es_doc_type)
 			    .setSource(XContentFactory.jsonBuilder()
