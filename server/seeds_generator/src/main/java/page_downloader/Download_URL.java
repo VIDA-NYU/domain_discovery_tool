@@ -96,10 +96,12 @@ public class Download_URL implements Runnable {
 	responseBody = responseBody.trim().toLowerCase();
 
 	String img_url = "";
-	Pattern p = Pattern.compile("<meta property=\"og:image\" content=\"(.*?)\"");
+	Pattern p = Pattern.compile("<meta property=\"og:image\" content=\"(.*?)\"(.*?)");
 	Matcher m = p.matcher(responseBody);
 
-	if(m.find()) img_url = m.group(1);
+	if(m.find()){
+      img_url = m.group(1);
+    }
 	else {
 	    p = Pattern.compile("<meta content=\"(.*?)\" property=\"og:image\"");
 	    m = p.matcher(responseBody);
@@ -184,6 +186,7 @@ public class Download_URL implements Runnable {
 
 		    String description = getDescription(responseBody, content_text);
 		    String imageUrl = getImage(responseBody, url.toURL());
+        System.out.println("Image URL: " + imageUrl);
 
 		    SearchHit[] hits = searchResponse.getHits().getHits();
 		    for (SearchHit hit : searchResponse.getHits()) {
