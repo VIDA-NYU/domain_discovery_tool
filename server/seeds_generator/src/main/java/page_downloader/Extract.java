@@ -26,25 +26,18 @@ public class Extract {
 	    content = content.toLowerCase();
 
 	    map.put("content", content);
-	    
+
 	    HTMLDocument htmlDoc = new HTMLDocument(html);
 	    TextDocument doc = new BoilerpipeSAXInput(htmlDoc.toInputSource()).getTextDocument();
 	    String title = doc.getTitle();
 	    map.put("title", title);
-
-	    List textblocks = doc.getTextBlocks();
-	    for(int i = 0;i < textblocks.size();++i){
-		TextBlock textblock = (TextBlock)textblocks.get(i);
-		System.out.println("\n\n\nTEXT\n\n\n");
-		System.out.println(String.valueOf(textblock.getTextDensity()) + " " + textblock.getText());
-	    }
 
 	    return map;
 	}
 	catch(Exception e){
 	    System.err.println("process Exception" + e.getMessage());
 	}
-	
+
 	return null;
     }
 
@@ -52,9 +45,9 @@ public class Extract {
 	Extract e = new Extract();
 
 	try{
-	    BufferedReader br = 
+	    BufferedReader br =
 		new BufferedReader(new InputStreamReader(System.in));
-	    
+
 	    String html = "";
 	    String input;
 
@@ -63,7 +56,7 @@ public class Extract {
 	    }
 
 	    e.process(html);
-	    
+
 	}catch(IOException io){
 	    io.printStackTrace();
 	}
