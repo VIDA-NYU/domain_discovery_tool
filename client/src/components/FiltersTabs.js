@@ -40,7 +40,8 @@ class LoadQueries extends React.Component {
     this.state={
       currentQueries:undefined,
       queriesCheckBox:[],
-      queryString:undefined,
+      //checkedQueries:[],
+      queryString:"",
       session: {},
       flat:false,
     };
@@ -71,7 +72,7 @@ class LoadQueries extends React.Component {
     });
 
   }
-  shouldComponentUpdate(nextProps){
+  shouldComponentUpdate(nextProps, nextState){
     console.log("shouldComponentUpdate before");
     if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString && this.state.flat===true) {
       return false;
@@ -81,18 +82,33 @@ class LoadQueries extends React.Component {
   }
 
   addQuery(query){
-    this.props.addQuery(query);
+    var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
+    if(queries.includes(query)){
+      this.props.removeQueryTag(0, query);
+    }
+    else{
+      this.props.addQuery(query);
+    }
+    //var queries = this.state.checkedQueries;
+    //queries.push(query);
+    //this.setState({checkedQueries: queries });
   }
 
   render(){
     if(this.state.currentQueries!==undefined){
       console.log("render ");
+      console.log("session: "+ this.state.queryString);
       return(
         <div>
         {Object.keys(this.state.currentQueries).map((query, index)=>{
           console.log("k: " + query + ", index: " + index);
           var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")";
-          return <Checkbox label={labelQuery} style={styles.checkbox}  onClick={this.addQuery.bind(this,query)}/>
+          var checkedQuery=false;
+          var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
+          if(queries.includes(query))
+            checkedQuery=true;
+          console.log("label: " + query +", valueChecked: " + checkedQuery);
+          return <Checkbox label={labelQuery} checked={checkedQuery} style={styles.checkbox}  onClick={this.addQuery.bind(this,query)}/>
         })}
         </div>
       );
@@ -147,7 +163,14 @@ class LoadTag extends React.Component {
   }
 
   addTags(tag){
-    this.props.addTags(tag);
+
+    var tags = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
+    if(tags.includes(tag)){
+      this.props.removeQueryTag(1, tag);
+    }
+    else{
+      this.props.addTags(tag);
+    }
   }
 
   render(){
@@ -156,7 +179,11 @@ class LoadTag extends React.Component {
         <div style={styles.headline}>
         {Object.keys(this.state.currentTags).map((tag, index)=>{
           var labelTags=  tag+" " +"(" +this.state.currentTags[tag]+")";
-          return <Checkbox label={labelTags} style={styles.checkbox}  onClick={this.addTags.bind(this,tag)} />
+          var checkedTag=false;
+          var tags = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
+          if(tags.includes(tag))
+            checkedTag=true;
+          return <Checkbox label={labelTags} checked={checkedTag} style={styles.checkbox}  onClick={this.addTags.bind(this,tag)} />
         })}
         </div>
       );
@@ -182,12 +209,14 @@ class FiltersTabs extends React.Component {
       tagsCheckBox:[],
       sessionString:"",
       session: {},
+      queryString:"",
+      tagString:"",
       flat:false,
     };
   }
 
   componentWillMount(){
-    this.setState({session:this.props.session, sessionString: JSON.stringify(this.props.session) });
+    this.setState({session:this.props.session, sessionString: JSON.stringify(this.props.session), queryString: JSON.stringify(this.props.session['selected_queries']), tagString: JSON.stringify(this.props.session['selected_tags']) });
 
   }
 
@@ -200,7 +229,7 @@ class FiltersTabs extends React.Component {
     console.log("FiltersTabs componentWillReceiveProps after");
     // Calculate new state
     this.setState({
-        session:nextProps.session, sessionString: JSON.stringify(nextProps.session), flat: true
+        session:nextProps.session, sessionString: JSON.stringify(nextProps.session), queryString: JSON.stringify(nextProps.session['selected_queries']), tagString: JSON.stringify(nextProps.session['selected_tags']), flat: true
     });
 
   }
@@ -221,9 +250,13 @@ class FiltersTabs extends React.Component {
   }
 
   addQuery(labelQuery){
-    var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
+    var selected_queries=[];
+    if(this.state.queryString.substring(1,this.state.queryString.length-1)!="")
+      selected_queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
+    //var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
     selected_queries.push(labelQuery);
     var newQuery = selected_queries.toString();
+    console.log("newQuery: " + newQuery);
     this.setState({queriesCheckBox: selected_queries});
     var sessionTemp = this.props.session;
     if(sessionTemp['selected_tags']!=="")
@@ -233,24 +266,73 @@ class FiltersTabs extends React.Component {
     }
     sessionTemp['pageRetrievalCriteria'] = "Queries";
     sessionTemp['selected_queries']=newQuery;
+    //this.props.updateCheckedQueries(selected_queries);
     this.props.updateSession(sessionTemp);
   }
 
-    addTags(labelTags){
-      var selected_tags = this.state.tagsCheckBox; //  var selected_queries = [];
-      selected_tags.push(labelTags);
-      var newTags = selected_tags.toString();
-      this.setState({tagsCheckBox: selected_tags});
-      var sessionTemp = this.props.session;
-      if(sessionTemp['selected_queries']!=="")
-        sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
-      else{
-        sessionTemp['newPageRetrievelCriteria'] = "one";
-      }
-      sessionTemp['pageRetrievalCriteria'] = "Tags";
-      sessionTemp['selected_tags']=newTags;
-      this.props.updateSession(sessionTemp);
+  addTags(labelTags){
+    var selected_tags=[];
+    if(this.state.tagString.substring(1,this.state.tagString.length-1)!="")
+      selected_tags = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
+    //var selected_tags = this.state.tagsCheckBox; //  var selected_queries = [];
+    selected_tags.push(labelTags);
+    var newTags = selected_tags.toString();
+    this.setState({tagsCheckBox: selected_tags});
+    var sessionTemp = this.props.session;
+    if(sessionTemp['selected_queries']!=="")
+      sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
+    else{
+      sessionTemp['newPageRetrievelCriteria'] = "one";
     }
+    sessionTemp['pageRetrievalCriteria'] = "Tags";
+    sessionTemp['selected_tags']=newTags;
+    this.props.updateSession(sessionTemp);
+  }
+
+  removeString(currentType, item){
+    var currentString = "";
+    var array=[]; // it could be a query or tag array.
+    switch (currentType) {
+      case 0: //query
+          array = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
+          break;
+      case 1://tags
+          array = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
+          break;
+    }
+    for(var index in array){ /* loop over all array items */
+      if(array[index] !== item){
+        currentString = currentString + array[index] + ",";
+      }
+    }
+    if(currentString != "") return currentString.substring(0, currentString.length-1);
+    return currentString;
+  }
+
+  removeQueryTag(currentType, item){
+    const sessionTemp =  this.state.session;
+    switch (currentType) {
+      case 0: //query
+          sessionTemp['selected_queries']= this.removeString(0, item);
+          if(sessionTemp['selected_queries'] === "") {
+            sessionTemp['newPageRetrievelCriteria'] = "one";
+            sessionTemp['pageRetrievalCriteria'] = "Tags";
+          }
+          break;
+      case 1://tags
+          sessionTemp['selected_tags']= this.removeString(1, item);
+          if(sessionTemp['selected_tags'] === "") {
+            sessionTemp['newPageRetrievelCriteria'] = "one";
+            sessionTemp['pageRetrievalCriteria'] = "Queries";
+          }
+          break;
+    }
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === ""){
+       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
+    console.log(JSON.stringify(sessionTemp));
+    this.props.deletedFilter(sessionTemp);
+  }
 /*
   createCheckbox(k, index){
     var labelQuery=  k+" " +"(" +index+")";
@@ -286,10 +368,10 @@ class FiltersTabs extends React.Component {
         </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
           <div style={styles.headline}>
-            <LoadQueries session={this.state.session} addQuery={this.addQuery.bind(this)}/>
+            <LoadQueries session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
           </div>
           <div style={styles.headline}>
-            <LoadTag session={this.state.session} addTags={this.addTags.bind(this)}/>
+            <LoadTag session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
           </div>
           <div style={styles.headline}>
             <loadTag session={this.state.session} addTags={this.addTags.bind(this)}/>

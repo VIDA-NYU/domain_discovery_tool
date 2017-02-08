@@ -38,6 +38,8 @@ class Filters extends Component{
         sessionString:"",
         session: undefined,
         sizeAvatar:undefined,
+        checked_queries:[],
+        checked_tags:[],
       };
     }
 
@@ -109,6 +111,19 @@ class Filters extends Component{
       this.props.updateSession(newSession);
     }
 
+    deletedFilter(sessionTemp){
+      this.setState({
+          session:sessionTemp, sessionString: JSON.stringify(sessionTemp)
+      });
+      this.props.deletedFilter(sessionTemp);
+    }
+
+    /*updateCheckedQueries(checkedQueries){
+      this.setState({
+        checked_queries:checkedQueries,
+      });
+    }
+*/
 
   render(){
     console.log("Filters");
@@ -122,11 +137,12 @@ class Filters extends Component{
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <FiltersTabs session={this.state.session} updateSession={this.updateSession.bind(this)}/>
+              <FiltersTabs session={this.state.session} updateSession={this.updateSession.bind(this)} checkedQueries={this.state.checked_queries} deletedFilter={this.deletedFilter.bind(this)}/>
            </CardMedia>
        </Card>
     )
   }
+
 }
 
 export default Filters;
