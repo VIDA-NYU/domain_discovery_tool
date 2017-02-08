@@ -20,6 +20,23 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
+import Searchicon from '../images/searchicon.png';
+
+import FlatButton from 'material-ui/FlatButton';
+import AddBox from 'material-ui/svg-icons/content/add-box';
+import Settings from 'material-ui/svg-icons/action/settings';
+import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
+import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
+import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
+import {fullWhite} from 'material-ui/styles/colors';
+
+import FontIcon from 'material-ui/FontIcon';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+
+const recentsIcon = <RelevantFace />;
+const favoritesIcon = <IrrelevantFace />;
+const nearbyIcon = <NeutralFace />;
 
 import $ from 'jquery';
 
@@ -88,7 +105,7 @@ class ChipViewTab extends React.Component{
     for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length ), type: 2, label: session['filter'] , avatar: Qicon});
+    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length ), type: 2, label: session['filter'] , avatar: Searchicon});
     }
 
     this.setState({
@@ -180,6 +197,7 @@ class ViewTabSnippets extends React.Component{
       pages:[],
       sessionString:"",
       session:{},
+      selectedIndex: 0,
     };
   }
 
@@ -191,7 +209,7 @@ class ViewTabSnippets extends React.Component{
 
   componentWillReceiveProps(nextProps, nextState){
     console.log("ViewTabSnippets componentWillReceiveProps before");
-    if (JSON.stringify(nextProps.session) === this.state.sessionString || nextProps.pages === this.state.pages ) {
+    if (JSON.stringify(nextProps.session) === this.state.sessionString && nextProps.pages === this.state.pages ) { // ||
         return;
     }
     console.log("ViewTabSnippets componentWillReceiveProps after");
@@ -202,13 +220,16 @@ class ViewTabSnippets extends React.Component{
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log("ViewTabSnippets shouldComponentUpdate before");
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString  && nextState.pages !== this.state.pages) { //
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || nextState.selectedIndex !== this.state.selectedIndex) { //&&
          return true;
     }
     console.log("ViewTabSnippets shouldComponentUpdate after");
      return false;
   }
 
+
+
+  select = (index) => this.setState({selectedIndex: index});
   render(){
     console.log("------------------ViewTabSnippets-----------------");
     console.log(this.state.pages);
@@ -216,11 +237,10 @@ class ViewTabSnippets extends React.Component{
       <div>
       {
         <List>
-        <Subheader inset={true}>100 pages </Subheader>
+        <Subheader inset={true}>{this.state.pages.length} pages </Subheader>
         {this.state.pages.map((page, index) => (
           <ListItem key={index}
           leftAvatar={<Avatar icon={<FileFolder />} />}
-          rightToggle={<Toggle />}
           primaryText={page[0]}
           secondaryText={"page[1]"}
           />
