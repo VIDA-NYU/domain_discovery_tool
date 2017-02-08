@@ -56,15 +56,15 @@ public class Download_URL implements Runnable {
 
     public String getDescription(String responseBody, String content_text){
 	// try to extract og:description or the first <meta name="description"> tag available in the html
-	responseBody = responseBody.trim().toLowerCase();
+	responseBody = responseBody.trim();
 
 	String desc = "";
-	Pattern p = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\"(.*?)/>");
+	Pattern p = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\"(.*?)/>", Pattern.CASE_INSENSITIVE);
 	Matcher m = p.matcher(responseBody);
 
 	if(m.find()) desc = m.group(1);
 	else {
-	    p = Pattern.compile("<meta content=\"(.*?)\" property=\"og:description\"(.*?)");
+	    p = Pattern.compile("<meta content=\"(.*?)\" property=\"og:description\"(.*?)", Pattern.CASE_INSENSITIVE);
 	    m = p.matcher(responseBody);
 
 	    if(m.find()) {
@@ -72,7 +72,7 @@ public class Download_URL implements Runnable {
 		desc = desc.substring(desc.lastIndexOf("\"")+1);
 	    }
 	    else {
-		p = Pattern.compile("<meta name=\"description\"(.*?)content=\"(.*?)\"(.*?)>");
+		p = Pattern.compile("<meta name=\"description\"(.*?)content=\"(.*?)\"(.*?)>", Pattern.CASE_INSENSITIVE);
 		m = p.matcher(responseBody);
 		if(m.find()) desc = m.group(2);
 	    }
@@ -93,25 +93,26 @@ public class Download_URL implements Runnable {
 
     public String getImage(String responseBody, URL url){
 	// try to extract og:image or the first <img> tag available in the html
-	responseBody = responseBody.trim().toLowerCase();
+	responseBody = responseBody.trim();
 
-	String img_url = "";
-	Pattern p = Pattern.compile("<meta property=\"og:image\" content=\"(.*?)\"(.*?)");
+  String img_url = "";
+	Pattern p = Pattern.compile("<meta .*?=\"og:image\" content=\"(.*?)\"(.*?)", Pattern.CASE_INSENSITIVE);
 	Matcher m = p.matcher(responseBody);
 
 	if(m.find()){
       img_url = m.group(1);
     }
 	else {
-	    p = Pattern.compile("<meta content=\"(.*?)\" property=\"og:image\"");
+	    p = Pattern.compile("<meta content=\"(.*?)\" .*?=\"og:image\"", Pattern.CASE_INSENSITIVE);
 	    m = p.matcher(responseBody);
 
 	    if(m.find()) img_url = m.group(1);
 	    else {
-		p = Pattern.compile("<img(.*?)src=\"(.*?)\"");
-		m = p.matcher(responseBody);
-		if(m.find())
+		p = Pattern.compile("<img(.*?)src=\"(.*?)\"", Pattern.CASE_INSENSITIVE);
+		m = p.matcher(responseBody.substring(responseBody.indexOf("<body"), responseBody.length()-1));
+		if(m.find()){
 		    img_url = m.group(2);
+      }
 		else return "";
 	    }
 	}
