@@ -21,6 +21,27 @@ import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
 
+import Searchicon from '../images/searchicon.png';
+
+import FlatButton from 'material-ui/FlatButton';
+import AddBox from 'material-ui/svg-icons/content/add-box';
+import Settings from 'material-ui/svg-icons/action/settings';
+import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
+import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
+import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
+import {fullWhite} from 'material-ui/styles/colors';
+
+import FontIcon from 'material-ui/FontIcon';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+
+const recentsIcon = <RelevantFace />;
+const favoritesIcon = <IrrelevantFace />;
+const nearbyIcon = <NeutralFace />;
+
+import { ButtonGroup, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+
+
 import $ from 'jquery';
 
 const styles = {
@@ -88,7 +109,7 @@ class ChipViewTab extends React.Component{
     for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length ), type: 2, label: session['filter'] , avatar: Qicon});
+    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length ), type: 2, label: session['filter'] , avatar: Searchicon});
     }
 
     this.setState({
@@ -180,6 +201,7 @@ class ViewTabSnippets extends React.Component{
       pages:[],
       sessionString:"",
       session:{},
+      selectedIndex: 0,
     };
   }
 
@@ -191,7 +213,7 @@ class ViewTabSnippets extends React.Component{
 
   componentWillReceiveProps(nextProps, nextState){
     console.log("ViewTabSnippets componentWillReceiveProps before");
-    if (JSON.stringify(nextProps.session) === this.state.sessionString || nextProps.pages === this.state.pages ) {
+    if (JSON.stringify(nextProps.session) === this.state.sessionString && nextProps.pages === this.state.pages ) { // ||
         return;
     }
     console.log("ViewTabSnippets componentWillReceiveProps after");
@@ -202,29 +224,59 @@ class ViewTabSnippets extends React.Component{
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log("ViewTabSnippets shouldComponentUpdate before");
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString  && nextState.pages !== this.state.pages) { //
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || nextState.selectedIndex !== this.state.selectedIndex) { //&&
          return true;
     }
     console.log("ViewTabSnippets shouldComponentUpdate after");
      return false;
   }
 
+
+
+  select = (index) => this.setState({selectedIndex: index});
   render(){
     console.log("------------------ViewTabSnippets-----------------");
     console.log(this.state.pages);
+    var image ='url image';
+    var urlsList = Object.keys(this.state.pages).map((k, index)=>{
+                      //  var page = this.state.pages[k];
+
+                        return <ListItem key={index}
+                        //leftAvatar={<Avatar icon={<FileFolder />} />}
+                        //rightToggle={<Toggle />}
+                        //primaryText={page}
+                        //secondaryText={index}
+                        >
+                        <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
+                          <div>
+                            <p style={{float:'left'}}><img src={this.state.pages[k]["image_url"]} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+                            <p style={{float:'right'}}>
+                            <ButtonGroup bsSize="small">
+                              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
+                                <Button>Relev</Button>
+                              </OverlayTrigger>
+                              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
+                                <Button>Irrel</Button>
+                              </OverlayTrigger>
+                              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
+                                <Button>Neutr</Button>
+                              </OverlayTrigger>
+                            </ButtonGroup></p>
+                            <p style={{ color:'blue'}} >{this.state.pages[k]["title"]}<br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
+                          </div>
+                          <br/>
+                          <div style={{marginTop:'-3px'}}> <p>{this.state.pages[k]["snippet"]}</p> </div>
+                          <Divider />
+                        </div>
+                        </ListItem>;
+                      });
+
     return (
       <div>
       {
         <List>
-        <Subheader inset={true}>100 pages </Subheader>
-        {this.state.pages.map((page, index) => (
-          <ListItem key={index}
-          leftAvatar={<Avatar icon={<FileFolder />} />}
-          rightToggle={<Toggle />}
-          primaryText={page[0]}
-          secondaryText={"page[1]"}
-          />
-        ))}
+        <Subheader inset={true}>{urlsList.length} pages </Subheader>
+        {urlsList}
         <Divider inset={true} />
         </List>
       }
@@ -271,7 +323,8 @@ class ViewTabs extends React.Component {
       '/getPages',
       {'session': JSON.stringify(this.props.session)},
       function(pages) {
-        paginas =pages["data"]["pages"];
+        paginas =pages["data"];
+        console.log(paginas.length);
         this.setState({session:this.props.session, pages:paginas, sessionString: JSON.stringify(this.props.session)});
         //this.forceUpdate();
       }.bind(this)
@@ -296,7 +349,7 @@ class ViewTabs extends React.Component {
       '/getPages',
       {'session': JSON.stringify(nextProps.session)},
       function(pages) {
-        paginas =pages["data"]["pages"];
+        paginas =pages["data"];
         this.setState({session:nextProps.session, pages:paginas, sessionString: JSON.stringify(nextProps.session)});
         //this.forceUpdate();
       }.bind(this)
@@ -309,7 +362,7 @@ class ViewTabs extends React.Component {
       '/getPages',
       {'session': JSON.stringify(sessionTemp)},
       function(pages) {
-        paginas =pages["data"]["pages"];
+        paginas =pages["data"];
         this.setState({session:sessionTemp, pages:paginas, sessionString: JSON.stringify(sessionTemp)});
         //this.forceUpdate();
       }.bind(this)
@@ -356,7 +409,7 @@ class ViewTabs extends React.Component {
     }
 */
     console.log('-------viewTabs------');
-    if(this.state.pages.length>0){
+    if(Object.keys(this.state.pages).length>0){
       console.log('---into if viewTabs---');
       return (
         <div>

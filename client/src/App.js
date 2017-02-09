@@ -12,7 +12,6 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import {CrawlerVis} from './crawlervis.js';
 injectTapEventPlugin();
 
 class App extends Component {
