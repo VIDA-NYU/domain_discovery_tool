@@ -78,6 +78,25 @@ class SearchTabs extends React.Component {
       this.props.uploadDDT(true);
 
     }
+
+    runSeedFinderQuery(){
+      console.log("run seedQuery");
+      var session =this.props.session;
+      session['search_engine']=this.state.search_engine;
+      console.log(JSON.stringify(session));
+      $.post(
+        '/runSeedFinder',
+        {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
+        function(data) {
+          this.props.uploadDDT(false);
+          }.bind(this)).fail(function() {
+              console.log("Something wrong happen. Try again.");
+              this.props.uploadDDT(false);
+            }.bind(this));
+      console.log("run quwry" + this.state.search_engine + ", " + this.state.valueQuery );
+      this.props.uploadDDT(true);
+  }
+
     handleDropdownButton(eventKey){
       this.setState({"search_engine":eventKey})
     }
@@ -96,6 +115,7 @@ class SearchTabs extends React.Component {
             >
             <Tab label={'WEB'} value={0}  style={styles.tab} />
             <Tab label={'LOAD'} value={1} style={styles.tab} />
+            <Tab label={'SeedFinder'} value={2} style={styles.tab} />
           </Tabs>
           <SwipeableViews
             index={this.state.slideIndex}
@@ -127,6 +147,21 @@ class SearchTabs extends React.Component {
             </div>
             <div style={styles.slide}>
               Load Urls...
+            </div>
+            <div style={styles.slide}>
+            <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
+              <InputGroup >
+                <FormControl type="text" value={this.state.valueQuery} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
+              </InputGroup>
+            </Col>
+            <Col xs={2} md={1} >
+              <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
+                backgroundColor="#26C6DA"
+                hoverColor="#80DEEA"
+                icon={<Search color={fullWhite} />}
+                onTouchTap={this.runSeedFinderQuery.bind(this)}
+                />
+            </Col>
             </div>
 
           </SwipeableViews>
