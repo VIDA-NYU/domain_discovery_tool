@@ -1182,7 +1182,7 @@ class CrawlerModel:
     results = get_documents(not_crawled, es_info["mapping"]['url'], [es_info["mapping"]['url']], es_info['activeCrawlerIndex'], es_info['docType'], self._es)
     not_crawled_urls = [results[url][0][es_info["mapping"]["url"]][0] for url in not_crawled]
 
-    chdir(environ['DDT_HOME']+'/seeds_generator')
+    chdir(environ['DDT_HOME']+'/server/seeds_generator')
 
     comm = "java -cp target/seeds_generator-1.0-SNAPSHOT-jar-with-dependencies.jar StartCrawl -c forward"\
            " -u \"" + ",".join(not_crawled_urls) + "\"" + \
@@ -1207,7 +1207,7 @@ class CrawlerModel:
     results = get_documents(not_crawled, es_info["mapping"]['url'], [es_info["mapping"]['url']], es_info['activeCrawlerIndex'], es_info['docType'], self._es)
     not_crawled_urls = [results[url][0][es_info["mapping"]["url"]][0] for url in not_crawled]
 
-    chdir(environ['DDT_HOME']+'/seeds_generator')
+    chdir(environ['DDT_HOME']+'/server/seeds_generator')
 
     comm = "java -cp target/seeds_generator-1.0-SNAPSHOT-jar-with-dependencies.jar StartCrawl -c backward"\
            " -u \"" + ",".join(not_crawled_urls) + "\"" + \
@@ -1674,7 +1674,7 @@ class CrawlerModel:
 
     es_info = self.esInfo(session['domainId'])
 
-    chdir(environ['DDT_HOME']+'/seeds_generator')
+    chdir(environ['DDT_HOME']+'/server/seeds_generator')
 
     if(int(session['pagesCap']) <= max_url_count):
       top = int(session['pagesCap'])
@@ -1703,7 +1703,7 @@ class CrawlerModel:
   def downloadUrls(self, urls_str, session):
     es_info = self.esInfo(session['domainId'])
 
-    chdir(environ['DDT_HOME']+'/seeds_generator')
+    chdir(environ['DDT_HOME']+'/server/seeds_generator')
 
     # Download 100 urls at a time
     step =  100
