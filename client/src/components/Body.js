@@ -65,6 +65,7 @@ class Body extends Component{
 
         sessionBody:{},
         sessionString:"",
+        update:false,
     };
     this.sessionB={};
   }
@@ -191,6 +192,22 @@ class Body extends Component{
     });
   }
 
+  uploadDDT(value){
+    if(value){
+      this.setState({update:value});
+      this.forceUpdate();
+    }
+
+    else{
+      this.setState({update:true});
+      this.forceUpdate();
+      this.setState({update:value});
+      this.forceUpdate();
+    }
+    console.log("salio" + value);
+  }
+
+
   updateSession(newSession){
     console.log(this.state.sessionBody);
     console.log(this.state.sessionString);
@@ -209,10 +226,10 @@ class Body extends Component{
           <DomainInfo statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
         </Row>
         <Row className="Menus-child">
-          <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
+          <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} uploadDDT={this.uploadDDT.bind(this)}/>
         </Row>
         <Row className="Menus-child">
-          <Filters statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
+          <Filters update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
         <Row className="Menus-child">
           <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>

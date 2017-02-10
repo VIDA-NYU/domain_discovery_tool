@@ -47,22 +47,30 @@ class LoadQueries extends React.Component {
     };
   }
 
-  componentWillMount(){
-    console.log("load Query");
-    console.log(this.props.session);
+  getAvailableQueries(){
     $.post(
       '/getAvailableQueries',
       {'session': JSON.stringify(this.props.session)},
       function(queriesDomain) {
         //console.log('currentQueries');
-        //console.log(queriesDomain);
+        console.log(queriesDomain);
         this.setState({currentQueries: queriesDomain, session:this.props.session, queryString: JSON.stringify(this.props.session['selected_queries'])});
       }.bind(this)
     );
   }
+
+  componentWillMount(){
+    console.log("load Query");
+    console.log(this.props.session);
+    this.getAvailableQueries();
+  }
   componentWillReceiveProps(nextProps){
     if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString ) {
       this.setState({ flat:true});
+      if(this.props.update){
+        console.log("update query");
+        this.getAvailableQueries();
+      }
       return;
     }
     console.log("FiltersTabs componentWillReceiveProps after");
@@ -75,7 +83,8 @@ class LoadQueries extends React.Component {
   shouldComponentUpdate(nextProps, nextState){
     console.log("shouldComponentUpdate before");
     if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString && this.state.flat===true) {
-      return false;
+      if(this.props.update){ console.log("FiltersTabs-reupload");return true;}
+      else {return false;}
     }
     console.log("shouldComponentUpdate after");
     return true;
@@ -157,7 +166,8 @@ class LoadTag extends React.Component {
 
   shouldComponentUpdate(nextProps){
     if(JSON.stringify(nextProps.session['selected_tags']) === this.state.tagString && this.state.flat===true ) {
-      return false;
+      if(this.props.update){ console.log("FiltersTabs-reupload");return true;}
+      else {return false;}
     }
     return true;
   }
@@ -242,7 +252,8 @@ class FiltersTabs extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log("FiltersTabs  shouldComponentUpdate before");
-    if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
+    console.log(this.props.update);
+    if(this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
           return true;
     }
     console.log("FiltersTabs shouldComponentUpdate after");
@@ -368,7 +379,7 @@ class FiltersTabs extends React.Component {
         </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
           <div style={styles.headline}>
-            <LoadQueries session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
+            <LoadQueries update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
           </div>
           <div style={styles.headline}>
             <LoadTag session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>

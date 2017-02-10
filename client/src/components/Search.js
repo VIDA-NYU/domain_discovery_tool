@@ -35,7 +35,7 @@ class LoadSearch extends Component{
     super(props);
     this.state = {
       expanded: this.props.statedCard,
-
+      update:true,
     };
   };
 
@@ -71,23 +71,40 @@ class LoadSearch extends Component{
     this.setState({expanded: false});
   };
 
+  uploadDDT(value){
+    console.log("search: " + value);
+    this.setState({update:!value}); /// false = reload, true = dont reload the search area
+    this.props.uploadDDT(value);
+  }
+
+  shouldComponentUpdate(){
+    console.log("should search: " + this.state.update);
+    if(this.state.update){
+      return true;
+    }
+    else{
+      return false;
+    }
+
+  }
+
   render(){
+      return(
+        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
+             <CardHeader
+               title="Search"
+               avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
+               style={styles.cardHeader}
+               actAsExpander={true}
+               showExpandableButton={true}
+             />
+             <CardMedia expandable={true} style={styles.cardMedia}>
 
-    return(
-      <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
-           <CardHeader
-             title="Search"
-             avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
-             style={styles.cardHeader}
-             actAsExpander={true}
-             showExpandableButton={true}
-           />
-           <CardMedia expandable={true} style={styles.cardMedia}>
+                <SearchTabs session={this.props.session} uploadDDT={this.uploadDDT.bind(this)}/>
+             </CardMedia>
+         </Card>
+      )
 
-              <SearchTabs />
-           </CardMedia>
-       </Card>
-    )
   }
 }
 

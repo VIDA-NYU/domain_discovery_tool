@@ -75,7 +75,8 @@ class Filters extends Component{
 
     shouldComponentUpdate(nextProps, nextState) {
       console.log("filter before shouldComponentUpdate");
-      if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
+      console.log(this.props.update);
+      if(this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
             return true;
       }
       console.log("filter after shouldComponentUpdate");
@@ -137,7 +138,7 @@ class Filters extends Component{
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <FiltersTabs session={this.state.session} updateSession={this.updateSession.bind(this)} checkedQueries={this.state.checked_queries} deletedFilter={this.deletedFilter.bind(this)}/>
+              <FiltersTabs update = {this.props.update}  session={this.state.session} updateSession={this.updateSession.bind(this)} checkedQueries={this.state.checked_queries} deletedFilter={this.deletedFilter.bind(this)}/>
            </CardMedia>
        </Card>
     )
