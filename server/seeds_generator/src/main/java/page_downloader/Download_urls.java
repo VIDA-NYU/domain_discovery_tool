@@ -2,8 +2,8 @@ public class Download_urls {
     public Download_urls(){
     }
     
-    public void download(String[] urls, String es_index, String es_doc_type, String es_server){
-	Download download = new Download("uploaded", es_index, es_doc_type, es_server);
+    public void download(String[] urls, String query, String es_index, String es_doc_type, String es_server){
+	Download download = new Download(query, es_index, es_doc_type, es_server);
 	
 	for(String url: urls){
 	    download.addTask(Download_Utils.validate_url(url));
@@ -18,6 +18,7 @@ public class Download_urls {
 	String es_index = "memex";
 	String es_doc_type = "page";
 	String es_server = "localhost";
+	String query = "uploaded";
 	
 	int i = 0;
 	while (i < args.length){
@@ -30,6 +31,8 @@ public class Download_urls {
 		es_doc_type = args[++i];
 	    } else if(arg.equals("-s")){
 		es_server = args[++i];
+	    } else if(arg.equals("-q")){
+		query = args[++i];
 	    }else {
 		System.out.println("Unrecognized option");
 		break;
@@ -42,6 +45,6 @@ public class Download_urls {
 	    urls = urls_str.split(" ");
 		
 	Download_urls download_urls = new Download_urls();
-	download_urls.download(urls, es_index, es_doc_type, es_server);
+	download_urls.download(urls, query, es_index, es_doc_type, es_server);
     }
 }

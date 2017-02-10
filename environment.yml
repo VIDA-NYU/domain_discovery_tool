@@ -27,3 +27,4 @@ dependencies:
     - functools32
     - networkx=1.11
     - nodejs
+    - futures
