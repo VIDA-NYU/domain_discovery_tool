@@ -39,6 +39,10 @@ class CrawlerModelAdapter:
   def queryWeb(self, terms, session):
     self._crawlerModel.queryWeb(terms, session=session)
 
+  # Submits a query for a list of terms, e.g. 'ebola disease' to the seedfinder
+  def runSeedFinder(self, terms, session):  
+    self._crawlerModel.runSeedFinder(terms, session)
+    
   # Add crawler
   def addCrawler(self, index_name):
     self._crawlerModel.addCrawler(index_name)

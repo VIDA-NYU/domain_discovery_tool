@@ -195,6 +195,12 @@ class Page:
     session = json.loads(session)
     self._crawler.queryWeb(terms, session)
 
+  # Submits a query for a list of terms, e.g. 'ebola disease' to the seedfinder
+  @cherrypy.expose
+  def runSeedFinder(self, terms, session):
+    session = json.loads(session)
+    self._crawler.runSeedFinder(terms, session)
+  
   # Add crawler
   @cherrypy.expose
   def addCrawler(self, index_name):
