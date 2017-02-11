@@ -169,7 +169,7 @@ class CrawlerModel:
 
   def seed_finder_done_callback(self, future):
     if future.exception() is not None:
-      print "Seed Finder Callback Exception ", future.exception()
+      print "\n\n\nSeed Finder Callback Exception ", future.exception(),"\n\n\n"
     else:
       [query, urls, es_info] = future.result()
       print "\n\n\nSeed Finder process done query", query, "\n\n\n"
@@ -185,8 +185,6 @@ class CrawlerModel:
     p = self.pool.submit(execSeedFinder, terms, es_info)
     # Install a callback to download urls after the seeds are generated
     p.add_done_callback(self.seed_finder_done_callback)
-
-    self.pool.shutdown(wait=False)
 
   def createModel(self, session):
     es_info = self.esInfo(session['domainId']);
