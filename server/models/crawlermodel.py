@@ -181,12 +181,20 @@ class CrawlerModel:
   def runSeedFinder(self, terms, session):
     es_info = self.esInfo(session['domainId']);
 
+    data_dir = environ["DDT_HOME"] + "/server/data/"
+    data_crawler  = data_dir + es_info['activeCrawlerIndex']
+    
+    crawlermodel_dir = data_crawler + "/models/"
+  
+    if (not isdir(crawlermodel_dir)):
+      self.createModel(session, zip=False)
+
     # Execute SeedFinder in a new thread
     p = self.pool.submit(execSeedFinder, terms, es_info)
     # Install a callback to download urls after the seeds are generated
     p.add_done_callback(self.seed_finder_done_callback)
 
-  def createModel(self, session):
+  def createModel(self, session, zip=True):
     es_info = self.esInfo(session['domainId']);
 
     data_dir = environ["DDT_HOME"] + "/server/data/"
@@ -211,8 +219,17 @@ class CrawlerModel:
       for filename in os.listdir(data_negative):
         os.remove(data_negative+filename)
 
-    pos_tags = session['model']['positive']
-    neg_tags = session['model']['negative']
+    pos_tags = "Relevant"
+    neg_tags = "Irrelevant"
+    try:
+      pos_tags = session['model']['positive']
+    except KeyError:
+      print "Using default positive tags"
+      
+    try:
+      neg_tags = session['model']['negative']
+    except KeyError:
+      print "Using default negative tags"
 
     pos_docs = []
     for tag in pos_tags.split(','):
@@ -285,35 +302,38 @@ class CrawlerModel:
     print output
     print errors
 
-    zip_filename = models_dir + es_info['activeCrawlerIndex'] + "_model.zip"
-    with ZipFile(zip_filename, "w") as modelzip:
-      if (isfile(crawlermodel_dir + "/pageclassifier.features")):
-        print "zipping file: "+crawlermodel_dir + "/pageclassifier.features"
-        modelzip.write(crawlermodel_dir + "/pageclassifier.features", "pageclassifier.features")
+    if zip:
+      zip_filename = data_crawler + es_info['activeCrawlerIndex'] + "_model.zip"
+      with ZipFile(zip_filename, "w") as modelzip:
+        if (isfile(crawlermodel_dir + "/pageclassifier.features")):
+          print "zipping file: "+crawlermodel_dir + "/pageclassifier.features"
+          modelzip.write(crawlermodel_dir + "/pageclassifier.features", "pageclassifier.features")
 
-      if (isfile(crawlermodel_dir + "/pageclassifier.model")):
-        print "zipping file: "+crawlermodel_dir + "/pageclassifier.model"
-        modelzip.write(crawlermodel_dir + "/pageclassifier.model", "pageclassifier.model")
+        if (isfile(crawlermodel_dir + "/pageclassifier.model")):
+          print "zipping file: "+crawlermodel_dir + "/pageclassifier.model"
+          modelzip.write(crawlermodel_dir + "/pageclassifier.model", "pageclassifier.model")
 
-      if (exists(data_crawler + "/training_data/positive")):
-        print "zipping file: "+ data_crawler + "/training_data/positive"
-        for (dirpath, dirnames, filenames) in walk(data_crawler + "/training_data/positive"):
-          for html_file in filenames:
-            modelzip.write(dirpath + "/" + html_file, "training_data/positive/" + html_file)
+        if (exists(data_crawler + "/training_data/positive")):
+          print "zipping file: "+ data_crawler + "/training_data/positive"
+          for (dirpath, dirnames, filenames) in walk(data_crawler + "/training_data/positive"):
+            for html_file in filenames:
+              modelzip.write(dirpath + "/" + html_file, "training_data/positive/" + html_file)
 
-      if (exists(data_crawler + "/training_data/negative")):
-        print "zipping file: "+ data_crawler + "/training_data/negative"
-        for (dirpath, dirnames, filenames) in walk(data_crawler + "/training_data/negative"):
-          for html_file in filenames:
-            modelzip.write(dirpath + "/" + html_file, "training_data/negative/" + html_file)
+        if (exists(data_crawler + "/training_data/negative")):
+          print "zipping file: "+ data_crawler + "/training_data/negative"
+          for (dirpath, dirnames, filenames) in walk(data_crawler + "/training_data/negative"):
+            for html_file in filenames:
+              modelzip.write(dirpath + "/" + html_file, "training_data/negative/" + html_file)
 
-      if (isfile(data_crawler +"/seeds.txt")):
-        print "zipping file: "+data_crawler +"/seeds.txt"
-        modelzip.write(data_crawler +"/seeds.txt", es_info['activeCrawlerIndex'] + "_seeds.txt")
+        if (isfile(data_crawler +"/seeds.txt")):
+          print "zipping file: "+data_crawler +"/seeds.txt"
+          modelzip.write(data_crawler +"/seeds.txt", es_info['activeCrawlerIndex'] + "_seeds.txt")
 
-    chmod(zip_filename, 0o777)
+        chmod(zip_filename, 0o777)
 
-    return "models/" + es_info['activeCrawlerIndex'] + "_model.zip"
+      return "models/" + es_info['activeCrawlerIndex'] + "_model.zip"
+    else:
+      return None
 
 
   # Returns number of pages downloaded between ts1 and ts2 for active crawler.
