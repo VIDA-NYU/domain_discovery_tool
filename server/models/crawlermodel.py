@@ -183,9 +183,9 @@ class CrawlerModel:
 
     data_dir = environ["DDT_HOME"] + "/server/data/"
     data_crawler  = data_dir + es_info['activeCrawlerIndex']
-    
+
     crawlermodel_dir = data_crawler + "/models/"
-  
+
     if (not isdir(crawlermodel_dir)):
       self.createModel(session, zip=False)
 
@@ -225,7 +225,7 @@ class CrawlerModel:
       pos_tags = session['model']['positive']
     except KeyError:
       print "Using default positive tags"
-      
+
     try:
       neg_tags = session['model']['negative']
     except KeyError:
@@ -1710,7 +1710,7 @@ class CrawlerModel:
     output, errors = p.communicate()
     print output
     print errors
-
+    return output
 
   def callDownloadUrls(self, query, urls_str, es_info):
 
@@ -1742,12 +1742,14 @@ class CrawlerModel:
       output, errors = p.communicate()
       print output
       print errors
+    return output
 
   # Download the pages of uploaded urls
   def downloadUrls(self, urls_str, session):
     es_info = self.esInfo(session['domainId'])
 
-    self.callDownloadUrls("uploaded", urls_str, es_info)
+    output = self.callDownloadUrls("uploaded", urls_str, es_info)
+    return output
 
   def getPlottingData(self, session):
     es_info = self.esInfo(session['domainId'])
