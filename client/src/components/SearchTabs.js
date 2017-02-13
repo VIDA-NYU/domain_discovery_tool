@@ -44,6 +44,7 @@ class SearchTabs extends React.Component {
       this.setState({  slideIndex: value,  });
     };
 
+
     //Submits a web query for a list of terms, e.g. 'ebola disease'
     RunQuery(){
       console.log("run queryWeb");
@@ -131,7 +132,7 @@ class SearchTabs extends React.Component {
             <div style={styles.slide} >
               <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
                 <InputGroup >
-                  <FormControl type="text" value={this.state.valueQuery} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
+                  <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
                   <DropdownButton
                     componentClass={InputGroup.Button}
                     id="input-dropdown-addon"
@@ -177,7 +178,7 @@ class SearchTabs extends React.Component {
             <div style={styles.slide}>
               <Col xs={10} md={11} style={{marginLeft:'-15px'}} >
                 <InputGroup >
-                  <FormControl style={{width: '270px'}} type="text" value={this.state.valueQuery} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
+                  <FormControl style={{width: '270px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
                 </InputGroup>
               </Col>
               <Col xs={2} md={1} >
