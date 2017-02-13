@@ -262,7 +262,7 @@ class ViewTabSnippets extends React.Component{
                                 <Button>Neutr</Button>
                               </OverlayTrigger>
                             </ButtonGroup></p>
-                            <p style={{ color:'blue'}} >{this.state.pages[k]["title"]}<br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
+                            <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.state.pages[k]["title"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
                           </div>
                           <br/>
                           <div style={{marginTop:'-3px'}}> <p>{this.state.pages[k]["snippet"]}</p> </div>
