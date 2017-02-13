@@ -1,3 +1,6 @@
+// Filename:		SearchTabs.js
+// Purpose:		Searches by web query, load urls and seedfinder .
+// Author: Sonia Castelo (scastelo2@gmail.com)
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
@@ -60,7 +63,6 @@ class SearchTabs extends React.Component {
               this.props.uploadDDT(false);
             }.bind(this));
       this.props.uploadDDT(true);
-
     }
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
@@ -77,9 +79,10 @@ class SearchTabs extends React.Component {
               console.log("Something wrong happen. Try again.");
               this.props.uploadDDT(false);
             }.bind(this));
-      console.log("run quwry" + this.state.search_engine + ", " + this.state.valueQuery );
+      //console.log("run quwry" + this.state.search_engine + ", " + this.state.valueQuery );
       this.props.uploadDDT(true);
     }
+
     // Download the pages of uploaded urls
     runLoadUrlsQuery(){
       console.log("run seedQuery");
@@ -132,10 +135,11 @@ class SearchTabs extends React.Component {
             <div style={styles.slide} >
               <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
                 <InputGroup >
-                  <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
+                  <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'189px'}}  />
                   <DropdownButton
                     componentClass={InputGroup.Button}
                     id="input-dropdown-addon"
+                    pullRight id="split-button-pull-right"
                     onSelect={this.handleDropdownButton.bind(this)}
                     title={this.state.search_engine}
                     >
@@ -154,8 +158,8 @@ class SearchTabs extends React.Component {
               </Col>
             </div>
             <div style={styles.slide}>
-              <Col xs={10} md={11} style={{marginLeft:'-15px'}}>
-                <TextField style={{width:'100%', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+              <Col xs={10} md={10} style={{marginLeft:'-15px'}}>
+                <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
                   value={this.state.valueLoadUrls}
                   onChange={this.handleTextChangeLoadUrls.bind(this)}
                   hintText="Write urls."
@@ -176,9 +180,9 @@ class SearchTabs extends React.Component {
               </Col>
             </div>
             <div style={styles.slide}>
-              <Col xs={10} md={11} style={{marginLeft:'-15px'}} >
+              <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
                 <InputGroup >
-                  <FormControl style={{width: '270px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
+                  <FormControl style={{width: '268px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
                 </InputGroup>
               </Col>
               <Col xs={2} md={1} >
@@ -190,7 +194,6 @@ class SearchTabs extends React.Component {
                   />
               </Col>
             </div>
-
           </SwipeableViews>
         </div>
       );
@@ -198,5 +201,3 @@ class SearchTabs extends React.Component {
   }
 
 export default SearchTabs;
-
-//icon={<FontIcon className="material-icons"  >language</FontIcon> }
