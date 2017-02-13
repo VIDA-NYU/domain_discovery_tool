@@ -123,6 +123,7 @@ class ToolBarHeader extends Component {
          inputStyle={{marginBottom:10, marginLeft:10}}
           underlineShow={false}
          value={this.state.term}
+         onKeyPress={(e) => {(e.key === 'Enter') ? this.filterKeyword(this.state.term) : null}} 
          onChange={e => this.setState({ term: e.target.value })}
         //  hintText="Hint Text"
         //  onChange={this.handleChange.bind(this)}
