@@ -4,7 +4,8 @@ channels:
   - nodefaults
   - memex
   - anaconda
-
+  - vida-nyu
+  
 dependencies:
     - elasticsearch
     - supervisor
@@ -20,7 +21,7 @@ dependencies:
     - pyelasticsearch >=1.2
     - cherrypy
     - requests
-    - ache >=0.3.1
+    - ache >=0.8.0
     - jinja2
     - bokeh=0.10.0
     - topik
