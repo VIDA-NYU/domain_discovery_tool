@@ -57,12 +57,12 @@ class SearchTabs extends React.Component {
         '/queryWeb',
         {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
         function(data) {
-          this.props.uploadDDT(false);
+          this.props.uploadDDT(false, "process*concluded");
           }.bind(this)).fail(function() {
               console.log("Something wrong happen. Try again.");
-              this.props.uploadDDT(false);
+              this.props.uploadDDT(false, this.state.valueQuery);
             }.bind(this));
-      this.props.uploadDDT(true);
+      this.props.uploadDDT(true, this.state.valueQuery);
     }
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
@@ -74,13 +74,13 @@ class SearchTabs extends React.Component {
         '/runSeedFinder',
         {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
         function(data) {
-          this.props.uploadDDT(false);
+          this.props.uploadDDT(false, "process*concluded");
           }.bind(this)).fail(function() {
               console.log("Something wrong happen. Try again.");
-              this.props.uploadDDT(false);
+              this.props.uploadDDT(false, this.state.valueQuery);
             }.bind(this));
       //console.log("run quwry" + this.state.search_engine + ", " + this.state.valueQuery );
-      this.props.uploadDDT(true);
+      this.props.uploadDDT(true, this.state.valueQuery);
     }
 
     // Download the pages of uploaded urls
@@ -92,12 +92,12 @@ class SearchTabs extends React.Component {
         '/downloadUrls',
         {'urls': this.state.valueLoadUrls,  'session': JSON.stringify(session)},
         function(data) {
-          this.props.uploadDDT(false);
+          this.props.uploadDDT(false, "process*concluded" );
           }.bind(this)).fail(function() {
               console.log("Something wrong happen. Try again.");
-              this.props.uploadDDT(false);
+              this.props.uploadDDT(false, this.state.valueQuery);
             }.bind(this));
-      this.props.uploadDDT(true);
+      this.props.uploadDDT(true, this.state.valueQuery);
     }
 
     // Handling search engine DropdownButton.

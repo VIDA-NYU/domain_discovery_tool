@@ -1,3 +1,6 @@
+// Filename:		Search.js
+// Purpose:		This is an intermediate component between Body.js and SearchTabs.js. It handles the changes in search card.
+// Author: Sonia Castelo (scastelo2@gmail.com)
 import React, {Component} from 'react';
 import {Card, CardHeader, CardMedia} from 'material-ui/Card';
 import SearchTabs from './SearchTabs';
@@ -43,6 +46,7 @@ class LoadSearch extends Component{
    this.setState({expanded: this.props.statedCard, });
   };
 
+  //Handling state's changes of search card. (expanded or reduced)
   componentWillReceiveProps  = (newProps) => {
        this.setState({expanded: this.props.statedCard}, function() {
             this.setState({expanded: this.props.statedCard});
@@ -56,29 +60,20 @@ class LoadSearch extends Component{
     }
   };
 
-  handleToggle = (event, toggle) => {
-    console.log("handleToggle");
-    this.setState({expanded: toggle});
-  };
-
-  handleExpand = () => {
-    console.log("expand");
-    this.setState({expanded: true});
-  };
-
   handleReduce = () => {
-    console.log("reduce");
     this.setState({expanded: false});
   };
 
-  uploadDDT(value){
-    console.log("search: " + value);
+  //Send information about a query that is running (from SearchTabs.js to Body.js)
+  uploadDDT(value, term){
+    //console.log("search: " + value +", query: " + term);
     this.setState({update:!value}); /// false = reload, true = dont reload the search area
-    this.props.uploadDDT(value);
+    this.props.uploadDDT(value, term);
   }
 
+  //Check if the component should be updated or not
   shouldComponentUpdate(){
-    console.log("should search: " + this.state.update);
+    console.log("should update: " + this.state.update);
     if(this.state.update){
       return true;
     }

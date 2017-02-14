@@ -1,3 +1,6 @@
+// Filename:		Body.js
+// Purpose:		Contain filters and view components. If there is some change into filter or view components, body.js should be updated.
+// Author: Sonia Castelo (scastelo2@gmail.com)
 import React, {Component} from 'react';
 import { Row, Col} from 'react-bootstrap';
 import DomainInfo from './DomainInfo';
@@ -6,13 +9,12 @@ import Filters from './Filters';
 import Views from './Views';
 import SidebarMenu from './SidebarMenu';
 import '../css/Components.css';
-
 import Sidebar from 'react-sidebar';
-
 import Avatar from 'material-ui/Avatar';
 import Assignment from 'material-ui/svg-icons/action/assignment-returned';
 import Plus from 'material-ui/svg-icons/action/swap-horiz';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import Snackbar from 'material-ui/Snackbar'; //Adding an indicator which tell us that the pages are being downloaded
 import $ from 'jquery';
 
 const styles = {
@@ -61,11 +63,10 @@ class Body extends Component{
         stateFiltersCard:true,
         sizeAvatar:25,
         currentDomain:'',
-        //
-
         sessionBody:{},
         sessionString:"",
         update:false,
+        runCurrentQuery: "*",
     };
     this.sessionB={};
   }
@@ -102,6 +103,7 @@ class Body extends Component{
 
   }
 
+  //handling update of props (ex. filters, session, etc)
   componentWillReceiveProps  = (newProps) => {
     console.log("body componentWillReceiveProps");
     console.log(newProps.filterKeyword);
@@ -117,19 +119,8 @@ class Body extends Component{
     this.setState({currentDomain: this.props.currentDomain});
   };
 
+  //Verify if it is necessary an update.
   shouldComponentUpdate(nextProps, nextState) {
-
-    console.log(this.state.stateDomainInfoCard);
-    console.log(this.state.stateSearchCard);
-    console.log(this.state.stateFiltersCard);
-
-    console.log(nextState.stateDomainInfoCard);
-    console.log(nextState.stateSearchCard);
-    console.log(nextState.stateFiltersCard);
-
-    console.log("body shouldComponentUpdate");
-    console.log(this.state.sessionString);
-    console.log(nextState.sessionString);
      if (nextState.sessionString  === this.state.sessionString) {
        if(nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
@@ -139,7 +130,7 @@ class Body extends Component{
       return true;
   }
 
-
+  //Handling menus of DomainInfo, Search, and Filter Cards.
   closeMenu(){
     this.setState({
       size: 60,
@@ -150,6 +141,7 @@ class Body extends Component{
     });
   }
 
+  //Handling menus of DomainInfo, Search, and Filter Cards.
   openMenu(){
     this.setState({
       size: 350,
@@ -159,6 +151,7 @@ class Body extends Component{
     });
   }
 
+  //Handling close/open of DomainInfo, Search, and Filter Cards.
   openDockMenu(){
     if(this.state.open){
       this.closeMenu();
@@ -186,39 +179,37 @@ class Body extends Component{
     ( menu===1 ? this.setState({stateFiltersCard: expanded, stateSearchCard: !expanded, stateDomainInfoCard:!expanded}) : this.setState({ stateDomainInfoCard:expanded, stateFiltersCard: !expanded, stateSearchCard: !expanded}));
   }
 
+  //function from FiltersTabs Component. Add or Remove some query or tag which was used to filter data.
   deletedFilter(sessionTemp){
     this.setState({
         sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp)
     });
   }
 
-  uploadDDT(value){
+  //Check if the some query (by queryWeb, seedfinder or loadUrls) is running.
+  uploadDDT(value, term){
     if(value){
-      this.setState({update:value});
+      this.setState({update:value, runCurrentQuery: term});
       this.forceUpdate();
     }
-
     else{
-      this.setState({update:true});
+      this.setState({update:true, runCurrentQuery: term});
       this.forceUpdate();
-      this.setState({update:value});
+      this.setState({update:value, runCurrentQuery: "*"});
       this.forceUpdate();
     }
-    console.log("salio" + value);
   }
 
-
+  //Update session
   updateSession(newSession){
-    console.log(this.state.sessionBody);
-    console.log(this.state.sessionString);
-    console.log(JSON.stringify(newSession));
-    console.log('body newSession');
+    //console.log(JSON.stringify(newSession));
+    //console.log('body newSession');
     this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
     this.forceUpdate();
   }
 
   render(){
-    console.log(this.state.sessionBody);
+    //console.log(this.state.sessionBody);
     console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
       <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:350, background:"white"}}>
@@ -255,7 +246,6 @@ class Body extends Component{
     onSetOpen: this.onSetOpen,
   };
 
-console.log(this.state.sessionBody);
   return (
     <Sidebar {...sidebarProps}>
       <div>
@@ -263,6 +253,11 @@ console.log(this.state.sessionBody);
           <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
       </div>
+      <Snackbar
+      open={(this.state.runCurrentQuery === "*")? false: (this.state.runCurrentQuery === "process*concluded")?false:true}
+      message={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? "Searching: " + this.state.runCurrentQuery : (this.state.runCurrentQuery === "process*concluded")? "Search was completed.": ""}
+      autoHideDuration={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? 30000: (this.state.runCurrentQuery === "process*concluded")?2000: 0}
+    />
     </Sidebar>
   )
 }
