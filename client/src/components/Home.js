@@ -18,6 +18,8 @@ import $ from 'jquery';
 
 import AppBar from 'material-ui/AppBar';
 import logoNYU from '../images/nyu_logo_purple.png';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 
 const styles = {
   listDomains:{
@@ -35,11 +37,13 @@ class Home extends Component {
     super(props);
     this.state = {
       domains: undefined,
+      openCreateDomain: false,
+      openDeleteDomain: false,
+      newNameDomain:"",
     };
   }
 
-  componentWillMount() {
-    //Get domains.
+  getAvailableDomains(){
     $.post(
       '/getAvailableCrawlers',
       {"type": "init"},
@@ -48,8 +52,79 @@ class Home extends Component {
       }.bind(this)
     );
   }
+  componentWillMount() {
+    //Get domains.
+    this.getAvailableDomains();
+  }
+
+  handleOpenCreateDomain = () => {
+    this.setState({openCreateDomain: true});
+  };
+
+  handleCloseCreateDomain = () => {
+    this.setState({openCreateDomain: false});
+  };
+
+  handleOpenDeleteDomain = () => {
+    this.setState({openDeleteDomain: true});
+  };
+
+  handleCloseDeleteDomain = () => {
+    this.setState({openDeleteDomain: false});
+  };
+
+  //Handling changes into TextField newNameDomain (updating TextField).
+  handleTextChangeNewNameDomain(e){
+    this.setState({ "newNameDomain": e.target.value});
+  }
+
+  //Create a new domain
+  createNewDomain(){
+    //createNewDomain
+    var nameDomain= this.state.newNameDomain;
+    console.log(nameDomain);
+    $.post(
+      '/addCrawler',
+      {'index_name': nameDomain},
+      function(domains) {
+        this.setState({openCreateDomain: false});
+        this.getAvailableDomains();
+        this.forceUpdate();
+      }.bind(this)
+    );
+  };
 
   render(){
+
+    const actionsCreateDomain = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleCloseCreateDomain}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.createNewDomain.bind(this)}
+      />,
+    ];
+
+    const actionsDeleteDomain = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleCloseDeleteDomain}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.handleCloseDeleteDomain}
+      />,
+    ];
+
+
     console.log('home');
     if(this.state.domains!==undefined){
       console.log('home into if');
@@ -81,10 +156,11 @@ class Home extends Component {
                   </List>
                 </Col>
                 <Col xs={3} md={3}>
-                  <Link to='/playerOne'>
+                  <Link to='/'>
                     <FlatButton style={{margin:'70px 10px 10px 10px'}}
                     backgroundColor="#26C6DA"
                     hoverColor="#80DEEA"
+                    onTouchTap={this.handleOpenCreateDomain.bind(this)}
                     icon={<AddBox color={fullWhite} />}
                     />
                     <FlatButton style={{margin:20}}
@@ -92,12 +168,32 @@ class Home extends Component {
                     hoverColor="#80DEEA"
                     icon={<DeleteForever color={fullWhite} />}
                     />
-                    <FlatButton style={{margin:20}}
-                    backgroundColor="#26C6DA"
-                    hoverColor="#80DEEA"
-                    icon={<ContentCopy color={fullWhite} />}
-                    />
                   </Link>
+                  <Dialog
+                     title="Adding a domain"
+                     actions={actionsCreateDomain}
+                     modal={false}
+                     open={this.state.openCreateDomain}
+                     onRequestClose={this.handleCloseCreateDomain.bind(this)}
+                   >
+                     <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+                       value={this.state.newNameDomain}
+                       onChange={this.handleTextChangeNewNameDomain.bind(this)}
+                       hintText="Write the name domain."
+                       hintStyle={{ marginLeft:10}}
+                       inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+                     />
+                   </Dialog>
+
+                   <Dialog
+                      title="Deleting a domain"
+                      actions={actionsDeleteDomain}
+                      modal={false}
+                      open={this.state.openDeleteDomain}
+                      onRequestClose={this.handleCloseDeleteDomain.bind(this)}
+                    >
+                      List of domains.
+                    </Dialog>
                 </Col>
               </Row>
             </div>
