@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 
+import Checkbox from 'material-ui/Checkbox';
+import ActionFavorite from 'material-ui/svg-icons/action/favorite';
+import ActionFavoriteBorder from 'material-ui/svg-icons/action/favorite-border';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import { Row, Col} from 'react-bootstrap';
@@ -14,7 +17,6 @@ import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import {fullWhite} from 'material-ui/styles/colors';
 import $ from 'jquery';
-
 
 import AppBar from 'material-ui/AppBar';
 import logoNYU from '../images/nyu_logo_purple.png';
@@ -40,6 +42,7 @@ class Home extends Component {
       openCreateDomain: false,
       openDeleteDomain: false,
       newNameDomain:"",
+      delDomains: {}
     };
   }
 
@@ -82,7 +85,6 @@ class Home extends Component {
   createNewDomain(){
     //createNewDomain
     var nameDomain= this.state.newNameDomain;
-    console.log(nameDomain);
     $.post(
       '/addCrawler',
       {'index_name': nameDomain},
@@ -93,6 +95,25 @@ class Home extends Component {
       }.bind(this)
     );
   };
+
+  //Delete selected domains
+  deleteDomains(){
+    var delDomains= this.state.delDomains;
+    $.post(
+      '/delCrawler',
+      {'domains': JSON.stringify(delDomains)},
+      function(domains) {
+        this.setState({openDeleteDomain: false, delDomains: {}});
+        this.getAvailableDomains();
+        this.forceUpdate();
+      }.bind(this)
+    );
+  };
+
+  // Get all the domains selected for deletion
+  addDelDomains(id,name){
+      this.state.delDomains[id] = name
+  }
 
   render(){
 
@@ -120,14 +141,11 @@ class Home extends Component {
         label="Submit"
         primary={true}
         keyboardFocused={true}
-        onTouchTap={this.handleCloseDeleteDomain}
+        onTouchTap={this.deleteDomains.bind(this)}
       />,
     ];
 
-
-    console.log('home');
     if(this.state.domains!==undefined){
-      console.log('home into if');
       var mydata = this.state.domains;
       return (
         <div>
@@ -146,8 +164,7 @@ class Home extends Component {
                   <List>
                     <Subheader style={{color:'black'}}><h2>Domains</h2></Subheader>
                     {Object.keys(mydata).map((k, index)=>{
-                      var str = (mydata[k].name).replace(/\s+/g, '');
-                      return <Link to={{ pathname: `/domain/${str}`, query: { nameDomain: mydata[k].name, idDomain: mydata[k].id} }}  text={"Machine Learning"}>
+                      return <Link to={{ pathname: `/domain/{mydata[k].index}`, query: { nameDomain: mydata[k].name, idDomain: mydata[k].id} }}  text={"Machine Learning"}>
                       <ListItem key={index} style={{textAlign: 'left'}}
                       primaryText={mydata[k].name}
                       rightIcon={<Forward />} />
@@ -163,9 +180,10 @@ class Home extends Component {
                     onTouchTap={this.handleOpenCreateDomain.bind(this)}
                     icon={<AddBox color={fullWhite} />}
                     />
-                    <FlatButton style={{margin:20}}
+                    <FlatButton style={{margin:'70px 10px 10px 10px'}}
                     backgroundColor="#26C6DA"
                     hoverColor="#80DEEA"
+	            onTouchTap={this.handleOpenDeleteDomain.bind(this)}
                     icon={<DeleteForever color={fullWhite} />}
                     />
                   </Link>
@@ -191,8 +209,17 @@ class Home extends Component {
                       modal={false}
                       open={this.state.openDeleteDomain}
                       onRequestClose={this.handleCloseDeleteDomain.bind(this)}
-                    >
-                      List of domains.
+                   >
+	           <div style={styles.block}>
+	              {Object.keys(mydata).map((k, index)=>{
+		      return <Checkbox
+			   label={mydata[k].name}
+			   value={mydata[k].id}
+			   style={styles.checkbox}
+		           onClick={this.addDelDomains.bind(this,mydata[k].id,mydata[k].index)}
+			   />
+		       })}
+	            </div>
                     </Dialog>
                 </Col>
               </Row>
