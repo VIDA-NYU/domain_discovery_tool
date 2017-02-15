@@ -237,15 +237,22 @@ class ViewTabSnippets extends React.Component{
   render(){
     console.log("------------------ViewTabSnippets-----------------");
     console.log(this.state.pages);
+    //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var image ='url image';
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-                      //  var page = this.state.pages[k];
-
+                      //let currentTag=
+                    let colorTagRelev="";
+                    let colorTagIrrelev="";
+                    let colorTagNeutral="";
+                    if(this.state.pages[k]["tags"] === undefined || this.state.pages[k]["tags"] === null){
+                        colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
+                    }
+                    else{
+                      colorTagRelev=(this.state.pages[k]["tags"].toString()==='Relevant')?"#4682B4":"silver";
+                      colorTagIrrelev=(this.state.pages[k]["tags"].toString()==='Irrelevant')?"#CD5C5C":"silver";
+                      colorTagNeutral=(this.state.pages[k]["tags"].toString()!=='Relevant' && this.state.pages[k]["tags"].toString()!=="Irelevant")?'silver':"silver";
+                    }
                         return <ListItem key={index}
-                        //leftAvatar={<Avatar icon={<FileFolder />} />}
-                        //rightToggle={<Toggle />}
-                        //primaryText={page}
-                        //secondaryText={index}
                         >
                         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
                           <div>
@@ -253,16 +260,16 @@ class ViewTabSnippets extends React.Component{
                             <p style={{float:'right'}}>
                             <ButtonGroup bsSize="small">
                               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                                <Button>Relev</Button>
+                                <Button style={{backgroundColor:colorTagRelev}} >Relev</Button>
                               </OverlayTrigger>
                               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                                <Button>Irrel</Button>
+                                <Button style={{backgroundColor:colorTagIrrelev}} >Irrel</Button>
                               </OverlayTrigger>
                               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                                <Button>Neutr</Button>
+                                <Button style={{backgroundColor:colorTagNeutral}} >Neutr</Button>
                               </OverlayTrigger>
                             </ButtonGroup></p>
-                            <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.state.pages[k]["title"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
+                            <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.state.pages[k]["title"] + this.state.pages[k]["tags"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
                           </div>
                           <br/>
                           <div style={{marginTop:'-3px'}}> <p>{this.state.pages[k]["snippet"]}</p> </div>
