@@ -37,11 +37,11 @@ class CrawlerModelAdapter:
 
   # Submits a web query for a list of terms, e.g. 'ebola disease'
   def queryWeb(self, terms, session):
-    self._crawlerModel.queryWeb(terms, session=session)
+    return self._crawlerModel.queryWeb(terms, session=session)
 
   # Submits a query for a list of terms, e.g. 'ebola disease' to the seedfinder
   def runSeedFinder(self, terms, session):  
-    self._crawlerModel.runSeedFinder(terms, session)
+    return self._crawlerModel.runSeedFinder(terms, session)
     
   # Add crawler
   def addCrawler(self, index_name):
@@ -139,7 +139,7 @@ class CrawlerModelAdapter:
 
   # Download the pages of uploaded urls
   def downloadUrls(self, urls, session):
-    self._crawlerModel.downloadUrls(urls, session)
+    return self._crawlerModel.downloadUrls(urls, session)
 
   # Crawl forward links
   def getForwardLinks(self, urls, session):

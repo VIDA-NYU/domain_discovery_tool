@@ -193,13 +193,17 @@ class Page:
   @cherrypy.expose
   def queryWeb(self, terms, session):
     session = json.loads(session)
-    self._crawler.queryWeb(terms, session)
-
+    res = self._crawler.queryWeb(terms, session)
+    cherrypy.response.headers["Content-Type"] = "application/json;"
+    return json.dumps(res)
+  
   # Submits a query for a list of terms, e.g. 'ebola disease' to the seedfinder
   @cherrypy.expose
   def runSeedFinder(self, terms, session):
     session = json.loads(session)
-    self._crawler.runSeedFinder(terms, session)
+    res = self._crawler.runSeedFinder(terms, session)
+    cherrypy.response.headers["Content-Type"] = "application/json;"
+    return json.dumps(res)
   
   # Add crawler
   @cherrypy.expose
@@ -348,7 +352,10 @@ class Page:
   def downloadUrls(self, urls, session):
     urls = urls.replace("\n", " ")
     session = json.loads(session)
-    self._crawler.downloadUrls(urls, session)
+    res = self._crawler.downloadUrls(urls, session)
+    cherrypy.response.headers["Content-Type"] = "application/json;"
+    return json.dumps(res)
+
 
   # Extracts terms with current labels state.
   @cherrypy.expose
