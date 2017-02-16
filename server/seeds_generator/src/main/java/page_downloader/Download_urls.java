@@ -10,6 +10,8 @@ public class Download_urls {
 	}
 	
 	download.shutdown();
+	System.out.println("Number of results: " + urls.length);
+			    
     }
 
     public static void main(String[] args) {
