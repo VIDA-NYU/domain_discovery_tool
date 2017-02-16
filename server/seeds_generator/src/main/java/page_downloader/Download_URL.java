@@ -145,7 +145,7 @@ public class Download_URL implements Runnable {
 	// Perform a GET request
 	HttpUriRequest request = new HttpGet(url);
 
-	System.out.println("Executing request " + request.getURI());
+	//System.out.println("Executing request " + request.getURI());
 
 	HttpResponse response = null;
 	try{
@@ -187,7 +187,7 @@ public class Download_URL implements Runnable {
 
 		    String description = getDescription(responseBody, content_text);
 		    String imageUrl = getImage(responseBody, url.toURL());
-        System.out.println("Image URL: " + imageUrl);
+		    //System.out.println("Image URL: " + imageUrl);
 
 		    SearchHit[] hits = searchResponse.getHits().getHits();
 		    for (SearchHit hit : searchResponse.getHits()) {
