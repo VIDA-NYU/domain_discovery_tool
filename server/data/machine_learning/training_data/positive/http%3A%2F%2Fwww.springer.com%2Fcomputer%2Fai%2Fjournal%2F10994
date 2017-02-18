@@ -1,0 +1,1656 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--[if lt IE 7]> <html class="no-js ie6 lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 lt-ie9"> <![endif]-->
+<!--[if IE 9]>    <html class="no-js ie9"> <![endif]-->
+<!--[if gt IE 9]><!--> <html xmlns="http://www.w3.org/1999/xhtml" class="no-js" wicketpath="html" lang="en" xml:lang="en"> <!--<![endif]-->
+<head>
+	<title wicketpath="title">Machine Learning</title>
+	
+  
+
+	
+<!-- FA11 -->
+<!-- 4-147-70-35726603-0 simpleVersion: 4-147-70-35726603-0 -->
+<!-- SessionView: 4 WEST -->
+<!-- UserDependentView: WEST WEST -->
+<!-- user-id: no data -->
+<!-- SessionCountry: 208 US -->
+<!-- X-country: US -->
+<!-- <div wicket:id="client-xforwardheader"></div> -->
+<!-- <div wicket:id="client-remote-addr"></div> -->
+<!-- remoteOrForwardedIP: 47.16.233.97 -->
+<!-- URL: computer/ai/journal/10994 -->
+<!-- first tracked URL:  no tracked url  -->
+<!-- second tracked URL: null -->
+<!-- Referrer-URL: null -->
+<!-- user-agent: Apache-HttpClient/4.4.1 (Java/1.8.0_121) -->
+<!-- timestamp: Tue Feb 07 01:26:37 CET 2017 -->
+<!-- ca80741c43899361b49d5511bc59b6e37fc31f26 (HEAD) -->
+
+	<link rel="icon" href="../../../favicon.ico" type="image/ico" wicketpath="html___header__0___header_____relative__path__prefix__2"/> 
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon" wicketpath="html___header__0___header_____relative__path__prefix__3"/>
+	<link rel="meta" href="/sgw/labels.rdf" type="application/rdf+xml" title="ICRA labels" />
+	<!-- end of taken from the actual meta-attributes on springer.com -->
+
+
+	<link href="/sgw/css/product_tab/tab_style.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="../../../resources/org.apache.wicket.markup.html.WicketEventReference/wicket-event.js"></script>
+<script type="text/javascript" src="../../../resources/org.apache.wicket.ajax.WicketAjaxReference/wicket-ajax.js"></script>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta name="description" content="Machine Learning is an international forum for research on computational approaches to learning. The journal publishes articles reporting substantive results on a wide range of learning methods applied to a variety of learning ..."/>
+<meta name="robots" content="index,follow"/>
+<meta name="keywords" content="Machine Learning, Artificial Intelligence (incl. Robotics), Control , Robotics, Mechatronics"/>
+<meta name="audience" content="all"/>
+<meta name="distribution" content="global"/>
+<meta name="imagetoolbar" content="no"/>
+<meta property="og:title" content="Machine Learning"/>
+<meta property="og:site_name" content="springer.com"/>
+<meta property="og:type" content="product"/>
+<meta property="og:url" content="http://www.springer.com/computer/ai/journal/10994"/>
+<meta property="og:image" content="https://images.springer.com/sgw/journals/medium/10994.jpg"/>
+<meta property="og:description" content="Machine Learning is an international forum for research on computational approaches to learning. The journal publishes articles reporting substantive results on a wide range of learning methods applied to a variety of learning ..."/>
+<meta property="fb:admins" content="100001154999617"/>
+<meta name="baidu-site-verification" content="TmRbZpCsUoGaQLMq"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<script type="text/javascript" id="trackedAffiliates"><!--/*--><![CDATA[/*><!--*/
+var trackedAffiliates = ['PPC.Google AdWords.EPR653-GoogleShopping_Product_UK', 'Banner.Banner RTB.3.EPR653.Sociomantic', 'PPC.Google AdWords.3.EPR653.West', 'PPC.BING.3.EPR632.DAL', 'PPC.BING.3.EPR632-DS-PPC-DAL', 'PDM.Soquero.3.EPR653', 'PPC.Google AdWords.3.EPR653.DAL', 'PPC.Google AdWords.3.EPR653.GMT', 'Affiliate.CommissionJunction.3.EPR868-EN', 'PDM.ChannelAdvisor.3.EPR653', 'PPC.Google AdWords.3.EPR653.SM', 'PPC.Google AdWords.3.EPR653.IT', 'Affiliate.Zanox.3.EPR868-DE', 'Banner.Banner RTB.3.EPR653.Criteo', 'PPC.BING.3.EPR632.West', 'PPC.Google AdWords.EPR653-GoogleShopping_Product_EN', 'PPC.Google AdWords.EPR653-GoogleShopping_Product_DE', 'PPC.Google AdWords.3.EPR653.FR', 'Affiliate.CommissionJunction.3.EPR868-DE', 'Affiliate.Zanox.3.EPR868-EN', 'PPC.Google AdWords.EPR653-GoogleShopping_Product_CH'];
+var generalCookieDomain = '.springer.com';
+
+/*-->]]>*/</script>
+
+<script type="text/javascript" defer="defer">if (window.location.href.match(/[-&#?]print_view=[^#&?-]/)) { window.setTimeout(function(){window.print();}, 3500);};</script>
+	<!-- Pingdom RUM check -->
+	<script id="com-artnology-sgw-cda-general-pages-headercontributors-IncludeHeader-0">
+		var _prum = [['id', '57bbfc7bc78e114361216f01'],
+			['mark', 'firstbyte', (new Date()).getTime()]];
+		(function() {
+			var s = document.getElementsByTagName('script')[0]
+					, p = document.createElement('script');
+			p.async = 'async';
+			p.src = '//rum-static.pingdom.net/prum.min.js';
+			s.parentNode.insertBefore(p, s);
+		})();
+	</script>
+	<!--  the following lines will be printed with a headercontributor  -->
+	
+		<script type="text/javascript" src="//cdn.optimizely.com/js/262426511.js"></script>
+	
+	<script id="com-artnology-sgw-cda-general-pages-headercontributors-IncludeHeader-1">
+/*<![CDATA[*/
+		document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+/*]]>*/
+    </script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/googleapis/ajax/libs/jquery/1.9.1/jquery.min.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/jquery-migrate-1.1.0.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/googleapis/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/jquery.customScroller-1.2.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/baynote/baynote.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/assets/prod_min.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/webtrekk/prod/webtrekk.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/webtrekk/webtrekk_social_media_tracking.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<script type="text/javascript" src="https://static.springer.com/sgw/js/webtrekk/webtrekk_scrollposition.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script>
+<link rel="stylesheet" type="text/css" href="https://static.springer.com/assets/prod_min.css?r=ca80741c43899361b49d5511bc59b6e37fc31f26" />
+<!--[if IE 9]><link rel="stylesheet" type="text/css" href="https://static.springer.com/sgw/css/ie9.css?r=ca80741c43899361b49d5511bc59b6e37fc31f26" /><![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="https://static.springer.com/sgw/css/ie8.css?r=ca80741c43899361b49d5511bc59b6e37fc31f26" /><![endif]-->
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="https://static.springer.com/sgw/css/ie7.css?r=ca80741c43899361b49d5511bc59b6e37fc31f26" /><![endif]-->
+<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="https://static.springer.com/sgw/css/ie6.css?r=ca80741c43899361b49d5511bc59b6e37fc31f26" /><![endif]-->
+<link rel="stylesheet" type="text/css" href="https://static.springer.com/assets/prod_print_min.css?r=ca80741c43899361b49d5511bc59b6e37fc31f26" media="print" />
+<!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="https://static.springer.com/assets/prod_ielt9_sgw.css?r=ca80741c43899361b49d5511bc59b6e37fc31f26" /><![endif]-->
+<!--[if lt IE 9]><script type="text/javascript" src="https://static.springer.com/assets/prod_ielt9_sgw.js?r=ca80741c43899361b49d5511bc59b6e37fc31f26"></script><![endif]-->
+<script type="text/javascript" src="https://payments.worldpay.com/resources/hpp/integrations/embedded/js/hpp-embedded-integration-library.js"></script>
+<link rel="stylesheet" type="text/css" href="https://payments.worldpay.com/resources/hpp/integrations/embedded/css/hpp-embedded-integration-library.css" />
+
+
+
+
+
+
+<script type="text/javascript" ><!--/*--><![CDATA[/*><!--*/
+Wicket.Event.add(window, "domready", function(event) { var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:relatedProductsPortlet::IBehaviorListener:0:3&sgw:lastsgwid=4-147-70-35726603-0&sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {if(Wicket.Browser.isIE()){return true;} else {return Wicket.$('id3') != null;}}.bind(this));;});
+/*-->]]>*/</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="CdaAjaxButton_blockAjaxButton"><!--/*--><![CDATA[/*><!--*/
+var blockAjaxButton = false;
+/*-->]]>*/</script>
+
+
+	<link rel="canonical" href="http://www.springer.com/computer/ai/journal/10994" wicketpath="content_canonicalURL"/>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" ><!--/*--><![CDATA[/*><!--*/
+Wicket.Event.add(window, "domready", function(event) { var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:content:tabbar:panel:videoPanel::IBehaviorListener:0:3&sgw:lastsgwid=4-147-70-35726603-0&sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {if(Wicket.Browser.isIE()){return true;} else {return Wicket.$('id4') != null;}}.bind(this));;});
+/*-->]]>*/</script>
+
+
+
+</head>
+<body class="body-cda">
+
+	
+	<script type="text/javascript">dataLayer = [
+{
+  "pageType": "product",
+  "topLevelCategory": "Computer",
+  "productCategory": "Computer",
+  "subLevel1": "AI",
+  "productId": "10994"
+}
+];
+</script>
+	
+				<!-- Google Tag Manager -->
+				<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-38BW"
+				height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+				<script type="text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+				'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+				})(window,document,'script','dataLayer','GTM-38BW');</script>
+				<!-- End Google Tag Manager -->
+
+
+<div id="wrapper" class="wrapper cda">
+	<a name="top"></a>
+	
+	
+	<header data-src="/_comp/header/us/default">
+<div id="cookie-banner" class="hidden banner-message banner-message-info">
+<div>
+<a id="cookies-dismiss" href="#" class="close-message"></a>
+<p>
+This website uses cookies. By using our website and agreeing to our cookies policy, you consent to our use of cookies in accordance with the terms of this policy.
+<a href="/gp/privacy-statement/627414">Read more</a>
+</p>
+</div>
+</div>
+<script type="text/javascript">
+/*<![CDATA[*/
+
+var $buoop = {vs:{i:7,f:15,o:12,s:5},c:2};
+function $buo_f(){
+var e = document.createElement("script");
+e.setAttribute("type", "text/javascript");
+e.setAttribute("src", "/spcom/js/oldbrowser.js");
+document.body.appendChild(e);
+};
+try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
+catch(e){window.attachEvent("onload", $buo_f)}
+
+/*]]>*/
+</script>
+<script type="text/javascript" src="//static.springer.com/spcom/min/201606061500-321/header.prod.js" defer="defer"></script>
+<div id="header" role="banner">
+<a id="headerlogo" href="/" style="background-image: url(/spcom/sites/sgw/images/logo.png);"></a>
+<div class="panel-search">
+<form id="global-search" class="big-search" action="/us/search" method="get">
+<div id="search-field">
+<div class="search-field">
+<input id="query" class="text focus placeholder" type="text" name="query" placeholder="Search"/>
+</div>
+</div>
+<div>
+<input id="search" class="search-submit" type="submit"
+name="submit" />
+</div>
+</form>
+</div>
+<button class="pillow-btn-header open-search" title="Open search">Search</button>
+<button class="pillow-btn-header open-menu" title="Open menu">Menu</button>
+<div class="panel-menu">
+<div id="cross-nav">
+<div class="flyout empty" id="basket-widget" data-site-prefix="us" data-cart-page-link="https://www.springer.com/?SGWID=0-102-34-0-0">
+<button class="flyout-caption">
+<a class="headerbasket"> </a>
+<span class="totalQuantity"> &nbsp; </span>
+</button>
+<div class="flyout-content">
+<div class="loading-cart-msg">
+<div class="spinner"> </div>
+<div class="msg">Loading..</div>
+</div>
+<div class="empty-cart-msg">Your cart is empty.</div>
+<ul class="cart-items">
+</ul>
+<div class="full-cart-msg">...you&#039;ll find more products in the shopping cart.</div>
+<div class="cart-summary">
+<div class="summary-item total">
+<span class="left-column column">Total</span><!--
+--><span class="right-column column">&euro;239.99</span>
+</div>
+<a class="btn btn-primary btn-monster view-cart" href="#">View cart</a>
+</div>
+</div>
+<script id="cart-widget-cart-item" type="text/template">
+
+<li>
+<div class="cart-item">
+<div class="cover">
+{{coverTemplate}}
+</div><!--
+--><div class="title">
+{{titleTemplate}}
+<p class="description">{{description}}</p>
+<p class="quantity">
+{{resources.quantity}}: {{quantity}}
+</p>
+</div><!--
+--><div class="totalPrice">{{price}}</div>
+</div>
+</li>
+</script>
+<script id="cart-widget-cover-with-link" type="text/template">
+<a data-href="{{productLinkFragment}}">
+<img data-src="{{coverUrl}}" width="41" alt="{{title}}"/>
+</a>
+</script>
+<script id="cart-widget-cover-without-link" type="text/template">
+<img data-src="{{coverUrl}}" width="41" alt="{{title}}"/>
+</script>
+</div>
+<div id="auth" class="flyout">
+<button class="flyout-caption">Login / Register</button>
+<div class="flyout-content">
+<ul id="service-links">
+<li>
+<a href="https://www.springer.com/my+springer?SGWID=4-1716000-25-653405-0">Manage Account</a>
+</li><li>
+<a href="https://www.springer.com/?SGWID=4-102-25-968706-0">My Bookshelf</a>
+</li><li>
+<a href="http://www.springer.com/alert?SGWID=4-103-0-0-0">Manage Alerts</a>
+</li><li>
+<a href="https://www.springer.com/my+springer/article+tracking?SGWID=4-1716011-25-653439-0">Article Tracking</a>
+</li><li>
+<a href="https://www.springer.com/us/myspringer/book-publications">Book Tracking</a>
+</li>
+</ul>
+<ul>
+<li>
+<a class="loginButton returnURL" href="https://www.springer.com/?SGWID=0-102-25-0-0">Login / Register</a>
+
+</li>
+</ul>
+</div>
+</div>
+<div id="lang" class="flyout">
+<button class="flyout-caption">America</button>
+<div class="flyout-content">
+<ul>
+<li>
+<a rel="nofollow" href="https://www.springer.com/?SGWID=0-102-2010-0-0" class="returnURL">Change</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="navwrapper">
+<nav>
+<ul id="global-nav">
+
+<li class="mainNavigationMark" id="mainNavigation0">
+<div class="nav-main">
+<a href="http://www.springer.com/us/" class="mainNavigationLinkMark noSubnavigation" id="mainnav.home">Home</a>
+</div>
+
+
+</li>
+
+<li class="mainNavigationMark" id="mainNavigation1">
+<div class="nav-main">
+<a href="#" class="mainNavigationLinkMark" onclick="return false;">Subjects</a>
+</div>
+<div class="nav-sub">
+
+<ul class="firstList">
+
+<li>
+<a href="http://www.springer.com/us/astronomy" id="mainnav.astronomy">Astronomy</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/behavioral-sciences" id="mainnav.behavioral_sciences">Behavioral Sciences</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/biomedical-sciences" id="mainnav.biomedical_sciences">Biomedical Sciences</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/business-management" id="mainnav.business_&amp;_management">Business &amp; Management</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/chemistry" id="mainnav.chemistry">Chemistry</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/climate?SGWID=0-1755018-0-0-0" id="mainnav.climate">Climate</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/computer?SGWID=0-146-0-0-0" id="mainnav.computer_science">Computer Science</a>
+</li>
+
+</ul>
+
+<ul>
+
+<li>
+<a href="http://www.springer.com/us/earth-sciences" id="mainnav.earth_sciences">Earth Sciences</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/economics" id="mainnav.economics">Economics</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/education-language" id="mainnav.education_&amp;_language">Education &amp; Language</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/energy" id="mainnav.energy">Energy</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/engineering" id="mainnav.engineering">Engineering</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/environmental-sciences" id="mainnav.environmental_sciences">Environmental Sciences</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/food-science-nutrition" id="mainnav.food_science_&amp;_nutrition">Food Science &amp; Nutrition</a>
+</li>
+
+</ul>
+
+<ul>
+
+<li>
+<a href="http://www.springer.com/us/geography" id="mainnav.geography">Geography</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/law" id="mainnav.law">Law</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/life-sciences" id="mainnav.life_sciences">Life Sciences</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/materials" id="mainnav.materials">Materials</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/mathematics" id="mainnav.mathematics">Mathematics</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/medicine" id="mainnav.medicine">Medicine</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/philosophy" id="mainnav.philosophy">Philosophy</a>
+</li>
+
+</ul>
+
+<ul class="lastList">
+
+<li>
+<a href="http://www.springer.com/us/physics" id="mainnav.physics">Physics</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/popular-science" id="mainnav.popular_science">Popular Science</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/public-health" id="mainnav.public_health">Public Health</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/social-sciences" id="mainnav.social_sciences">Social Sciences</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/statistics" id="mainnav.statistics">Statistics</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/water?SGWID=0-1755013-0-0-0" id="mainnav.water">Water</a>
+</li>
+
+</ul>
+
+</div>
+
+</li>
+
+<li class="mainNavigationMark" id="mainNavigation2">
+<div class="nav-main">
+<a href="#" class="mainNavigationLinkMark" onclick="return false;">Services</a>
+</div>
+<div class="nav-sub">
+
+<ul class="firstList">
+
+<li>
+<a href="http://www.springer.com/us/advertisers" id="mainnav.advertisers">Advertisers</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/authors-editors" id="mainnav.authors_&amp;_editors">Authors &amp; Editors</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/booksellers/" id="mainnav.booksellers">Booksellers</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/reviewers" id="mainnav.book_reviewers">Book Reviewers</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/instructors" id="mainnav.instructors">Instructors</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/about-springer/media" id="mainnav.journalists">Journalists</a>
+</li>
+
+</ul>
+
+<ul class="lastList">
+
+<li>
+<a href="http://www.springer.com/us/librarians/moving" id="mainnav.librarians">Librarians</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/rights-permissions" id="mainnav.rights_&amp;_permissions">Rights &amp; Permissions</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/partners" id="mainnav.societies_&amp;_publishing_partners">Societies &amp; Publishing Partners</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/subscriptions" id="mainnav.subscription_agencies">Subscription Agencies</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/help" id="mainnav.help_&amp;_contact">Help &amp; Contact</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/open-access" id="mainnav.open_access_&amp;_springer">Open Access &amp; Springer</a>
+</li>
+
+</ul>
+
+</div>
+
+</li>
+
+<li class="mainNavigationMark" id="mainNavigation3">
+<div class="nav-main">
+<a href="#" class="mainNavigationLinkMark" onclick="return false;">Products</a>
+</div>
+<div class="nav-sub">
+
+<ul class="firstList lastList">
+
+<li>
+<a href="http://www.springer.com/us/products/journals" id="mainnav.journals">Journals</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/products/books" id="mainnav.books">Books</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/products/proceedings" id="mainnav.proceedings">Proceedings</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/products/springerlink" id="mainnav.springerlink">SpringerLink</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/products/springer-rnd/moving" id="mainnav.springer_for_r&amp;d">Springer for R&amp;D</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/products/hospital-health-products/moving" id="mainnav.springer_for_hospitals_&amp;_health">Springer for Hospitals &amp; Health</a>
+</li>
+
+<li>
+<a href="http://www.springer.com/us/products/databases-and-software" id="mainnav.databases_and_software">Databases and Software</a>
+</li>
+
+</ul>
+
+</div>
+
+</li>
+
+<li class="mainNavigationMark" id="mainNavigation4">
+<div class="nav-main">
+<a href="http://www.springer.com/shop" class="mainNavigationLinkMark noSubnavigation" id="mainnav.springer_shop">Springer Shop</a>
+</div>
+
+
+</li>
+
+<li class="mainNavigationMark" id="mainNavigation5">
+<div class="nav-main">
+<a href="http://www.springer.com/us/about-springer" class="mainNavigationLinkMark noSubnavigation" id="mainnav.about_us">About us</a>
+</div>
+
+
+</li>
+
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="/spcom/min/springer.components.js" defer="defer"></script>
+</header>
+
+	
+	
+
+
+<!-- START of BREADCRUMB NAVIGATION -->
+	<div wicketpath="breadCrumbNavigation">
+	<div class="showOnlyOnPrint" wicketpath="breadCrumbNavigation_breadCrumbPrint">
+		<div class="printHead">
+			<div class="floatLeft leftMargin5px"><img src="/sgw/img/print_springer_logo.png" alt="Logo - springer" /></div>
+			<div class="floatRight"><img src="/sgw/img/print_springer_slogan.png" alt="Slogan - springer" /></div>
+		</div>
+		<div class="hrDotted"><hr/></div>
+		<div class="printBreadcrumb">
+			
+				
+				<span wicketpath="breadCrumbNavigation_breadCrumbPrint_breadCrumbsPrint_1_breadCrumbText">Computer Science</span>
+			
+				 - 
+				<span wicketpath="breadCrumbNavigation_breadCrumbPrint_breadCrumbsPrint_2_breadCrumbText">Artificial Intelligence</span>
+			
+			 | <span wicketpath="breadCrumbNavigation_breadCrumbPrint_printTitle">Machine Learning</span>
+		</div>
+		<div class="hrDotted"><hr/></div>
+	</div>
+
+	<div class="breadCrumbNavigation" wicketpath="breadCrumbNavigation_breadCrumbScreen">
+		<h2 class="currentCategory">Artificial Intelligence</h2>
+		
+		<div class="breadCrumbPathContainer">
+			<div class="breadCrumbPath">
+				
+					<span><a href="http://www.springer.com/?SGWID=0-102-0-0-0" wicketpath="breadCrumbNavigation_breadCrumbScreen_breadCrumbs_0_breadCrumbLink" class="firstItem">Home</a></span>
+				
+					<span>&gt; <a href="http://www.springer.com/computer?SGWID=0-146-0-0-0" wicketpath="breadCrumbNavigation_breadCrumbScreen_breadCrumbs_1_breadCrumbLink">Computer Science</a></span>
+				
+					<span>&gt; <a href="http://www.springer.com/computer/ai?SGWID=0-147-0-0-0" wicketpath="breadCrumbNavigation_breadCrumbScreen_breadCrumbs_2_breadCrumbLink">Artificial Intelligence</a></span>
+				
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
+<!-- END of BREADCRUMB NAVIGATION -->
+<!-- START of CONTENT -->
+	
+		<div class="body">
+			<!-- START of LEFT COLUMN -->
+			<div class="colLeft">
+					
+	
+	<div class="whiteBox bottomMargin14px">
+		<div class="moreActions" wicketpath="content_topNavigationPageTools">
+	
+	<ul class="secNav">
+		<li class="secNav" wicketpath="content_topNavigationPageTools_subnav_subdisciplines">
+	<a class="secNav" href="#" onclick="return false;">Subdisciplines</a>
+	<a class="secNavHover displayNone" href="#" onclick="return false;">Subdisciplines</a>
+	<div class="secSubNav displayNone">
+		<div class="secSubNavTitle">
+			<span class="title dGrey">Choose your discipline:</span>
+			<a href="#" class="dGrey noMargin" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_headlinelink" onclick="goURL(&#34;http://www.springer.com/c&#34;+&#34;omputer?SGWID=0-146-0-0-0&#34;,this);">Computer Science</a><br />
+			<img src="/sgw/img/x.gif" class="secSubNav" />
+		</div>
+		<ul wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0" class="firstList"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_0_link" onclick="goURL(&#34;http://www.springer.com/co&#34;+&#34;mputer/ai?SGWID=0-147-0-0-0&#34;,this);">Artificial Intelligence</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/b&#34;+&#34;ioinformatics?SGWID=0-151302-0-0-0&#34;,this);">Bioinformatics</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_2_link" onclick="goURL(&#34;http://www.springer.com/computer/com&#34;+&#34;munication+networks?SGWID=0-148-0-0-0&#34;,this);">Communication Networks</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_3_link" onclick="goURL(&#34;http://www.springer.com/computer/database+manage&#34;+&#34;ment+%26+information+retrieval?SGWID=0-153-0-0-0&#34;,this);">Database Management &amp; Information Retrieval </a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_4_link" onclick="goURL(&#34;http://www.springer.com/computer&#34;+&#34;/general+issues?SGWID=0-155-0-0-0&#34;,this);">General Issues</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_5_link" onclick="goURL(&#34;http://www.springer.com/compu&#34;+&#34;ter/hardware?SGWID=0-150-0-0-0&#34;,this);">Hardware</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_6_link" onclick="goURL(&#34;http://www.springer.com/com&#34;+&#34;puter/hci?SGWID=0-154-0-0-0&#34;,this);">HCI </a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_0_column_7_link" onclick="goURL(&#34;http://www.springer.com/computer/&#34;+&#34;image+processing?SGWID=0-149-0-0-0&#34;,this);">Image Processing </a></li></ul><ul wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_1"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_1_column_0_link" onclick="goURL(&#34;http://www.springer.com/computer/informatio&#34;+&#34;n+systems+and+applications?SGWID=0-152-0-0-0&#34;,this);">Information Systems and Applications </a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_1_column_1_link" onclick="goURL(&#34;http://www.springer.com/com&#34;+&#34;puter/lncs?SGWID=0-164-0-0-0&#34;,this);">LNCS</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_1_column_2_link" onclick="goURL(&#34;http://www.springer.com/compute&#34;+&#34;r/media+design?SGWID=0-157-0-0-0&#34;,this);">Media Design</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_1_column_3_link" onclick="goURL(&#34;http://www.springer.com/computer/secur&#34;+&#34;ity+and+cryptology?SGWID=0-40160-0-0-0&#34;,this);">Security and Cryptology</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_1_column_4_link" onclick="goURL(&#34;http://www.springer.com/comp&#34;+&#34;uter/swe?SGWID=0-40007-0-0-0&#34;,this);">Software Engineering</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_subdisciplines_columns_1_column_5_link" onclick="goURL(&#34;http://www.springer.com/computer/theoreti&#34;+&#34;cal+computer+science?SGWID=0-174204-0-0-0&#34;,this);">Theoretical Computer Science</a></li></ul>
+	</div>
+</li>
+		
+			<li class="secNav" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs">
+	<a class="secNav" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_tabLink" onclick="return false;">Journals</a>
+	<a class="secNavHover displayNone" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_tabLinkHover" onclick="return false;">Journals</a>
+	<div class="secSubNav displayNone" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer">
+		<div class="secSubNavTitle" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_layerTop">
+			<span class="title dGrey" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_layerTop_headline">Browse Journals in:</span>
+			<br />
+			<img src="/sgw/img/x.gif" class="secSubNav" />
+		</div>
+		<ul wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0" class="firstList"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_0_link" onclick="goURL(&#34;http://www.springer.com/compu&#34;+&#34;ter/ai?SGWID=0-147-12-114571-0&#34;,this);">Artificial Intelligence</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/bioi&#34;+&#34;nformatics?SGWID=0-151302-12-362603-0&#34;,this);">Bioinformatics</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_2_link" onclick="goURL(&#34;http://www.springer.com/computer/commun&#34;+&#34;ication+networks?SGWID=0-148-12-114597-0&#34;,this);">Communication Networks</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_3_link" onclick="goURL(&#34;http://www.springer.com/computer/database+managemen&#34;+&#34;t+%26+information+retrieval?SGWID=0-153-12-114576-0&#34;,this);">Database Management &amp; Information Retrieval</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_4_link" onclick="goURL(&#34;http://www.springer.com/computer/ge&#34;+&#34;neral+issues?SGWID=0-155-12-354699-0&#34;,this);">General Issues</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_5_link" onclick="goURL(&#34;http://www.springer.com/computer&#34;+&#34;/hardware?SGWID=0-150-12-354599-0&#34;,this);">Hardware</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_6_link" onclick="goURL(&#34;http://www.springer.com/comput&#34;+&#34;er/hci?SGWID=0-154-12-116377-0&#34;,this);">HCI</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_0_column_7_link" onclick="goURL(&#34;http://www.springer.com/computer/ima&#34;+&#34;ge+processing?SGWID=0-149-12-114599-0&#34;,this);">Image Processing</a></li></ul><ul wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_1"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_1_column_0_link" onclick="goURL(&#34;http://www.springer.com/computer/information+s&#34;+&#34;ystems+and+applications?SGWID=0-152-12-114579-0&#34;,this);">Information Systems and Applications</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_1_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/security&#34;+&#34;+and+cryptology?SGWID=0-40160-12-351600-0&#34;,this);">Security and Cryptology</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_1_column_2_link" onclick="goURL(&#34;http://www.springer.com/compute&#34;+&#34;r/swe?SGWID=0-40007-12-114598-0&#34;,this);">Software Engineering</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_1_column_3_link" onclick="goURL(&#34;http://www.springer.com/computer/theoretical+computer+sc&#34;+&#34;ience/foundations+of+computations?SGWID=0-156-12-114577-0&#34;,this);">Theoretical Computer Science: Foundations</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_1_column_4_link" onclick="goURL(&#34;http://www.springer.com/computer/theoretical+computer+s&#34;+&#34;cience/mathematics+of+computing?SGWID=0-151-12-114580-0&#34;,this);">Theoretical Computer Science: Mathematics</a></li></ul><ul wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_2"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_0_tabs_layer_columns_2_column_0_link" onclick="goURL(&#34;http://www.springer.com/computer/co&#34;+&#34;mputer+journals?SGWID=0-40100-0-0-0&#34;,this);">All journals in Computer Science</a></li></ul>
+	</div>
+</li>
+		
+			<li class="secNav" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs">
+	<a class="secNav" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_tabLink" onclick="return false;">Books</a>
+	<a class="secNavHover displayNone" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_tabLinkHover" onclick="return false;">Books</a>
+	<div class="secSubNav displayNone" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer">
+		<div class="secSubNavTitle" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_layerTop">
+			<span class="title dGrey" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_layerTop_headline">Browse Books in:</span>
+			<br />
+			<img src="/sgw/img/x.gif" class="secSubNav" />
+		</div>
+		<ul wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0" class="firstList"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_0_link" onclick="goURL(&#34;http://www.springer.com/compu&#34;+&#34;ter/ai?SGWID=0-147-12-70763-0&#34;,this);">Artificial Intelligence</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/bioi&#34;+&#34;nformatics?SGWID=0-151302-12-362602-0&#34;,this);">Bioinformatics</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_2_link" onclick="goURL(&#34;http://www.springer.com/computer/commun&#34;+&#34;ication+networks?SGWID=0-148-12-69769-0&#34;,this);">Communication Networks</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_3_link" onclick="goURL(&#34;http://www.springer.com/computer/database+manageme&#34;+&#34;nt+%26+information+retrieval?SGWID=0-153-12-70768-0&#34;,this);">Database Management &amp; Information Retrieval</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_4_link" onclick="goURL(&#34;http://www.springer.com/computer/ge&#34;+&#34;neral+issues?SGWID=0-155-12-70761-0&#34;,this);">General Issues</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_5_link" onclick="goURL(&#34;http://www.springer.com/computer&#34;+&#34;/hardware?SGWID=0-150-12-69714-0&#34;,this);">Hardware</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_6_link" onclick="goURL(&#34;http://www.springer.com/comput&#34;+&#34;er/hci?SGWID=0-154-12-671301-0&#34;,this);">HCI</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_0_column_7_link" onclick="goURL(&#34;http://www.springer.com/computer/ima&#34;+&#34;ge+processing?SGWID=0-149-12-69772-0&#34;,this);">Image Processing</a></li></ul><ul wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_1"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_1_column_0_link" onclick="goURL(&#34;http://www.springer.com/computer/information+s&#34;+&#34;ystems+and+applications?SGWID=0-152-12-70767-0&#34;,this);">Information Systems and Applications</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_1_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/m&#34;+&#34;edia+design?SGWID=0-157-12-69105-0&#34;,this);">Media Design</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_1_column_2_link" onclick="goURL(&#34;http://www.springer.com/computer/securit&#34;+&#34;y+and+cryptology?SGWID=0-40160-12-94926-0&#34;,this);">Security and Cryptology</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_1_column_3_link" onclick="goURL(&#34;http://www.springer.com/comput&#34;+&#34;er/swe?SGWID=0-40007-12-69703-0&#34;,this);">Software Engineering</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_1_column_4_link" onclick="goURL(&#34;http://www.springer.com/computer/theoretical+computer&#34;+&#34;+science/foundations+of+computations?SGWID=0-156-0-0-0&#34;,this);">Theoretical Computer Science: Foundations</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_1_column_5_link" onclick="goURL(&#34;http://www.springer.com/computer/theoretical+computer+&#34;+&#34;science/mathematics+of+computing?SGWID=0-151-12-69104-0&#34;,this);">Theoretical Computer Science: Mathematics</a></li></ul><ul wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_2"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_1_tabs_layer_columns_2_column_0_link" onclick="goURL(&#34;http://www.springer.com/com&#34;+&#34;puter/lncs?SGWID=0-164-0-0-0&#34;,this);">LNCS</a></li></ul>
+	</div>
+</li>
+		
+			<li class="secNav" wicketpath="content_topNavigationPageTools_subnav_tabList_2_tabs">
+	<a class="secNav" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_2_tabs_tabLink" onclick="goURL(&#34;http://www.springer.com/computer/c&#34;+&#34;omputer+series?SGWID=0-40099-0-0-0&#34;,this);">Series</a>
+	
+	
+</li>
+		
+			<li class="secNav" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs">
+	<a class="secNav" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_tabLink" onclick="return false;">Textbooks</a>
+	<a class="secNavHover displayNone" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_tabLinkHover" onclick="return false;">Textbooks</a>
+	<div class="secSubNav displayNone" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer">
+		<div class="secSubNavTitle" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_layerTop">
+			<span class="title dGrey" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_layerTop_headline">Browse Textbooks in:</span>
+			<br />
+			<img src="/sgw/img/x.gif" class="secSubNav" />
+		</div>
+		<ul wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0" class="firstList"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_0_link" onclick="goURL(&#34;http://www.springer.com/compu&#34;+&#34;ter/ai?SGWID=0-147-12-390699-0&#34;,this);">Artificial Intelligence</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/bioi&#34;+&#34;nformatics?SGWID=0-151302-12-661205-0&#34;,this);">Bioinformatics</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_2_link" onclick="goURL(&#34;http://www.springer.com/computer/commun&#34;+&#34;ication+networks?SGWID=0-148-12-390700-0&#34;,this);">Communication Networks</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_3_link" onclick="goURL(&#34;http://www.springer.com/computer/database+managemen&#34;+&#34;t+%26+information+retrieval?SGWID=0-153-12-390703-0&#34;,this);">Database Management &amp; Information Retrieval</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_4_link" onclick="goURL(&#34;http://www.springer.com/computer/ge&#34;+&#34;neral+issues?SGWID=0-155-12-390705-0&#34;,this);">General Issues</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_5_link" onclick="goURL(&#34;http://www.springer.com/computer&#34;+&#34;/hardware?SGWID=0-150-12-390701-0&#34;,this);">Hardware</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_6_link" onclick="goURL(&#34;http://www.springer.com/comput&#34;+&#34;er/hci?SGWID=0-154-12-390711-0&#34;,this);">HCI</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_0_column_7_link" onclick="goURL(&#34;http://www.springer.com/computer/ima&#34;+&#34;ge+processing?SGWID=0-149-12-390702-0&#34;,this);">Image Processing</a></li></ul><ul wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_1"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_1_column_0_link" onclick="goURL(&#34;http://www.springer.com/computer/information+s&#34;+&#34;ystems+and+applications?SGWID=0-152-12-390707-0&#34;,this);">Information Systems and Applications</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_1_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/m&#34;+&#34;edia+design?SGWID=0-157-12-390709-0&#34;,this);">Media Design</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_1_column_2_link" onclick="goURL(&#34;http://www.springer.com/computer/security&#34;+&#34;+and+cryptology?SGWID=0-40160-12-390706-0&#34;,this);">Security and Cryptology</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_1_column_3_link" onclick="goURL(&#34;http://www.springer.com/compute&#34;+&#34;r/swe?SGWID=0-40007-12-390710-0&#34;,this);">Software Engineering</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_1_column_4_link" onclick="goURL(&#34;http://www.springer.com/computer/theoretical+computer+sc&#34;+&#34;ience/foundations+of+computations?SGWID=0-156-12-390704-0&#34;,this);">Theoretical Computer Science: Foundations</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_1_column_5_link" onclick="goURL(&#34;http://www.springer.com/computer/theoretical+computer+s&#34;+&#34;cience/mathematics+of+computing?SGWID=0-151-12-390708-0&#34;,this);">Theoretical Computer Science: Mathematics</a></li></ul><ul wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_2"><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_2_column_0_link" onclick="goURL(&#34;http://www.springer.com/comput&#34;+&#34;er/lncs?SGWID=0-164-12-73272-0&#34;,this);">LNCS (Lecture Notes in Computer Science) Tutorials</a></li><li><a href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_3_tabs_layer_columns_2_column_1_link" onclick="goURL(&#34;http://www.springer.com/computer/textboo&#34;+&#34;k+computer+science+2?SGWID=0-155102-0-0-0&#34;,this);">All Textbooks in Computer Science</a></li></ul>
+	</div>
+</li>
+		
+			<li class="secNav" wicketpath="content_topNavigationPageTools_subnav_tabList_4_tabs">
+	<a class="secNav" href="#" wicketpath="content_topNavigationPageTools_subnav_tabList_4_tabs_tabLink" onclick="goURL(&#34;http://www.springer.com/computer/r&#34;+&#34;eference+works?SGWID=0-176304-0-0-0&#34;,this);">Reference Works</a>
+	
+	
+</li>
+		
+	</ul>
+
+	<ul class="moreActionsList continousDotLine" wicketpath="content_topNavigationPageTools_moreActionsList">
+		
+		
+		
+		
+		<li class="moreActionsListItem" id="openRecommendLayer" wicketpath="content_topNavigationPageTools_moreActionsList_recommendButton">
+			<a class="btnRecommend" id="id5" wicketpath="content_topNavigationPageTools_moreActionsList_recommendButton_recommendLink" href="#" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:content:topNavigationPageTools:moreActionsList:recommendButton:recommendLink::IBehaviorListener:1:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return !(isElementActive(document.getElementById('openRecommendLayer'))); return Wicket.$('id5') != null;}.bind(this)); return false;" title="Recommend to others"></a>
+			<div class="recommendLayer" id="id6" wicketpath="content_topNavigationPageTools_moreActionsList_recommendButton_productRecommendPanel">
+	<div class="recommendLayerContainer">
+		<div class="containerBridge"></div>
+		<a class="link btnToCloseLayer" href="#" id="id7" wicketpath="content_topNavigationPageTools_moreActionsList_recommendButton_productRecommendPanel_close" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:content:topNavigationPageTools:moreActionsList:recommendButton:productRecommendPanel:close::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id7') != null;}.bind(this));return !wcall;"><span class="hideMe">Close</span></a>
+				
+		
+	</div>
+</div>
+		</li>
+		<li class="moreActionsListItem closeOnMouseOut" id="openShareLayer" wicketpath="content_topNavigationPageTools_moreActionsList_shareLayer">
+
+	<a href="#" class="btnShare" wicketpath="content_topNavigationPageTools_moreActionsList_shareLayer___message__attr__138" title="Share this site"></a>
+	<div class="shareLayer">
+		<div class="shareLayerContainer">
+			<div class="containerBridge"></div>
+			<ul class="shareLayerList firstList">
+				<li class="shareLayerListItem"><a href="/computer/ai/rssfeed?4-147-820-0-0" class="btnRSSShare" wicketpath="content_topNavigationPageTools_moreActionsList_shareLayer_rssLink" onclick="window.open('/computer/ai/rssfeed?4-147-820-0-0');"><span>RSS</span></a></li>
+				<li class="shareLayerListItem"><a 
+					href="http://reddit.com/"
+					onclick="webtrackingTriggerPageElementTag('Reddit', 'Social Bookmarks', true, false, '_');window.open('http://reddit.com/submit?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title));return false;"
+					rel="external nofollow" 
+					class="btnReddit"><span>Reddit</span></a></li>
+				<li class="shareLayerListItem"><a 
+					href="http://www.technorati.com/"
+					onclick="webtrackingTriggerPageElementTag('Technorati', 'Social Bookmarks', true, false, '_');window.open('http://technorati.com/faves?add='+encodeURIComponent(location.href)+'&amp;tag=');return false;"
+					rel="external nofollow" 
+					class="btnTechnocrati"><span>Technorati</span></a></li>
+				<li class="shareLayerListItem"><a 
+					href="#" 
+					onclick="window.print(); return false;" 
+					class="btnPrintShare"><span>Print this site</span></a></li>
+			</ul>
+			<ul class="shareLayerList lastList">
+				<li class="shareLayerListItem"><a 
+					href="http://del.icio.us/"
+					onclick="webtrackingTriggerPageElementTag('Delicious', 'Social Bookmarks', true, false, '_');window.open('http://del.icio.us/post?v=2&amp;url='+encodeURIComponent(location.href)+'&amp;notes=&amp;tags=&amp;title='+encodeURIComponent(document.title));return false;"
+					rel="external nofollow" 
+					class="btnDelicious"><span>Delicious</span></a></li>
+				<li class="shareLayerListItem"><a 
+					href="http://digg.com/" 
+					onclick="webtrackingTriggerPageElementTag('Digg', 'Social Bookmarks', true, false, '_');window.open('http://digg.com/submit?phase=2&amp;url='+encodeURIComponent(location.href)+'&amp;bodytext=&amp;tags=&amp;title='+encodeURIComponent(document.title));return false;"
+					rel="external nofollow" 
+					class="btnDigg"><span>Digg</span></a></li>
+				<li class="shareLayerListItem"><a 
+					href="http://www.citeulike.org"
+					onclick="window.open('http://www.citeulike.org/posturl?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title));return false;" 
+					rel="external nofollow" 
+					class="btnCiteULike"><span>CiteULike</span></a></li>
+			</ul>
+			<div class="clear"></div>
+		</div><!-- .productShareLayerContainer -->
+	</div><!-- .productShareLayer -->
+</li>
+	</ul>
+</div>
+		<div class="productContainer clearfix" wicketpath="content_basic">
+	<div class="floatLeft productGraphicContainer">
+		<div class="productGraphic noMargin"><img wicketpath="content_basic_image" src="https://images.springer.com/sgw/journals/medium/10994.jpg" alt="Machine Learning" width="128"/></div>
+		
+		
+	</div>
+	<div class="productDescriptionContainer">
+		<div class="subcolomns overflowHidden">
+			
+	<h1 wicketpath="content_basic_productDescriptionContainer_title" class="headline">Machine Learning</h1>
+	
+		<div class="productHasReferrer productDescription" wicketpath="content_basic_productDescriptionContainer_productDescription">
+			
+			<p wicketpath="content_basic_productDescriptionContainer_productDescription_editors">Editor-in-Chief: Peter A. <strong>Flach</strong></p>
+			<p>
+			
+				<span wicketpath="content_basic_productDescriptionContainer_productDescription_issnPrint">
+	<span wicketpath="content_basic_productDescriptionContainer_productDescription_issnPrint_resourceString">ISSN: </span> <span wicketpath="content_basic_productDescriptionContainer_productDescription_issnPrint_content">0885-6125</span>
+</span> (print version)<br />
+			
+			
+				<span wicketpath="content_basic_productDescriptionContainer_productDescription_issnElectronic">
+	<span wicketpath="content_basic_productDescriptionContainer_productDescription_issnElectronic_resourceString">ISSN: </span> <span wicketpath="content_basic_productDescriptionContainer_productDescription_issnElectronic_content">1573-0565</span>
+</span> (electronic version)
+			
+			</p>
+			<p>Journal no. <span wicketpath="content_basic_productDescriptionContainer_productDescription_journalNo">10994</span></p> 
+			
+		</div>
+	
+	
+		<div class="springerLinkReferer"><a href="http://link.springer.com/journal/10994" wicketpath="content_basic_productDescriptionContainer_linkToOnlineVersion"><img src="https://images.springer.com/cda/content/designimage/cda_displaydesignimage.png?SGWID=0-0-17-1026340-0" wicketpath="content_basic_productDescriptionContainer_linkToOnlineVersion_logoToOnlineVersion" width="88" height="88" alt=""/></a></div>
+		<div class="clear"></div>
+	
+	
+
+		</div>
+		<div class="productPriceBox-oneline" wicketpath="content_basic_priceContent">
+		
+		<div class="productPriceBoxFirstContainer" id="id8" wicketpath="content_basic_priceContent_priceComponent">
+  
+
+	
+		
+		<span class="productPrice" wicketpath="content_basic_priceContent_priceComponent_priceComponent_price_bestPriceAmount">$199.00</span>
+		
+		<span class="priceHint" wicketpath="content_basic_priceContent_priceComponent_priceComponent_price_priceHintLabel">Personal Rate e-only for the Americas</span>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+</div>
+		<a href="#" class="btn btn-primary btn-monster addToBasket" id="id9" wicketpath="content_basic_priceContent_addToBasketButton" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:content:basic:priceContent:addToBasketButton::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id9') != null;}.bind(this));return !wcall;" title="Add this product to your basket">Get Subscription</a>
+		<div class="clear contentRight-clearIE7"></div>
+		
+		<div class="topPadding10px" wicketpath="content_basic_priceContent_electronicJournalUsp">
+			<p class="info">Online subscription, valid from January through December of current calendar year</p>
+			<p class="info">Immediate access to this year's issues via SpringerLink</p>
+			<p class="info" wicketpath="content_basic_priceContent_electronicJournalUsp_volumesPerYear">1 Volume(-s) with 12 issue(-s) per annual subscription</p>
+			<p class="info">Automatic annual renewal</p>
+			<p class="info"></p>
+			<p class="info">More information: <a href="http://www.springer.com/gp/help/buying-in-the-springer-shop/16712"> >> FAQs</a>  //  <a href="http://www.springer.com/generic/terms?SGWID=5-40112-0-0-0"> >> Policy</a>
+</p>
+		</div>
+	</div>
+		
+	<div class="socialMediaIcons removeOnPrint" wicketpath="content_basic_socialMediaIcons_container">
+		<div class="fbLikeCont" wicketpath="content_basic_socialMediaIcons_container_fbLikeContainer">
+			<div id="fb-root"></div>
+			<script>(function(d, s, id) {
+ 			  var js, fjs = d.getElementsByTagName(s)[0]; 
+ 			  if (d.getElementById(id)) return; 
+ 			  js = d.createElement(s); js.id = id; 
+ 			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; 
+ 			  fjs.parentNode.insertBefore(js, fjs); 
+ 			}(document, 'script', 'facebook-jssdk'));</script> 
+			<div class="fb-like" data-href="http://www.springer.com/computer/ai/journal/10994" data-send="false" data-layout="button_count" data-width="91" data-show-faces="false" data-font="arial" wicketpath="content_basic_socialMediaIcons_container_fbLikeContainer_fbLike"></div>
+		</div>
+		
+		<div class="twitterCont" wicketpath="content_basic_socialMediaIcons_container_twitterContainer">
+		    <a href="https://twitter.com/share" class="twitter-share-button" data-hashtags="springer" data-lang="en" data-size="94" wicketpath="content_basic_socialMediaIcons_container_twitterContainer_twitter">Tweet</a>
+			<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		</div>	
+	
+		<div class="gPlusCont" wicketpath="content_basic_socialMediaIcons_container_googlePlusContainer">
+			<g:plusone class="g-plusone" size="medium" callback="wt_googlePlusone" href="#" wicketpath="content_basic_socialMediaIcons_container_googlePlusContainer_googlePlus" data-href="http://www.springer.com/computer/ai/journal/10994"></g:plusone>
+			<script type="text/javascript">
+			  (function() {
+			    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			    po.src = 'https://apis.google.com/js/plusone.js';
+			    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+			  })();
+			</script>
+		</div>
+		
+		
+	</div>
+
+	</div>
+	
+	
+
+	
+	
+</div>
+		
+	<div class="horNavi" wicketpath="content_tabbar_tabs-container">
+		<ul>
+			<li class="tab0 isActive firstListEntry" wicketpath="content_tabbar_tabs-container_tabs_0" id="productNavigation1">
+				<h3><span wicketpath="content_tabbar_tabs-container_tabs_0_link"><em><span wicketpath="content_tabbar_tabs-container_tabs_0_link_title">About this journal</span></em></span></h3>
+			</li><li class="tab1" wicketpath="content_tabbar_tabs-container_tabs_1" id="productNavigation2">
+				<h3><a href="http://www.springer.com/computer/ai/journal/10994/PS2?detailsPage=editorialBoard" wicketpath="content_tabbar_tabs-container_tabs_1_link"><span wicketpath="content_tabbar_tabs-container_tabs_1_link_title">Editorial Board</span></a></h3>
+			</li><li class="tab2" wicketpath="content_tabbar_tabs-container_tabs_2" id="productNavigation3">
+				<h3><a href="http://www.springer.com/computer/ai/journal/10994/PS2?detailsPage=societies" wicketpath="content_tabbar_tabs-container_tabs_2_link"><span wicketpath="content_tabbar_tabs-container_tabs_2_link_title">CALL FOR PAPERS (SPECIAL ISSUES)</span></a></h3>
+			</li><li class="tab3 last" wicketpath="content_tabbar_tabs-container_tabs_3" id="productNavigation4">
+				<h3><a href="http://www.springer.com/computer/ai/journal/10994/PS2?detailsPage=press" wicketpath="content_tabbar_tabs-container_tabs_3_link"><span wicketpath="content_tabbar_tabs-container_tabs_3_link_title">Ethics &amp; Disclosures</span></a></h3>
+			</li>
+		</ul>
+		
+		<div class="clear"></div>
+		<div class="hrDotted clearfix"></div>
+	</div><!-- .productNavigation -->
+
+	
+	 
+	<div class="productTab">
+		<div class="colLeftContent">
+			<div class="colLeftContentContainer">
+				
+
+	
+
+	
+
+	
+	
+		<div>
+			
+		   		<a href="http://static.springer.com/sgw/documents/1591654/application/pdf/10994_Journal%2520Metrics_2015_flyer%5B1%5D.pdf" class="bottomMargin20px displayBlock" wicketpath="content_tabbar_panel_about_cacheableContent_productGraphics_logoList_0_productLink_link"><img src="https://images.springer.com/cda/content/image/cda_displayimage.png?SGWID=0-0-16-3147088-0" title="Learn more about the metrics of this journal" alt="Learn more about the metrics of this journal" class="rightMargin10px"/></a> 
+			
+		   		<a href="http://www.springer.com/de/open-access/springer-open-choice?wt_mc=Banner.Springer.com%20banner.1.AUT642.Open_choice_Feb2016" class="bottomMargin20px displayBlock" wicketpath="content_tabbar_panel_about_cacheableContent_productGraphics_logoList_1_productLink_link"><img src="https://images.springer.com/cda/content/image/cda_displayimage.gif?SGWID=0-0-16-2640851-0" title="PB_Banner_SpringerOpenChoice_Version1_575x60" alt="PB_Banner_SpringerOpenChoice_Version1_575x60" class="rightMargin10px"/></a> 
+			
+		</div>
+	
+
+
+	<div class="springerHTML" wicketpath="content_tabbar_panel_about_cacheableContent_headline">...THE CUTTING EDGE IN AI RESEARCH....</div> 
+
+	
+		<ul class="bigListIcons">
+			<li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_0">
+				An international forum for research on computational approaches to learning.
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_1">
+				
+
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_2">
+				Reports substantive results on a wide range of learning methods applied to a variety of learning problems.
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_3">
+				
+
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_4">
+				Provides solid support via empirical studies, theoretical analysis, or comparison to psychological phenomena.
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_5">
+				
+
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_6">
+				Shows how to apply learning methods to solve important applications problems.
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_7">
+				
+
+			</li><li wicketpath="content_tabbar_panel_about_cacheableContent_uniqueSellingPointsList_8">
+				Improves how machine learning research is conducted.
+			</li>
+		</ul>
+    
+
+	<div class="springerHTML" wicketpath="content_tabbar_panel_about_cacheableContent_description"><P>Machine Learning is an international forum for research on computational approaches to learning. The journal publishes articles reporting substantive results on a wide range of learning methods applied to a variety of learning problems. </P>
+<P>The journal features papers that describe research on problems and methods, applications research, and issues of research methodology. Papers making claims about learning problems or methods provide solid support via empirical studies, theoretical analysis, or comparison to psychological phenomena. Applications papers show how to apply learning methods to solve important applications problems. Research methodology papers improve how machine learning research is conducted. </P>
+<P>All papers describe the supporting evidence in ways that can be verified or replicated by other researchers. The papers also detail the learning component clearly and discuss assumptions regarding knowledge representation and the performance task.</P></div>
+	
+	
+		<p>
+			<span style="font-weight: bolder" wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsString">Related subjects &raquo;</span>
+			<span wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsList_0"> 
+			
+	   			<a href="http://www.springer.com/computer/ai?SGWID=0-147-0-0-0" wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsList_0_relatedSubjectLink"><span wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsList_0_relatedSubjectLink_relatedSubjectLinkLabel">Artificial Intelligence</span></a>
+	   		</span><span wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsList_1"> 
+			<span wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsList_1_delimiter"> - </span>
+	   			<a href="http://www.springer.com/engineering/robotics?SGWID=0-166702-0-0-0" wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsList_1_relatedSubjectLink"><span wicketpath="content_tabbar_panel_about_cacheableContent_relatedSubjectsList_1_relatedSubjectLink_relatedSubjectLinkLabel">Robotics</span></a>
+	   		</span> 
+	  	</p> 
+	
+	
+	
+	
+		
+			<h3 class="flapHead topMargin10px showOnlyOnPrint" wicketpath="content_tabbar_panel_about_cacheableContent_impactFactorFlap_fragment_flapHeadContainer">Impact Factor: 1.719 (2015) *<span wicketpath="content_tabbar_panel_about_cacheableContent_impactFactorFlap_fragment_flapHeadContainer_flapName" class="displayNone flapName wtdata_impact">&nbsp;</span></h3>
+			<div class="showOnPrint flapContent showOnlyOnPrint" id="ida" wicketpath="content_tabbar_panel_about_cacheableContent_impactFactorFlap_fragment_flapContent">
+	
+	<p>Journal Citation Reports&reg;, Thomson Reuters</p>
+</div>
+		
+
+		
+	
+		
+	
+		
+	
+	
+
+	
+	
+	
+		
+			<h3 class="flapHead topMargin10px" wicketpath="content_tabbar_panel_about_cacheableContent_AbstractAndIndexedInFlap_fragment_flapHeadContainer">Abstracted/Indexed in<span wicketpath="content_tabbar_panel_about_cacheableContent_AbstractAndIndexedInFlap_fragment_flapHeadContainer_flapName" class="displayNone flapName wtdata_abstracted_indexed">&nbsp;</span></h3>
+			<div class="showOnPrint flapContent" id="idb" wicketpath="content_tabbar_panel_about_cacheableContent_AbstractAndIndexedInFlap_fragment_flapContent">
+	<p><span wicketpath="content_tabbar_panel_about_cacheableContent_AbstractAndIndexedInFlap_fragment_flapContent_abstractAndIndexedIn">Science Citation Index, Science Citation Index Expanded (SciSearch), Journal Citation Reports/Science Edition, SCOPUS, PsycINFO, INSPEC, Zentralblatt Math, Google Scholar, EBSCO Discovery Service, CSA, Academic OneFile, ACM Digital Library, Computer Abstracts International Database, Computer Science Index, CSA Environmental Sciences, Current Contents/Engineering, Computing  and Technology, DBLP, Earthquake Engineering Abstracts, EBSCO Discovery Service, EI-Compendex, Gale, io-port.net, Mathematical Reviews, OCLC, OmniFile, PASCAL, PSYCLINE, Referativnyi Zhurnal (VINITI), Science Select, SCImago, Summon by ProQuest</span></p>
+</div>
+		
+
+		
+	
+		
+	
+		
+	
+	
+
+	
+	
+	
+
+		
+	
+	
+		
+
+		
+	
+		
+	
+		
+	
+	
+
+	
+	
+	
+		
+
+		
+	
+		
+	
+		
+	
+	
+
+
+
+		
+	<div id="id4" wicketpath="content_tabbar_panel_videoPanel"></div>
+
+
+			</div>
+		</div>
+	</div>
+
+	</div>
+
+	<div wicketpath="overlay"></div>
+
+			</div>
+			<!-- END of LEFT COLUMN -->			
+
+			<!-- START of RIGHT COLUMN -->
+			<div class="colRight" id="idc" wicketpath="rightColumn">
+	<div class="col3">
+
+		<div class="portlet" id="idd" wicketpath="rightColumn_shoppingCartPortlet" style="display: none">
+	
+	  	<div class="portletHeadline" wicketpath="rightColumn_shoppingCartPortlet_portletHeader">
+	
+		<h3 wicketpath="rightColumn_shoppingCartPortlet_portletHeader_portletHeaderText">Your Shopping Cart</h3>
+		<div class="shoppingCartIcon"></div>
+	
+</div>
+	  	<div class="displayNone cmPortletName displayNone wtdata_ShoppingCartPortlet" wicketpath="rightColumn_shoppingCartPortlet_cmPortletName">&nbsp;</div>
+		
+		<div wicketpath="rightColumn_shoppingCartPortlet_portletContent" class="portletBox portletBoxGrey">
+	
+		
+		<div class="floatLeft">0 eBook</div>
+		<div class="floatRight fSize14">
+			
+				<span class="fSize11" wicketpath="rightColumn_shoppingCartPortlet_portletContent_labelSubtotal">Subtotal:</span> 0
+			
+			
+		</div>
+		<div class="clear"></div>
+		<div class="topMargin22px clearfix contentRight">
+			<a href="http://www.springer.com/?SGWID=0-102-34-0-0" class="greyBtn floatRight" wicketpath="rightColumn_shoppingCartPortlet_portletContent_checkoutButton"><span wicketpath="rightColumn_shoppingCartPortlet_portletContent_checkoutButton_label">To cart</span></a>
+		</div>
+		
+	
+</div>
+		
+		
+	
+</div>
+				
+		<div class="portlet" id="ide" wicketpath="rightColumn_markedItemPortlet" style="display: none">
+	
+	  	<div class="portletHeadline" wicketpath="rightColumn_markedItemPortlet_portletHeader">
+	
+		<div class="portletHeadline"><h3 wicketpath="rightColumn_markedItemPortlet_portletHeader_portletHeaderText">Your marked items</h3></div>
+	
+</div>
+	  	<div class="displayNone cmPortletName displayNone wtdata_MarkedItemsPortlet" wicketpath="rightColumn_markedItemPortlet_cmPortletName">&nbsp;</div>
+		
+		<div wicketpath="rightColumn_markedItemPortlet_portletContent" class="portletBoxSmall">
+  <div class="dynamicContentAccordion accordion" wicketpath="rightColumn_markedItemPortlet_portletContent_accordion" id="markedItemPortlet">
+  	
+  		<h4 class="accordionSectionOpen accordionHead" wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_0_accordionHead">Manage your marked Items<span wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_0_accordionHead_flapName" class="displayNone flapName wtdata_manageMarketItems">&nbsp;</span></h4>
+  		<div class="accordionBody displayNone clearfixAccordion">
+    	    
+  		    <div id="idf" wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_0_content">
+	
+		
+
+		
+		
+		
+
+		
+
+		
+
+		
+
+		<div wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_0_content_noMarkedItemsPanel">
+			<div class="hrDotted topMargin20px bottomMargin14px"><hr/></div>
+			<p class="contentCenter blue leftRightMargin70px lh16px">
+				You have no marked items.
+			</p>
+			<div class="hrDotted topBottomMargin10px"><hr /></div>
+			<div class="clearfix bottomMargin10px">
+				<div class="floatRight">
+					<a href="#" class="greyBtn" rel="nofollow" id="id10" wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_0_content_noMarkedItemsPanel_uploadIsbnListLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:markedItemPortlet:portletContent:accordion:list:0:content:noMarkedItemsPanel:uploadIsbnListLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id10') != null;}.bind(this));return !wcall;"><span>Import List</span></a>
+				</div>
+			</div>
+		</div>
+
+		<div id="id11" style="display:none"></div>
+	
+</div>
+  		</div>
+  	
+  		<h4 class="hideContent accordionHead" wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_1_accordionHead">Your saved Catalog List<span wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_1_accordionHead_flapName" class="displayNone flapName wtdata_savedCatalogs">&nbsp;</span></h4>
+  		<div class="accordionBody displayNone clearfixAccordion">
+    	    
+  		    <div id="id12" wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_1_content">
+	
+		
+			
+		<div class="markedItems" wicketpath="rightColumn_markedItemPortlet_portletContent_accordion_list_1_content_notLoggedInPanel">
+			<div class="hrDotted topMargin20px bottomMargin14px"><hr/></div>
+			<p class="contentCenter blue leftRightMargin70px lh16px">
+				You are not logged in! Please log in to edit your catalogs.
+			</p>
+			<div class="hrDotted topBottomMargin15px"><hr /></div>
+		</div>
+			
+		
+	
+</div>
+  		</div>
+  	
+  </div>
+</div>
+		
+  	
+  
+		
+	
+</div>
+
+		
+
+		<div class="portlet" wicketpath="rightColumn_eContentPortlet" id="E_CONTENT">
+	
+	  	<div class="portletHeadline" wicketpath="rightColumn_eContentPortlet_portletHeader">
+	
+		<div class="portletHeadline"><h3 wicketpath="rightColumn_eContentPortlet_portletHeader_portletHeaderText">Read this Journal on Springerlink</h3></div>
+	
+</div>
+	  	
+		
+		<div wicketpath="rightColumn_eContentPortlet_portletContent" class="containerToOpenLayers">
+	<ul class="listToOpenLayer ">
+		<li class="orangeItem listItemToOpenLayer" wicketpath="rightColumn_eContentPortlet_portletContent_openAccessArticlesLink">
+			<a class="linkToOpenLayer isLink rightArrow" href="http://link.springer.com/search?query=&amp;search-within=Journal&amp;facet-journal-id=10994&amp;package=openaccessarticles" wicketpath="rightColumn_eContentPortlet_portletContent_openAccessArticlesLink_link">
+				<span wicketpath="rightColumn_eContentPortlet_portletContent_openAccessArticlesLink_link_linkText">View Open Access Articles</span></a>
+
+		</li>
+		<li class="orangeItem listItemToOpenLayer" wicketpath="rightColumn_eContentPortlet_portletContent_onlineFirstLink">
+			<a class="linkToOpenLayer isLink rightArrow" href="http://link.springer.com/journal/10994/onlineFirst/page/1" wicketpath="rightColumn_eContentPortlet_portletContent_onlineFirstLink_link">
+				<span wicketpath="rightColumn_eContentPortlet_portletContent_onlineFirstLink_link_linkText">Online First Articles</span></a>
+
+		</li>
+		<li class="orangeItem listItemToOpenLayer" wicketpath="rightColumn_eContentPortlet_portletContent_allVolumesAndIssuesLink">
+			<a class="linkToOpenLayer isLink rightArrow" href="http://link.springer.com/journal/volumesAndIssues/10994" wicketpath="rightColumn_eContentPortlet_portletContent_allVolumesAndIssuesLink_link">
+				<span wicketpath="rightColumn_eContentPortlet_portletContent_allVolumesAndIssuesLink_link_linkText">All Volumes &amp; Issues</span></a>
+
+		</li>
+		
+		
+	</ul>
+	
+</div>
+		
+		
+	
+</div><!-- .portlet -->
+
+		<div class="portlet" wicketpath="rightColumn_forAuthorsAndEditorsPortlet" id="FOR_AUTHOR_AND_EDITORS">
+	
+	  	<div class="portletHeadline" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletHeader">
+	
+		<div class="portletHeadline"><h3 wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletHeader_portletHeaderText">For authors and editors</h3></div>
+	
+</div>
+	  	
+		
+		<div wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent" class="containerToOpenLayers">
+	
+	<ul class="impactFactor">
+		<li class="ifLabel">
+			<div class="itemInformationToolTip">
+				<a class="customBtn infoWhite itemInformationToolTipPoint ifLink" href="#"></a>
+				<div class="itemInformationToolBoxOuter w328Px">
+					<div class="itemInformationToolBoxInner">
+					
+						<br /><span class="toolTipHelper">Journal Citation Reports&reg;, Thomson Reuters</span>
+					</div>
+				</div>
+			</div>			
+			<span class="ifYear" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_impactFactor_year">2015</span><span class="ifText">&nbsp;Impact Factor</span>
+		</li>
+		<li class="ifCount" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_impactFactor_impactFactor">1.719</li>
+	</ul>
+
+	
+  
+	<ul class="listToOpenLayer">
+		
+			<li class="listItemToOpenLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem">
+	
+		<a class="linkToOpenLayer" href="#" id="id13" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem_showLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:forAuthorsAndEditorsPortlet:portletContent:linkList:alwaysVisibleLinkList:0:listItem:showLayerLink::IBehaviorListener:1:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return !(isElementActive(document.getElementById('id14'))); return Wicket.$('id13') != null;}.bind(this));"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem_showLayerLink_linkBodyText">Aims and Scope</span></a>
+		<div class="wideLayer portletLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem_layer">
+			<div class="layerContainer">
+				<div class="layerHeader">
+					<h2 class="layerTitle" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem_layer_headline">Aims and Scope</h2>
+					<a href="#" class="link btnToCloseLayer"><span class="hideMe">Close</span></a>
+				</div><!-- .layerHeader -->
+				
+					<div class="clearfix">
+						<a href="http://www.springer.com/computer/ai?SGWID=0-147-9-10994-print_view=aimsAndScopes" class="floatRight btnPrint rightMargin15px" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem_layer_printButton_printButtonLink"></a>
+					</div>
+					<div class="hrDotted withMargin"><hr/></div>
+				
+				<div class="linkListContainer layerContent" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem_layer_layerContentPanel">
+	
+	<div class="springerHTML" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_0_listItem_layer_layerContentPanel_text"><EM>Machine Learning</EM> is an international forum for research on computational approaches to learning. The journal publishes articles reporting substantive results on a wide range of learning methods applied to a variety of learning problems, including but not limited to: 
+<P><STRONG>Learning Problems:</STRONG> Classification, regression, recognition, and prediction; Problem solving and planning; Reasoning and inference; Data mining; Web mining; Scientific discovery; Information retrieval; Natural language processing; Design and diagnosis; Vision and speech perception; Robotics and control; Combinatorial optimization; Game playing; Industrial, financial, and scientific applications of all kinds.<br /><STRONG>Learning Methods:</STRONG> Supervised and unsupervised learning methods (including learning decision and regression trees, rules, connectionist networks, probabilistic networks and other statistical models, inductive logic programming, case-based methods, ensemble methods, clustering, etc.); Reinforcement learning; Evolution-based methods; Explanation-based learning; Analogical learning methods; Automated knowledge acquisition; Learning from instruction; Visualization of patterns in data; Learning in integrated architectures; Multistrategy learning; Multi-agent learning. </P>Papers describe research on problems and methods, applications research, and issues of research methodology. Papers making claims about learning problems (e.g., inherent complexity) or methods (e.g., relative performance of alternative algorithms) provide solid support via empirical studies, theoretical analysis, or comparison to psychological phenomena. Applications papers show how to apply learning methods to solve important applications problems. Research methodology papers improve how machine learning research is conducted. All papers must state their contributions clearly and describe how the contributions are supported. All papers must describe the supporting evidence in ways that can be verified or replicated by other researchers. All papers must describe the learning component clearly, and must discuss assumptions regarding knowledge representation and the performance task. All papers must place their contribution clearly in the context of existing work in machine learning. Variations from these prototypes, such as comprehensive surveys of active research areas, critical reviews of existing work, and book reviews, will be considered provided they make a clear contribution to the field. </div>
+
+</div><!-- .layerContent -->
+			</div><!-- .layerContainer -->
+		</div><!-- .mediumLayer -->
+		<div class="portletLayerBridge"></div>
+	
+</li>
+		
+			<li class="listItemToOpenLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_1_listItem">
+	<a class="rightArrow linkToOpenLayer isLink" href="https://www.editorialmanager.com/mach" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_1_listItem_link"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_1_listItem_link_linkBodyText">Submit Online</span><!-- Extended e.g. for big list items --></a>
+</li>
+		
+			<li class="listItemToOpenLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_2_listItem">
+	<a class="linkToOpenLayer isLink" href="http://www.springer.com/open+access/open+choice?SGWID=0-40359-0-0-0" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_2_listItem_link"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_2_listItem_link_linkBodyText">Open Choice - Your Way to Open Access</span><!-- Extended e.g. for big list items --></a>
+</li>
+		
+			<li class="listItemToOpenLayer" id="id15" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem">
+	
+		<a class="linkToOpenLayer" href="#" id="id16" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_showLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:forAuthorsAndEditorsPortlet:portletContent:linkList:alwaysVisibleLinkList:3:listItem:showLayerLink::IBehaviorListener:1:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return !(isElementActive(document.getElementById('id15'))); return Wicket.$('id16') != null;}.bind(this));"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_showLayerLink_linkBodyText">Instructions for Authors</span></a>
+		<div class="wideLayer portletLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_layer">
+			<div class="layerContainer">
+				<div class="layerHeader" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_layer_layerHeader">
+					<h2 class="layerTitle" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_layer_layerHeader_headline">Instructions for Authors</h2>
+					<a href="#" class="link btnToCloseLayer" id="id17" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_layer_layerHeader_closeLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:forAuthorsAndEditorsPortlet:portletContent:linkList:alwaysVisibleLinkList:3:listItem:layer:layerHeader:closeLayerLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id17') != null;}.bind(this));return !wcall;"><span class="hideMe">Close</span></a>
+				</div><!-- .layerHeader -->
+				
+					<div class="clearfix">
+						<a href="http://www.springer.com/computer/ai/journal/10994?print_view=true&amp;detailsPage=pltci_2452900" class="floatRight btnPrint rightMargin15px" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_layer_printButton_printButtonLink"></a>
+					</div>
+					<div class="hrDotted withMargin"><hr/></div>
+				
+				<div class="layerContent" id="id18" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_3_listItem_layer_layerContentPanel">
+					<div id="id19" style="display:none"></div>
+				</div><!-- .layerContent -->
+			</div><!-- .layerContainer -->
+		</div><!-- .mediumLayer -->
+		<div class="portletLayerBridge"></div>
+	
+</li>
+		
+			<li class="listItemToOpenLayer" id="id1a" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem">
+	
+		<a class="linkToOpenLayer" href="#" id="id1b" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_showLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:forAuthorsAndEditorsPortlet:portletContent:linkList:alwaysVisibleLinkList:4:listItem:showLayerLink::IBehaviorListener:1:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return !(isElementActive(document.getElementById('id1a'))); return Wicket.$('id1b') != null;}.bind(this));"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_showLayerLink_linkBodyText">Types of papers</span></a>
+		<div class="wideLayer portletLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_layer">
+			<div class="layerContainer">
+				<div class="layerHeader" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_layer_layerHeader">
+					<h2 class="layerTitle" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_layer_layerHeader_headline">Types of papers</h2>
+					<a href="#" class="link btnToCloseLayer" id="id1c" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_layer_layerHeader_closeLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:forAuthorsAndEditorsPortlet:portletContent:linkList:alwaysVisibleLinkList:4:listItem:layer:layerHeader:closeLayerLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id1c') != null;}.bind(this));return !wcall;"><span class="hideMe">Close</span></a>
+				</div><!-- .layerHeader -->
+				
+					<div class="clearfix">
+						<a href="http://www.springer.com/computer/ai/journal/10994?print_view=true&amp;detailsPage=pltci_2539963" class="floatRight btnPrint rightMargin15px" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_layer_printButton_printButtonLink"></a>
+					</div>
+					<div class="hrDotted withMargin"><hr/></div>
+				
+				<div class="layerContent" id="id1d" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_alwaysVisibleLinkList_4_listItem_layer_layerContentPanel">
+					<div id="id1e" style="display:none"></div>
+				</div><!-- .layerContent -->
+			</div><!-- .layerContainer -->
+		</div><!-- .mediumLayer -->
+		<div class="portletLayerBridge"></div>
+	
+</li>
+		
+	</ul><!-- .listToOpenLayer -->
+  
+  
+	<ul class="listToOpenLayer hasExtender">
+		
+			<li class="listItemToOpenLayer" id="id1f" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem">
+	
+		<a class="linkToOpenLayer" href="#" id="id20" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_showLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:forAuthorsAndEditorsPortlet:portletContent:linkList:expandableLinkList:0:listItem:showLayerLink::IBehaviorListener:1:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return !(isElementActive(document.getElementById('id1f'))); return Wicket.$('id20') != null;}.bind(this));"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_showLayerLink_linkBodyText">Editorial procedure</span></a>
+		<div class="wideLayer portletLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_layer">
+			<div class="layerContainer">
+				<div class="layerHeader" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_layer_layerHeader">
+					<h2 class="layerTitle" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_layer_layerHeader_headline">Publication agreement</h2>
+					<a href="#" class="link btnToCloseLayer" id="id21" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_layer_layerHeader_closeLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:forAuthorsAndEditorsPortlet:portletContent:linkList:expandableLinkList:0:listItem:layer:layerHeader:closeLayerLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id21') != null;}.bind(this));return !wcall;"><span class="hideMe">Close</span></a>
+				</div><!-- .layerHeader -->
+				
+					<div class="clearfix">
+						<a href="http://www.springer.com/computer/ai/journal/10994?print_view=true&amp;detailsPage=pltci_2539964" class="floatRight btnPrint rightMargin15px" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_layer_printButton_printButtonLink"></a>
+					</div>
+					<div class="hrDotted withMargin"><hr/></div>
+				
+				<div class="layerContent" id="id22" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_0_listItem_layer_layerContentPanel">
+					<div id="id23" style="display:none"></div>
+				</div><!-- .layerContent -->
+			</div><!-- .layerContainer -->
+		</div><!-- .mediumLayer -->
+		<div class="portletLayerBridge"></div>
+	
+</li>
+		
+			<li class="listItemToOpenLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_1_listItem" title="Resources for Journal Authors">
+	<a class="rightArrow linkToOpenLayer isLink" href="http://www.springer.com/authors/journal+authors/resources?SGWID=0-1723213-0-0-0" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_1_listItem_link"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_1_listItem_link_linkBodyText">Resources for Journal Authors</span><!-- Extended e.g. for big list items --></a>
+</li>
+		
+			<li class="listItemToOpenLayer" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_2_listItem" title="Author Academy: Training for Authors">
+	<a class="rightArrow linkToOpenLayer isLink" href="http://www.springer.com/authoracademy" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_2_listItem_link"><span wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletContent_linkList_expandableLinkList_2_listItem_link_linkBodyText">Author Academy: Training for Authors</span><!-- Extended e.g. for big list items --></a>
+</li>
+		
+	</ul><!-- .listToOpenLayer -->
+  
+
+		
+</div>
+		
+		<div class="portletExtender" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletExtender">
+			
+			<a href="#" wicketpath="rightColumn_forAuthorsAndEditorsPortlet_portletExtender_link"></a>
+		</div>
+	
+</div><!-- .portlet -->
+
+		<div class="portlet" wicketpath="rightColumn_servicesForThisProductPortlet" id="SERVICES_FOR_THIS_PRODUCT">
+	
+	  	<div class="portletHeadline" wicketpath="rightColumn_servicesForThisProductPortlet_portletHeader">
+	
+		<div class="portletHeadline"><h3 wicketpath="rightColumn_servicesForThisProductPortlet_portletHeader_portletHeaderText">Services for the Journal</h3></div>
+	
+</div>
+	  	
+		
+		<div wicketpath="rightColumn_servicesForThisProductPortlet_portletContent" class="containerToOpenLayers">
+	<ul class="listToOpenLayer">
+		<li class="listItemToOpenLayer" id="id24" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts">
+	
+		<a class="linkToOpenLayer" href="#" id="id25" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_showLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:showLayerLink::IBehaviorListener:1:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return !(isElementActive(document.getElementById('id24'))); return Wicket.$('id25') != null;}.bind(this));"><span wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_showLayerLink_linkBodyText">Contacts</span></a>
+		<div class="mediumLayer portletLayer" id="id26" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer">
+			<div class="layerContainer">
+				<div class="layerHeader">
+					<div id="id27" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerHeadlineHolder"><h2 class="layerTitle" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerHeadlineHolder_headline">Contacts</h2></div>
+					<a href="#" class="link btnToCloseLayer" id="id28" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_closeLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:layer:closeLayerLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id28') != null;}.bind(this));return !wcall;"><span class="hideMe">Close</span></a>
+				</div><!-- .layerHeader -->
+				<div id="id29" style="display:none"></div>
+				<div class="layerContent" id="id2a" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel">
+					<div wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel">
+	
+	<div class="linkListContainer">
+		<ul class="internalLinks">
+			
+				<li>
+					<a href="#" id="id2b" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_publishingEditorLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:layer:layerContentPanel:innerLayerContentPanel:publishingEditorLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id2b') != null;}.bind(this));return !wcall;">Publishing Editor, Melissa Fearon</a>
+				</li>
+			
+	
+			
+				<li>
+					<a href="#" id="id2c" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_jeoSupporterLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:layer:layerContentPanel:innerLayerContentPanel:jeoSupporterLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id2c') != null;}.bind(this));return !wcall;">Submission-related inquiries, Venkat Ganesan</a>
+				</li>
+			
+	
+			
+				<li>
+					<a href="#" id="id2d" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_productionEditorLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:layer:layerContentPanel:innerLayerContentPanel:productionEditorLink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id2d') != null;}.bind(this));return !wcall;">Production Coordinator, Raymond Ramonas</a>
+				</li>
+			
+	
+			
+			
+			
+				<li wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_contactsPersonCIList_0_contactsPersonCI"><a href="#" id="id2e" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_contactsPersonCIList_0_contactsPersonCI_contactsPersonCILink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:layer:layerContentPanel:innerLayerContentPanel:contactsPersonCIList:0:contactsPersonCI:contactsPersonCILink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id2e') != null;}.bind(this));return !wcall;">Customer Service</a></li>
+			
+				<li wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_contactsPersonCIList_1_contactsPersonCI"><a href="#" id="id2f" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_contactsPersonCIList_1_contactsPersonCI_contactsPersonCILink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:layer:layerContentPanel:innerLayerContentPanel:contactsPersonCIList:1:contactsPersonCI:contactsPersonCILink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id2f') != null;}.bind(this));return !wcall;">Anzeigen</a></li>
+			
+				<li wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_contactsPersonCIList_2_contactsPersonCI"><a href="#" id="id30" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_contacts_layer_layerContentPanel_innerLayerContentPanel_contactsPersonCIList_2_contactsPersonCI_contactsPersonCILink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:contacts:layer:layerContentPanel:innerLayerContentPanel:contactsPersonCIList:2:contactsPersonCI:contactsPersonCILink::IBehaviorListener:0:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return Wicket.$('id30') != null;}.bind(this));return !wcall;">Advertising</a></li>
+			
+		</ul>
+	</div>
+
+</div>
+				</div><!-- .layerContent -->
+			</div><!-- .layerContainer -->
+		</div><!-- .mediumLayer -->
+		<div class="portletLayerBridge"></div>
+	
+</li>
+
+		
+			<li class="listItemToOpenLayer">
+				<a class="linkToOpenLayer isLink" href="http://www.springer.com/cda/content/document/productFlyer/productFlyer_10994.pdf?SGWID=0-0-1297-35726603-0" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_productFlyer"><span>Download Product Flyer</span></a>
+			</li>
+		
+
+		<li class="listItemToOpenLayer" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates">
+	
+		<a class="linkToOpenLayer" href="#" id="id31" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates_showLayerLink" onclick="var wcall=wicketAjaxGet('../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:servicesForThisProductPortlet:portletContent:distributionDates:showLayerLink::IBehaviorListener:1:3&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994',function() { }.bind(this),function() { }.bind(this), function() {return !(isElementActive(document.getElementById('id32'))); return Wicket.$('id31') != null;}.bind(this));"><span wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates_showLayerLink_linkBodyText">Shipping Dates</span></a>
+		<div class="mediumLayer portletLayer" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates_layer">
+			<div class="layerContainer">
+				<div class="layerHeader">
+					<h2 class="layerTitle" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates_layer_headline">Shipping Dates</h2>
+					<a href="#" class="link btnToCloseLayer"><span class="hideMe">Close</span></a>
+				</div><!-- .layerHeader -->
+				
+				<div class="linkListContainer layerContent" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates_layer_layerContentPanel">
+	
+	<ul>
+		<li wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates_layer_layerContentPanel_distributionDateDataList_0">
+			2017
+			2/106
+			28.01.17
+		</li><li wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_distributionDates_layer_layerContentPanel_distributionDateDataList_1">
+			2017
+			1/106
+			16.01.17
+		</li>
+	</ul>
+
+</div><!-- .layerContent -->
+			</div><!-- .layerContainer -->
+		</div><!-- .mediumLayer -->
+		<div class="portletLayerBridge"></div>
+	
+</li>
+		
+			<li class="listItemToOpenLayer">
+				<a class="linkToOpenLayer isLink rightArrow" href="http://www.periodicals.com/springer/ttl08856125.html" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_orderLinkBackIssueLink">
+					<span wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_orderLinkBackIssueLink_orderLinkBackIssueLinkText">Order Back Issues</span></a>
+
+			</li>
+		
+		
+	
+		<li class="listItemToOpenLayer" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_productLinksContainer_productLinks_0_productLink">
+	<a class="linkToOpenLayer isLink" href="http://www.springer.com/advertisers/bulk+orders?SGWID=0-40665-0-0-0" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_productLinksContainer_productLinks_0_productLink_link"><span wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_productLinksContainer_productLinks_0_productLink_link_linkBodyText">Bulk Orders</span><!-- Extended e.g. for big list items --></a>
+</li>
+	
+		<li class="listItemToOpenLayer" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_productLinksContainer_productLinks_1_productLink">
+	<a class="linkToOpenLayer isLink" href="http://www.springer.com/advertisers/article+reprints?SGWID=0-40664-0-0-0" wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_productLinksContainer_productLinks_1_productLink_link"><span wicketpath="rightColumn_servicesForThisProductPortlet_portletContent_productLinksContainer_productLinks_1_productLink_link_linkBodyText">Article Reprints</span><!-- Extended e.g. for big list items --></a>
+</li>
+	
+
+	</ul>
+</div>
+		
+		
+	
+</div><!-- .portlet -->
+		
+		<div class="portlet" id="id33" wicketpath="rightColumn_alertPortlet">
+	
+	  	<div class="portletHeadline" wicketpath="rightColumn_alertPortlet_portletHeader">
+	
+		<div class="portletHeadline"><h3 wicketpath="rightColumn_alertPortlet_portletHeader_portletHeaderText">Alerts for this journal</h3></div>
+	
+</div>
+	  	<div class="displayNone cmPortletName displayNone wtdata_JournalAlertPortlet" wicketpath="rightColumn_alertPortlet_cmPortletName">&nbsp;</div>
+		
+		<div id="id34" wicketpath="rightColumn_alertPortlet_portletContent" class="portletBox portletBoxGrey">
+	
+	<div class="topMargin3px" wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer">
+	
+		<p class="fSize11 lineHeight16 noMargin">Get the table of contents of every new issue published in <span class="blue" wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer_identifier">Machine Learning</span>.</p>
+
+		
+		
+			
+
+
+		
+		
+
+		<form action="../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:alertPortlet:portletContent:alertContentContainer:alertForm::IFormSubmitListener::&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994" id="id36" wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer_alertForm" method="post"><div style="width:0px;height:0px;position:absolute;left:-100px;top:-100px;overflow:hidden"><input type="hidden" name="id36_hf_0" id="id36_hf_0" /></div>
+			<div class="formElements topMargin10px clearfix">
+				
+					<label wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer_alertForm_subscriberEmailContainer_subscriberEmailLabel" for="id2">Your E-Mail Address</label>
+					<input class="textInput textInput272" type="text" id="id2" value="" name="subscriberEmailContainer:subscriberEmail" wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer_alertForm_subscriberEmailContainer_subscriberEmail"/>
+					<div class="clear bottomMargin5px"></div>
+				
+				<div class="floatRight">
+					<button type="submit" class="greyBtn" value="Subscribe" name="submitButton" id="id37" wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer_alertForm_submitButton" onclick="if (blockAjaxButton==true) return false;blockAjaxButton=true;var wcall=wicketSubmitFormById('id36', '../../../?wicket:interface=journal_page35726603_298331:0:rightColumn:alertPortlet:portletContent:alertContentContainer:alertForm:submitButton::IActivePageBehaviorListener:0:3&amp;wicket:ignoreIfNotActive=true&amp;sgw:lastsgwid=4-147-70-35726603-0&amp;sgw:fallback=com.artnology.sgw.cda.product.journal.JournalPage&amp;productKey=10994', 'submitButton' ,function() { ;blockAjaxButton=false}.bind(this),function() { ;blockAjaxButton=false}.bind(this), function() {return Wicket.$$(this)&amp;&amp;Wicket.$$('id36')}.bind(this));;; return false;"><span>Submit</span></button>
+				</div>
+			</div>
+			
+				<div class="hrDotted topMargin10px"><hr /></div>
+				<div class="formElements topMargin8px">
+					<div class="itemFormCheckbox itemFormCheckboxNoFloat clearfix">
+						<input type="checkbox" class="checkboxInput topMargin2px" id="subscriptionOption" name="subscriptionOption.isSelected" wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer_alertForm_subscriptionOption.isSelected"/>
+						<label for="subscriptionOption" class="lh14px bottomPadding0px">Please send me information on new Springer publications in <span class="blue" wicketpath="rightColumn_alertPortlet_portletContent_alertContentContainer_alertForm_subscriptionOption.identifier">Artificial Intelligence (incl. Robotics)</span>.</label>				
+					</div>
+				</div>
+			
+		</form>
+	
+</div>
+	
+</div>
+		
+		
+	
+</div>
+
+		<!-- .portlet -->
+		
+	
+
+		<div class="portlet" id="id3" wicketpath="rightColumn_relatedProductsPortlet"><img class="loading" src="../../../resources/org.apache.wicket.ajax.AbstractDefaultAjaxBehavior/indicator.gif"/></div>
+		
+	</div><!-- .col3 -->
+</div>
+			<!-- END of RIGHT COLUMN -->
+		</div>
+	
+	<div class="clear"></div>
+<!-- END of CONTENT -->
+<!-- START of FOOTER -->
+		
+	<footer>
+<div class="page-wrapper">
+<div id="footer">
+<div id="footer-nav" class="section">
+<div id="footer-nav-misc">
+<div class="block" role="navigation">
+<h6>My Account</h6>
+<ul>
+<li><a href="https://checkout.springer.com/checkout">Shopping Cart</a></li><li><a href="https://www.springer.com/myspringer">MySpringer</a></li><li><a href="https://www.springer.com/myspringer">Login/Registration</a></li><li><a href="http://www.springer.com/alert">SpringerAlerts</a></li>
+</ul>
+</div><div class="block" role="navigation">
+<h6>About Springer</h6>
+<ul>
+<li><a href="http://www.springer.com/gp/about-springer/company-information">Company</a></li><li><a href="http://www.springer.com/about+springer/media/pressreleases">Media</a></li><li><a href="http://www.springer.com/gp/about-springer/company-information/compliance">Compliance</a></li><li><a href="http://www.springer.com/us/about-springer/careers">Careers</a></li>
+</ul>
+</div><div class="block" role="navigation">
+<h6>Help &amp; Contact</h6>
+<ul>
+<li><a href="http://www.springer.com/us/help">Help Overview</a></li><li><a href="http://www.springer.com/us/help/buying-in-the-springer-shop/16712">Order FAQ</a></li><li><a href="http://www.springer.com/us/help/contact">Contact Us</a></li><li><a href="http://www.springer.com/us/imprint/610056">Imprint</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="footer-legal" class="section" role="contentinfo">
+<div id="mobile-nav">
+<span class="pillow-btn open-legal" title="Show Legal Information">Legal</span>
+</div>
+<div role="contentinfo" id="legal">
+<div><img src="/spcom/sites/sgw/images/logo-springernature_dark.png" alt="Springer Nature"></div>
+<span id="footer-copyright">&copy; 2016 Springer International Publishing AG. Part of <a href="http://www.springernature.com/us" target="_blank">Springer Nature</a></span>
+<span class="footer-links"><a href="http://www.springer.com/gp/privacy-statement/627414">Privacy Policy</a><a href="http://www.springer.com/generic/terms">General Terms &amp; Conditions</a></span>
+<div id="diagnostic-info"></div>
+</div>
+</div>
+<div id="footer-branding" class="section">
+<div class="block">
+<span id="branding-logo" title="Springer">Springer</span>
+</div>
+</div>
+</div>
+</div>
+</footer>
+
+	
+	
+
+<!-- END of FOOTER -->
+	<!-- Helper for blocking ui -->
+	<div id="blockingUi" style="display: none;">
+		Please wait...
+	</div>
+</div>
+
+<div wicketpath="webtrackingPanel">
+	
+    <span wicketpath="webtrackingPanel_webtrekkPixel"><script type="text/javascript">/*<![CDATA[*/
+
+wt = $.extend(new webtrekkV3({
+  "customerId": "",
+  "form": "0",
+  "contentGroup": {
+    "1": "Computer",
+    "2": "AI"
+  },
+  "domain": "www.springer.com;checkout.springer.com;secure.worldpay.com",
+  "heatmap": "0",
+  "linkTrack": "link",
+  "contentId": "Computer.10994_Machine Learning.aboutThis"
+}), {
+  "product": "10994_Machine Learning",
+  "productStatus": "view",
+  "customParameter": {"5": "subjects;Computer;journals;STM"},
+  "productCategory": {
+    "3": "Computer",
+    "2": "EN",
+    "1": "journal subscription",
+    "5": "Springer US",
+    "4": ""
+  },
+  "mediaCode": "wt_mc;cm_mmc",
+  "linkTrackDownloads": "avi;bmp;csv;doc;docx;dotx;eps;exe;gif;gz;jpeg;jpg;m4v;mov;mp3;mp4;mpg;pdf;png;ppt;pptx;ps;rss;rtf;swf;tar;tar.gz;tgz;tif;txt;wmv;xls;xlsx;zip"
+});
+
+wt.sendinfo();
+
+/*]]>*/</script></span>
+
+</div>
+</body>
+<!--[if lt IE 7]> </html> <![endif]-->
+<!--[if IE 7]> </html> <![endif]-->
+<!--[if IE 8]> </html> <![endif]-->
+<!--[if IE 9]> </html> <![endif]-->
+<!--[if gt IE 9]><!--> </html>  <!--<![endif]-->
+

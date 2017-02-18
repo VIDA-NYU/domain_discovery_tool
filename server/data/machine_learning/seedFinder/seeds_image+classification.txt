@@ -1,0 +1,17 @@
+https://www.e-education.psu.edu/geog480/node/496
+https://en.wikipedia.org/wiki/Image_classification
+http://gisgeography.com/image-classification-techniques-remote-sensing/
+http://cs231n.github.io/classification/
+https://en.wikipedia.org/wiki/Contextual_image_classification
+https://github.com/dmlc/mxnet/tree/master/example/image-classification
+http://www.di.ens.fr/willow/events/cvml2011/materials/practical-classification/
+https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
+http://www.slideshare.net/SISPL/what-is-image-classification
+http://www.nrcan.gc.ca/node/9361
+http://www.pyimagesearch.com/2016/08/08/k-nn-classifier-for-image-classification/
+http://blog.yhat.com/posts/image-classification-in-Python.html
+http://www.tandfonline.com/doi/full/10.1080/01431160600746456
+http://www.microsoft.com/en-us/research/project/image-classification/
+https://msdn.microsoft.com/en-us/library/azure/Dn913079.aspx
+http://www.powershow.com/view4/54164c-MThjZ/Image_Classification_powerpoint_ppt_presentation
+https://www.mathworks.com/help/vision/ug/image-classification-with-bag-of-visual-words.html?refresh=true

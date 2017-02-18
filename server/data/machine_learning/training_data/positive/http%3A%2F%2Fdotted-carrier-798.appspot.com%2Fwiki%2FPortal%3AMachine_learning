@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Portal:Machine learning - Wikipedia</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"Portal","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":100,"wgPageName":"Portal:Machine_learning","wgTitle":"Machine learning","wgCurRevisionId":676364806,"wgRevisionId":676364806,"wgArticleId":44942806,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Portals under construction"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Portal:Machine_learning","wgRelevantArticleId":44942806,"wgRequestId":"WJjAdApAMFgAAEbkjRkAAABP","wgIsProbablyEditable":true,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgFlaggedRevsParams":{"tags":{}},"wgStableRevisionId":null,"wgWikiEditorEnabledModules":{"toolbar":true,"dialogs":true,"preview":false,"publish":false},"wgBetaFeaturesFeatures":[],"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":true,"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","usePageImages":true,"usePageDescriptions":true},"wgPreferredVariant":"en","wgMFDisplayWikibaseDescriptions":{"search":true,"nearby":true,"watchlist":true,"tagline":true},"wgRelatedArticles":null,"wgRelatedArticlesUseCirrusSearch":true,"wgRelatedArticlesOnlyUseCirrusSearch":false,"wgULSCurrentAutonym":"English","wgNoticeProject":"wikipedia","wgCentralNoticeCookiesToDelete":[],"wgCentralNoticeCategoriesUsingLegacy":["Fundraising","fundraising"],"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgCentralAuthMobileDomain":false,"wgVisualEditorToolbarScrollOffset":0,"wgEditSubmitButtonLabelPublish":false});mw.loader.state({"ext.globalCssJs.user.styles":"ready","ext.globalCssJs.site.styles":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"loading","user.tokens":"loading","ext.categoryTree.css":"ready","wikibase.client.init":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.interlanguage":"ready","ext.wikimediaBadges":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.sectionAnchor":"ready","mediawiki.skinning.interface":"ready","skins.vector.styles":"ready","ext.globalCssJs.user":"ready","ext.globalCssJs.site":"ready"});mw.loader.implement("user.options@0j3lz3q",function($,jQuery,require,module){mw.user.options.set({"variant":"en"});});mw.loader.implement("user.tokens@1dqfd7l",function ( $, jQuery, require, module ) {
+mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});/*@nomin*/;
+
+});mw.loader.load(["ext.categoryTree","mediawiki.action.view.postEdit","site","mediawiki.page.startup","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.legacy.wikibits","mediawiki.searchSuggest","ext.gadget.teahouse","ext.gadget.ReferenceTooltips","ext.gadget.watchlist-notice","ext.gadget.DRN-wizard","ext.gadget.charinsert","ext.gadget.refToolbar","ext.gadget.extra-toolbar-buttons","ext.gadget.switcher","ext.gadget.featured-articles-links","ext.centralauth.centralautologin","mmv.head","mmv.bootstrap.autostart","ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.eventLogging.subscriber","ext.wikimediaEvents","ext.navigationTiming","ext.uls.eventlogger","ext.uls.init","ext.uls.interface","ext.centralNotice.geoIP","ext.centralNotice.startUp","skins.vector.js"]);});</script>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.categoryTree.css%7Cext.uls.interlanguage%7Cext.visualEditor.desktopArticleTarget.noscript%7Cext.wikimediaBadges%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector"/>
+<script async="" src="/w/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector"></script>
+<meta name="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
+<meta name="generator" content="MediaWiki 1.29.0-wmf.10"/>
+<meta name="referrer" content="origin-when-cross-origin"/>
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/w/index.php?title=Portal:Machine_learning&amp;action=edit"/>
+<link rel="edit" title="Edit this page" href="/w/index.php?title=Portal:Machine_learning&amp;action=edit"/>
+<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png"/>
+<link rel="shortcut icon" href="/static/favicon/wikipedia.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="//en.wikipedia.org/w/api.php?action=rsd"/>
+<link rel="copyright" href="//creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="alternate" type="application/atom+xml" title="Wikipedia Atom feed" href="/w/index.php?title=Special:RecentChanges&amp;feed=atom"/>
+<link rel="canonical" href="https://en.wikipedia.org/wiki/Portal:Machine_learning"/>
+<link rel="dns-prefetch" href="//login.wikimedia.org"/>
+<link rel="dns-prefetch" href="//meta.wikimedia.org" />
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-100 ns-subject page-Portal_Machine_learning rootpage-Portal_Machine_learning skin-vector action-view">		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+							<div id="siteNotice"><!-- CentralNotice --></div>
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="en">Portal:Machine learning</h1>
+									<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">From Wikipedia, the free encyclopedia</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-head">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div style="position:relative;top:-3em"><span id="P:ML"></span></div>
+<div class="shortcutbox plainlist noprint" role="note" style="float:right;border:1px solid #aaa;background:#fff;margin:.3em .3em .3em 1em;padding:.4em .6em;text-align:center;font-size:smaller;line-height:2em;font-weight:bold"><a href="/wiki/Wikipedia:Shortcut" title="Wikipedia:Shortcut">Shortcut</a>:
+<ul>
+<li><a href="/wiki/P:ML" class="mw-redirect" title="P:ML">P:ML</a></li>
+</ul>
+</div>
+<div id="portals-browsebar" class="hlist" style="text-align: center;">
+<dl>
+<dt><a href="/wiki/Portal:Contents/Portals" title="Portal:Contents/Portals">Topics</a></dt>
+<dd><a href="/wiki/Portal:Contents/Portals#Culture_and_the_arts" title="Portal:Contents/Portals">Culture</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Geography_and_places" title="Portal:Contents/Portals">Geography</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Health_and_fitness" title="Portal:Contents/Portals">Health</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#History_and_events" title="Portal:Contents/Portals">History</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Mathematics_and_logic" title="Portal:Contents/Portals">Mathematics</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Natural_and_physical_sciences" title="Portal:Contents/Portals">Nature</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#People_and_self" title="Portal:Contents/Portals">People</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Philosophy_and_thinking" title="Portal:Contents/Portals">Philosophy</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Religion_and_belief_systems" title="Portal:Contents/Portals">Religion</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Society_and_social_sciences" title="Portal:Contents/Portals">Society</a></dd>
+<dd><a href="/wiki/Portal:Contents/Portals#Technology_and_applied_sciences" title="Portal:Contents/Portals">Technology</a></dd>
+</dl>
+</div>
+<div style="clear:both; width:100%">
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Intro&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Machine_learning"><big>Machine learning</big></span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<p><b>Machine learning</b> is a <a href="/wiki/Academic_disciplines" class="mw-redirect" title="Academic disciplines">scientific discipline</a> that explores the construction and study of <a href="/wiki/Algorithm" title="Algorithm">algorithms</a> that can <a href="/wiki/Learning" title="Learning">learn</a> from data. Such algorithms operate by building a <a href="/wiki/Statistical_model" title="Statistical model">model</a> based on inputs and using that to make predictions or decisions, rather than following only explicitly programmed instructions.</p>
+<p>Machine learning can be considered a subfield of <a href="/wiki/Computer_science" title="Computer science">computer science</a> and <a href="/wiki/Statistics" title="Statistics">statistics</a>. It has strong ties to <a href="/wiki/Artificial_intelligence" title="Artificial intelligence">artificial intelligence</a> and <a href="/wiki/Mathematical_optimization" title="Mathematical optimization">optimization</a>, which deliver methods, theory and application domains to the field. Machine learning is employed in a range of computing tasks where designing and programming explicit, rule-based <a href="/wiki/Algorithm" title="Algorithm">algorithms</a> is infeasible. Example applications include <a href="/wiki/Spam_filter" class="mw-redirect" title="Spam filter">spam filtering</a>, <a href="/wiki/Optical_character_recognition" title="Optical character recognition">optical character recognition</a> (OCR), <a href="/wiki/Learning_to_rank" title="Learning to rank">search engines</a> and <a href="/wiki/Computer_vision" title="Computer vision">computer vision</a>. Machine learning is sometimes conflated with <a href="/wiki/Data_mining" title="Data mining">data mining</a>, although that focuses more on exploratory data analysis. Machine learning and <a href="/wiki/Pattern_recognition" title="Pattern recognition">pattern recognition</a> "can be viewed as two facets of the same field."</p>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"><b><a href="/wiki/Machine_learning" title="Machine learning">Read more...</a></b></div>
+<div style="clear:both;"></div>
+</div>
+<div style="text-align:center; margin:0.25em auto 0.75em"><span class="noprint plainlinks purgelink"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning&amp;action=purge"><span title="Purge this page"><b>Show new selections</b></span></a></span></div>
+<div class="portal-column-left">
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Selected_article/2&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Selected_article">Selected article</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<p><b>Overfitting</b> occurs when a <a href="/wiki/Statistical_model" title="Statistical model">statistical model</a> describes <a href="/wiki/Random_error" class="mw-redirect" title="Random error">random error</a> or noise instead of the underlying relationship. Overfitting generally occurs when a model is excessively complex, such as having too many <a href="/wiki/Parameter" title="Parameter">parameters</a> relative to the number of observations. A model that has been overfit will generally have poor <a href="/wiki/Predictive_inference" title="Predictive inference">predictive</a> performance, as it can exaggerate minor fluctuations in the data.</p>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"><b><a href="/w/index.php?title=Portal:Machine_learning/Nominate/Selected_article&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Nominate/Selected article (page does not exist)">Suggest</a> • <a href="/w/index.php?title=Portal:Machine_learning/Selected_article&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Selected article (page does not exist)">More articles...</a></b></div>
+<div style="clear:both;"></div>
+</div>
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Selected_biography/1&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Selected_biography">Selected biography</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<p><b>Geoffrey (Geoff) Everest Hinton</b> <a href="/wiki/Fellow_of_the_Royal_Society" title="Fellow of the Royal Society">FRS</a> (born 6 December 1947) is a <a href="/wiki/United_Kingdom" title="United Kingdom">British</a>-born <a href="/wiki/Cognitive_psychology" title="Cognitive psychology">cognitive psychologist</a> and <a href="/wiki/Computer_science" title="Computer science">computer scientist</a>, most noted for his work on <a href="/wiki/Artificial_neural_networks" class="mw-redirect" title="Artificial neural networks">artificial neural networks</a>. He now divides his time working for Google and <a href="/wiki/University_of_Toronto" title="University of Toronto">University of Toronto</a>. He is the co-inventor of the <a href="/wiki/Backpropagation" title="Backpropagation">backpropagation</a> and <a href="/wiki/Contrastive_divergence" class="mw-redirect" title="Contrastive divergence">contrastive divergence</a> training algorithms and is an important figure in the <a href="/wiki/Deep_learning" title="Deep learning">deep learning</a> movement.</p>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"><b><a href="/wiki/Portal:Machine_learning/Nominate/Selected_biography" title="Portal:Machine learning/Nominate/Selected biography">Suggest</a> • <a href="/wiki/Portal:Machine_learning/Selected_biography" title="Portal:Machine learning/Selected biography">More biographies...</a></b></div>
+<div style="clear:both;"></div>
+</div>
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/News&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="In_the_news">In the news</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<p><a href="/w/index.php?title=Portal:Machine_learning/News&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/News (page does not exist)">Portal:Machine learning/News</a></p>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"><b><a href="/w/index.php?title=Portal:Machine_learning/Current_events&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Current events (page does not exist)">More current events...</a><br />
+<a href="https://en.wikinews.org/wiki/Portal:Machine_learning" class="extiw" title="wikinews:Portal:Machine learning">Current events</a> on <a href="https://en.wikinews.org/wiki/en" class="extiw" title="wikinews:en">Wikinews</a></b></div>
+<div style="clear:both;"></div>
+</div>
+</div>
+<div class="portal-column-right">
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Selected_picture/2&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Selected_picture">Selected picture</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<center><a href="/wiki/File:Restricted_Boltzmann_machine.svg" class="image"><img alt="Restricted Boltzmann machine.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Restricted_Boltzmann_machine.svg/300px-Restricted_Boltzmann_machine.svg.png" width="300" height="319" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Restricted_Boltzmann_machine.svg/450px-Restricted_Boltzmann_machine.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Restricted_Boltzmann_machine.svg/600px-Restricted_Boltzmann_machine.svg.png 2x" data-file-width="310" data-file-height="330" /></a><br />
+<small>Credit: <a href="/wiki/User:Qwertyus" title="User:Qwertyus">User:Qwertyus</a></small><br />
+Diagram of a fully connected <b><a href="/wiki/Restricted_Boltzmann_machine" title="Restricted Boltzmann machine">restricted Boltzmann machine</a> (RBM)</b> with three visible units and four hidden units (no bias units).</center>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"><b><a href="/w/index.php?title=Portal:Machine_learning/Nominate/Selected_picture&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Nominate/Selected picture (page does not exist)">Suggest</a> • <a href="/wiki/Portal:Machine_learning/Selected_picture" title="Portal:Machine learning/Selected picture">More pictures...</a></b></div>
+<div style="clear:both;"></div>
+</div>
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Did_you_know&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Did_you_know.3F">Did you know?</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<ul>
+<li>... that the <b><a href="/wiki/Kernel_perceptron" title="Kernel perceptron">kernel perceptron</a></b> was the first learning algorithm to employ the <a href="/wiki/Kernel_method" title="Kernel method">kernel trick</a>, already in 1964?</li>
+<li>... that <a href="/wiki/AltaVista" title="AltaVista">AltaVista</a> was the first web search engine to employ <b><a href="/wiki/Learning_to_rank" title="Learning to rank">machine-learned ranking</a></b> of its search results?</li>
+<li>... that the <b><a href="/wiki/Group_method_of_data_handling" title="Group method of data handling">group method of data handling</a></b>, invented in the USSR, was one of the first algorithms capable of training <a href="/wiki/Deep_learning" title="Deep learning">deep neural networks</a> (ca. 1971)?</li>
+</ul>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"><b><a href="/w/index.php?title=Portal:Machine_learning/Did_you_know/archive&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Did you know/archive (page does not exist)">Archive</a> – <a href="/wiki/Help:Starting_a_new_page" class="mw-redirect" title="Help:Starting a new page">Start a new article</a></b></div>
+<div style="clear:both;"></div>
+</div>
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Categories&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Categories">Categories</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<div style="-moz-column-count:2; column-count:2; font-size:92%">
+<div class="CategoryTreeTag" data-ct-mode="0" data-ct-options="{&quot;mode&quot;:0,&quot;hideprefix&quot;:20,&quot;showcount&quot;:false,&quot;namespaces&quot;:false}">
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Machine_learning" title="collapse" data-ct-loaded="1" data-ct-state="expanded">▼</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Machine_learning">Machine learning</a></div>
+<div class="CategoryTreeChildren" style="display:block">
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Applied_machine_learning">Applied machine learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Artificial_neural_networks" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Artificial_neural_networks">Artificial neural networks</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Bayesian_networks">Bayesian networks</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Classification_algorithms" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Classification_algorithms">Classification algorithms</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Cluster_analysis" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Cluster_analysis">Cluster analysis</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Computational_learning_theory">Computational learning theory</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Artificial_intelligence_conferences">Artificial intelligence conferences</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Data_mining_and_machine_learning_software" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Data_mining_and_machine_learning_software">Data mining and machine learning software</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Datasets_in_machine_learning" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Datasets_in_machine_learning">Datasets in machine learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Deep_learning">Deep learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Dimension_reduction" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Dimension_reduction">Dimension reduction</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Ensemble_learning">Ensemble learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Evolutionary_algorithms" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Evolutionary_algorithms">Evolutionary algorithms</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Genetic_programming">Genetic programming</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Inductive_logic_programming">Inductive logic programming</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Kernel_methods_for_machine_learning" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Kernel_methods_for_machine_learning">Kernel methods for machine learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Latent_variable_models" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Latent_variable_models">Latent variable models</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Learning_in_computer_vision">Learning in computer vision</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Log-linear_models">Log-linear models</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Loss_functions">Loss functions</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Machine_learning_algorithms" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Machine_learning_algorithms">Machine learning algorithms</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Machine_learning_portal">Machine learning portal</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Machine_learning_task">Machine learning task</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Markov_models" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Markov_models">Markov models</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Machine_learning_researchers">Machine learning researchers</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Semisupervised_learning">Semisupervised learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Statistical_natural_language_processing" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Statistical_natural_language_processing">Statistical natural language processing</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeBullet"><span class="CategoryTreeToggle" style="display: none;" data-ct-title="Structured_prediction" title="expand" data-ct-state="collapsed">►</span></span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Structured_prediction">Structured prediction</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Supervised_learning">Supervised learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Support_vector_machines">Support vector machines</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+<div class="CategoryTreeSection">
+<div class="CategoryTreeItem"><span class="CategoryTreeEmptyBullet">►</span> <a class="CategoryTreeLabel  CategoryTreeLabelNs14 CategoryTreeLabelCategory" href="/wiki/Category:Unsupervised_learning">Unsupervised learning</a></div>
+<div class="CategoryTreeChildren" style="display:none"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"></div>
+<div style="clear:both;"></div>
+</div>
+</div>
+<div style="clear:both; width:100%">
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Topics&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Topics">Topics</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<p><a href="/w/index.php?title=Portal:Machine_learning/Topics&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Topics (page does not exist)">Portal:Machine learning/Topics</a></p>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"></div>
+<div style="clear:both;"></div>
+</div>
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Related_portals&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Related_portals">Related portals</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<ul class="related-portals" style="margin: 0; overflow: hidden; list-style: none none;">
+<li style="margin:0;text-align:center;width:100px;height:130px;float:left">
+<div style="height:40px;padding:8px 2px"><a href="/wiki/File:Animation2.gif" class="image"><img alt="Animation2.gif" src="//upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Animation2.gif/24px-Animation2.gif" width="24" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Animation2.gif/37px-Animation2.gif 1.5x, //upload.wikimedia.org/wikipedia/commons/c/c0/Animation2.gif 2x" data-file-width="48" data-file-height="78" /></a></div>
+<div style="padding:8px"><b><a href="/wiki/Portal:Artificial_intelligence" title="Portal:Artificial intelligence">Artificial intelligence</a></b></div>
+</li>
+<li style="margin:0;text-align:center;width:100px;height:130px;float:left">
+<div style="height:40px;padding:8px 2px"><a href="/wiki/File:Internet_map_1024.jpg" class="image"><img alt="Internet map 1024.jpg" src="//upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Internet_map_1024.jpg/40px-Internet_map_1024.jpg" width="40" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Internet_map_1024.jpg/60px-Internet_map_1024.jpg 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Internet_map_1024.jpg/80px-Internet_map_1024.jpg 2x" data-file-width="1280" data-file-height="1280" /></a></div>
+<div style="padding:8px"><b><a href="/wiki/Portal:Computer_science" title="Portal:Computer science">Computer science</a></b></div>
+</li>
+<li style="margin:0;text-align:center;width:100px;height:130px;float:left">
+<div style="height:40px;padding:8px 2px"><a href="/wiki/File:Desktop_computer_clipart_-_Yellow_theme.svg" class="image"><img alt="Desktop computer clipart - Yellow theme.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Desktop_computer_clipart_-_Yellow_theme.svg/56px-Desktop_computer_clipart_-_Yellow_theme.svg.png" width="56" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Desktop_computer_clipart_-_Yellow_theme.svg/83px-Desktop_computer_clipart_-_Yellow_theme.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Desktop_computer_clipart_-_Yellow_theme.svg/111px-Desktop_computer_clipart_-_Yellow_theme.svg.png 2x" data-file-width="281" data-file-height="203" /></a></div>
+<div style="padding:8px"><b><a href="/wiki/Portal:Information_technology" title="Portal:Information technology">Information technology</a></b></div>
+</li>
+<li style="margin:0;text-align:center;width:100px;height:130px;float:left">
+<div style="height:40px;padding:8px 2px"><a href="/wiki/File:Animation2.gif" class="image"><img alt="Animation2.gif" src="//upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Animation2.gif/24px-Animation2.gif" width="24" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Animation2.gif/37px-Animation2.gif 1.5x, //upload.wikimedia.org/wikipedia/commons/c/c0/Animation2.gif 2x" data-file-width="48" data-file-height="78" /></a></div>
+<div style="padding:8px"><b><a href="/wiki/Portal:Robotics" title="Portal:Robotics">Robotics</a></b></div>
+</li>
+<li style="margin:0;text-align:center;width:100px;height:130px;float:left">
+<div style="height:40px;padding:8px 2px"><a href="/wiki/File:Fisher_iris_versicolor_sepalwidth.svg" class="image"><img alt="Fisher iris versicolor sepalwidth.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/4/40/Fisher_iris_versicolor_sepalwidth.svg/58px-Fisher_iris_versicolor_sepalwidth.svg.png" width="58" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/4/40/Fisher_iris_versicolor_sepalwidth.svg/87px-Fisher_iris_versicolor_sepalwidth.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/4/40/Fisher_iris_versicolor_sepalwidth.svg/116px-Fisher_iris_versicolor_sepalwidth.svg.png 2x" data-file-width="822" data-file-height="567" /></a></div>
+<div style="padding:8px"><b><a href="/wiki/Portal:Statistics" title="Portal:Statistics">Statistics</a></b></div>
+</li>
+<li style="margin:0;text-align:center;width:100px;height:130px;float:left">
+<div style="height:40px;padding:8px 2px"><a href="/wiki/File:Telecom-icon.svg" class="image"><img alt="Telecom-icon.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Telecom-icon.svg/40px-Telecom-icon.svg.png" width="40" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Telecom-icon.svg/60px-Telecom-icon.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Telecom-icon.svg/80px-Telecom-icon.svg.png 2x" data-file-width="500" data-file-height="500" /></a></div>
+<div style="padding:8px"><b><a href="/wiki/Portal:Technology" title="Portal:Technology">Technology</a></b></div>
+</li>
+</ul>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"></div>
+<div style="clear:both;"></div>
+</div>
+</div>
+<div class="portal-column-left">
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Projects&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="WikiProjects">WikiProjects</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<ul>
+<li><a href="/wiki/Wikipedia:WikiProject_Computer_science" title="Wikipedia:WikiProject Computer science">Computer science</a></li>
+<li><a href="/wiki/Wikipedia:WikiProject_Computing" title="Wikipedia:WikiProject Computing">Computing</a></li>
+<li><a href="/wiki/Wikipedia:WikiProject_Robotics" title="Wikipedia:WikiProject Robotics">Robotics</a></li>
+<li><a href="/wiki/Wikipedia:WikiProject_Statistics" title="Wikipedia:WikiProject Statistics">Statistics</a></li>
+</ul>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"></div>
+<div style="clear:both;"></div>
+</div>
+</div>
+<div class="portal-column-right">
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Opentask&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Things_to_do">Things to do</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<p><a href="/w/index.php?title=Portal:Machine_learning/Opentask&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Opentask (page does not exist)">Portal:Machine learning/Opentask</a></p>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"></div>
+<div style="clear:both;"></div>
+</div>
+</div>
+<div style="clear:both; width:100%">
+<div style="clear: both; border: solid #aaaaaa; border-width: 1px 1px 0; background: #aaccff; color: white; padding: .1em;padding-top: .1em;padding-left: .1em;padding-right: .1em;padding-bottom: .1em;text-align: center;font-family: sans-serif;font-size:100%;margin-bottom: 0px;">
+<div class="plainlinks" style="float:right;margin-bottom:.1em;font-size:80%; color: white"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning/Wikimedia&amp;action=edit"><span style="color: white">edit</span></a>&#160;&#160;</div>
+<h2 style="font-family:sans-serif; font-size:100%; font-weight:bold; border: none; margin: 0; padding:0; padding-bottom:.1em; color:white;"><span class="mw-headline" id="Wikimedia">Wikimedia</span></h2>
+</div>
+<div style="border: 1px solid #aaaaaa; border-top-width: 1px; vertical-align: top;background: #f9f9ff;opacity: 1; color: black; text-align: left; margin: 0 0 10px; padding: 1em;padding-top: .3em;">
+<p><a href="/w/index.php?title=Portal:Machine_learning/Wikimedia&amp;action=edit&amp;redlink=1" class="new" title="Portal:Machine learning/Wikimedia (page does not exist)">Portal:Machine learning/Wikimedia</a></p>
+<div class="noprint" style="margin:0.3em 0.2em 0.2em 0.3em; padding:0.3em 0.2em 0.2em 0.3em; text-align:right;"></div>
+<div style="clear:both;"></div>
+</div>
+</div>
+<div class="hlist" style="text-align: center; clear:both; padding:0.25em 0 0.5em;">
+<ul>
+<li><b>What are <a href="/wiki/Wikipedia:Portal" title="Wikipedia:Portal">portals</a>?</b></li>
+<li><b><a href="/wiki/Portal:Contents/Portals" title="Portal:Contents/Portals">List of portals</a></b></li>
+<li><b><a href="/wiki/Portal:Featured_portals" title="Portal:Featured portals">Featured portals</a></b></li>
+</ul>
+</div>
+<p><i class="noprint plainlinks"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Portal:Machine_learning&amp;action=purge"><small>Purge server cache</small></a></i></p>
+</div>
+
+
+<!-- 
+NewPP limit report
+Parsed by mw1253
+Cached time: 20170206182908
+Cache expiry: 21600
+Dynamic content: true
+CPU time usage: 0.108 seconds
+Real time usage: 0.174 seconds
+Preprocessor visited node count: 1572/1000000
+Preprocessor generated node count: 0/1500000
+Post‐expand include size: 52021/2097152 bytes
+Template argument size: 3594/2097152 bytes
+Highest expansion depth: 9/40
+Expensive parser function count: 0/500
+Lua time usage: 0.029/10.000 seconds
+Lua memory usage: 1.55 MB/50 MB
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%  122.612      1 -total
+ 26.43%   32.405      1 Portal:Machine_learning/Related_portals
+ 24.56%   30.114      1 Template:Related_portals2
+ 17.97%   22.036      3 Template:Random_portal_component_with_nominate
+ 17.87%   21.914      6 Template:Related_portal_item
+ 16.07%   19.706      6 Template:Portal_image
+ 15.42%   18.903      1 Template:Shortcut
+  9.81%   12.030      9 Portal:Machine_learning/box-header
+  9.44%   11.578     12 Portal:Box-header
+  4.55%    5.582      9 Portal:Machine_learning/box-footer
+-->
+
+<!-- Saved in parser cache with key enwiki:pcache:idhash:44942806-0!*!0!!*!4!* and timestamp 20170206182908 and revision id 676364806
+ -->
+<noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://en.wikipedia.org/w/index.php?title=Portal:Machine_learning&amp;oldid=676364806">https://en.wikipedia.org/w/index.php?title=Portal:Machine_learning&amp;oldid=676364806</a>"					</div>
+				<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Help:Category" title="Help:Category">Categories</a>: <ul><li><a href="/wiki/Category:Portals_under_construction" title="Category:Portals under construction">Portals under construction</a></li></ul></div></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Personal tools</h3>
+						<ul>
+							<li id="pt-anonuserpage">Not logged in</li><li id="pt-anontalk"><a href="/wiki/Special:MyTalk" title="Discussion about edits from this IP address [n]" accesskey="n">Talk</a></li><li id="pt-anoncontribs"><a href="/wiki/Special:MyContributions" title="A list of edits made from this IP address [y]" accesskey="y">Contributions</a></li><li id="pt-createaccount"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=Portal%3AMachine+learning" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li id="pt-login"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=Portal%3AMachine+learning" title="You're encouraged to log in; however, it's not mandatory. [o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Namespaces</h3>
+						<ul>
+															<li  id="ca-nstab-portal" class="selected"><span><a href="/wiki/Portal:Machine_learning" >Portal</a></span></li>
+															<li  id="ca-talk"><span><a href="/wiki/Portal_talk:Machine_learning"  title="Discussion about the content page [t]" accesskey="t" rel="discussion">Talk</a></span></li>
+													</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 id="p-variants-label">
+							<span>Variants</span><a href="#"></a>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Views</h3>
+						<ul>
+															<li id="ca-view" class="selected"><span><a href="/wiki/Portal:Machine_learning" >Read</a></span></li>
+															<li id="ca-edit"><span><a href="/w/index.php?title=Portal:Machine_learning&amp;action=edit"  title="Edit this page [e]" accesskey="e">Edit</a></span></li>
+															<li id="ca-history" class="collapsible"><span><a href="/w/index.php?title=Portal:Machine_learning&amp;action=history"  title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+													</ul>
+					</div>
+										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 id="p-cactions-label"><span>More</span><a href="#"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/w/index.php" id="searchform">
+							<div id="simpleSearch">
+							<input type="search" name="search" placeholder="Search Wikipedia" title="Search Wikipedia [f]" accesskey="f" id="searchInput"/><input type="hidden" value="Special:Search" name="title"/><input type="submit" name="fulltext" value="Search" title="Search Wikipedia for this text" id="mw-searchButton" class="searchButton mw-fallbackSearchButton"/><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton"/>							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" id='p-navigation' aria-labelledby='p-navigation-label'>
+			<h3 id='p-navigation-label'>Navigation</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li id="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li id="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li id="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li id="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-interaction' aria-labelledby='p-interaction-label'>
+			<h3 id='p-interaction-label'>Interaction</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li id="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li id="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li id="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-tb' aria-labelledby='p-tb-label'>
+			<h3 id='p-tb-label'>Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Portal:Machine_learning" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Portal:Machine_learning" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-permalink"><a href="/w/index.php?title=Portal:Machine_learning&amp;oldid=676364806" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/w/index.php?title=Portal:Machine_learning&amp;action=info" title="More information about this page">Page information</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
+			<h3 id='p-coll-print_export-label'>Print/export</h3>
+
+			<div class="body">
+									<ul>
+						<li id="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Portal%3AMachine+learning">Create a book</a></li><li id="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:Book&amp;bookcmd=render_article&amp;arttitle=Portal%3AMachine+learning&amp;returnto=Portal%3AMachine+learning&amp;oldid=676364806&amp;writer=rdf2latex">Download as PDF</a></li><li id="t-print"><a href="/w/index.php?title=Portal:Machine_learning&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-lang' aria-labelledby='p-lang-label'>
+			<h3 id='p-lang-label'>Languages</h3>
+
+			<div class="body">
+									<ul>
+											</ul>
+				<div class='after-portlet after-portlet-lang'><span class="wb-langlinks-add wb-langlinks-link"><a href="https://www.wikidata.org/wiki/Special:NewItem?site=enwiki&amp;page=Portal%3AMachine+learning" title="Add interlanguage links" class="wbc-editpage">Add links</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 16 August 2015, at 14:23.</li>
+											<li id="footer-info-copyright">Text is available under the <a rel="license" href="//en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Attribution-ShareAlike License</a><a rel="license" href="//creativecommons.org/licenses/by-sa/3.0/" style="display:none;"></a>;
+additional terms may apply.  By using this site, you agree to the <a href="//wikimediafoundation.org/wiki/Terms_of_Use">Terms of Use</a> and <a href="//wikimediafoundation.org/wiki/Privacy_policy">Privacy Policy</a>. Wikipedia® is a registered trademark of the <a href="//www.wikimediafoundation.org/">Wikimedia Foundation, Inc.</a>, a non-profit organization.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="https://wikimediafoundation.org/wiki/Privacy_policy" class="extiw" title="wmf:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/wiki/Wikipedia:About" title="Wikipedia:About">About Wikipedia</a></li>
+											<li id="footer-places-disclaimer"><a href="/wiki/Wikipedia:General_disclaimer" title="Wikipedia:General disclaimer">Disclaimers</a></li>
+											<li id="footer-places-contact"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact Wikipedia</a></li>
+											<li id="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
+											<li id="footer-places-cookiestatement"><a href="https://wikimediafoundation.org/wiki/Cookie_statement">Cookie statement</a></li>
+											<li id="footer-places-mobileview"><a href="//en.m.wikipedia.org/w/index.php?title=Portal:Machine_learning&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+											<li id="footer-copyrightico">
+							<a href="https://wikimediafoundation.org/"><img src="/static/images/wikimedia-button.png" srcset="/static/images/wikimedia-button-1.5x.png 1.5x, /static/images/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation"/></a>						</li>
+											<li id="footer-poweredbyico">
+							<a href="//www.mediawiki.org/"><img src="/static/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/poweredby_mediawiki_132x47.png 1.5x, /static/images/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.108","walltime":"0.174","ppvisitednodes":{"value":1572,"limit":1000000},"ppgeneratednodes":{"value":0,"limit":1500000},"postexpandincludesize":{"value":52021,"limit":2097152},"templateargumentsize":{"value":3594,"limit":2097152},"expansiondepth":{"value":9,"limit":40},"expensivefunctioncount":{"value":0,"limit":500},"entityaccesscount":{"value":0,"limit":400},"timingprofile":["100.00%  122.612      1 -total"," 26.43%   32.405      1 Portal:Machine_learning/Related_portals"," 24.56%   30.114      1 Template:Related_portals2"," 17.97%   22.036      3 Template:Random_portal_component_with_nominate"," 17.87%   21.914      6 Template:Related_portal_item"," 16.07%   19.706      6 Template:Portal_image"," 15.42%   18.903      1 Template:Shortcut","  9.81%   12.030      9 Portal:Machine_learning/box-header","  9.44%   11.578     12 Portal:Box-header","  4.55%    5.582      9 Portal:Machine_learning/box-footer"]},"scribunto":{"limitreport-timeusage":{"value":"0.029","limit":"10.000"},"limitreport-memusage":{"value":1627252,"limit":52428800}},"cachereport":{"origin":"mw1253","timestamp":"20170206182908","ttl":21600,"transientcontent":true}}});});</script><script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":235,"wgHostname":"mw1253"});});</script>
+	
+ <div class="comments_anchor"></div>
+ <div class="comments">
+ <div id="disqus_thread"></div>
+ </div>
+    <script type="text/javascript">
+        var disqus_shortname = 'wikicomments'; // cannot be changed
+        var disqus_identifier = '/wiki/Portal:Machine_learning';
+        var disqus_url = 'http://dotted-carrier-798.appspot.com/wiki/Portal:Machine_learning';
+ 
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+<script>
+var gComments_height = 0;
+var gInit_Doc_height = 0;
+var hScreen = 0;
+var gRan = false;
+var sRatio = '28%';
+var ratio = 0.28;
+
+$(document).ready(function(e) {
+  gInit_Doc_height = $(document).height();
+	gComments_height = $("#disqus_thread").height();
+  thread_height = $("#disqus_thread").height();
+  hScreen = $(window).height();
+  console.log("thread_height = " + thread_height);
+  console.log("($(this).scrollTop()+hScreen*(1-ratio)) = " + ($(this).scrollTop()+hScreen*(1-ratio)));
+  console.log("$('.comments').css('position') = " + $('.comments').css('position'));
+  console.log("gInit_Doc_height = " + gInit_Doc_height);
+  
+  $('.comments').offset({ top: hScreen*(1-ratio)});
+  $('.comments').css({
+        'position': 'absolute',
+        'background': '#F6F6F6',
+        'bottom': '0px',
+        'width': '100%',
+        'height': sRatio,
+        'z-index': '100',
+        'border-top': '1px solid #a7d7f9'
+        });
+  $('.comments').offset({ top: hScreen*(1-ratio)});
+  console.log("$('.comments').css('position') = " + $('.comments').css('position'));
+  
+  $('.comments_anchor').css({
+          'height': 0,
+        });
+});
+
+$(window).scroll(function(e) {
+	var anchor_top = $(".comments_anchor").offset().top;
+	var anchor_height = $(".comments_anchor").height();
+  var comments_top = $("#disqus_thread").offset().top;
+	var top = $(this).scrollTop();
+  var hScreen = $(window).height();
+  gComments_height = $("#disqus_thread").height();
+  thread_height = $("#disqus_thread").height();
+	var hDoc = $(document).height();
+	console.log("---------------------------------------------------------------------------");
+	console.log('anchor_top = ' + anchor_top);
+	console.log('comments_top = ' + comments_top);
+	console.log("top = " + top);
+	console.log("hDoc = " + hDoc);
+  console.log("gInit_Doc_height = " + gInit_Doc_height);
+  console.log("anchor_height = " + anchor_height);
+  console.log("gComments_height = " + gComments_height);
+  console.log("$('.comments').css('position') = " + $('.comments').css('position'));
+  //console.log("$("#footer").offset().top" = " + $("#footer").offset().top);
+	console.log("(hScreen*(1-ratio)) = " + ((hScreen*(1-ratio))));
+	//console.log("(top+(hScreen*(1-ratio))) = " + (top+(hScreen*(1-ratio))));
+	//console.log('$("#disqus_thread").height() = ' + $("#disqus_thread").height());
+	//console.log('$(".comments_anchor").height() = ' + $(".comments_anchor").height());
+	
+  // Check if the user has scrolled pass the comments anchor and make the comments part of the page.
+		if ((top+(hScreen*(1-ratio))) >= anchor_top && $('.comments').css('position') != 'relative')
+    	{    
+    		//$('.comments').css({
+    		//	'position': 'relative'
+    		//});
+        $('.comments').offset({ top: anchor_top});
+        
+    		$('.comments_anchor').css('height', 0);
+    	}
+    	else if ((top+(hScreen*(1-ratio))) < anchor_top && $('.comments').css('position') != 'static')
+		{    
+    		// Change the CSS and put it back to its original position.
+    		//$('.comments').css({
+    		//	'position': 'static',
+          //'bottom': '0px',
+          //'height': sRatio,        
+    		//});
+        $('.comments').offset({ top: ($(this).scrollTop()+(hScreen*(1-ratio)))});
+        
+        $('.comments_anchor').css('height', thread_height); //+(hScreen*ratio)
+      }
+});
+</script>
+
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></body>
+</html>
