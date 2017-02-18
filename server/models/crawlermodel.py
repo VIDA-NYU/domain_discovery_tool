@@ -1317,8 +1317,9 @@ class CrawlerModel:
 
       if (session['domainId'] in self._onlineClassifiers) and (not applyTagFlag) and (tag in ["Relevant", "Irrelevant"]):
         self._onlineClassifiers.pop(session['domainId'])
-        self.updateOnlineClassifier(session)
+      
     return "Completed Process."
+  
   # Adds tag to terms (if applyTagFlag is True) or removes tag from terms (if applyTagFlag is
   # False).
   def setTermsTag(self, terms, tag, applyTagFlag, session):
