@@ -1,9 +1,0 @@
-https://www.amazon.com/Machine-Learning-Probabilistic-Perspective-Computation/dp/0262018020
-http://waitbutwhy.com/2015/01/artificial-intelligence-revolution-1.html
-https://splunkbase.splunk.com/app/2890/
-https://cloud.google.com/products/machine-learning/
-https://www.csail.mit.edu/
-http://www.springer.com/computer/ai/journal/10994
-https://danielmiessler.com/blog/machine-learning-new-statistics/
-http://www.learningmachines101.com/
-http://dotted-carrier-798.appspot.com/wiki/Portal:Machine_learning
