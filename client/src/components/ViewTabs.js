@@ -203,6 +203,7 @@ class ViewTabSnippets extends React.Component{
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages,
     });
+    this.updateOnlineClassifier(this.props.session);
   }
 
   componentWillReceiveProps(nextProps, nextState){
@@ -367,27 +368,7 @@ class ViewTabs extends React.Component {
       this.setState({"data":data});
   }
 
-  componentWillMount(){
-    let paginas = [];
-    $.post(
-      '/getPages',
-      {'session': JSON.stringify(this.props.session)},
-      function(pages) {
-        paginas =pages["data"];
-        this.setState({session:this.props.session, pages:paginas, sessionString: JSON.stringify(this.props.session)});
-        //this.forceUpdate();
-      }.bind(this)
-    );
-  //  csv("https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv", this.processResults);
-  }
-
-  handleChange = (value) => {
-    this.setState({
-      slideIndex: value,
-    });
-  };
-
-  loadPages(session){
+  getPages(session){
     let paginas = [];
     $.post(
       '/getPages',
@@ -398,6 +379,21 @@ class ViewTabs extends React.Component {
         //this.forceUpdate();
       }.bind(this)
     );
+  }
+    
+  componentWillMount(){
+      //  csv("https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv", this.processResults);
+      this.getPages(this.props.session);
+  }
+
+  handleChange = (value) => {
+    this.setState({
+      slideIndex: value,
+    });
+  };
+
+  loadPages(session){
+      this.getPages(session);
   }
 
   componentWillReceiveProps(nextProps){
@@ -412,16 +408,7 @@ class ViewTabs extends React.Component {
   }
 
   deletedFilter(sessionTemp){
-    let paginas = [];
-    $.post(
-      '/getPages',
-      {'session': JSON.stringify(sessionTemp)},
-      function(pages) {
-        paginas =pages["data"];
-        this.setState({session:sessionTemp, pages:paginas, sessionString: JSON.stringify(sessionTemp)});
-        //this.forceUpdate();
-      }.bind(this)
-    );
+    this.getPages(sessionTemp);	
     this.props.deletedFilter(sessionTemp);
   }
 
@@ -434,27 +421,6 @@ class ViewTabs extends React.Component {
 
 
   render() {
-    /*let dimensions= ["petal_length", "petal_width", "sepal_length", "sepal_width"];
-    let dnames = ["Petal Length", "Petal Width", "Sepal Length", "Sepal Width"];
-    let pairs = [];
-    for (let i = 0; i < dimensions.length-1; i++){
-      for (let j = i+1; j < dimensions.length; j++){
-        pairs.push({'dimensions':[dimensions[i], dimensions[j]],
-                    'names': [dnames[i], dnames[j]]});
-      }
-    }
-
-    var urls = [];
-    var urlName = ["url1", "url12", "url13", "url14", "url15"];
-    var urlDescription = ["urlDescription1", "urlDescription2", "urlDescription3", "urlDescription4", "urlDescription5"];
-
-    for (let i = 0; i < urlName.length; i++) {
-        urls.push({
-            name: urlName[i],
-            description: urlDescription[i],
-        });
-    }
-*/
     if(Object.keys(this.state.pages).length>0){
       return (
         <div>
@@ -496,10 +462,3 @@ class ViewTabs extends React.Component {
 }
 
 export default ViewTabs;
-/*  {pairs.map((p)=>{
-      return (
-          <Scatterplot title={p['names'][0] + " x " + p['names'][1]} data={this.state.data}
-              xAcessor={(d)=>d[p['dimensions'][0]]} yAcessor={(d)=>d[p['dimensions'][1]]} labelAcessor={(d)=>d["species"]}
-              xLabel={p['names'][0]} yLabel={p['names'][1]}/>
-        )
-  })}*/
