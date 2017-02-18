@@ -230,7 +230,53 @@ class ViewTabSnippets extends React.Component{
     console.log("ViewTabSnippets shouldComponentUpdate after");
      return false;
   }
+  removeAddTags(urls, current_tag, applyTagFlag ){
+    $.post(
+      '/setPagesTag',
+      {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
+      function(pages) {
+        console.log("UPDATING PAGES");
+        this.props.reloadPages(this.props.session);
+      }.bind(this)
+    );
+  }
+  //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
+  onTagActionClicked(ev){
+    var tag = ev.target.value;
+    var url = ev.target.id;
+    var urls=[];
+    var action = 'Apply';
+    var isTagPresent = false;
 
+      if(this.state.pages[url]["tags"]){
+         isTagPresent = Object.keys(this.state.pages[url]["tags"]).map(key => this.state.pages[url]["tags"][key]).some(function(itemTag) {
+          return itemTag == tag;});
+        if(isTagPresent && (this.state.pages[url]["tags"][Object.keys(this.state.pages[url]["tags"]).length-1]).toString()===tag)
+          action = 'Remove';
+      }
+      // Apply or remove tag from urls.
+      var applyTagFlag = action == 'Apply';
+      var urls = [];
+      urls.push(url);
+      if (applyTagFlag && !isTagPresent) {
+        // Removes tag when the tag is present for item, and applies only when tag is not present for
+        // item.
+        console.log(tag);
+        if(this.state.pages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
+            var temp = Object.keys(this.state.pages[url]["tags"]).map(key => {
+                        var itemTag = this.state.pages[url]["tags"][key].toString();
+                        if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
+                          this.removeAddTags(urls, itemTag, false );
+                        }
+                      });
+        }
+        this.removeAddTags(urls, tag, applyTagFlag );
+      }
+      else{
+        this.removeAddTags(urls, tag, applyTagFlag );
+      }
+
+    }
 
 
   select = (index) => this.setState({selectedIndex: index});
@@ -240,43 +286,43 @@ class ViewTabSnippets extends React.Component{
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var image ='url image';
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-                      //let currentTag=
-                    let colorTagRelev="";
+                    let colorTagRelev = "";
                     let colorTagIrrelev="";
                     let colorTagNeutral="";
-                    if(this.state.pages[k]["tags"] === undefined || this.state.pages[k]["tags"] === null){
-                        colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
+                    let uniqueTag="";
+                    if(this.state.pages[k]["tags"]){
+                     uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length===1) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
+                     colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
+                     colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
+                     colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
                     }
                     else{
-                      colorTagRelev=(this.state.pages[k]["tags"].toString()==='Relevant')?"#4682B4":"silver";
-                      colorTagIrrelev=(this.state.pages[k]["tags"].toString()==='Irrelevant')?"#CD5C5C":"silver";
-                      colorTagNeutral=(this.state.pages[k]["tags"].toString()!=='Relevant' && this.state.pages[k]["tags"].toString()!=="Irelevant")?'silver':"silver";
+                      colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
                     }
-                        return <ListItem key={index}
-                        >
-                        <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
-                          <div>
-                            <p style={{float:'left'}}><img src={this.state.pages[k]["image_url"]} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
-                            <p style={{float:'right'}}>
-                            <ButtonGroup bsSize="small">
-                              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                                <Button style={{backgroundColor:colorTagRelev}} >Relev</Button>
-                              </OverlayTrigger>
-                              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                                <Button style={{backgroundColor:colorTagIrrelev}} >Irrel</Button>
-                              </OverlayTrigger>
-                              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                                <Button style={{backgroundColor:colorTagNeutral}} >Neutr</Button>
-                              </OverlayTrigger>
-                            </ButtonGroup></p>
-                            <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.state.pages[k]["title"] + this.state.pages[k]["tags"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
-                          </div>
-                          <br/>
-                          <div style={{marginTop:'-3px'}}> <p>{this.state.pages[k]["snippet"]}</p> </div>
-                          <Divider />
-                        </div>
-                        </ListItem>;
-                      });
+                    return <ListItem key={index}>
+                            <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
+                              <div>
+                                <p style={{float:'left'}}><img src={this.state.pages[k]["image_url"]} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+                                <p style={{float:'right'}}>
+                                <ButtonGroup bsSize="small">
+                                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
+                                    <Button id={k} value={"Relevant"} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagRelev}} >Relev</Button>
+                                  </OverlayTrigger>
+                                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
+                                    <Button id={k} value={"Irrelevant"} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagIrrelev}} >Irrel</Button>
+                                  </OverlayTrigger>
+                                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
+                                    <Button id={k} value={"Neutral"} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagNeutral}} >Neutr</Button>
+                                  </OverlayTrigger>
+                                </ButtonGroup></p>
+                                <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.state.pages[k]["title"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
+                              </div>
+                              <br/>
+                              <div style={{marginTop:'-3px'}}> <p>{this.state.pages[k]["snippet"]}</p> </div>
+                              <Divider />
+                            </div>
+                            </ListItem>;
+                    });
 
     return (
       <div>
@@ -345,22 +391,30 @@ class ViewTabs extends React.Component {
     });
   };
 
+  loadPages(session){
+    let paginas = [];
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(session)},
+      function(pages) {
+        paginas =pages["data"];
+        this.setState({session:session, pages:paginas, sessionString: JSON.stringify(session)});
+        //this.forceUpdate();
+      }.bind(this)
+    );
+  }
+
   componentWillReceiveProps(nextProps){
     console.log("viwtabs componentWillReceiveProps before");
     if (JSON.stringify(nextProps.session) === this.state.sessionString) {
         return;
     }
     console.log("viwtabs componentWillReceiveProps after");
-    let paginas = [];
-    $.post(
-      '/getPages',
-      {'session': JSON.stringify(nextProps.session)},
-      function(pages) {
-        paginas =pages["data"];
-        this.setState({session:nextProps.session, pages:paginas, sessionString: JSON.stringify(nextProps.session)});
-        //this.forceUpdate();
-      }.bind(this)
-    );
+    this.loadPages(nextProps.session);
+  }
+
+  reloadPages(sessionTemp){
+    this.loadPages(sessionTemp);
   }
 
   deletedFilter(sessionTemp){
@@ -434,7 +488,7 @@ class ViewTabs extends React.Component {
 
             <div style={styles.headline}>
               <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
-              <ViewTabSnippets session={this.state.session} pages={this.state.pages}/>
+              <ViewTabSnippets session={this.state.session} pages={this.state.pages} reloadPages={this.reloadPages.bind(this)}/>
             </div>
 
             <div style={styles.headline}>
