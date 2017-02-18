@@ -196,7 +196,7 @@ class Page:
     res = self._crawler.queryWeb(terms, session)
     cherrypy.response.headers["Content-Type"] = "application/json;"
     return json.dumps(res)
-  
+
   # Submits a query for a list of terms, e.g. 'ebola disease' to the seedfinder
   @cherrypy.expose
   def runSeedFinder(self, terms, session):
@@ -204,7 +204,7 @@ class Page:
     res = self._crawler.runSeedFinder(terms, session)
     cherrypy.response.headers["Content-Type"] = "application/json;"
     return json.dumps(res)
-  
+
   # Add crawler
   @cherrypy.expose
   def addCrawler(self, index_name):
@@ -323,8 +323,9 @@ class Page:
   def setPagesTag(self, pages, tag, applyTagFlag, session):
     session = json.loads(session)
     self.lock.acquire()
-    self._crawler.setPagesTag(pages, tag, applyTagFlag, session)
+    output = self._crawler.setPagesTag(pages, tag, applyTagFlag, session)
     self.lock.release()
+    return output
 
 
   # Adds tag to terms (if applyTagFlag is True) or removes tag from terms (if applyTagFlag is

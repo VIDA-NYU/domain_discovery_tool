@@ -40,9 +40,9 @@ class CrawlerModelAdapter:
     return self._crawlerModel.queryWeb(terms, session=session)
 
   # Submits a query for a list of terms, e.g. 'ebola disease' to the seedfinder
-  def runSeedFinder(self, terms, session):  
+  def runSeedFinder(self, terms, session):
     return self._crawlerModel.runSeedFinder(terms, session)
-    
+
   # Add crawler
   def addCrawler(self, index_name):
     self._crawlerModel.addCrawler(index_name)
@@ -119,8 +119,8 @@ class CrawlerModelAdapter:
   def setPagesTag(self, pages, tag, applyTagFlag, session):
     pages = CrawlerModelAdapter.extractListParam(pages)
     applyTagFlag =  CrawlerModelAdapter.extractBooleanParam(applyTagFlag)
-    self._crawlerModel.setPagesTag(pages, tag, applyTagFlag, session)
-
+    output = self._crawlerModel.setPagesTag(pages, tag, applyTagFlag, session)
+    return output
 
   # Adds tag to terms (if applyTagFlag is True) or removes tag from terms (if applyTagFlag is
   # False).
@@ -222,4 +222,3 @@ class SeedCrawlerModelAdapter(CrawlerModelAdapter):
 
   def make_topic_model(self, session, tokenizer, vectorizer, model, ntopics):
     return self._crawlerModel.make_topic_model(session, tokenizer, vectorizer, model, ntopics)
-  

@@ -190,7 +190,7 @@ class CrawlerModel:
 
     # Execute SeedFinder in a new thread
     p = self.pool.submit(execSeedFinder, terms, es_info)
-    
+
     return self.seed_finder_done_callback(p)
 
   def createModel(self, session, zip=True):
@@ -1318,7 +1318,7 @@ class CrawlerModel:
       if (session['domainId'] in self._onlineClassifiers) and (not applyTagFlag) and (tag in ["Relevant", "Irrelevant"]):
         self._onlineClassifiers.pop(session['domainId'])
         self.updateOnlineClassifier(session)
-
+    return "Completed Process."
   # Adds tag to terms (if applyTagFlag is True) or removes tag from terms (if applyTagFlag is
   # False).
   def setTermsTag(self, terms, tag, applyTagFlag, session):
@@ -1717,7 +1717,7 @@ class CrawlerModel:
     n_pages = output[index:]
     n = int(n_pages.split(":")[1])
     return n
-  
+
   def callDownloadUrls(self, query, urls_str, es_info):
 
     chdir(environ['DDT_HOME']+'/server/seeds_generator')
@@ -1739,7 +1739,7 @@ class CrawlerModel:
         print output
         print errors
         num_pages = num_pages + self.getNumPagesDownloaded(output)
-        
+
     if len(urls[url_size:]) < step:
       comm = "java -cp target/seeds_generator-1.0-SNAPSHOT-jar-with-dependencies.jar Download_urls -q \"" + query + "\" -u \"" + " ".join(urls[url_size:]) + "\"" \
            " -i " + es_info['activeCrawlerIndex'] + \
