@@ -4,25 +4,16 @@ import logoNYU from '../images/nyu_logo_purple.png';
 
 import { } from 'material-ui/styles/colors';
 
-//import Sidebar from 'react-side-bar';
-//import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import IconButton from 'material-ui/IconButton';
 //import Body from './Body';
-
-
-//import IconMenu from 'material-ui/IconMenu';
 import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import FontIcon from 'material-ui/FontIcon';
 import Model from 'material-ui/svg-icons/image/blur-linear';
 import Domain from 'material-ui/svg-icons/maps/transfer-within-a-station';
-//import {fullWhite} from 'material-ui/styles/colors';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 import { FormControl} from 'react-bootstrap';
 import Search from 'material-ui/svg-icons/action/search';
-
-//import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
-//import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import Body from './Body';
 import TextField from 'material-ui/TextField';
@@ -104,18 +95,17 @@ class ToolBarHeader extends Component {
    }
 
    render() {
-     console.log("ToolBarHeader render");
+     /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
+     </IconButton>}*/
      return (
        <Toolbar style={styles.toolBarHeader}>
          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
-         <ToolbarSeparator  />
-         <IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
-         </IconButton>
+         <ToolbarSeparator style={{ marginTop:"5px"}} />
          <Link to='/'>
            <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
            </IconButton>
          </Link>
-         <ToolbarSeparator  />
+         <ToolbarSeparator style={{ marginTop:"5px"}} />
         <TextField
          style={{width:'35%',marginRight:'-120px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
          hintText="Search ..."
@@ -123,7 +113,7 @@ class ToolBarHeader extends Component {
          inputStyle={{marginBottom:10, marginLeft:10}}
           underlineShow={false}
          value={this.state.term}
-         onKeyPress={(e) => {(e.key === 'Enter') ? this.filterKeyword(this.state.term) : null}} 
+         onKeyPress={(e) => {(e.key === 'Enter') ? this.filterKeyword(this.state.term) : null}}
          onChange={e => this.setState({ term: e.target.value })}
         //  hintText="Hint Text"
         //  onChange={this.handleChange.bind(this)}
@@ -147,12 +137,10 @@ class Header extends Component {
 };
 
 componentWillMount(){
-    console.log("header componentWillMount");
     this.setState({idDomain: this.props.location.query.idDomain});
 };
 
 componentWillReceiveProps  = (newProps, nextState) => {
-  console.log("header componentWillReceiveProps");
   if(newProps.location.query.idDomain ===this.state.idDomain){
     return;
   }
@@ -161,7 +149,6 @@ componentWillReceiveProps  = (newProps, nextState) => {
 };
 
 shouldComponentUpdate(nextProps, nextState) {
- console.log("header shouldComponentUpdate");
   if(nextProps.location.query.idDomain ===this.state.idDomain){
         return false;
    }
