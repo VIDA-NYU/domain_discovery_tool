@@ -196,6 +196,7 @@ class ViewTabSnippets extends React.Component{
       sessionString:"",
       session:{},
       selectedIndex: 0,
+      accuracyOnlineLearning:0,
     };
   }
 
@@ -216,7 +217,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || nextState.selectedIndex !== this.state.selectedIndex) { //&&
+    if ( nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || nextState.selectedIndex !== this.state.selectedIndex) { //&&
          return true;
     }
     return false;
@@ -226,19 +227,20 @@ class ViewTabSnippets extends React.Component{
 	'/updateOnlineClassifier',
 	{'session':  JSON.stringify(sessionTemp)},
 	function(accuracy) {
-	    console.log("ACCURACY");
-	    console.log(accuracy);
+      this.setState({
+          accuracyOnlineLearning:accuracy,
+      });
 	}.bind(this)
     );
   }
-  
+
   removeAddTags(urls, current_tag, applyTagFlag ){
     $.post(
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
 	function(pages) {
           this.props.reloadPages(this.props.session);
-	  this.updateOnlineClassifier(this.props.session);
+          this.updateOnlineClassifier(this.props.session);
       }.bind(this)
     );
   }
@@ -325,13 +327,17 @@ class ViewTabSnippets extends React.Component{
 
     return (
       <div>
-      {
+      <p style={{color: "#FFFFFF",}}>-</p>
+      <div style={{marginBottom:"50px"}}>
+        <p style={{float:"left", color: "#757575", fontSize: "14px", fontWeight: "500", paddingLeft: "72px",}}>{urlsList.length} pages </p>
+        <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
+      </div>
+      <div style={{marginTop:"50px"}}>
         <List>
-        <Subheader inset={true}>{urlsList.length} pages </Subheader>
         {urlsList}
         <Divider inset={true} />
         </List>
-      }
+      </div>
     </div>
   );
   }
@@ -380,7 +386,7 @@ class ViewTabs extends React.Component {
       }.bind(this)
     );
   }
-    
+
   componentWillMount(){
       //  csv("https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv", this.processResults);
       this.getPages(this.props.session);
@@ -408,7 +414,7 @@ class ViewTabs extends React.Component {
   }
 
   deletedFilter(sessionTemp){
-    this.getPages(sessionTemp);	
+    this.getPages(sessionTemp);
     this.props.deletedFilter(sessionTemp);
   }
 
