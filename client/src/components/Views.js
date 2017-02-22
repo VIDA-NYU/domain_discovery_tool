@@ -387,6 +387,7 @@ class Views extends React.Component {
       sessionString:"",
       session:{},
       chipData: [],
+      lengthPages: 1,
     };
   }
 
@@ -398,7 +399,7 @@ class Views extends React.Component {
       {'session': JSON.stringify(session)},
       function(pages) {
         paginas =pages["data"];
-        this.setState({session:session, pages:paginas, sessionString: JSON.stringify(session)});
+        this.setState({session:session, pages:paginas, sessionString: JSON.stringify(session), lengthPages : Object.keys(paginas).length});
       }.bind(this)
     );
   }
@@ -443,7 +444,9 @@ class Views extends React.Component {
   }
 
   render() {
-    if(Object.keys(this.state.pages).length>0){
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} />
+    : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
+
       return (
         <div>
           <Tabs
@@ -459,7 +462,7 @@ class Views extends React.Component {
           <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
             <div style={styles.headline}>
               <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
-              <ViewTabSnippets session={this.state.session} pages={this.state.pages} />
+              {showPages}
             </div>
             <div style={styles.headline}>
             </div>
@@ -471,10 +474,6 @@ class Views extends React.Component {
           </SwipeableViews>
         </div>
       );
-    }
-    return(
-      <CircularProgressSimple />
-    );
 
   }
 }
