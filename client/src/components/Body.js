@@ -30,10 +30,10 @@ const styles = {
     padding: 8,
   },
   content: {
-    marginLeft: '5px',
-    marginTop: '65px',
-    marginRight: '0px',
+    marginTop: '68px',
+    marginRight: '5px',
     marginBottom: '8px',
+    marginLeft: '5px',
     backgroundColor: '#FFFFFF',
     borderRadius: '10px 10px 10px 10px',
   },
@@ -214,7 +214,7 @@ class Body extends Component{
     const sidebar = (<div style={{width:this.state.size}}>
       <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:350, background:"white"}}>
         <Row className="Menus-child">
-          <DomainInfo statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
+          <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
         </Row>
         <Row className="Menus-child">
           <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} uploadDDT={this.uploadDDT.bind(this)}/>

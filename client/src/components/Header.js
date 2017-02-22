@@ -176,7 +176,7 @@ render() {
       <ToolBarHeader currentDomain={this.props.location.query.nameDomain} filterKeyword={this.filterKeyword.bind(this)} />
       </AppBar>
 
-      <Body currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>
+      <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>
 
     </div>
   );
