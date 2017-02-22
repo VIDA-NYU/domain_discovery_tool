@@ -1,6 +1,5 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
-// From https://github.com/oliviertassinari/react-swipeable-views
 import SwipeableViews from 'react-swipeable-views';
 import Checkbox from 'material-ui/Checkbox';
 
@@ -265,7 +264,6 @@ class ViewTabSnippets extends React.Component{
 
   //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
   onTagActionClicked(ev){
-    console.log(ev.target.id);
     var idButton = (ev.target.id).split("-")
     var tag = idButton[0];
     var url = ev.target.value;
@@ -285,14 +283,12 @@ class ViewTabSnippets extends React.Component{
       var urls = [];
       urls.push(url);
       if (applyTagFlag && !isTagPresent) {
-        // Removes tag when the tag is present for item, and applies only when tag is not present for
-        // item.
+        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
         var auxKey = "0";
         if(this.pages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
             var temp = Object.keys(this.pages[url]["tags"]).map(key => {
                         var itemTag = this.pages[url]["tags"][key].toString();
                         if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
-                          console.log(key);
                           delete this.pages[url]["tags"][key];
                           this.removeAddTags(urls, itemTag, false );
                         }
@@ -313,9 +309,6 @@ class ViewTabSnippets extends React.Component{
 
   render(){
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    var image ='url image';
-    console.log("PAGES");
-    console.log(this.pages);
     var cont=0;
     var urlsList = Object.keys(this.pages).map((k, index)=>{
                     let colorTagRelev = "";
@@ -376,8 +369,6 @@ class ViewTabSnippets extends React.Component{
   }
 }
 
-
-
 class CircularProgressSimple extends React.Component{
   render(){
     return(
@@ -386,9 +377,6 @@ class CircularProgressSimple extends React.Component{
     </div>
   );}
 }
-
-
-
 
 class Views extends React.Component {
   constructor(props){

@@ -44,7 +44,6 @@ class Filters extends Component{
     }
 
     componentWillMount(){
-      console.log("filter componentWillMount");
      this.setState({
        expanded: this.props.statedCard,
        session:this.props.session,
@@ -54,11 +53,9 @@ class Filters extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
-      console.log("filter before componentWillReceiveProps");
       if(JSON.stringify(nextProps.session) === this.state.sessionString || nextProps.statedCard === this.state.statedCard) {
             return;
       }
-      console.log("filter after componentWillReceiveProps");
         // Calculate new state
       if(nextProps.statedCard !== this.state.statedCard){
         this.setState({expanded: nextProps.statedCard}, function() {
@@ -104,7 +101,6 @@ class Filters extends Component{
     }
 
     updateSession(newSession){
-      console.log('filter newSession');
       this.setState({
         session:newSession,
         sessionString:JSON.stringify(newSession),
