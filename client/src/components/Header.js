@@ -156,10 +156,8 @@ shouldComponentUpdate(nextProps, nextState) {
 };
 
 filterKeyword(newFilterKeyword){
-  if(this.state.filterKeyword !== newFilterKeyword){
     this.setState({filterKeyword:newFilterKeyword});
     this.forceUpdate();
-  }
 }
 
 render() {
