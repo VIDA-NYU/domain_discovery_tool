@@ -53,15 +53,16 @@ class Filters extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
-      if(JSON.stringify(nextProps.session) === this.state.sessionString || nextProps.statedCard === this.state.statedCard) {
-            return;
-      }
-        // Calculate new state
+      // Calculate new state
       if(nextProps.statedCard !== this.state.statedCard){
         this.setState({expanded: nextProps.statedCard}, function() {
              this.setState({expanded: nextProps.statedCard});
         });
       }
+      if(JSON.stringify(nextProps.session) === this.state.sessionString) {
+            return;
+      }
+
       if(JSON.stringify(nextProps.session) !== this.state.sessionString){
         this.setState({
           session:nextProps.session,
@@ -128,7 +129,7 @@ class Filters extends Component{
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader
              title="Filters"
-             avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<CheckList />} />}
+             avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<CheckList />} />}
              style={styles.cardHeader}
              actAsExpander={true}
              showExpandableButton={true}
