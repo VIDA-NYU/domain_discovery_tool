@@ -73,13 +73,7 @@ class LoadSearch extends Component{
 
   //Check if the component should be updated or not
   shouldComponentUpdate(){
-    console.log("should update: " + this.state.update);
-    if(this.state.update){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return true;
 
   }
 

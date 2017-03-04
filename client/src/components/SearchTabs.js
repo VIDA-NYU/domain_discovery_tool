@@ -57,6 +57,8 @@ class SearchTabs extends React.Component {
         '/queryWeb',
         {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
         function(data) {
+          console.log(data);
+          console.log("CONCLUDED PROCESSSSSSSS)");
           this.props.uploadDDT(false, "process*concluded");
           }.bind(this)).fail(function() {
               console.log("Something wrong happen. Try again.");

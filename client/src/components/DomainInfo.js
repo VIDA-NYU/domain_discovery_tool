@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {Card, CardHeader, CardMedia} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
-
+import $ from 'jquery';
 import Home from 'material-ui/svg-icons/action/home';
-
+//import Bars from 'react-bars';
 const styles = {
   card: {
 
@@ -37,11 +37,23 @@ class DomainInfo extends Component{
     super(props);
     this.state = {
       expanded: this.props.statedCard,
+      currentTags: '',
     };
   };
 
+  getTags(){
+    $.post(
+      '/getAvailableTags',
+      {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+      function(tagsDomain) {
+        this.setState({currentTags: tagsDomain['tags']});
+      }.bind(this)
+    );
+  }
+
   componentWillMount = () => {
-   this.setState({expanded: this.props.statedCard, });
+    var aux = this.getTags();
+    this.setState({expanded: this.props.statedCard, });
   };
 
   componentWillReceiveProps  = (newProps) => {
@@ -53,6 +65,7 @@ class DomainInfo extends Component{
   handleExpandChange = (expanded) => {
     this.setState({expanded: expanded});
     if(expanded){
+      this.getTags();
       this.props.setActiveMenu(expanded, 2);
     }
   };
@@ -73,7 +86,6 @@ class DomainInfo extends Component{
   };
 
   render(){
-
     return(
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader
@@ -84,7 +96,11 @@ class DomainInfo extends Component{
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-            <p>Information about current domain.</p>
+            <p>Domain: {this.props.nameDomain}</p>
+            <p>Labeled data:</p>
+            <p style={{paddingLeft:"8px" ,fontSize: "12px", }}>Relevant: {this.state.currentTags["Relevant"]}</p>
+            <p style={{paddingLeft:"8px",fontSize: "12px", }}>Irrelevant: {this.state.currentTags["Irrelevant"]}</p>
+            <p style={{paddingLeft:"8px",fontSize: "12px", }}>Neutral: {this.state.currentTags["Neutral"]}</p>
            </CardMedia>
        </Card>
     )

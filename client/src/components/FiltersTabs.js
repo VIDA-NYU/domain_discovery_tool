@@ -52,28 +52,22 @@ class LoadQueries extends React.Component {
       '/getAvailableQueries',
       {'session': JSON.stringify(this.props.session)},
       function(queriesDomain) {
-        //console.log('currentQueries');
-        console.log(queriesDomain);
         this.setState({currentQueries: queriesDomain, session:this.props.session, queryString: JSON.stringify(this.props.session['selected_queries'])});
       }.bind(this)
     );
   }
 
   componentWillMount(){
-    console.log("load Query");
-    console.log(this.props.session);
     this.getAvailableQueries();
   }
   componentWillReceiveProps(nextProps){
     if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString ) {
       this.setState({ flat:true});
       if(this.props.update){
-        console.log("update query");
         this.getAvailableQueries();
       }
       return;
     }
-    console.log("FiltersTabs componentWillReceiveProps after");
     // Calculate new state
     this.setState({
       session:nextProps.session, queryString: JSON.stringify(nextProps.session['selected_queries']), flat:true
@@ -81,12 +75,10 @@ class LoadQueries extends React.Component {
 
   }
   shouldComponentUpdate(nextProps, nextState){
-    console.log("shouldComponentUpdate before");
     if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString && this.state.flat===true) {
       if(this.props.update){ console.log("FiltersTabs-reupload");return true;}
       else {return false;}
     }
-    console.log("shouldComponentUpdate after");
     return true;
   }
 
@@ -105,18 +97,14 @@ class LoadQueries extends React.Component {
 
   render(){
     if(this.state.currentQueries!==undefined){
-      console.log("render ");
-      console.log("session: "+ this.state.queryString);
       return(
         <div>
         {Object.keys(this.state.currentQueries).map((query, index)=>{
-          console.log("k: " + query + ", index: " + index);
-          var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")";
+          var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
           var checkedQuery=false;
           var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
           if(queries.includes(query))
             checkedQuery=true;
-          console.log("label: " + query +", valueChecked: " + checkedQuery);
           return <Checkbox label={labelQuery} checked={checkedQuery} style={styles.checkbox}  onClick={this.addQuery.bind(this,query)}/>
         })}
         </div>
@@ -251,12 +239,9 @@ class FiltersTabs extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("FiltersTabs  shouldComponentUpdate before");
-    console.log(this.props.update);
     if(this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
           return true;
     }
-    console.log("FiltersTabs shouldComponentUpdate after");
     return false;
   }
 
@@ -267,7 +252,6 @@ class FiltersTabs extends React.Component {
     //var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
     selected_queries.push(labelQuery);
     var newQuery = selected_queries.toString();
-    console.log("newQuery: " + newQuery);
     this.setState({queriesCheckBox: selected_queries});
     var sessionTemp = this.props.session;
     if(sessionTemp['selected_tags']!=="")
@@ -277,7 +261,6 @@ class FiltersTabs extends React.Component {
     }
     sessionTemp['pageRetrievalCriteria'] = "Queries";
     sessionTemp['selected_queries']=newQuery;
-    //this.props.updateCheckedQueries(selected_queries);
     this.props.updateSession(sessionTemp);
   }
 
@@ -341,7 +324,6 @@ class FiltersTabs extends React.Component {
     if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === ""){
        sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
-    console.log(JSON.stringify(sessionTemp));
     this.props.deletedFilter(sessionTemp);
   }
 /*
