@@ -1532,82 +1532,84 @@ class CrawlerModel:
 
     # Label unlabelled data
 
-    unsure = 0
-    label_pos = 0
-    label_neg = 0
-    unlabeled_urls = []
+    #TODO: Move this to Model tab functionality
 
-    sigmoid = self._onlineClassifiers[session['domainId']].get("sigmoid")
-    if sigmoid != None:
-      unlabelled_docs = field_missing(es_info["mapping"]["tag"], ["url", es_info["mapping"]["text"]], self._all,
-                                      es_info['activeCrawlerIndex'],
-                                      es_info['docType'],
-                                      self._es)
+    # unsure = 0
+    # label_pos = 0
+    # label_neg = 0
+    # unlabeled_urls = []
 
-      unlabeled_text = [unlabelled_doc[es_info['mapping']['text']][0] for unlabelled_doc in unlabelled_docs]
+    # sigmoid = self._onlineClassifiers[session['domainId']].get("sigmoid")
+    # if sigmoid != None:
+    #   unlabelled_docs = field_missing(es_info["mapping"]["tag"], ["url", es_info["mapping"]["text"]], self._all,
+    #                                   es_info['activeCrawlerIndex'],
+    #                                   es_info['docType'],
+    #                                   self._es)
 
-      # Check if unlabeled data available
-      if len(unlabeled_text) > 0:
-        unlabeled_urls = [unlabelled_doc[es_info['mapping']['url']][0] for unlabelled_doc in unlabelled_docs]
-        unlabeled_ids = [unlabelled_doc["id"] for unlabelled_doc in unlabelled_docs]
+    #   unlabeled_text = [unlabelled_doc[es_info['mapping']['text']][0] for unlabelled_doc in unlabelled_docs]
 
-        [unlabeled_data,_] =  self._onlineClassifiers[session['domainId']]["onlineClassifier"].vectorize(unlabeled_text)
-        [classp, calibp, cm] = self._onlineClassifiers[session['domainId']]["onlineClassifier"].predictClass(unlabeled_data,sigmoid)
+    #   # Check if unlabeled data available
+    #   if len(unlabeled_text) > 0:
+    #     unlabeled_urls = [unlabelled_doc[es_info['mapping']['url']][0] for unlabelled_doc in unlabelled_docs]
+    #     unlabeled_ids = [unlabelled_doc["id"] for unlabelled_doc in unlabelled_docs]
 
-        pos_calib_indices = np.nonzero(calibp)
-        neg_calib_indices = np.where(calibp == 0)
+    #     [unlabeled_data,_] =  self._onlineClassifiers[session['domainId']]["onlineClassifier"].vectorize(unlabeled_text)
+    #     [classp, calibp, cm] = self._onlineClassifiers[session['domainId']]["onlineClassifier"].predictClass(unlabeled_data,sigmoid)
 
-        pos_cm = [cm[pos_calib_indices][i][1] for i in range(0,np.shape(cm[pos_calib_indices])[0])]
-        neg_cm = [cm[neg_calib_indices][i][0] for i in range(0,np.shape(cm[neg_calib_indices])[0])]
+    #     pos_calib_indices = np.nonzero(calibp)
+    #     neg_calib_indices = np.where(calibp == 0)
 
-        pos_sorted_cm = pos_calib_indices[0][np.asarray(np.argsort(pos_cm)[::-1])]
-        neg_sorted_cm = neg_calib_indices[0][np.asarray(np.argsort(neg_cm)[::-1])]
+    #     pos_cm = [cm[pos_calib_indices][i][1] for i in range(0,np.shape(cm[pos_calib_indices])[0])]
+    #     neg_cm = [cm[neg_calib_indices][i][0] for i in range(0,np.shape(cm[neg_calib_indices])[0])]
 
-        entries = {}
-        for i in pos_sorted_cm:
-          entry = {}
-          if cm[i][1] < 60:
-            entry["unsure_tag"] = 1
-            entry["label_pos"] = 0
-            entry["label_neg"] = 0
-            entries[unlabeled_ids[i]] = entry
-            unsure = unsure + 1
-          else:
-            entry["label_pos"] = 1
-            entry["unsure_tag"] = 0
-            entry["label_neg"] = 0
-            entries[unlabeled_ids[i]] = entry
+    #     pos_sorted_cm = pos_calib_indices[0][np.asarray(np.argsort(pos_cm)[::-1])]
+    #     neg_sorted_cm = neg_calib_indices[0][np.asarray(np.argsort(neg_cm)[::-1])]
 
-            label_pos = label_pos + 1
+    #     entries = {}
+    #     for i in pos_sorted_cm:
+    #       entry = {}
+    #       if cm[i][1] < 60:
+    #         entry["unsure_tag"] = 1
+    #         entry["label_pos"] = 0
+    #         entry["label_neg"] = 0
+    #         entries[unlabeled_ids[i]] = entry
+    #         unsure = unsure + 1
+    #       else:
+    #         entry["label_pos"] = 1
+    #         entry["unsure_tag"] = 0
+    #         entry["label_neg"] = 0
+    #         entries[unlabeled_ids[i]] = entry
 
-        for i in neg_sorted_cm:
-          entry = {}
-          if cm[i][0] < 60:
-            entry["unsure_tag"] = 1
-            entry["label_pos"] = 0
-            entry["label_neg"] = 0
-            entries[unlabeled_ids[i]] = entry
+    #         label_pos = label_pos + 1
 
-            unsure = unsure + 1
-          else:
-            entry["label_neg"] = 1
-            entry["unsure_tag"] = 0
-            entry["label_pos"] = 0
+    #     for i in neg_sorted_cm:
+    #       entry = {}
+    #       if cm[i][0] < 60:
+    #         entry["unsure_tag"] = 1
+    #         entry["label_pos"] = 0
+    #         entry["label_neg"] = 0
+    #         entries[unlabeled_ids[i]] = entry
 
-            entries[unlabeled_ids[i]] = entry
-            label_neg = label_neg + 1
+    #         unsure = unsure + 1
+    #       else:
+    #         entry["label_neg"] = 1
+    #         entry["unsure_tag"] = 0
+    #         entry["label_pos"] = 0
 
-        if entries:
-          update_try = 0
-          while (update_try < 10):
-            try:
-              update_document(entries, es_info['activeCrawlerIndex'], es_info['docType'], self._es)
-              break
-            except:
-              update_try = update_try + 1
+    #         entries[unlabeled_ids[i]] = entry
+    #         label_neg = label_neg + 1
 
-        pos_indices = np.nonzero(classp)
-        neg_indices = np.where(classp == 0)
+    #     if entries:
+    #       update_try = 0
+    #       while (update_try < 10):
+    #         try:
+    #           update_document(entries, es_info['activeCrawlerIndex'], es_info['docType'], self._es)
+    #           break
+    #         except:
+    #           update_try = update_try + 1
+
+    #     pos_indices = np.nonzero(classp)
+    #     neg_indices = np.where(classp == 0)
 
     accuracy = '0'
     if self._onlineClassifiers.get(session['domainId']) != None:
@@ -1615,7 +1617,7 @@ class CrawlerModel:
       if accuracy == None:
         accuracy = '0'
 
-    self.results_file.write(str(len(pos_text)) +","+ str(len(neg_text)) +","+ accuracy +","+ str(unsure) +","+ str(label_pos) +","+ str(label_neg) +","+ str(len(unlabeled_urls))+"\n")
+    # self.results_file.write(str(len(pos_text)) +","+ str(len(neg_text)) +","+ accuracy +","+ str(unsure) +","+ str(label_pos) +","+ str(label_neg) +","+ str(len(unlabeled_urls))+"\n")
 
     return accuracy
 
