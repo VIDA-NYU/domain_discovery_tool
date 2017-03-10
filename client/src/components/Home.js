@@ -48,7 +48,7 @@ class Home extends Component {
 
   getAvailableDomains(){
     $.post(
-      '/getAvailableCrawlers',
+      '/getAvailableDomains',
       {"type": "init"},
       function(domains) {
         this.setState({domains: domains['crawlers']});
