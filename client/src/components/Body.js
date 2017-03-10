@@ -88,9 +88,11 @@ class Body extends Component{
     session['selected_morelike'] = "";
     session['selected_queries']="";
     session['selected_tags']="";
+    session['selected_model_tags']="";
     session['model'] = {};
     session['model']['positive'] = "Relevant";
     session['model']['nagative'] = "Irrelevant";
+
 
 
     return session;

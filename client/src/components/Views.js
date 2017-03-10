@@ -95,9 +95,12 @@ class ChipViewTab extends React.Component{
     }
     // Calculate new state
     var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
-    var queriesList =[], tagsList =[];
+    console.log("CHIP");
+    console.log(session);
+    var queriesList =[], tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
+    modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
 
     var newChip = [];
     for(var i=0; i<queriesList.length && queriesList.length>0; i++){
@@ -106,7 +109,10 @@ class ChipViewTab extends React.Component{
     for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length ), type: 2, label: session['filter'] , avatar: Searchicon});
+    for(var i=(tagsList.length+queriesList.length), j=0; i<(tagsList.length+queriesList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
+    }
+    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
     }
 
     this.setState({
@@ -147,8 +153,23 @@ class ChipViewTab extends React.Component{
           case 2://filter
               sessionTemp['filter']= null;
               break;
+          case 3://tags
+                  sessionTemp['selected_model_tags']= this.removeString(3, key);
+                  if(sessionTemp['selected_model_tags'] === "") {
+                    if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
+                        sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
+                    else if (sessionTemp['selected_queries'] !== "") {
+                      sessionTemp['newPageRetrievelCriteria'] = "one";
+                      sessionTemp['pageRetrievalCriteria'] = "Queries";
+                    }
+                    else {
+                      sessionTemp['newPageRetrievelCriteria'] = "one";
+                      sessionTemp['pageRetrievalCriteria'] = "Tags";
+                    }
+                  }
+                  break;
         }
-        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === ""){
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" ){
            sessionTemp['pageRetrievalCriteria'] = "Most Recent";
         }
 
@@ -307,6 +328,13 @@ class ViewTabSnippets extends React.Component{
       this.pages=this.pages;
     }
 
+  keyboardFocus = (event, item) => {
+    console.log(event);
+    console.log(item);
+      console.log("keyboardFocus");
+    };
+
+
   render(){
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var cont=0;
@@ -325,29 +353,30 @@ class ViewTabSnippets extends React.Component{
                       colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
                     }
                     var id= cont+1; cont=cont+id;
-                    return <ListItem key={index}>
-                            <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
-                              <div>
-                                <p style={{float:'left'}}><img src={this.pages[k]["image_url"]} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
-                                <p style={{float:'right'}}>
-                                <ButtonGroup bsSize="small">
-                                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                                    <Button id={"Relevant-"+id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagRelev}} >Relev</Button>
-                                  </OverlayTrigger>
-                                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                                    <Button id={"Irrelevant-" +id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagIrrelev}} >Irrel</Button>
-                                  </OverlayTrigger>
-                                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                                    <Button id={"Neutral-"+ id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagNeutral}} >Neutr</Button>
-                                  </OverlayTrigger>
-                                </ButtonGroup></p>
-                                <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.pages[k]["title"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
-                              </div>
-                              <br/>
-                              <div style={{marginTop:'-3px'}}> <p>{this.pages[k]["snippet"]}</p> </div>
-                              <Divider />
-                            </div>
-                            </ListItem>;
+                    //style={{height:"200px"}} disableKeyboardFocus= {false} isKeyboardFocused={true} onKeyboardFocus={this.keyboardFocus.bind(this)}
+                    return <ListItem key={index}  >
+                    <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
+                      <div>
+                        <p style={{float:'left'}}><img src={this.pages[k]["image_url"]} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+                        <p style={{float:'right'}}>
+                        <ButtonGroup bsSize="small">
+                          <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
+                            <Button id={"Relevant-"+id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagRelev}} >Relev</Button>
+                          </OverlayTrigger>
+                          <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
+                            <Button id={"Irrelevant-" +id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagIrrelev}} >Irrel</Button>
+                          </OverlayTrigger>
+                          <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
+                            <Button id={"Neutral-"+ id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagNeutral}} >Neutr</Button>
+                          </OverlayTrigger>
+                        </ButtonGroup></p>
+                        <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.pages[k]["title"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
+                      </div>
+                      <br/>
+                      <div style={{marginTop:'-3px'}}> <p style={{ marginTop:'-3px'}}>{this.pages[k]["snippet"]}</p> </div>
+                      <Divider />
+                    </div>
+                  </ListItem>;
                     });
 
 
@@ -455,8 +484,6 @@ class Views extends React.Component {
             inkBarStyle={{background: '#7940A0' ,height: '4px'}}
             tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
               <Tab label="Snippets" value={0} style={styles.tab} />
-              <Tab label="Visualizations" value={1} style={styles.tab} />
-              <Tab label="Model" value={2} style={styles.tab} />
           </Tabs>
 
           <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
@@ -464,13 +491,7 @@ class Views extends React.Component {
               <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
               {showPages}
             </div>
-            <div style={styles.headline}>
-            </div>
-            <div style={styles.headline}>
-              <Checkbox label="Neutral" style={styles.checkbox}  />
-              <Checkbox label="Relevant" style={styles.checkbox}  />
-              <Checkbox label="Irrelevante" style={styles.checkbox}  />
-            </div>
+
           </SwipeableViews>
         </div>
       );
