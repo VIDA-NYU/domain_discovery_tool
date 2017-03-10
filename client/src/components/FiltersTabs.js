@@ -121,7 +121,6 @@ class LoadTag extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      currentQueries:undefined,
       tagsCheckBox:[],
       tagString:undefined,
       session: {},
@@ -134,6 +133,9 @@ class LoadTag extends React.Component {
       '/getAvailableTags',
       {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
       function(tagsDomain) {
+        console.log("tags");
+        console.log(tagsDomain);
+        console.log(this.props.session);
         this.setState({currentTags: tagsDomain['tags'], session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
       }.bind(this)
     );
@@ -192,6 +194,82 @@ class LoadTag extends React.Component {
   }
 }
 
+class LoadModel extends React.Component {
+  constructor(props){
+    super(props);
+    this.state={
+      modelTagCheckBox:[],
+      modelTagString:undefined,
+      session: {},
+      flat:false,
+    };
+  }
+
+  componentWillMount(){
+    $.post(
+      '/getAvailableModelTags',
+      {'session': JSON.stringify(this.props.session)},
+      function(modelTagDomain) {
+        console.log("modeltags");
+        console.log(modelTagDomain);
+        console.log(this.props.session);
+        this.setState({currentModelTags: modelTagDomain, session:this.props.session, modelTagString: JSON.stringify(this.props.session['selected_model_tags'])});
+      }.bind(this)
+    );
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(JSON.stringify(nextProps.session['selected_model_tags']) === this.state.modelTagString ) {
+      this.setState({ flat:true});
+      return;
+    }
+    console.log("FiltersTabs componentWillReceiveProps after");
+    // Calculate new state
+    this.setState({
+      session:nextProps.session, modelTagString: JSON.stringify(nextProps.session['selected_model_tags']), flat:false
+    });
+
+  }
+
+  shouldComponentUpdate(nextProps){
+    if(JSON.stringify(nextProps.session['selected_model_tags']) === this.state.modelTagString && this.state.flat===true ) {
+      if(this.props.update){ console.log("FiltersTabs-reupload");return true;}
+      else {return false;}
+    }
+    return true;
+  }
+
+  addModelTags(tag){
+
+    var tags = this.state.modelTagString.substring(1,this.state.modelTagString.length-1).split(",");
+    if(tags.includes(tag)){
+      this.props.removeQueryTag(3, tag);
+    }
+    else{
+      this.props.addModelTags(tag);
+    }
+  }
+
+  render(){
+    if(this.state.currentModelTags!==undefined){
+      return(
+        <div style={styles.headline}>
+        {Object.keys(this.state.currentModelTags).map((tag, index)=>{
+          var labelTags=  tag+" " +"(" +this.state.currentModelTags[tag]+")";
+          var checkedTag=false;
+          var tags = this.state.modelTagString.substring(1,this.state.modelTagString.length-1).split(",");
+          if(tags.includes(tag))
+            checkedTag=true;
+          return <Checkbox label={labelTags} checked={checkedTag} style={styles.checkbox}  onClick={this.addModelTags.bind(this,tag)} />
+        })}
+        </div>
+      );
+    }
+    return(
+      <CircularProgressSimple />
+    );
+  }
+}
 
 
 class FiltersTabs extends React.Component {
@@ -209,6 +287,7 @@ class FiltersTabs extends React.Component {
       session: {},
       queryString:"",
       tagString:"",
+      modelTagString:"",
       flat:false,
     };
   }
@@ -283,6 +362,21 @@ class FiltersTabs extends React.Component {
     this.props.updateSession(sessionTemp);
   }
 
+  addModelTags(labelModelTags){
+    var selected_modeltags=[];
+    if(this.state.modelTagString.substring(1,this.state.modelTagString.length-1)!="")
+      selected_modeltags = this.state.modelTagString.substring(1,this.state.modelTagString.length-1).split(",");
+    //var selected_tags = this.state.tagsCheckBox; //  var selected_queries = [];
+    selected_modeltags.push(labelModelTags);
+    var newTags = selected_modeltags.toString();
+    this.setState({tagsCheckBox: selected_modeltags});
+    var sessionTemp = this.props.session;
+    sessionTemp['newPageRetrievelCriteria'] = "one";
+    sessionTemp['pageRetrievalCriteria'] = "Model Tags";
+    sessionTemp['selected_model_tags']=newTags;
+    this.props.updateSession(sessionTemp);
+  }
+
   removeString(currentType, item){
     var currentString = "";
     var array=[]; // it could be a query or tag array.
@@ -320,8 +414,24 @@ class FiltersTabs extends React.Component {
             sessionTemp['pageRetrievalCriteria'] = "Queries";
           }
           break;
+      case 3://tags
+          sessionTemp['selected_model_tags']= this.removeString(3, item);
+          if(sessionTemp['selected_model_tags'] === "") {
+            if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
+                sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
+            else if (sessionTemp['selected_queries'] !== "") {
+              sessionTemp['newPageRetrievelCriteria'] = "one";
+              sessionTemp['pageRetrievalCriteria'] = "Queries";
+            }
+            else {
+              sessionTemp['newPageRetrievelCriteria'] = "one";
+              sessionTemp['pageRetrievalCriteria'] = "Tags";
+            }
+          }
+          break;
     }
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === ""){
+
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""){
        sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.deletedFilter(sessionTemp);
@@ -367,7 +477,7 @@ class FiltersTabs extends React.Component {
             <LoadTag session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
           </div>
           <div style={styles.headline}>
-            <loadTag session={this.state.session} addTags={this.addTags.bind(this)}/>
+            <LoadModel session={this.state.session} addModelTags={this.addModelTags.bind(this)}/>
           </div>
         </SwipeableViews>
       </div>
