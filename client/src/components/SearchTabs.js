@@ -5,7 +5,7 @@ import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
-import { Col} from 'react-bootstrap';
+import { Col, Row} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
 import {fullWhite} from 'material-ui/styles/colors';
 import Search from 'material-ui/svg-icons/action/search';
@@ -20,7 +20,7 @@ const styles = {
   },
   slide: {
     padding: '10px 0px 0px 0px',
-    height: '100px',
+    height: '200px',
   },
   tab:{
     fontSize: '12px',
@@ -86,13 +86,12 @@ class SearchTabs extends React.Component {
     }
 
     // Download the pages of uploaded urls
-    runLoadUrlsQuery(){
-      console.log("run seedQuery");
+    runLoadUrls(valueLoadUrls){
       var session =this.props.session;
       session['search_engine']=this.state.search_engine;
       $.post(
         '/downloadUrls',
-        {'urls': this.state.valueLoadUrls,  'session': JSON.stringify(session)},
+        {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
         function(data) {
           this.props.uploadDDT(false, "process*concluded" );
           }.bind(this)).fail(function() {
@@ -100,6 +99,18 @@ class SearchTabs extends React.Component {
               this.props.uploadDDT(false, this.state.valueQuery);
             }.bind(this));
       this.props.uploadDDT(true, this.state.valueQuery);
+    }
+
+
+    // Download the pages of uploaded urls from textfield
+    runLoadUrlsQuery(){
+      this.runLoadUrls(this.state.valueLoadUrls);
+    }
+    // Download the pages of uploaded urls from file
+    runLoadUrlsFileQuery(txt) {
+        var allTextLines = txt.split(/\r\n|\n/);
+        var urlsString = allTextLines.join(" ");
+        this.runLoadUrls(urlsString);
     }
 
     // Handling search engine DropdownButton.
@@ -116,6 +127,17 @@ class SearchTabs extends React.Component {
       console.log("valueLoadUrls" + e.target.value);
       this.setState({ "valueLoadUrls": e.target.value});
     }
+
+    //Reading file's content.
+    handleFile(event) {
+      const reader = new FileReader();
+      const file = event.target.files[0];
+      reader.onload = (upload) => {
+        this.runLoadUrlsFileQuery(upload.target.result);
+      };
+      reader.readAsText(file);
+    }
+
 
     render() {
       return (
@@ -160,7 +182,8 @@ class SearchTabs extends React.Component {
               </Col>
             </div>
             <div style={styles.slide}>
-              <Col xs={10} md={10} style={{marginLeft:'-15px'}}>
+            <Row>
+              <Col xs={10} md={10} style={{marginLeft:'0px'}}>
                 <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
                   value={this.state.valueLoadUrls}
                   onChange={this.handleTextChangeLoadUrls.bind(this)}
@@ -172,16 +195,29 @@ class SearchTabs extends React.Component {
                   rowsMax={2}
                 />
               </Col>
-              <Col xs={2} md={1} >
-                <FlatButton style={{marginLeft:'-10px', minWidth: '58px' }}
+              <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
+                <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
                   backgroundColor="#26C6DA"
                   hoverColor="#80DEEA"
                   icon={<Search color={fullWhite} />}
                   onTouchTap={this.runLoadUrlsQuery.bind(this)}
                   />
               </Col>
+              </Row>
+              <Row>
+              <br />
+                     <FlatButton style={{marginLeft:'15px'}}
+                       label="Load urls from file"
+                       labelPosition="before"
+                       containerElement="label"
+                     >
+                     <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+                     </FlatButton>
+                     <br />
+              </Row>
             </div>
             <div style={styles.slide}>
+
               <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
                 <InputGroup >
                   <FormControl style={{width: '268px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
@@ -195,6 +231,8 @@ class SearchTabs extends React.Component {
                   onTouchTap={this.runSeedFinderQuery.bind(this)}
                   />
               </Col>
+
+
             </div>
           </SwipeableViews>
         </div>
