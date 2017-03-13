@@ -8,6 +8,24 @@ Building and deploying the Domain Discovery Tool React can be done using its Mak
 
 First install conda, either through the Anaconda or miniconda installers provided by Continuum.  You will also need Git and a Java Development Kit.  These are system tools that are generally not provided by conda.
 
+Set up Domain Discovery API
+
+```
+https://github.com/ViDA-NYU/domain_discovery_API.git
+cd domain_discovery_API
+```
+Use the `make` command to build MDPROJ and download/install its dependencies.
+
+```
+make
+```
+
+Make domain_discovery_API available by adding it to the environment:
+
+```
+export DD_API_HOME="{path-to-cloned-domain_discovery_API-repository}"
+```
+
 Clone the DDT repository and enter it:
 
 ```
