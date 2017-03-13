@@ -23,8 +23,6 @@ dependencies:
     - requests
     - ache >=0.8.0
     - jinja2
-    - bokeh=0.10.0
-    - topik
     - functools32
     - networkx=1.11
     - nodejs
