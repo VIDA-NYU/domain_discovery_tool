@@ -86,7 +86,7 @@ class Home extends Component {
     //createNewDomain
     var nameDomain= this.state.newNameDomain;
     $.post(
-      '/addCrawler',
+      '/addDomain',
       {'index_name': nameDomain},
       function(domains) {
         this.setState({openCreateDomain: false});
@@ -100,7 +100,7 @@ class Home extends Component {
   deleteDomains(){
     var delDomains= this.state.delDomains;
     $.post(
-      '/delCrawler',
+      '/delDomain',
       {'domains': JSON.stringify(delDomains)},
       function(domains) {
         this.setState({openDeleteDomain: false, delDomains: {}});
