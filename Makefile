@@ -3,7 +3,7 @@
 # Type "make help" for a list of commands
 
 # Variables for the Makefile
-.PHONY = conda_environment cherrypy_config  word2vec_data clean
+.PHONY = conda_environment cherrypy_config  word2vec_data clean nltk_data
 SHELL := /bin/bash
 CONDA_ROOT := $(shell conda info --root)
 CONDA_ENV := $(CONDA_ROOT)/envs/ddt
@@ -11,11 +11,12 @@ CONDA_ENV := $(CONDA_ROOT)/envs/ddt
 CONDA_ENV_TARGET := $(CONDA_ENV)/conda-meta/history
 CHERRY_PY_CONFIG_TARGET := server/config.conf
 GET_REACT_DATA_TARGET := client/build/index.html
+GET_NLTK_DATA_TARGET := nltk_data/corpora nltk_data/tokenizers
 
 # Makefile commands, see below for actual builds
 
 ## all              : set up DDT development environment
-all: conda_env downloader_app cherrypy_config get_react_data
+all: conda_env downloader_app cherrypy_config get_react_data get_nltk_data
 
 ## help             : show all commands.
 # Note the double '##' in the line above: this is what's matched to produce
@@ -36,6 +37,9 @@ downloader_app: $(DOWNLOADER_APP_TARGET)
 ## cherrypy_config  : Configure CherryPy (set absolute root environment)
 cherrypy_config: $(CHERRY_PY_CONFIG_TARGET)
 
+## get_nltk_data    : Download NLTK corpus and tokenizers 
+get_nltk_data: $(GET_NLTK_DATA_TARGET)
+
 ## get_react_data : Download react packages
 get_react_data: $(GET_REACT_DATA_TARGET)
 
@@ -46,6 +50,10 @@ $(CONDA_ENV_TARGET): environment.yml
 
 $(CHERRY_PY_CONFIG_TARGET): server/config.conf-in
 	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf
+
+$(GET_NLTK_DATA_TARGET): $(CONDA_ENV)
+	source activate ddt; \
+	python -m nltk.downloader -d ${PWD}/nltk_data stopwords brown punkt averaged_perceptron_tagger
 
 $(GET_REACT_DATA_TARGET):
 	source activate ddt; \
