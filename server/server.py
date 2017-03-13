@@ -32,6 +32,7 @@ class DDTServer(Page):
   def __init__(self):
     self._ddtModel = DomainModel()
     path = os.path.dirname(__file__)
+    self._ddtModel.setPath(path)
     super(DDTServer, self).__init__(self._ddtModel, path)
     
   # Access to seed crawler vis.
