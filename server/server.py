@@ -31,7 +31,7 @@ class DDTServer(Page):
   # Default constructor reading app config file.
   def __init__(self):
     self._ddtModel = DomainModel()
-    path = os.path.dirname(__file__)
+    path = os.path.dirname(os.path.realpath(__file__))
     self._ddtModel.setPath(path)
     super(DDTServer, self).__init__(self._ddtModel, path)
     
