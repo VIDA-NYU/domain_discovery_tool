@@ -1,11 +1,11 @@
 name: ddt
 
 channels:
-  - nodefaults
+  - conda-forge
   - memex
   - anaconda
   - vida-nyu
-  
+
 dependencies:
     - elasticsearch
     - supervisor
