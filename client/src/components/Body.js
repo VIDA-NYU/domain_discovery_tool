@@ -65,6 +65,7 @@ class Body extends Component{
         currentDomain:'',
         sessionBody:{},
         sessionString:"",
+	pages:{},
         update:false,
         runCurrentQuery: "*",
     };
@@ -100,16 +101,12 @@ class Body extends Component{
 
   //Get queries, tags, urls from a speficic domain.
   componentWillMount() {
-    console.log("body componentWillMount");
     this.setState({currentDomain: this.props.currentDomain, sessionBody: this.createSession(this.props.currentDomain), sessionString: JSON.stringify(this.createSession(this.props.currentDomain)) });
 
   }
 
   //handling update of props (ex. filters, session, etc)
   componentWillReceiveProps  = (newProps) => {
-    console.log("body componentWillReceiveProps");
-    console.log(newProps.filterKeyword);
-    console.log(newProps.currentDomain);
     if(newProps.filterKeyword !== '' || newProps.filterKeyword !== null){
       const sessionTemp =  this.state.sessionBody;
       sessionTemp['filter']= newProps.filterKeyword;
@@ -188,30 +185,32 @@ class Body extends Component{
     });
   }
 
-  //Check if the some query (by queryWeb, seedfinder or loadUrls) is running.
-  uploadDDT(value, term){
-    if(value){
-      this.setState({update:value, runCurrentQuery: term});
-      this.forceUpdate();
+    // Update the pages that have changed (for example pages returned from web query)
+    updatePages(pages){
+	this.setState({pages:pages});
     }
-    else{
-      this.setState({update:true, runCurrentQuery: term});
-      this.forceUpdate();
-      this.setState({update:value, runCurrentQuery: "*"});
-      this.forceUpdate();
+    
+    // Update the status message
+    updateStatusMessage(value, term){
+	if(value){
+	    this.setState({update:value, runCurrentQuery: term});
+	    this.forceUpdate();
+	}
+	else{
+	    this.setState({update:true, runCurrentQuery: term});
+	    this.forceUpdate();
+	    this.setState({update:value, runCurrentQuery: "*"});
+	    this.forceUpdate();
+	}
     }
-  }
 
   //Update session
   updateSession(newSession){
-    //console.log(JSON.stringify(newSession));
-    //console.log('body newSession');
     this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
     this.forceUpdate();
   }
 
   render(){
-    //console.log(this.state.sessionBody);
     console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
       <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:350, background:"white"}}>
@@ -219,7 +218,7 @@ class Body extends Component{
           <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
         </Row>
         <Row className="Menus-child">
-          <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} uploadDDT={this.uploadDDT.bind(this)}/>
+		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)}/>
         </Row>
         <Row className="Menus-child">
           <Filters update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
@@ -252,7 +251,7 @@ class Body extends Component{
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)}/>
+          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
       </div>
       <Snackbar

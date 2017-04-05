@@ -66,31 +66,34 @@ class LoadSearch extends Component{
   };
 
   //Send information about a query that is running (from SearchTabs.js to Body.js)
-  uploadDDT(value, term){
-    //console.log("search: " + value +", query: " + term);
+  updateStatusMessage(value, term){
     this.setState({update:!value}); /// false = reload, true = dont reload the search area
-    this.props.uploadDDT(value, term);
+    this.props.updateStatusMessage(value, term);
   }
+
+    updatePages(pages){
+	this.props.updatePages(pages);
+    }
 
   //Check if the component should be updated or not
   shouldComponentUpdate(){
     return true;
 
   }
-
-  render(){
-      return(
-        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
-             <CardHeader
-               title="Search"
-               avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
-               style={styles.cardHeader}
-               actAsExpander={true}
-               showExpandableButton={true}
-             />
-             <CardMedia expandable={true} style={styles.cardMedia}>
-
-                <SearchTabs session={this.props.session} uploadDDT={this.uploadDDT.bind(this)}/>
+    
+    render(){
+	return(
+              <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
+              <CardHeader
+          title="Search"
+          avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
+          style={styles.cardHeader}
+          actAsExpander={true}
+          showExpandableButton={true}
+              />
+              <CardMedia expandable={true} style={styles.cardMedia}>
+	      
+              <SearchTabs session={this.props.session} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)}/>
              </CardMedia>
          </Card>
       )
