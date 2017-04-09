@@ -18,6 +18,7 @@ import {Card, CardActions, CardHeader, CardText, CardMedia} from 'material-ui/Ca
 import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import TermsList from './TermsList';
 
 const styles = {
   button:{
@@ -301,7 +302,7 @@ class Body extends Component{
 
   render(){
     console.log(this.state.listTerms.length);
-    let terms = <div/>;
+    let terms = " ";
     if(this.state.listTerms.length>0){
       terms = this.state.listTerms.map(function(w) {
         console.log(w);
@@ -339,7 +340,7 @@ class Body extends Component{
                  <CardMedia expandable={true}>
                   <Divider/>
                   <div style={{fontSize: 10, height: '120px', overflowY: "scroll",}}>
-                      {terms}
+                    <TermsList listTerms={this.state.listTerms}></TermsList>
                   </div>
                  </CardMedia>
              </Card>
@@ -397,5 +398,7 @@ class Body extends Component{
   )
 }
 }
+
+
 
 export default Body;
