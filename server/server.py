@@ -50,16 +50,16 @@ class DDTServer(Page):
     return self.seedcrawler()
 
   # Submits a web query for a list of terms, e.g. 'ebola disease'
-  @cherrypy.expose
-  def queryWeb(self, terms, session):
-    print "\n\n\n QUERY WEB IN REACT"
-    session = json.loads(session)
-    cherrypy.response.headers["Content-Type"] = "text/plain;"
-    # for res in self._model.queryWeb(terms, 20, session=session):
-    #   print "\n\n\n SERVER QUERY WEB\n",res,"\n\n\n"
+  # @cherrypy.expose
+  # def queryWeb(self, terms, session):
+  #   print "\n\n\n QUERY WEB IN REACT"
+  #   session = json.loads(session)
+  #   cherrypy.response.headers["Content-Type"] = "text/plain;"
+  #   # for res in self._model.queryWeb(terms, 20, session=session):
+  #   #   print "\n\n\n SERVER QUERY WEB\n",res,"\n\n\n"
 
-    return self._model.queryWeb(terms, 20, session=session)  
-  queryWeb._cp_config ={'response.stream':True}
+  #   return self._model.queryWeb(terms, 20, session=session)  
+  # queryWeb._cp_config ={'response.stream':True}
 
   @cherrypy.expose
   def thing(self):
