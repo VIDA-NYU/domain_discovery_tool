@@ -1,8 +1,12 @@
+// Filename:		Body.js
+// Purpose:		Showing list of terms of a specific domain.
 /*This component receives an array of objects with the following structure:
 var array = [{'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]},
              {'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]}
            ];
 */
+// Author: Sonia Castelo (scastelo2@gmail.com)
+
 
 import React, { Component } from 'react';
 import {scaleLinear} from 'd3-scale';
@@ -49,6 +53,7 @@ class TermsList extends Component {
     componentWillUnmount(){
     }
 
+
     render() {
       if(this.state.listTerms.length>0){
       var maxBarWidth = 30;
@@ -57,38 +62,41 @@ class TermsList extends Component {
       var maxNegFreq = Math.max.apply(null,this.state.listTerms.map(function(w) {return w["negFreq"]; }));
       var maxFreq = Math.max(maxPosFreq, maxNegFreq);
       // Scales for left/right bars.
-      // TODO Read domain from data.
       var barScale = scaleLinear().range([0, maxBarWidth]);
       barScale.domain([0, maxFreq]);
-      // Adds left bars (aligned to right).
 
         let y =0;
-        let barIrr_array = [];
+        let terms_array = [];
         let loopListTerms = this.state.listTerms.map(function(w) {
-                                let scaleBars = barScale(w['posFreq']);
-                                let words = <g transform={`translate(30, 8)`}>
+                                // Aligns left bar to right.
+                                let widthPos = barScale(w['posFreq']);
+                                // Aligns left bar to left.
+                                var widthNeg = barScale(w['negFreq']);
+                                let words = <g transform={`translate(30, 10)`}>
                                               <text fontSize="12" fontFamily="sans-serif" textAnchor="start">{w["word"]}</text>
                                             </g>;
-                                let barIrrelevant = <g transform={`translate(182, 0)`}>
+                                // Adds right bars (aligned to left).
+                                let barNegative = <g transform={`translate(182, 0)`}>
                                                          <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}}/>
-                                                         <rect y={5} height={6} width={0.598438855160451} x={29.401561144839548} style={{fill:"red"}}/>
+                                                         <rect y={5} height={6} width={widthNeg} x={maxBarWidth - widthNeg} style={{fill:"red"}}/>
                                                    </g>;
-                                let barRelevant = <g transform={`translate(212, 0)`}>
+                                // Adds left bars (aligned to right).
+                                let barPositive = <g transform={`translate(212, 0)`}>
                                                          <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}}/>
-                                                         <rect y={5} height={6} width={scaleBars} x={0} style={{fill:"blue"}}/>
+                                                         <rect y={5} height={6} width={widthPos} x={0} style={{fill:"blue"}}/>
                                                   </g>;
                                 let bars =   <g id="terms" transform={`translate(0, ${y})`}>
                                                 {words}
-                                                {barIrrelevant}
-                                                {barRelevant}
+                                                {barNegative}
+                                                {barPositive}
                                               </g>;
-                                barIrr_array.push(bars);
+                                terms_array.push(bars);
                                 y=y+16;
                              });
 
         return (
                     <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}>
-                      {barIrr_array}
+                      {terms_array}
                     </svg>
         );
       }
