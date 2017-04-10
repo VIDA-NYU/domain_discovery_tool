@@ -26,14 +26,15 @@ class TermsSnippetViewer extends Component {
     }
 
     componentWillMount(){
-      console.log(this.props.term);
       this.setState({term:this.props.term});
       this.getTermSnippets(this.props.term, this.props.session);
       //this.wordCloud = ReactFauxDom.createElement('div');
     }
 
     componentWillReceiveProps(nextProps){
-      console.log(nextProps.term);
+      if(nextProps.focusContext && this.state.term == nextProps.focusTermContext){
+        return;
+      }
       this.setState({term:nextProps.term});
       this.getTermSnippets(nextProps.term, nextProps.session);
 
@@ -73,7 +74,6 @@ class TermsSnippetViewer extends Component {
       //var lazyUpdate = true;
       //this.termsSnippetsViewer.clear(lazyUpdate);
       //this.termsSnippetsViewer.addItems(termSnippets);
-      console.log(termSnippets);
       this.update(termSnippets);
     };
 
@@ -82,7 +82,6 @@ class TermsSnippetViewer extends Component {
     */
    update(items_) {
      select("#termsSnippet").selectAll('*').remove();
-     console.log(items_);
      var items = select("#termsSnippet")
      .attr("width", 300)
      .attr("height", 300)
