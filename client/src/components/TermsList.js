@@ -13,6 +13,7 @@ import {scaleLinear} from 'd3-scale';
 import {range} from 'd3-array';
 import TermsSnippetViewer from "./TermsSnippetViewer";
 import Divider from 'material-ui/Divider';
+import { Glyphicon } from 'react-bootstrap';
 //import {select} from 'd3-selection';
 //import cloud from 'd3-cloud';
 //import ReactFauxDom from 'react-faux-dom';
@@ -24,13 +25,15 @@ class TermsList extends Component {
         this.state = {
           listTerms: [],
           term:"",
+          focusContext:false,
+          focusTermContext:"",
+          focusContextStyle:"#E6E6E6",//color withput focus
         };
         this.startTermsList = this.startTermsList.bind(this);
         //this.drawWordCloud = this.drawWordCloud.bind(this);
     }
 
     componentWillMount(){
-      console.log(this.props.listTerms);
       this.setState({listTerms:this.props.listTerms});
       //this.wordCloud = ReactFauxDom.createElement('div');
     }
@@ -60,6 +63,16 @@ class TermsList extends Component {
       this.setState({term:term});
     }
 
+    focusTermContext(term){
+      if(this.state.focusTermContext==term){
+        this.setState({focusContext:false, focusTermContext:"", focusContextStyle:"#E6E6E6",})
+      }
+      else{
+        this.setState({focusContext:true, focusTermContext:term, term:term, focusContextStyle:"black"})
+      }
+
+    }
+
     render() {
       if(this.state.listTerms.length>0){
       var maxBarWidth = 30;
@@ -77,6 +90,10 @@ class TermsList extends Component {
                                 let widthPos = barScale(w['posFreq']);
                                 // Aligns left bar to left.
                                 var widthNeg = barScale(w['negFreq']);
+                                var colorPin = (this.state.focusContext && this.state.focusTermContext==w["word"])? "black":"#E6E6E6";
+                                let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, w["word"])} onMouseOver={this.startSnippets.bind(this, w["word"])}>
+                                              <foreignObject fill="blue" height="20" width="20" y="-2px" x="10px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
+                                           </g>;
                                 let words = <g transform={`translate(30, 10)`} onMouseOver={this.startSnippets.bind(this, w["word"])}>
                                               <text id="t_text" fontSize="12" fontFamily="sans-serif" textAnchor="start" >{w["word"]}
                                               </text>
@@ -92,6 +109,7 @@ class TermsList extends Component {
                                                          <rect y={5} height={6} width={widthPos} x={0} style={{fill:"blue"}}/>
                                                   </g>;
                                 let bars =   <g id="terms" transform={`translate(0, ${y})`}>
+                                                {pins}
                                                 {words}
                                                 {barNegative}
                                                 {barPositive}
@@ -110,7 +128,7 @@ class TermsList extends Component {
                       </div>
                       <Divider/>
                       <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
-                      <TermsSnippetViewer term= {this.state.term} session={this.props.session}/>
+                      <TermsSnippetViewer term= {this.state.term} session={this.props.session} focusContext={this.state.focusContext} focusTermContext={this.state.focusTermContext}/>
                       </div>
                     </div>
 
