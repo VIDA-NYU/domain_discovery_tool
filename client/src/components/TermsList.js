@@ -1,4 +1,4 @@
-// Filename:		Body.js
+// Filename:		TermsList.js
 // Purpose:		Showing list of terms of a specific domain.
 /*This component receives an array of objects with the following structure:
 var array = [{'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]},
@@ -11,6 +11,8 @@ var array = [{'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]},
 import React, { Component } from 'react';
 import {scaleLinear} from 'd3-scale';
 import {range} from 'd3-array';
+import TermsSnippetViewer from "./TermsSnippetViewer";
+import Divider from 'material-ui/Divider';
 //import {select} from 'd3-selection';
 //import cloud from 'd3-cloud';
 //import ReactFauxDom from 'react-faux-dom';
@@ -21,6 +23,7 @@ class TermsList extends Component {
         super(props);
         this.state = {
           listTerms: [],
+          term:"",
         };
         this.startTermsList = this.startTermsList.bind(this);
         //this.drawWordCloud = this.drawWordCloud.bind(this);
@@ -53,6 +56,9 @@ class TermsList extends Component {
     componentWillUnmount(){
     }
 
+    startSnippets(term){
+      this.setState({term:term});
+    }
 
     render() {
       if(this.state.listTerms.length>0){
@@ -64,7 +70,6 @@ class TermsList extends Component {
       // Scales for left/right bars.
       var barScale = scaleLinear().range([0, maxBarWidth]);
       barScale.domain([0, maxFreq]);
-
         let y =0;
         let terms_array = [];
         let loopListTerms = this.state.listTerms.map(function(w) {
@@ -72,12 +77,13 @@ class TermsList extends Component {
                                 let widthPos = barScale(w['posFreq']);
                                 // Aligns left bar to left.
                                 var widthNeg = barScale(w['negFreq']);
-                                let words = <g transform={`translate(30, 10)`}>
-                                              <text fontSize="12" fontFamily="sans-serif" textAnchor="start">{w["word"]}</text>
+                                let words = <g transform={`translate(30, 10)`} onMouseOver={this.startSnippets.bind(this, w["word"])}>
+                                              <text id="t_text" fontSize="12" fontFamily="sans-serif" textAnchor="start" >{w["word"]}
+                                              </text>
                                             </g>;
                                 // Adds right bars (aligned to left).
                                 let barNegative = <g transform={`translate(182, 0)`}>
-                                                         <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}}/>
+                                                         <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}} />
                                                          <rect y={5} height={6} width={widthNeg} x={maxBarWidth - widthNeg} style={{fill:"red"}}/>
                                                    </g>;
                                 // Adds left bars (aligned to right).
@@ -92,12 +98,22 @@ class TermsList extends Component {
                                               </g>;
                                 terms_array.push(bars);
                                 y=y+16;
-                             });
+                             }.bind(this));
 
         return (
-                    <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}>
-                      {terms_array}
-                    </svg>
+                    <div>
+                      <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
+                      <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}
+                       >
+                        {terms_array}
+                      </svg>
+                      </div>
+                      <Divider/>
+                      <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
+                      <TermsSnippetViewer term= {this.state.term} session={this.props.session}/>
+                      </div>
+                    </div>
+
         );
       }
       else {

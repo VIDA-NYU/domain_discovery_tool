@@ -303,8 +303,7 @@ class Body extends Component{
     let terms = " ";
     if(this.state.listTerms.length>0){
       terms = this.state.listTerms.map(function(w) {
-        console.log(w);
-                                      return <p>{w["word"]}</p>;
+                  return <p>{w["word"]}</p>;
                });
 
     }
@@ -337,26 +336,11 @@ class Body extends Component{
                  />
                  <CardMedia expandable={true}>
                   <Divider/>
-                  <div style={{fontSize: 10, height: '120px', overflowY: "scroll",}}>
-                    <TermsList listTerms={this.state.listTerms}></TermsList>
+                  <div>
+                    <TermsList listTerms={this.state.listTerms} session={this.state.sessionBody}></TermsList>
                   </div>
                  </CardMedia>
              </Card>
-            <Card expanded={true}>
-              <CardHeader
-                title="Context"
-                actAsExpander={true}
-                showExpandableButton={true}
-              />
-              <CardActions>
-              </CardActions>
-              <CardText expandable={true}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-              </CardText>
-            </Card>
         </Row>
       </Col>
 
