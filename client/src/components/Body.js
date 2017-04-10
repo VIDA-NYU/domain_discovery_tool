@@ -185,24 +185,43 @@ class Body extends Component{
     });
   }
 
-    // Update the pages that have changed (for example pages returned from web query)
-    updatePages(pages){
-	this.setState({pages:pages});
-    }
-    
-    // Update the status message
-    updateStatusMessage(value, term){
-	if(value){
-	    this.setState({update:value, runCurrentQuery: term});
-	    this.forceUpdate();
-	}
-	else{
-	    this.setState({update:true, runCurrentQuery: term});
-	    this.forceUpdate();
-	    this.setState({update:value, runCurrentQuery: "*"});
-	    this.forceUpdate();
-	}
-    }
+  // Update the pages that have changed (for example pages returned from web query)
+  updatePages(pages){
+  	this.setState({pages:pages});
+  }
+
+  // Update the status message
+  updateStatusMessage(value, term){
+  	if(value){
+  	    this.setState({update:value, runCurrentQuery: term});
+  	    this.forceUpdate();
+  	}
+  	else{
+  	    this.setState({update:true, runCurrentQuery: term});
+  	    this.forceUpdate();
+  	    this.setState({update:value, runCurrentQuery: "*"});
+  	    this.forceUpdate();
+  	}
+  }
+
+  getQueryPages(term){
+    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 2000)});
+  }
+  applyFilterByQuery(term){
+    console.log("applyFilterByQuery----------------");
+    var session =this.state.sessionBody;
+    session['newPageRetrievelCriteria'] = "one";
+    session['pageRetrievalCriteria'] = "Queries";
+    session['selected_queries']=term;
+    this.updateSession(session);
+    this.forceUpdate();
+  }
+
+  queryPagesDone(){
+    console.log("Done");
+    window.clearInterval(this.state.intervalFuncId);
+    this.setState({intervalFuncId:undefined});
+  }
 
   //Update session
   updateSession(newSession){
@@ -218,7 +237,7 @@ class Body extends Component{
           <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
         </Row>
         <Row className="Menus-child">
-		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)}/>
+		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
         </Row>
         <Row className="Menus-child">
           <Filters update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
@@ -251,7 +270,7 @@ class Body extends Component{
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}/>
+          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
       </div>
       <Snackbar

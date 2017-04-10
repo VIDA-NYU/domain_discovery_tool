@@ -71,16 +71,23 @@ class LoadSearch extends Component{
     this.props.updateStatusMessage(value, term);
   }
 
-    updatePages(pages){
-	this.props.updatePages(pages);
-    }
+  updatePages(pages){
+    this.props.updatePages(pages);
+  }
+  getQueryPages(term){
+    this.props.getQueryPages(term);
+  }
+  queryPagesDone(){
+    this.props.queryPagesDone();
+  }
+
 
   //Check if the component should be updated or not
   shouldComponentUpdate(){
     return true;
 
   }
-    
+
     render(){
 	return(
               <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
@@ -92,8 +99,8 @@ class LoadSearch extends Component{
           showExpandableButton={true}
               />
               <CardMedia expandable={true} style={styles.cardMedia}>
-	      
-              <SearchTabs session={this.props.session} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)}/>
+
+              <SearchTabs session={this.props.session} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
              </CardMedia>
          </Card>
       )
