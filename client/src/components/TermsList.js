@@ -183,7 +183,7 @@ class TermsList extends Component {
                       </svg>
                       </div>
                       <Divider/>
-                      <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
+                      <div style={{fontSize: 10, padding:4, height: '180px', overflowY: "scroll",}}>
                       <TermsSnippetViewer term= {this.state.term} session={this.props.session} focusContext={this.state.focusContext} focusTermContext={this.state.focusTermContext}/>
                       </div>
                     </div>
