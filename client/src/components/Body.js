@@ -205,7 +205,7 @@ class Body extends Component{
   }
 
   getQueryPages(term){
-    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 2000)});
+    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 100)});
   }
   applyFilterByQuery(term){
     console.log("applyFilterByQuery----------------");
