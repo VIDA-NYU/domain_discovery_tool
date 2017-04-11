@@ -165,12 +165,13 @@ class Body extends Component{
       sessionTemp['filter']= (newProps.filterKeyword === '')?null:newProps.filterKeyword;
       this.setState({sessionBody: sessionTemp, sessionString: JSON.stringify(sessionTemp)});
     }
+    this.loadTerms(this.state.sessionBody);
     if(newProps.currentDomain === this.state.currentDomain){
       return;
     }
 
     this.setState({currentDomain: this.props.currentDomain});
-    this.loadTerms(this.state.sessionBody);
+
   };
 
   //Verify if it is necessary an update.
@@ -243,6 +244,7 @@ class Body extends Component{
     this.setState({
         sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp)
     });
+    this.updateSession(sessionTemp);
   }
 
   // Update the pages that have changed (for example pages returned from web query)
@@ -286,6 +288,7 @@ class Body extends Component{
   //Update session
   updateSession(newSession){
     this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
+    this.loadTerms(newSession);
     this.forceUpdate();
   }
 
