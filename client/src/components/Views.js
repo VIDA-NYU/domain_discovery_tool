@@ -474,7 +474,7 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.slideIndex !== this.state.slideIndex || nextProps.pages !== this.state.pages) { //
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.slideIndex !== this.state.slideIndex || nextProps.pages !== this.state.pages || this.state.lengthPages==0) { //
           return true;
     }
     return false;

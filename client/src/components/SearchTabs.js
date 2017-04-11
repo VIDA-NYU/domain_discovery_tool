@@ -47,7 +47,6 @@ class SearchTabs extends React.Component {
       this.setState({  slideIndex: value,  });
     };
 
-
   //Submits a web query for a list of terms, e.g. 'ebola disease'
   RunQuery(){
     	var session =this.props.session;
@@ -57,11 +56,11 @@ class SearchTabs extends React.Component {
               '/queryWeb',
               {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
               function(data) {
-                	//this.props.updatePages(data);
+		  var num_pages = data["pages"];
                   console.log("QUERY WEB");
-                  console.log(data);
+                  console.log(num_pages);
                   this.props.queryPagesDone();
-                	this.props.updateStatusMessage(false, "process*concluded");
+                  this.props.updateStatusMessage(false, "process*concluded");
               }.bind(this)).fail(function() {
                             	      console.log("Something is wrong. Try again.");
                             	      this.props.updateStatusMessage(false, this.state.valueQuery);
