@@ -41,7 +41,7 @@ const styles = {
     borderRadius: '10px 10px 10px 10px',
   },
   avatar:{
-    margin:'8px 8px 0px -10px',
+    margin:'-4px 8px 0px 0px',
   },
 
   //
@@ -58,8 +58,20 @@ const styles = {
     padding:'10px 1px 10px 6px',
     borderRadius: '0px 0px 0px 0px',
   },
+  cardHeaderTermSummary:{
+    background: '#FFFFFF',
+    padding:'10px 1px 10px 6px',
+    borderRadius: '0px 0px 0px 0px',
+  },
+
   cardMedia:{
     background: '#DCCCE7',
+    padding:'2px 4px 2px 4px',
+    borderRadius: '0px 0px 0px 0px',
+    height: "200px",
+  },
+  cardMediaTermSummary:{
+    background: '#FFFFFF',
     padding:'2px 4px 2px 4px',
     borderRadius: '0px 0px 0px 0px',
     height: "200px",
@@ -325,27 +337,30 @@ class Body extends Component{
         <Row className="Menus-child">
           <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch={this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
-        <Row className="Menus-child">
-          <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
-            <Plus />
-          </FloatingActionButton>
-        </Row>
 
-        <Row className="Menus-child">
+
+        <Row className="Menus-child" style={{marginTop:10}}>
             <Card expanded={true} style={styles.card}>
                  <CardHeader
                    title="Terms"
                    avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
                    actAsExpander={true}
+                   style={styles.cardHeaderTermSummary}
                    showExpandableButton={true}
                  />
-                 <CardMedia expandable={true}>
+                 <CardMedia expandable={true} >
                   <Divider/>
                   <div>
                     <TermsList listTerms={this.state.listTerms} session={this.state.sessionBody}></TermsList>
                   </div>
                  </CardMedia>
              </Card>
+        </Row>
+
+        <Row className="Menus-child">
+          <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
+            <Plus />
+          </FloatingActionButton>
         </Row>
       </Col>
 
