@@ -214,7 +214,7 @@ class Body extends Component{
     session['pageRetrievalCriteria'] = "Queries";
     session['selected_queries']=term;
     this.updateSession(session);
-    this.forceUpdate();
+    //this.forceUpdate();
   }
 
   queryPagesDone(){
