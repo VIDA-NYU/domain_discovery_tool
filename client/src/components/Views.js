@@ -428,8 +428,9 @@ class Views extends React.Component {
 	  '/getPages',
 	  {'session': JSON.stringify(session)},
 	  function(pages) {
+	      console.log("GET PAGES");
               console.log(pages);
-              this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages).length});
+              this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
 	  }.bind(this)
       );
   }
