@@ -177,13 +177,13 @@ class TermsList extends Component {
         return (
                     <div>
                       <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
-                      <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}
+                      <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}
                        >
                         {terms_array}
                       </svg>
                       </div>
-                      <Divider/>
-                      <div style={{fontSize: 10, padding:4, height: '180px', overflowY: "scroll",}}>
+                      <Divider style={{margin:"10px 10px 10px 10px"}}/>
+                      <div style={{fontSize: 12, padding:10, height: '180px', overflowY: "scroll", borderTopColor:"#FFFFFF"}}>
                       <TermsSnippetViewer term= {this.state.term} session={this.props.session} focusContext={this.state.focusContext} focusTermContext={this.state.focusTermContext}/>
                       </div>
                     </div>
