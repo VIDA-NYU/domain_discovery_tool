@@ -81,7 +81,9 @@ class TermsSnippetViewer extends Component {
     * Updates viewer.
     */
    update(items_) {
+    // Removes missing items.
      select("#termsSnippet").selectAll('*').remove();
+     
      var items = select("#termsSnippet")
      .attr("width", 300)
      .attr("height", 300)
@@ -98,16 +100,13 @@ class TermsSnippetViewer extends Component {
        .html(function(item, i) {
            var snippet = (item.snippet.replace(/<em>/g, "<b>")).replace("</em>", "</b>");
            return '<p>' + snippet + '</p>';
-         });
-
-       /*.on('click', function(item, i) {
+         })
+       .style('cursor', 'pointer')
+       .on('click', function(item, i) {
          var elem = select(this);
          elem.classed('dblclicked', !elem.classed('dblclicked'));
          window.open(item.url, '_blank');
-       });*/
-
-     // Removes missing items.
-     //.exit().remove()
+       });
 
      items.each(function(item, i) {
        console.log("---");

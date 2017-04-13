@@ -63,7 +63,7 @@ const styles = {
     borderRadius: '0px 0px 0px 0px',
   },
   cardHeaderTermSummary:{
-    background: '#FFFFFF',
+    background: '#DCCCE7',
     padding:'10px 1px 10px 6px',
     borderRadius: '0px 0px 0px 0px',
   },
@@ -75,10 +75,10 @@ const styles = {
     height: "200px",
   },
   cardMediaTermSummary:{
-    background: '#FFFFFF',
+    background: '#DCCCE7',
     padding:'2px 4px 2px 4px',
     borderRadius: '0px 0px 0px 0px',
-    height: "200px",
+    height: "390px",
   },
 };
 
@@ -335,9 +335,7 @@ class Body extends Component{
         <Row className="Menus-child">
           <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
-
-
-        <Row className="Menus-child" style={{marginTop:10}}>
+        <Row className="Menus-child">
             <Card expanded={true} style={styles.card}>
                  <CardHeader
                    title="Terms"
@@ -346,7 +344,7 @@ class Body extends Component{
                    style={styles.cardHeaderTermSummary}
                    showExpandableButton={true}
                  />
-                 <CardMedia expandable={true} >
+                 <CardMedia expandable={true} style={styles.cardMediaTermSummary}>
                   <Divider/>
                   <div>
                     <TermsList listTerms={this.state.listTerms} session={this.state.sessionBody}></TermsList>
