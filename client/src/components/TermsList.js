@@ -38,6 +38,8 @@ class TermsList extends Component {
           openCreateTerm: false,
           newNameTerm:"",
         };
+        this.focusTextField = this.focusTextField.bind(this);
+        this.textInput = null;
 
         //this.startTermsList = this.startTermsList.bind(this);
         //this.drawWordCloud = this.drawWordCloud.bind(this);
@@ -63,9 +65,14 @@ class TermsList extends Component {
     handleTextChangeNewNameTerm(e){
       this.setState({ newNameTerm: e.target.value});
     }
+    // Explicitly focus the text input using the raw DOM API
+    focusTextField() {
+      setTimeout(() => this.textInput.focus(), 100);
+    }
     addNewTerm(){
       console.log("hello");
     }
+
 
     startSnippets(term){
       this.setState({term:term});
@@ -205,6 +212,7 @@ class TermsList extends Component {
                                  onRequestClose={this.handleCloseAddTerm.bind(this)}
                                >
                                  <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+                                   ref={(input) => { this.textInput = input;}}
                                    value={this.state.newNameTerm}
                                    onChange={this.handleTextChangeNewNameTerm.bind(this)}
                                    hintText="Write new term."
