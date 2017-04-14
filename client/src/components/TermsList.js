@@ -50,6 +50,7 @@ class TermsList extends Component {
     }
 
     componentWillReceiveProps(nextProps){
+      console.log(nextProps.listTerms);
       this.setState({listTerms:nextProps.listTerms});
     }
 
@@ -154,17 +155,21 @@ class TermsList extends Component {
                               let widthPos = barScale(w['posFreq']);
                               // Aligns left bar to left.
                               var widthNeg = barScale(w['negFreq']);
-                              var colorPin = (this.state.focusContext && this.state.focusTermContext==w["word"])? "black":"#E6E6E6";
-                              let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, w["word"])} onMouseOver={this.startSnippets.bind(this, w["word"])}>
-                                            <foreignObject fill="blue" height="20" width="20" y="-2px" x="10px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
+                              var currentTerm =w["word"];
+                              var colorPin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "black":"#E6E6E6";
+                              let pins = <g className={"pins"} transform={`translate(14, 0)`} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, currentTerm)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
+                                            <foreignObject fill="blue" height="20" width="20" ><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
                                          </g>;
 
                               var tags = w['tags']; //var isPositive = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1); var isNegative = tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1;
                               var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
-                              let words = <g transform={`translate(30, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, w["word"])}>
-                                            <text id={w["word"].replace(/ /g, "_")} fontSize="12" fontFamily="sans-serif" textAnchor="start" style={{fill:colorWord}} >{w["word"]}
+                              let words = <g transform={`translate(30, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
+                                            <text id={currentTerm.replace(/ /g, "_")} fontSize="12" fontFamily="sans-serif" textAnchor="start" style={{fill:colorWord}} >{currentTerm}
                                             </text>
                                           </g>;
+                              let custom = <g className={"custom"} transform={`translate(2, 0)`} style={{cursor:"pointer", letterSpacing:4, color:"orange"}} onClick={this.focusTermContext.bind(this, currentTerm)} >
+                                            <foreignObject height="20" width="20" ><span className={"glyphicon glyphicon-trash"}></span></foreignObject>
+                                           </g>;
 
                               // Adds right bars (aligned to left).
                               let barNegative = <g transform={`translate(182, 0)`}>
@@ -177,6 +182,7 @@ class TermsList extends Component {
                                                        <rect y={5} height={6} width={widthPos} x={0} style={{fill:"blue"}}/>
                                                 </g>;
                               let bars =   <g id="terms" transform={`translate(0, ${y})`}>
+                                              {custom}
                                               {pins}
                                               {words}
                                               {barNegative}
@@ -196,7 +202,7 @@ class TermsList extends Component {
         return (
                     <div>
                       <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
-                          <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}>
+                          <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*20}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}>
                             {terms_array}
                           </svg>
                       </div>
