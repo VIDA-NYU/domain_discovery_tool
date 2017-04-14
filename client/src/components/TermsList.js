@@ -70,10 +70,10 @@ class TermsList extends Component {
     focusTextField() {
       setTimeout(() => this.textInput.focus(), 100);
     }
-    addPosTerm(){
+
+    //Checking whether there is already the word.
+    addEntries(newTerm, entries){
       var updateListTerm = this.state.listTerms;
-      var newTerm = this.state.newNameTerm;
-      var entries = [{'word': newTerm, 'posFreq': 0, 'negFreq': 0, 'tags': ["Positive", "Custom"]}];
       var duplicate = false;
       var found = updateListTerm.some(function (obj) {
         return obj.word === newTerm;
@@ -81,10 +81,22 @@ class TermsList extends Component {
       if (found) duplicate = true;
       if (duplicate === false) updateListTerm = entries.concat(updateListTerm);
       this.setState({listTerms:updateListTerm, openCreateTerm: false, newNameTerm:"",});
+    }
+
+    //Adding custom positive terms.
+    addPosTerm(){
+      var newTerm = this.state.newNameTerm;
+      var entries = [{'word': newTerm, 'posFreq': 0, 'negFreq': 0, 'tags': ["Positive", "Custom"]}];
+      this.addEntries(newTerm, entries);
       this.setTermTag(newTerm,'Positive;Custom', true, this.props.session);
     }
+
+    //Adding custom negative terms.
     addNegTerm(){
-      console.log("hello");
+      var newTerm = this.state.newNameTerm;
+      var entries = [{'word': newTerm, 'posFreq': 0, 'negFreq': 0, 'tags': ["Negative", "Custom"]}];
+      this.addEntries(newTerm, entries);
+      this.setTermTag(newTerm,'Negative;Custom', true, this.props.session);
     }
 
     startSnippets(term){
