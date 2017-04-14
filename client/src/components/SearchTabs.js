@@ -96,7 +96,7 @@ class SearchTabs extends React.Component {
               console.log("Something is wrong. Try again.");
               this.props.updateStatusMessage(false, this.state.valueQuery);
             }.bind(this));
-      this.props.updateStatusMessage(true, this.state.valueQuery);
+      this.props.updateStatusMessage(true, "Uploading URLs");
     }
 
     // Download the pages of uploaded urls from textfield
