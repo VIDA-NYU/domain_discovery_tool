@@ -70,10 +70,22 @@ class TermsList extends Component {
     focusTextField() {
       setTimeout(() => this.textInput.focus(), 100);
     }
-    addNewTerm(){
+    addPosTerm(){
+      var updateListTerm = this.state.listTerms;
+      var newTerm = this.state.newNameTerm;
+      var entries = [{'word': newTerm, 'posFreq': 0, 'negFreq': 0, 'tags': ["Positive", "Custom"]}];
+      var duplicate = false;
+      var found = updateListTerm.some(function (obj) {
+        return obj.word === newTerm;
+      });
+      if (found) duplicate = true;
+      if (duplicate === false) updateListTerm = entries.concat(updateListTerm);
+      this.setState({listTerms:updateListTerm, openCreateTerm: false, newNameTerm:"",});
+      this.setTermTag(newTerm,'Positive;Custom', true, this.props.session);
+    }
+    addNegTerm(){
       console.log("hello");
     }
-
 
     startSnippets(term){
       this.setState({term:term});
@@ -156,19 +168,22 @@ class TermsList extends Component {
                               // Aligns left bar to left.
                               var widthNeg = barScale(w['negFreq']);
                               var currentTerm =w["word"];
+                              var tags = w['tags']; //var isPositive = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1); var isNegative = tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1;
                               var colorPin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "black":"#E6E6E6";
+                              var removeTermButton = (tags.indexOf('Custom')!= -1)?<foreignObject height="20" width="20" ><span className={"glyphicon glyphicon-trash"}></span></foreignObject>:<span/>;
+                              var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
+
                               let pins = <g className={"pins"} transform={`translate(14, 0)`} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, currentTerm)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
                                             <foreignObject fill="blue" height="20" width="20" ><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
                                          </g>;
 
-                              var tags = w['tags']; //var isPositive = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1); var isNegative = tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1;
-                              var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
                               let words = <g transform={`translate(30, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
                                             <text id={currentTerm.replace(/ /g, "_")} fontSize="12" fontFamily="sans-serif" textAnchor="start" style={{fill:colorWord}} >{currentTerm}
                                             </text>
                                           </g>;
+
                               let custom = <g className={"custom"} transform={`translate(2, 0)`} style={{cursor:"pointer", letterSpacing:4, color:"orange"}} onClick={this.focusTermContext.bind(this, currentTerm)} >
-                                            <foreignObject height="20" width="20" ><span className={"glyphicon glyphicon-trash"}></span></foreignObject>
+                                              {removeTermButton}
                                            </g>;
 
                               // Adds right bars (aligned to left).
@@ -195,8 +210,8 @@ class TermsList extends Component {
                            }.bind(this));
          const actionsAddTerm = [
            <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseAddTerm}/>,
-           <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addNewTerm.bind(this)}/>,
-           <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNewTerm.bind(this)}/>,
+           <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addPosTerm.bind(this)}/>,
+           <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegTerm.bind(this)}/>,
          ];
 
         return (
