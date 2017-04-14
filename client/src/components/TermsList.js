@@ -15,6 +15,12 @@ import TermsSnippetViewer from "./TermsSnippetViewer";
 import Divider from 'material-ui/Divider';
 import { Glyphicon } from 'react-bootstrap';
 import $ from "jquery";
+import FlatButton from 'material-ui/FlatButton';
+import {fullWhite} from 'material-ui/styles/colors';
+import AddTermIcon from 'material-ui/svg-icons/content/add-box';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
 //import {select} from 'd3-selection';
 //import cloud from 'd3-cloud';
 //import ReactFauxDom from 'react-faux-dom';
@@ -29,35 +35,36 @@ class TermsList extends Component {
           focusContext:false,
           focusTermContext:"",
           focusContextStyle:"#E6E6E6",//color withput focus
+          openCreateTerm: false,
+          newNameTerm:"",
         };
-        this.startTermsList = this.startTermsList.bind(this);
+
+        //this.startTermsList = this.startTermsList.bind(this);
         //this.drawWordCloud = this.drawWordCloud.bind(this);
     }
 
     componentWillMount(){
       this.setState({listTerms:this.props.listTerms});
-      //this.wordCloud = ReactFauxDom.createElement('div');
     }
 
-
-    componentDidMount() {
-        this.startTermsList();
-    }
-
-    componentDidUpdate() {
-        this.startTermsList();
-    }
     componentWillReceiveProps(nextProps){
       this.setState({listTerms:nextProps.listTerms});
     }
 
-    startTermsList() {
-      console.log("terms");
-      //select(this.refs.svg_container).selectAll('*').remove();
-
+    //Handling open/close create a new term Dialog
+    handleOpenAddTerm = () => {
+      this.setState({openCreateTerm: true});
+      this.focusTextField();
+    };
+    handleCloseAddTerm = () => {
+      this.setState({openCreateTerm: false, newNameTerm:"",});
+    };
+    //Handling changes into TextField newNameTerm (updating TextField).
+    handleTextChangeNewNameTerm(e){
+      this.setState({ newNameTerm: e.target.value});
     }
-
-    componentWillUnmount(){
+    addNewTerm(){
+      console.log("hello");
     }
 
     startSnippets(term){
@@ -133,54 +140,80 @@ class TermsList extends Component {
       // Scales for left/right bars.
       var barScale = scaleLinear().range([0, maxBarWidth]);
       barScale.domain([0, maxFreq]);
-        let y =0;
-        let terms_array = [];
-        let loopListTerms = this.state.listTerms.map(function(w) {
-                                // Aligns left bar to right.
-                                let widthPos = barScale(w['posFreq']);
-                                // Aligns left bar to left.
-                                var widthNeg = barScale(w['negFreq']);
-                                var colorPin = (this.state.focusContext && this.state.focusTermContext==w["word"])? "black":"#E6E6E6";
-                                let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, w["word"])} onMouseOver={this.startSnippets.bind(this, w["word"])}>
-                                              <foreignObject fill="blue" height="20" width="20" y="-2px" x="10px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
-                                           </g>;
+      let y =0;
+      let terms_array = [];
+      let loopListTerms = this.state.listTerms.map(function(w) {
+                              // Aligns left bar to right.
+                              let widthPos = barScale(w['posFreq']);
+                              // Aligns left bar to left.
+                              var widthNeg = barScale(w['negFreq']);
+                              var colorPin = (this.state.focusContext && this.state.focusTermContext==w["word"])? "black":"#E6E6E6";
+                              let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, w["word"])} onMouseOver={this.startSnippets.bind(this, w["word"])}>
+                                            <foreignObject fill="blue" height="20" width="20" y="-2px" x="10px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
+                                         </g>;
 
-                                var tags = w['tags']; //var isPositive = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1); var isNegative = tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1;
-                                var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
-                                let words = <g transform={`translate(30, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, w["word"])}>
-                                              <text id={w["word"].replace(/ /g, "_")} fontSize="12" fontFamily="sans-serif" textAnchor="start" style={{fill:colorWord}} >{w["word"]}
-                                              </text>
+                              var tags = w['tags']; //var isPositive = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1); var isNegative = tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1;
+                              var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
+                              let words = <g transform={`translate(30, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, w["word"])}>
+                                            <text id={w["word"].replace(/ /g, "_")} fontSize="12" fontFamily="sans-serif" textAnchor="start" style={{fill:colorWord}} >{w["word"]}
+                                            </text>
+                                          </g>;
+
+                              // Adds right bars (aligned to left).
+                              let barNegative = <g transform={`translate(182, 0)`}>
+                                                       <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}} />
+                                                       <rect y={5} height={6} width={widthNeg} x={maxBarWidth - widthNeg} style={{fill:"red"}}/>
+                                                 </g>;
+                              // Adds left bars (aligned to right).
+                              let barPositive = <g transform={`translate(212, 0)`}>
+                                                       <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}}/>
+                                                       <rect y={5} height={6} width={widthPos} x={0} style={{fill:"blue"}}/>
+                                                </g>;
+                              let bars =   <g id="terms" transform={`translate(0, ${y})`}>
+                                              {pins}
+                                              {words}
+                                              {barNegative}
+                                              {barPositive}
                                             </g>;
-
-                                // Adds right bars (aligned to left).
-                                let barNegative = <g transform={`translate(182, 0)`}>
-                                                         <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}} />
-                                                         <rect y={5} height={6} width={widthNeg} x={maxBarWidth - widthNeg} style={{fill:"red"}}/>
-                                                   </g>;
-                                // Adds left bars (aligned to right).
-                                let barPositive = <g transform={`translate(212, 0)`}>
-                                                         <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}}/>
-                                                         <rect y={5} height={6} width={widthPos} x={0} style={{fill:"blue"}}/>
-                                                  </g>;
-                                let bars =   <g id="terms" transform={`translate(0, ${y})`}>
-                                                {pins}
-                                                {words}
-                                                {barNegative}
-                                                {barPositive}
-                                              </g>;
-                                terms_array.push(bars);
-                                y=y+16;
-                                //var nameIdButton = '#'+ev.target.id
-                                //var color = ($(nameIdButton).css("background-color")).toString();
-                             }.bind(this));
+                              terms_array.push(bars);
+                              y=y+16;
+                              //var nameIdButton = '#'+ev.target.id
+                              //var color = ($(nameIdButton).css("background-color")).toString();
+                           }.bind(this));
+         const actionsAddTerm = [
+           <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseAddTerm}/>,
+           <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addNewTerm.bind(this)}/>,
+           <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNewTerm.bind(this)}/>,
+         ];
 
         return (
                     <div>
                       <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
-                      <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}
-                       >
-                        {terms_array}
-                      </svg>
+                          <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*10}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}>
+                            {terms_array}
+                          </svg>
+                      </div>
+                      <div style={{ textAlign:"right", margin:"-20px 0px -10px 0px",}}>
+                          <IconButton tooltip="Add term" onTouchTap={this.handleOpenAddTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}}>
+                             <AddTermIcon color={fullWhite} />
+                          </IconButton>
+                              <Dialog
+                                 title="Adding a term"
+                                 actions={actionsAddTerm}
+                                 modal={false}
+                                 open={this.state.openCreateTerm}
+                                 onRequestClose={this.handleCloseAddTerm.bind(this)}
+                               >
+                                 <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+                                   value={this.state.newNameTerm}
+                                   onChange={this.handleTextChangeNewNameTerm.bind(this)}
+                                   hintText="Write new term."
+                                   hintStyle={{ marginLeft:10}}
+                                   inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+
+                                 />
+                               </Dialog>
+
                       </div>
                       <Divider style={{margin:"10px 10px 10px 10px"}}/>
                       <div style={{fontSize: 12, padding:10, height: '180px', overflowY: "scroll", borderTopColor:"#FFFFFF"}}>
