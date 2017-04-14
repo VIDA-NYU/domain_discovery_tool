@@ -57,8 +57,6 @@ class SearchTabs extends React.Component {
               {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
               function(data) {
 		  var num_pages = data["pages"];
-                  console.log("QUERY WEB");
-                  console.log(num_pages);
                   this.props.queryPagesDone();
                   this.props.updateStatusMessage(false, "process*concluded");
               }.bind(this)).fail(function() {
