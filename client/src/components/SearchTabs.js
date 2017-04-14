@@ -47,24 +47,23 @@ class SearchTabs extends React.Component {
       this.setState({  slideIndex: value,  });
     };
 
-
-    //Submits a web query for a list of terms, e.g. 'ebola disease'
-    RunQuery(){
-      console.log("run queryWeb");
-      var session =this.props.session;
-      session['search_engine']=this.state.search_engine;
-      $.post(
-        '/queryWeb',
-        {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
-        function(data) {
-          console.log(data);
-          console.log("CONCLUDED PROCESSSSSSSS)");
-          this.props.uploadDDT(false, "process*concluded");
-          }.bind(this)).fail(function() {
-              console.log("Something wrong happen. Try again.");
-              this.props.uploadDDT(false, this.state.valueQuery);
-            }.bind(this));
-      this.props.uploadDDT(true, this.state.valueQuery);
+  //Submits a web query for a list of terms, e.g. 'ebola disease'
+  RunQuery(){
+    	var session =this.props.session;
+    	session['search_engine']=this.state.search_engine;
+      this.props.getQueryPages(this.state.valueQuery);
+    	$.post(
+              '/queryWeb',
+              {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
+              function(data) {
+		  var num_pages = data["pages"];
+                  this.props.queryPagesDone();
+                  this.props.updateStatusMessage(false, "process*concluded");
+              }.bind(this)).fail(function() {
+                            	      console.log("Something is wrong. Try again.");
+                            	      this.props.updateStatusMessage(false, this.state.valueQuery);
+                    }.bind(this));
+              this.props.updateStatusMessage(true, this.state.valueQuery);
     }
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
@@ -76,13 +75,12 @@ class SearchTabs extends React.Component {
         '/runSeedFinder',
         {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
         function(data) {
-          this.props.uploadDDT(false, "process*concluded");
+          this.props.updateStatusMessage(false, "process*concluded");
           }.bind(this)).fail(function() {
-              console.log("Something wrong happen. Try again.");
-              this.props.uploadDDT(false, this.state.valueQuery);
+              console.log("Something is wrong. Try again.");
+              this.props.updateStatusMessage(false, this.state.valueQuery);
             }.bind(this));
-      //console.log("run quwry" + this.state.search_engine + ", " + this.state.valueQuery );
-      this.props.uploadDDT(true, this.state.valueQuery);
+      this.props.updateStatusMessage(true, this.state.valueQuery);
     }
 
     // Download the pages of uploaded urls
@@ -92,15 +90,14 @@ class SearchTabs extends React.Component {
       $.post(
         '/downloadUrls',
         {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
-        function(data) {
-          this.props.uploadDDT(false, "process*concluded" );
+          function(data) {
+              this.props.updateStatusMessage(false, "process*concluded" );
           }.bind(this)).fail(function() {
-              console.log("Something wrong happen. Try again.");
-              this.props.uploadDDT(false, this.state.valueQuery);
+              console.log("Something is wrong. Try again.");
+              this.props.updateStatusMessage(false, this.state.valueQuery);
             }.bind(this));
-      this.props.uploadDDT(true, this.state.valueQuery);
+      this.props.updateStatusMessage(true, this.state.valueQuery);
     }
-
 
     // Download the pages of uploaded urls from textfield
     runLoadUrlsQuery(){

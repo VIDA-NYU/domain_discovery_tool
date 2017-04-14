@@ -76,7 +76,7 @@ class LoadQueries extends React.Component {
   }
   shouldComponentUpdate(nextProps, nextState){
     if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString && this.state.flat===true) {
-      if(this.props.update){ console.log("FiltersTabs-reupload");return true;}
+      if(this.props.update){ return true;}
       else {return false;}
     }
     return true;
@@ -133,9 +133,9 @@ class LoadTag extends React.Component {
       '/getAvailableTags',
       {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
       function(tagsDomain) {
-        console.log("tags");
-        console.log(tagsDomain);
-        console.log(this.props.session);
+        //console.log("tags");
+        //console.log(tagsDomain);
+        //console.log(this.props.session);
         this.setState({currentTags: tagsDomain['tags'], session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
       }.bind(this)
     );
@@ -146,7 +146,7 @@ class LoadTag extends React.Component {
       this.setState({ flat:true});
       return;
     }
-    console.log("FiltersTabs componentWillReceiveProps after");
+    //console.log("FiltersTabs componentWillReceiveProps after");
     // Calculate new state
     this.setState({
       session:nextProps.session, tagString: JSON.stringify(nextProps.session['selected_tags']), flat:false
@@ -156,7 +156,7 @@ class LoadTag extends React.Component {
 
   shouldComponentUpdate(nextProps){
     if(JSON.stringify(nextProps.session['selected_tags']) === this.state.tagString && this.state.flat===true ) {
-      if(this.props.update){ console.log("FiltersTabs-reupload");return true;}
+      if(this.props.update){return true;}
       else {return false;}
     }
     return true;
@@ -210,9 +210,9 @@ class LoadModel extends React.Component {
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
       function(modelTagDomain) {
-        console.log("modeltags");
-        console.log(modelTagDomain);
-        console.log(this.props.session);
+        //console.log("modeltags");
+        //console.log(modelTagDomain);
+        //console.log(this.props.session);
         this.setState({currentModelTags: modelTagDomain, session:this.props.session, modelTagString: JSON.stringify(this.props.session['selected_model_tags'])});
       }.bind(this)
     );
@@ -223,7 +223,7 @@ class LoadModel extends React.Component {
       this.setState({ flat:true});
       return;
     }
-    console.log("FiltersTabs componentWillReceiveProps after");
+    //console.log("FiltersTabs componentWillReceiveProps after");
     // Calculate new state
     this.setState({
       session:nextProps.session, modelTagString: JSON.stringify(nextProps.session['selected_model_tags']), flat:false
@@ -233,7 +233,7 @@ class LoadModel extends React.Component {
 
   shouldComponentUpdate(nextProps){
     if(JSON.stringify(nextProps.session['selected_model_tags']) === this.state.modelTagString && this.state.flat===true ) {
-      if(this.props.update){ console.log("FiltersTabs-reupload");return true;}
+      if(this.props.update){return true;}
       else {return false;}
     }
     return true;
@@ -298,12 +298,12 @@ class FiltersTabs extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("FiltersTabs componentWillReceiveProps before");
+    //console.log("FiltersTabs componentWillReceiveProps before");
     if(JSON.stringify(nextProps.session) === this.state.sessionString) {
       this.setState({  flat: true });
         return;
     }
-    console.log("FiltersTabs componentWillReceiveProps after");
+    //console.log("FiltersTabs componentWillReceiveProps after");
     // Calculate new state
     this.setState({
         session:nextProps.session, sessionString: JSON.stringify(nextProps.session), queryString: JSON.stringify(nextProps.session['selected_queries']), tagString: JSON.stringify(nextProps.session['selected_tags']), flat: true

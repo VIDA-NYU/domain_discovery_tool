@@ -336,6 +336,8 @@ class ViewTabSnippets extends React.Component{
 
 
   render(){
+    console.log("SnippetsPAges------------");
+      console.log(this.pages);
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var cont=0;
     var urlsList = Object.keys(this.pages).map((k, index)=>{
@@ -344,7 +346,7 @@ class ViewTabSnippets extends React.Component{
                     let colorTagNeutral="";
                     let uniqueTag="";
                     if(this.pages[k]["tags"]){
-                     uniqueTag = (Object.keys(this.pages[k]["tags"]).length===1) ? (this.pages[k]["tags"]).toString():(this.pages[k]["tags"][Object.keys(this.pages[k]["tags"]).length-1]).toString();
+                     uniqueTag = (Object.keys(this.pages[k]["tags"]).length > 0) ? (this.pages[k]["tags"]).toString():(this.pages[k]["tags"][Object.keys(this.pages[k]["tags"]).length-1]).toString();
                      colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
                      colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
                      colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
@@ -412,7 +414,7 @@ class Views extends React.Component {
     super(props);
     this.state = {
       slideIndex: 0,
-      pages:[],
+	pages:{},
       sessionString:"",
       session:{},
       chipData: [],
@@ -422,15 +424,15 @@ class Views extends React.Component {
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
   getPages(session){
-    let paginas = [];
-    $.post(
-      '/getPages',
-      {'session': JSON.stringify(session)},
-      function(pages) {
-        paginas =pages["data"];
-        this.setState({session:session, pages:paginas, sessionString: JSON.stringify(session), lengthPages : Object.keys(paginas).length});
-      }.bind(this)
-    );
+      $.post(
+	  '/getPages',
+	  {'session': JSON.stringify(session)},
+	  function(pages) {
+	      console.log("GET PAGES");
+              console.log(pages);
+              this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
+	  }.bind(this)
+      );
   }
 
   //Loads pages in the first time.
@@ -451,11 +453,18 @@ class Views extends React.Component {
   }
 
   //If there are any change in the session like a new filter, then getPages() is called.
-  componentWillReceiveProps(nextProps){
-    if (JSON.stringify(nextProps.session) === this.state.sessionString) {
-        return;
-    }
-    this.loadPages(nextProps.session);
+    componentWillReceiveProps(nextProps){
+      console.log(nextProps.session);
+	/*if (nextProps.pages !== this.state.pages) {
+	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
+	    this.forceUpdate();
+	}
+	if (JSON.stringify(nextProps.session) === this.state.sessionString) {
+	    return;
+	}*/
+  console.log("View---------------");
+  console.log(nextProps.session);
+	this.loadPages(nextProps.session);
   }
 
   //Updates selected filters.
@@ -466,7 +475,7 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.slideIndex !== this.state.slideIndex) { //
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.slideIndex !== this.state.slideIndex || nextProps.pages !== this.state.pages || this.state.lengthPages==0) { //
           return true;
     }
     return false;

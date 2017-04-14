@@ -72,12 +72,12 @@ class Filters extends Component{
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-      console.log("filter before shouldComponentUpdate");
-      console.log(this.props.update);
+      //console.log("filter before shouldComponentUpdate");
+      //console.log(this.props.update);
       if(this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
             return true;
       }
-      console.log("filter after shouldComponentUpdate");
+      //console.log("filter after shouldComponentUpdate");
       return false;
     }
 
@@ -124,7 +124,7 @@ class Filters extends Component{
 */
 
   render(){
-    console.log("Filters");
+    //console.log("Filters");
     return(
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader
