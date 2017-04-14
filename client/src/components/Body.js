@@ -204,9 +204,11 @@ class Body extends Component{
   	}
   }
 
+  // Start a timer and get the pages for the particular query as and when they become available on the server  
   getQueryPages(term){
     this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 100)});
   }
+    
   applyFilterByQuery(term){
     console.log("applyFilterByQuery----------------");
     var session =this.state.sessionBody;
@@ -214,11 +216,10 @@ class Body extends Component{
     session['pageRetrievalCriteria'] = "Queries";
     session['selected_queries']=term;
     this.updateSession(session);
-    //this.forceUpdate();
   }
 
+  // Stop timer to stop getting pages fromt the server as all downloaded pages have been retrieved
   queryPagesDone(){
-    console.log("Done");
     window.clearInterval(this.state.intervalFuncId);
     this.setState({intervalFuncId:undefined});
   }
