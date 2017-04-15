@@ -70,7 +70,7 @@ class SearchTabs extends React.Component {
     runSeedFinderQuery(){
       console.log("run seedQuery");
       var session =this.props.session;
-      session['search_engine']=this.state.search_engine;
+	session['search_engine']=this.state.search_engine;
       $.post(
         '/runSeedFinder',
         {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
@@ -85,18 +85,20 @@ class SearchTabs extends React.Component {
 
     // Download the pages of uploaded urls
     runLoadUrls(valueLoadUrls){
-      var session =this.props.session;
-      session['search_engine']=this.state.search_engine;
-      $.post(
-        '/downloadUrls',
-        {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
-          function(data) {
-              this.props.updateStatusMessage(false, "process*concluded" );
-          }.bind(this)).fail(function() {
-              console.log("Something is wrong. Try again.");
-              this.props.updateStatusMessage(false, this.state.valueQuery);
+	var session =this.props.session;
+	session['search_engine']=this.state.search_engine;
+	this.props.getQueryPages("uploaded");
+	$.post(
+            '/downloadUrls',
+            {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
+            function(data) {
+		this.props.queryPagesDone();
+		this.props.updateStatusMessage(false, "process*concluded" );
+            }.bind(this)).fail(function() {
+		console.log("Something is wrong. Try again.");
+		this.props.updateStatusMessage(false, "uploaded");
             }.bind(this));
-      this.props.updateStatusMessage(true, "Uploading URLs");
+	this.props.updateStatusMessage(true, "Uploading URLs");
     }
 
     // Download the pages of uploaded urls from textfield
