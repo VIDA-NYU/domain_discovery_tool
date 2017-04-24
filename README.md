@@ -65,6 +65,10 @@ or (from the top-level `domain_discovery_tool_react` directory) execute:
 Now you should be able to head to http://localhost:8084/ to interact
 with the tool.
 
+## Publication
+
+Yamuna Krishnamurthy, Kien Pham, Aecio Santos, and Juliana Friere. 2016. [Interactive Web Content Exploration for Domain Discovery](http://poloclub.gatech.edu/idea2016/papers/p64-krishnamurthy.pdf) (Interactive Data Exploration and Analytics ([IDEA](http://poloclub.gatech.edu/idea2016/)) Workshop at Knowledge Discovery and Data Mining ([KDD](http://www.kdd.org/kdd2016/)), San Francisco, CA).
+
 ## Contact
 
 DDT Development Team [ddt-dev@vgc.poly.edu]
