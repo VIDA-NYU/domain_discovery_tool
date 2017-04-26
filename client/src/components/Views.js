@@ -97,8 +97,9 @@ class ChipViewTab extends React.Component{
     var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
     console.log("CHIP");
     console.log(session);
-    var queriesList =[], tagsList =[], modelTagsList =[];
+    var queriesList =[], tldsList=[],tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
+    tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;      
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
 
@@ -167,9 +168,17 @@ class ChipViewTab extends React.Component{
                       sessionTemp['pageRetrievalCriteria'] = "Tags";
                     }
                   }
-                  break;
+            break;
+          case 3: //tlds
+              sessionTemp['selected_tlds']= this.removeString(2, key);
+              if(sessionTemp['selected_tlds'] === "") {
+                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['pageRetrievalCriteria'] = "TLDs";
+              }
+              break;
+	    
         }
-        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" ){
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" ){
            sessionTemp['pageRetrievalCriteria'] = "Most Recent";
         }
 

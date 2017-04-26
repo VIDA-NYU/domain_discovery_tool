@@ -117,6 +117,85 @@ class LoadQueries extends React.Component {
 
 }
 
+class LoadTLDs extends React.Component {
+  constructor(props){
+    super(props);
+    this.state={
+      currentTLDs:undefined,
+      tldsCheckBox:[],
+      tldString:"",
+      session: {},
+      flat:false,
+    };
+  }
+
+  getAvailableTLDs(){
+    $.post(
+      '/getAvailableTLDs',
+      {'session': JSON.stringify(this.props.session)},
+      function(tlds) {
+          this.setState({currentTLDs: tlds, session:this.props.session, tldString: JSON.stringify(this.props.session['selected_tlds'])});
+      }.bind(this)
+    );
+  }
+    
+  componentWillMount(){
+    this.getAvailableTLDs();
+  }
+  componentWillReceiveProps(nextProps){
+    if(JSON.stringify(nextProps.session['selected_tlds']) === this.state.tldString ) {
+      this.setState({ flat:true});
+      if(this.props.update){
+        this.getAvailableTLDs();
+      }
+      return;
+    }
+    // Calculate new state
+    this.setState({
+      session:nextProps.session, tldString: JSON.stringify(nextProps.session['selected_tlds']), flat:true
+    });
+
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    if(JSON.stringify(nextProps.session['selected_tlds']) === this.state.tldString && this.state.flat===true) {
+      if(this.props.update){ return true;}
+      else {return false;}
+    }
+    return true;
+  }
+
+  addTLD(tld){
+    var tlds = this.state.tldString.substring(1,this.state.tldString.length-1).split(",");
+    if(tlds.includes(tld)){
+      this.props.removeQueryTag(4, tld);
+    }
+    else{
+      this.props.addTLD(tld);
+    }
+  }
+
+  render(){
+    if(this.state.currentTLDs!==undefined){
+      return(
+        <div>
+        {Object.keys(this.state.currentTLDs).map((tld, index)=>{
+          var labelTLD=  tld+" " +"(" +this.state.currentTLDs[tld]+")"; //tld (ex. www.google.com) , index (ex. 0,1,2...)
+          var checkedTLD=false;
+          var tlds = this.state.tldString.substring(1,this.state.tldString.length-1).split(",");
+          if(tlds.includes(tld))
+            checkedTLD=true;
+          return <Checkbox label={labelTLD} checked={checkedTLD} style={styles.checkbox}  onClick={this.addTLD.bind(this,tld)}/>
+        })}
+        </div>
+      );
+    }
+    return(
+      <CircularProgressSimple />
+    );
+  }
+
+}
+
 class LoadTag extends React.Component {
   constructor(props){
     super(props);
@@ -286,6 +365,7 @@ class FiltersTabs extends React.Component {
       sessionString:"",
       session: {},
       queryString:"",
+      tldString:"",	
       tagString:"",
       modelTagString:"",
       flat:false,
@@ -293,7 +373,7 @@ class FiltersTabs extends React.Component {
   }
 
   componentWillMount(){
-    this.setState({session:this.props.session, sessionString: JSON.stringify(this.props.session), queryString: JSON.stringify(this.props.session['selected_queries']), tagString: JSON.stringify(this.props.session['selected_tags']) });
+    this.setState({session:this.props.session, sessionString: JSON.stringify(this.props.session), queryString: JSON.stringify(this.props.session['selected_queries']),tldString: JSON.stringify(this.props.session['selected_tlds']), tagString: JSON.stringify(this.props.session['selected_tags']) });
 
   }
 
@@ -306,7 +386,7 @@ class FiltersTabs extends React.Component {
     //console.log("FiltersTabs componentWillReceiveProps after");
     // Calculate new state
     this.setState({
-        session:nextProps.session, sessionString: JSON.stringify(nextProps.session), queryString: JSON.stringify(nextProps.session['selected_queries']), tagString: JSON.stringify(nextProps.session['selected_tags']), flat: true
+        session:nextProps.session, sessionString: JSON.stringify(nextProps.session), queryString: JSON.stringify(nextProps.session['selected_queries']), tldString: JSON.stringify(this.props.session['selected_tlds']), tagString: JSON.stringify(nextProps.session['selected_tags']), flat: true
     });
 
   }
@@ -343,6 +423,21 @@ class FiltersTabs extends React.Component {
     this.props.updateSession(sessionTemp);
   }
 
+  addTLD(labelTLD){
+    var selected_tlds=[];
+    if(this.state.tldString.substring(1,this.state.tldString.length-1)!="")
+      selected_tlds = this.state.tldString.substring(1,this.state.tldString.length-1).split(",");
+    //var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
+    selected_tlds.push(labelTLD);
+    var newQuery = selected_tlds.toString();
+    this.setState({queriesCheckBox: selected_tlds});
+    var sessionTemp = this.props.session;
+    sessionTemp['newPageRetrievelCriteria'] = "one";
+    sessionTemp['pageRetrievalCriteria'] = "TLDs";
+    sessionTemp['selected_tlds']=newQuery;
+    this.props.updateSession(sessionTemp);
+  }
+    
   addTags(labelTags){
     var selected_tags=[];
     if(this.state.tagString.substring(1,this.state.tagString.length-1)!="")
@@ -386,7 +481,10 @@ class FiltersTabs extends React.Component {
           break;
       case 1://tags
           array = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
-          break;
+        break;
+      case 2: //tlds
+        array = this.state.tldString.substring(1,this.state.tldString.length-1).split(",");
+        break;
     }
     for(var index in array){ /* loop over all array items */
       if(array[index] !== item){
@@ -428,10 +526,17 @@ class FiltersTabs extends React.Component {
               sessionTemp['pageRetrievalCriteria'] = "Tags";
             }
           }
+        break;
+      case 4: //TLD
+          sessionTemp['selected_tlds']= this.removeString(2, item);
+          if(sessionTemp['selected_tlds'] === "") {
+            sessionTemp['newPageRetrievelCriteria'] = "one";
+            sessionTemp['pageRetrievalCriteria'] = "TLDs";
+          }
           break;
     }
 
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""){
        sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.deletedFilter(sessionTemp);
@@ -466,8 +571,9 @@ class FiltersTabs extends React.Component {
           tabItemContainerStyle={{background: '#9A7BB0' ,height: '40px'}}
         >
           <Tab label="Queries" value={0} style={styles.tab} />
-          <Tab label="Tags" value={1} style={styles.tab} />
-          <Tab label="Model" value={2} style={styles.tab} />
+            <Tab label="Tags" value={1} style={styles.tab} />
+          <Tab label="Domains" value={2} style={styles.tab} />	    
+          <Tab label="Model" value={3} style={styles.tab} />
         </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
           <div style={styles.headline}>
@@ -475,6 +581,9 @@ class FiltersTabs extends React.Component {
           </div>
           <div style={styles.headline}>
             <LoadTag session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
+            </div>
+          <div style={styles.headline}>
+            <LoadTLDs update={this.props.update} addTLD={this.addTLD.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
           </div>
           <div style={styles.headline}>
             <LoadModel session={this.state.session} addModelTags={this.addModelTags.bind(this)}/>
