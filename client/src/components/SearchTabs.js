@@ -89,7 +89,7 @@ class SearchTabs extends React.Component {
 	session['search_engine']=this.state.search_engine;
 	this.props.getQueryPages("uploaded");
 	$.post(
-            '/downloadUrls',
+            '/uploadUrls',
             {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
             function(data) {
 		this.props.queryPagesDone();
