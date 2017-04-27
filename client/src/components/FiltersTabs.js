@@ -583,7 +583,7 @@ class FiltersTabs extends React.Component {
             <LoadTag session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
             </div>
           <div style={styles.headline}>
-            <LoadTLDs update={this.props.update} addTLD={this.addTLD.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
+            <LoadTLDs session={this.props.session} addTLD={this.addTLD.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
           </div>
           <div style={styles.headline}>
             <LoadModel session={this.state.session} addModelTags={this.addModelTags.bind(this)}/>
