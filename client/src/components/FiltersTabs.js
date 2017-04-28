@@ -412,14 +412,22 @@ class FiltersTabs extends React.Component {
     selected_queries.push(labelQuery);
     var newQuery = selected_queries.toString();
     this.setState({queriesCheckBox: selected_queries});
-    var sessionTemp = this.props.session;
-    if(sessionTemp['selected_tags']!=="")
-      sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
+      var sessionTemp = this.props.session;
+      if(sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!==""){
+	  sessionTemp['newPageRetrievelCriteria'] = "Multi";
+	  sessionTemp['pageRetrievelCriteria'] = {"query":newQuery};
+	  if(sessionTemp['selected_tags']!=="")
+	      sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	  if(sessionTemp['selected_tlds']!=="")
+	      sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	  console.log("ADD QUERY");
+	  console.log(sessionTemp);
+      }
     else{
-      sessionTemp['newPageRetrievelCriteria'] = "one";
+	sessionTemp['newPageRetrievelCriteria'] = "one";
+	sessionTemp['pageRetrievalCriteria'] = "Queries";
+	sessionTemp['selected_queries']=newQuery;
     }
-    sessionTemp['pageRetrievalCriteria'] = "Queries";
-    sessionTemp['selected_queries']=newQuery;
     this.props.updateSession(sessionTemp);
   }
 
@@ -447,13 +455,24 @@ class FiltersTabs extends React.Component {
     var newTags = selected_tags.toString();
     this.setState({tagsCheckBox: selected_tags});
     var sessionTemp = this.props.session;
-    if(sessionTemp['selected_queries']!=="")
-      sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
-    else{
-      sessionTemp['newPageRetrievelCriteria'] = "one";
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!==""){
+	sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	  console.log("ADD TAGS");	  
+	sessionTemp['pageRetrievalCriteria'] = {};
+	sessionTemp['pageRetrievalCriteria']['tag'] = newTags;
+	console.log("ADD TAGS");
+	console.log(sessionTemp['pageRetrievalCriteria']['tag']);
+	console.log(sessionTemp['selected_queries']);
+	if(sessionTemp['selected_queries']!=="")
+	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	if(sessionTemp['selected_tlds']!=="")
+	    sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
     }
-    sessionTemp['pageRetrievalCriteria'] = "Tags";
-    sessionTemp['selected_tags']=newTags;
+    else{
+	sessionTemp['newPageRetrievelCriteria'] = "one";
+	sessionTemp['pageRetrievalCriteria'] = "Tags";
+	sessionTemp['selected_tags']=newTags;
+    }
     this.props.updateSession(sessionTemp);
   }
 
@@ -516,7 +535,7 @@ class FiltersTabs extends React.Component {
           sessionTemp['selected_model_tags']= this.removeString(3, item);
           if(sessionTemp['selected_model_tags'] === "") {
             if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
-                sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
+                sessionTemp['newPageRetrievelCriteria'] = "Multi";
             else if (sessionTemp['selected_queries'] !== "") {
               sessionTemp['newPageRetrievelCriteria'] = "one";
               sessionTemp['pageRetrievalCriteria'] = "Queries";
