@@ -19,6 +19,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
+import Dicon from '../images/dicon.png';
 
 import Searchicon from '../images/searchicon.png';
 
@@ -110,10 +111,13 @@ class ChipViewTab extends React.Component{
     for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    for(var i=(tagsList.length+queriesList.length), j=0; i<(tagsList.length+queriesList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
+    for(var i=(tagsList.length+queriesList.length), j=0; i<(tagsList.length+queriesList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 4, label: tldsList[j], avatar:Dicon});
+    }
+    for(var i=(tldsList.length+tagsList.length+queriesList.length), j=0; i<(tldsList.length+tagsList.length+queriesList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
     }
-    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
+    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length + tldsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
     }
 
     this.setState({
@@ -140,14 +144,14 @@ class ChipViewTab extends React.Component{
           case 0: //query
               sessionTemp['selected_queries']= this.removeString(0, key);
               if(sessionTemp['selected_queries'] === "") {
-                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['newPageRetrievalCriteria'] = "one";
                 sessionTemp['pageRetrievalCriteria'] = "Tags";
               }
               break;
           case 1://tags
               sessionTemp['selected_tags']= this.removeString(1, key);
               if(sessionTemp['selected_tags'] === "") {
-                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['newPageRetrievalCriteria'] = "one";
                 sessionTemp['pageRetrievalCriteria'] = "Queries";
               }
               break;
@@ -158,21 +162,21 @@ class ChipViewTab extends React.Component{
                   sessionTemp['selected_model_tags']= this.removeString(3, key);
                   if(sessionTemp['selected_model_tags'] === "") {
                     if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
-                        sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
+                        sessionTemp['newPageRetrievalCriteria'] = "Queries,Tags,";
                     else if (sessionTemp['selected_queries'] !== "") {
-                      sessionTemp['newPageRetrievelCriteria'] = "one";
+                      sessionTemp['newPageRetrievalCriteria'] = "one";
                       sessionTemp['pageRetrievalCriteria'] = "Queries";
                     }
                     else {
-                      sessionTemp['newPageRetrievelCriteria'] = "one";
+                      sessionTemp['newPageRetrievalCriteria'] = "one";
                       sessionTemp['pageRetrievalCriteria'] = "Tags";
                     }
                   }
             break;
-          case 3: //tlds
+          case 4: //tlds
               sessionTemp['selected_tlds']= this.removeString(2, key);
               if(sessionTemp['selected_tlds'] === "") {
-                sessionTemp['newPageRetrievelCriteria'] = "one";
+                sessionTemp['newPageRetrievalCriteria'] = "one";
                 sessionTemp['pageRetrievalCriteria'] = "TLDs";
               }
               break;

@@ -213,7 +213,7 @@ class Body extends Component{
   applyFilterByQuery(term){
     console.log("applyFilterByQuery----------------");
     var session =this.state.sessionBody;
-    session['newPageRetrievelCriteria'] = "one";
+    session['newPageRetrievalCriteria'] = "one";
     session['pageRetrievalCriteria'] = "Queries";
     session['selected_queries']=term;
     this.updateSession(session);
