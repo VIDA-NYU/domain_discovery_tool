@@ -378,13 +378,10 @@ class FiltersTabs extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    //console.log("FiltersTabs componentWillReceiveProps before");
     if(JSON.stringify(nextProps.session) === this.state.sessionString) {
       this.setState({  flat: true });
         return;
     }
-    //console.log("FiltersTabs componentWillReceiveProps after");
-    // Calculate new state
     this.setState({
         session:nextProps.session, sessionString: JSON.stringify(nextProps.session), queryString: JSON.stringify(nextProps.session['selected_queries']), tldString: JSON.stringify(this.props.session['selected_tlds']), tagString: JSON.stringify(nextProps.session['selected_tags']), flat: true
     });
@@ -408,7 +405,6 @@ class FiltersTabs extends React.Component {
     var selected_queries=[];
     if(this.state.queryString.substring(1,this.state.queryString.length-1)!="")
       selected_queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-    //var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
     selected_queries.push(labelQuery);
     var newQuery = selected_queries.toString();
     this.setState({queriesCheckBox: selected_queries});
@@ -420,8 +416,6 @@ class FiltersTabs extends React.Component {
 	    sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
 	if(sessionTemp['selected_tlds']!=="")
 	    sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
-	console.log("ADD QUERY");
-	console.log(sessionTemp);
     }
     else{
 	sessionTemp['newPageRetrievalCriteria'] = "one";
@@ -435,17 +429,13 @@ class FiltersTabs extends React.Component {
     var selected_tlds=[];
     if(this.state.tldString.substring(1,this.state.tldString.length-1)!="")
       selected_tlds = this.state.tldString.substring(1,this.state.tldString.length-1).split(",");
-    //var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
     selected_tlds.push(labelTLD);
     var newTLDs = selected_tlds.toString();
     this.setState({queriesCheckBox: selected_tlds});
     var sessionTemp = this.props.session;
     if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!==""){
 	sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	sessionTemp['pageRetrievalCriteria'] = {};
-	sessionTemp['pageRetrievalCriteria']['domain'] = newTLDs;
-	console.log("ADD TLD");
-	console.log(sessionTemp['pageRetrievalCriteria']['domain']);
+	sessionTemp['pageRetrievalCriteria'] = {'domain':newTLDs};
 	if(sessionTemp['selected_queries']!=="")
 	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
 	if(sessionTemp['selected_tags']!=="")
@@ -469,11 +459,7 @@ class FiltersTabs extends React.Component {
     var sessionTemp = this.props.session;
     if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!==""){
 	sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	sessionTemp['pageRetrievalCriteria'] = {};
-	sessionTemp['pageRetrievalCriteria']['tag'] = newTags;
-	console.log("ADD TAGS");
-	console.log(sessionTemp['pageRetrievalCriteria']['tag']);
-	console.log(sessionTemp['selected_queries']);
+	sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
 	if(sessionTemp['selected_queries']!=="")
 	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
 	if(sessionTemp['selected_tlds']!=="")
@@ -492,13 +478,22 @@ class FiltersTabs extends React.Component {
     var selected_modeltags=[];
     if(this.state.modelTagString.substring(1,this.state.modelTagString.length-1)!="")
       selected_modeltags = this.state.modelTagString.substring(1,this.state.modelTagString.length-1).split(",");
-    //var selected_tags = this.state.tagsCheckBox; //  var selected_queries = [];
     selected_modeltags.push(labelModelTags);
     var newTags = selected_modeltags.toString();
     this.setState({tagsCheckBox: selected_modeltags});
     var sessionTemp = this.props.session;
-    sessionTemp['newPageRetrievalCriteria'] = "one";
-    sessionTemp['pageRetrievalCriteria'] = "Model Tags";
+    if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!==""){
+	sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
+	if(sessionTemp['selected_queries']!=="")
+	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	if(sessionTemp['selected_tlds']!=="")
+	    sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+    }
+    else{
+	sessionTemp['newPageRetrievalCriteria'] = "one";
+	sessionTemp['pageRetrievalCriteria'] = "Model Tags";
+    }
     sessionTemp['selected_model_tags']=newTags;
     this.props.updateSession(sessionTemp);
   }
