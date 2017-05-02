@@ -98,9 +98,10 @@ class ChipViewTab extends React.Component{
     var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
     console.log("CHIP");
     console.log(session);
-    var queriesList =[], tldsList=[],tagsList =[], modelTagsList =[];
+      var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
-    tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;      
+    tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
+    atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;            
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
 
@@ -113,6 +114,9 @@ class ChipViewTab extends React.Component{
     }
     for(var i=(tagsList.length+queriesList.length), j=0; i<(tagsList.length+queriesList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 4, label: tldsList[j], avatar:Dicon});
+    }
+    for(var i=(tagsList.length+queriesList.length+tldsList.length), j=0; i<(tagsList.length+queriesList.length+tldsList.length+atermsList.length) && atermsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 4, label: atermsList[j], avatar:Ticon});
     }
     for(var i=(tldsList.length+tagsList.length+queriesList.length), j=0; i<(tldsList.length+tagsList.length+queriesList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
@@ -180,9 +184,12 @@ class ChipViewTab extends React.Component{
                 sessionTemp['pageRetrievalCriteria'] = "TLDs";
               }
               break;
+          case 5: //Annotated Terms
+              sessionTemp['selected_aterms']= this.removeString(2, key);
+              break;
 	    
         }
-        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" ){
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
            sessionTemp['pageRetrievalCriteria'] = "Most Recent";
         }
 

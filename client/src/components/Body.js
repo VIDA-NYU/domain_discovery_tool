@@ -88,7 +88,8 @@ class Body extends Component{
     session['pageRetrievalCriteria'] = "Most Recent";
     session['selected_morelike'] = "";
     session['selected_queries']="";
-    session['selected_tlds']="";      
+    session['selected_tlds']="";
+    session['selected_aterms']="";            
     session['selected_tags']="";
     session['selected_model_tags']="";
     session['model'] = {};
