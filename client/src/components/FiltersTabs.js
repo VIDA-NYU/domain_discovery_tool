@@ -213,8 +213,6 @@ class LoadAnnotatedTerms extends React.Component {
       '/getAnnotatedTerms',
       {'session': JSON.stringify(this.props.session)},
 	function(terms) {
-	    console.log('ANNOTATED TERMS');
-	    console.log(terms);
           this.setState({currentATerms: terms, session:this.props.session, atermString: JSON.stringify(this.props.session['selected_aterms'])});
       }.bind(this)
     );
@@ -256,17 +254,46 @@ class LoadAnnotatedTerms extends React.Component {
   }
 
   render(){
-    if(this.state.currentATerms!==undefined){
+      if(this.state.currentATerms!==undefined){
+	  // Sorting the terms by Postive or Negative so that all Positive are consecutive
+	  // and all Negative are consecutive
+	  // Create items array from the currentATerms term and tag dict
+	  var items = Object.keys(this.state.currentATerms).map((key)=>{
+	      return [key, this.state.currentATerms[key]['tag']];
+	  });
+
+	  // Sort the array based on the tag element
+	  items.sort(function(first, second) {
+	      // Since tags can be "Positive", "Negative","Positive;Custom" or "Negative;Custom"
+	      var tag1 = "Positive";
+	      var tag2 = "Positive";
+	      if(first[1].indexOf("Positive") < 0)
+		  tag1="Negative";
+	      if(second[1].indexOf("Positive") < 0)
+		  tag2="Negative";
+
+	      //Sort by Positive first and then Negative
+	      if (tag1===tag2)
+		  return 0;
+	      if (tag1<tag2)
+		  return 1;
+	      return -1;
+	  });
+	  
       return(
         <div>
-              {Object.keys(this.state.currentATerms).map((term, index)=>{
-		  console.log(term);
-          var labelTerms=  term; //Annotated terms extracted from the context or user specified
-          var checkedTerm=false;
-          var terms = this.state.atermString.substring(1,this.state.atermString.length-1).split(",");
-          if(terms.includes(term))
-            checkedTerm=true;
-            return <Checkbox label={labelTerms} checked={checkedTerm} style={styles.checkbox}  onClick={this.addATerm.bind(this,term)}/>
+        {items.map((item, index)=>{
+	    var term = item[0];
+	    var tag = item[1];
+            var labelTerms=  term; //Annotated terms extracted from the context or user specified
+            var checkedTerm=false;
+            var terms = this.state.atermString.substring(1,this.state.atermString.length-1).split(",");
+            if(terms.includes(term))
+		checkedTerm=true;
+	    var termColor="red";
+	    if(tag.indexOf("Positive") >=0)
+		termColor = "blue";
+	    return <Checkbox label={labelTerms} labelStyle={{color: termColor}} checked={checkedTerm} style={styles.checkbox}  onClick={this.addATerm.bind(this,term)}/>;
         })}
         </div>
       );
@@ -294,9 +321,6 @@ class LoadTag extends React.Component {
       '/getAvailableTags',
       {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
       function(tagsDomain) {
-        //console.log("tags");
-        //console.log(tagsDomain);
-        //console.log(this.props.session);
         this.setState({currentTags: tagsDomain['tags'], session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
       }.bind(this)
     );
@@ -307,8 +331,6 @@ class LoadTag extends React.Component {
       this.setState({ flat:true});
       return;
     }
-    //console.log("FiltersTabs componentWillReceiveProps after");
-    // Calculate new state
     this.setState({
       session:nextProps.session, tagString: JSON.stringify(nextProps.session['selected_tags']), flat:false
     });
@@ -371,9 +393,6 @@ class LoadModel extends React.Component {
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
       function(modelTagDomain) {
-        //console.log("modeltags");
-        //console.log(modelTagDomain);
-        //console.log(this.props.session);
         this.setState({currentModelTags: modelTagDomain, session:this.props.session, modelTagString: JSON.stringify(this.props.session['selected_model_tags'])});
       }.bind(this)
     );
@@ -384,8 +403,6 @@ class LoadModel extends React.Component {
       this.setState({ flat:true});
       return;
     }
-    //console.log("FiltersTabs componentWillReceiveProps after");
-    // Calculate new state
     this.setState({
       session:nextProps.session, modelTagString: JSON.stringify(nextProps.session['selected_model_tags']), flat:false
     });
