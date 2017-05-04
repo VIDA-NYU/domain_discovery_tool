@@ -9,6 +9,7 @@ import Filters from './Filters';
 import Views from './Views';
 import SidebarMenu from './SidebarMenu';
 import '../css/Components.css';
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import Sidebar from 'react-sidebar';
 import Avatar from 'material-ui/Avatar';
 import Assignment from 'material-ui/svg-icons/action/assignment-returned';

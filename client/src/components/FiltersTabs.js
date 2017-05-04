@@ -4,6 +4,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 //import {deepPurpleA400, orange300, blue400, indigoA400, blue900} from 'material-ui/styles/colors';
 import Checkbox from 'material-ui/Checkbox';
+import CheckboxTree from 'react-checkbox-tree';
 import $ from 'jquery';
 
 import CircularProgress from 'material-ui/CircularProgress';
@@ -40,7 +41,9 @@ class LoadQueries extends React.Component {
     this.state={
       currentQueries:undefined,
       queriesCheckBox:[],
-      //checkedQueries:[],
+	//checkedQueries:[],
+	checked:[],
+	expanded:[],
       queryString:"",
       session: {},
       flat:false,
@@ -82,31 +85,58 @@ class LoadQueries extends React.Component {
     return true;
   }
 
-  addQuery(query){
-    var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-    if(queries.includes(query)){
-      this.props.removeQueryTag(0, query);
+    addQuery(object){
+	console.log("CHECKED QUERY 2 ");
+	console.log(object);
+	var checked = object["checked"];
+	console.log(checked);
+	var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
+	checked.map((query, index)=>{
+	    if(queries.includes(query)){
+		this.props.removeQueryTag(0, query);
+	    }
+	    else{
+		this.props.addQuery(query);
+	    }
+	});
+	//var queries = this.state.checkedQueries;
+	//queries.push(query);
+	//this.setState({checkedQueries: queries });
     }
-    else{
-      this.props.addQuery(query);
-    }
-    //var queries = this.state.checkedQueries;
-    //queries.push(query);
-    //this.setState({checkedQueries: queries });
-  }
-
+    
   render(){
-    if(this.state.currentQueries!==undefined){
+      if(this.state.currentQueries!==undefined){
+	  var nodes = [];
+	  var queryNode = {
+	      value: 'query',
+	      label: 'Queries',
+	      children: [],
+	  };
+       
+	  Object.keys(this.state.currentQueries).map((query, index)=>{
+	      var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+              var checkedQuery=false;
+	      var children = []
+              var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
+              if(queries.includes(query)){
+		  this.state.checked.push(query);
+		  this.state.checked.push("Query");
+	      }
+	      queryNode.children.push({value:query, label:labelQuery});
+              //return <Checkbox label={labelQuery} checked={checkedQuery} style={styles.checkbox}  onClick={this.addQuery.bind(this,query)}/>
+          });
+	  nodes.push(queryNode);
+	  //console.log("CHECKBOX TREE");
+	  //console.log(nodes);
       return(
         <div>
-        {Object.keys(this.state.currentQueries).map((query, index)=>{
-          var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
-          var checkedQuery=false;
-          var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-          if(queries.includes(query))
-            checkedQuery=true;
-          return <Checkbox label={labelQuery} checked={checkedQuery} style={styles.checkbox}  onClick={this.addQuery.bind(this,query)}/>
-        })}
+        <CheckboxTree
+                nodes={nodes}
+                checked={this.state.checked}
+                expanded={this.state.expanded}
+                onCheck={checked => this.addQuery({checked})}
+                onExpand={expanded => this.setState({ expanded })}
+        />
         </div>
       );
     }
@@ -114,7 +144,6 @@ class LoadQueries extends React.Component {
       <CircularProgressSimple />
     );
   }
-
 }
 
 class LoadTLDs extends React.Component {
@@ -459,6 +488,7 @@ class FiltersTabs extends React.Component {
       currentQueries:undefined,
       currentTags:undefined,
       currentModels:undefined,
+      currentATerms:undefined,
       queriesCheckBox:[],
       tagsCheckBox:[],
       sessionString:"",
@@ -501,7 +531,8 @@ class FiltersTabs extends React.Component {
     return false;
   }
 
-  addQuery(labelQuery){
+    addQuery(labelQuery){
+	console.log("CHECKED QUERY 1 "+labelQuery);
     var selected_queries=[];
     if(this.state.queryString.substring(1,this.state.queryString.length-1)!="")
       selected_queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");

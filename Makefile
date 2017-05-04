@@ -61,4 +61,5 @@ $(GET_REACT_DATA_TARGET):
 	npm install; \
 	npm run build; \
 	cp build/index.html build/domain_discovery_tool.html; \
+        cp -rf public/font-awesome-4.7.0 build/static; \
 	popd
