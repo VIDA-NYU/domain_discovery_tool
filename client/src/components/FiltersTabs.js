@@ -14,7 +14,7 @@ const styles = {
     fontSize: 12,
     paddingTop: 16,
     marginBottom: 12,
-    height: '120px',
+      height: '120px'
   },
   slide: {
     height: '100px',
@@ -92,12 +92,15 @@ class LoadQueries extends React.Component {
 	this.setState({checked: checked });
 	if(checked.length > 0)
 	    checked.map((query, index)=>{
-		this.props.addQuery(query);
+		if(prevChecked.indexOf(query) < 0)
+		    this.props.addQuery(query);
+		else this.props.removeQueryTag(0, query);
 	    });
 	else {
-	    
+	    prevChecked.map((query, index)=>{
+		this.props.removeQueryTag(0, query);
+	    });
 	}
-	    
     }
     
   render(){
@@ -120,13 +123,14 @@ class LoadQueries extends React.Component {
 	  //console.log("CHECKBOX TREE");
 	  //console.log(nodes);
 	  return(
-		  <div>
+		  <div >
 		  <CheckboxTree
               nodes={nodesTemp}
               checked={this.state.checked}
               expanded={this.state.expanded}
               onCheck={checked => this.addQuery({checked})}
               onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
 		  />
 		  </div>
 	  );
@@ -227,6 +231,7 @@ class LoadTLDs extends React.Component {
               expanded={this.state.expanded}
               onCheck={checked => this.addTLD({checked})}
               onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
 		  />
 		  </div>
 	  );
@@ -501,8 +506,8 @@ class FiltersTabs extends React.Component {
       currentTags:undefined,
       currentModels:undefined,
       currentATerms:undefined,
-      queriesCheckBox:[],
-      tagsCheckBox:[],
+      queryChecked: [],
+      tldsChecked:[],
       sessionString:"",
       session: {},
       queryString:"",
@@ -543,11 +548,11 @@ class FiltersTabs extends React.Component {
 
   }
 
-  handleChange = (value) => {
-    this.setState({
-      slideIndex: value,
-    });
-  }
+  // handleChange = (value) => {
+  //   this.setState({
+  //     slideIndex: value,
+  //   });
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     if(this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
@@ -558,12 +563,8 @@ class FiltersTabs extends React.Component {
 
     addQuery(labelQuery){
 	console.log("CHECKED QUERY 1 "+labelQuery);
-    var selected_queries=[];
-    if(this.state.queryString.substring(1,this.state.queryString.length-1)!="")
-      selected_queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-    selected_queries.push(labelQuery);
+    var selected_queries=this.state.checked;
     var newQuery = selected_queries.toString();
-    this.setState({queriesCheckBox: selected_queries});
     var sessionTemp = this.props.session;
     if(sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_aterms']!==""){
 	sessionTemp['newPageRetrievalCriteria'] = "Multi";
@@ -777,23 +778,21 @@ class FiltersTabs extends React.Component {
 */
 
   render() {
-    console.log("--------FiltersTabs---------");
-    return (
-      <div>
-        <Tabs
-          onChange={this.handleChange}
-          value={this.state.slideIndex}
-          inkBarStyle={{background:'#7940A0' ,height: '4px'}}
-          tabItemContainerStyle={{background: '#9A7BB0' ,height: '40px'}}>
-          <Tab label="Queries" value={0} style={styles.tab} />
-        </Tabs>
-        <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
+      console.log("--------FiltersTabs---------");
+      // <Tabs
+      //     onChange={this.handleChange}
+      //     value={this.state.slideIndex}
+      //     inkBarStyle={{background:'#7940A0' ,height: '4px'}}
+      //     tabItemContainerStyle={{background: '#9A7BB0' ,height: '40px'}}>
+      //     <Tab label="Queries" value={0} style={styles.tab} />
+      //   </Tabs>
+      return (
+	      <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
             <div style={styles.headline}>
             <LoadQueries update={this.props.update} queryNodes={this.state.queryNodes} session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
 	    <LoadTLDs update={this.props.update} tldNodes={this.state.tldNodes} session={this.state.session} addTLD={this.addTLD.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
-          </div>
-        </SwipeableViews>
-      </div>
+              </div>
+	      </SwipeableViews>
     );
   }
 }

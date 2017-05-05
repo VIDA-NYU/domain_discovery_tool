@@ -61,7 +61,7 @@ class Body extends Component{
         iconDomainInfo:null,
         stateDomainInfoCard:false,
         stateSearchCard:false,
-        stateFiltersCard:true,
+        stateFiltersCard:false,
         sizeAvatar:25,
         currentDomain:'',
         sessionBody:{},
