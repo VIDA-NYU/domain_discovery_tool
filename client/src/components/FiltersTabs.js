@@ -39,14 +39,12 @@ class LoadQueries extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      currentQueries:undefined,
-      queriesCheckBox:[],
-	//checkedQueries:[],
-	checked:[],
-	expanded:[],
-      queryString:"",
-      session: {},
-      flat:false,
+    currentQueries:undefined,
+    checked:[],
+    expanded:[],
+    session: {},
+    flat:false,
+    queryNodes:[]
     };
   }
 
@@ -55,7 +53,7 @@ class LoadQueries extends React.Component {
       '/getAvailableQueries',
       {'session': JSON.stringify(this.props.session)},
       function(queriesDomain) {
-        this.setState({currentQueries: queriesDomain, session:this.props.session, queryString: JSON.stringify(this.props.session['selected_queries'])});
+          this.setState({currentQueries: queriesDomain, session:this.props.session, queryNodes:this.props.queryNodes});
       }.bind(this)
     );
   }
@@ -64,7 +62,7 @@ class LoadQueries extends React.Component {
     this.getAvailableQueries();
   }
   componentWillReceiveProps(nextProps){
-    if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString ) {
+      if(JSON.stringify(nextProps.queryNodes[0]) === JSON.stringify(this.state.queryNodes[0])) {
       this.setState({ flat:true});
       if(this.props.update){
         this.getAvailableQueries();
@@ -73,12 +71,12 @@ class LoadQueries extends React.Component {
     }
     // Calculate new state
     this.setState({
-      session:nextProps.session, queryString: JSON.stringify(nextProps.session['selected_queries']), flat:true
+	session:nextProps.session, queryNodes:nextProps.queryNodes, flat:true
     });
 
   }
   shouldComponentUpdate(nextProps, nextState){
-    if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString && this.state.flat===true) {
+      if(JSON.stringify(nextProps.queryNodes[0]) === JSON.stringify(this.state.queryNodes[0]) && this.state.flat===true) {
       if(this.props.update){ return true;}
       else {return false;}
     }
@@ -90,59 +88,52 @@ class LoadQueries extends React.Component {
 	console.log(object);
 	var checked = object["checked"];
 	console.log(checked);
-	var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-	checked.map((query, index)=>{
-	    if(queries.includes(query)){
-		this.props.removeQueryTag(0, query);
-	    }
-	    else{
+	var prevChecked = this.state.checked;
+	this.setState({checked: checked });
+	if(checked.length > 0)
+	    checked.map((query, index)=>{
 		this.props.addQuery(query);
-	    }
-	});
-	//var queries = this.state.checkedQueries;
-	//queries.push(query);
-	//this.setState({checkedQueries: queries });
+	    });
+	else {
+	    
+	}
+	    
     }
     
   render(){
       if(this.state.currentQueries!==undefined){
-	  var nodes = [];
-	  var queryNode = {
-	      value: 'query',
-	      label: 'Queries',
-	      children: [],
-	  };
-       
-	  Object.keys(this.state.currentQueries).map((query, index)=>{
-	      var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
-              var checkedQuery=false;
-	      var children = []
-              var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-              if(queries.includes(query)){
-		  this.state.checked.push(query);
-		  this.state.checked.push("Query");
+	  console.log("LOAD QUERIES");
+	  console.log(this.state.queryNodes);
+	  var nodes = this.state.queryNodes;
+	  var nodesTemp = [];
+	  nodes.map((node,index)=>{
+	      if(node.value === "query"){
+		  node.children = [];
+		  Object.keys(this.state.currentQueries).map((query, index)=>{
+		      var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+		      node.children.push({value:query, label:labelQuery});
+		  });
 	      }
-	      queryNode.children.push({value:query, label:labelQuery});
-              //return <Checkbox label={labelQuery} checked={checkedQuery} style={styles.checkbox}  onClick={this.addQuery.bind(this,query)}/>
-          });
-	  nodes.push(queryNode);
+	      nodesTemp.push(node);
+	  });
+	  	    
 	  //console.log("CHECKBOX TREE");
 	  //console.log(nodes);
+	  return(
+		  <div>
+		  <CheckboxTree
+              nodes={nodesTemp}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={checked => this.addQuery({checked})}
+              onExpand={expanded => this.setState({ expanded })}
+		  />
+		  </div>
+	  );
+      }
       return(
-        <div>
-        <CheckboxTree
-                nodes={nodes}
-                checked={this.state.checked}
-                expanded={this.state.expanded}
-                onCheck={checked => this.addQuery({checked})}
-                onExpand={expanded => this.setState({ expanded })}
-        />
-        </div>
+	      <CircularProgressSimple />
       );
-    }
-    return(
-      <CircularProgressSimple />
-    );
   }
 }
 
@@ -150,11 +141,14 @@ class LoadTLDs extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      currentTLDs:undefined,
+	currentTLDs:undefined,
+	checked:[],
+	expanded:[],
       tldsCheckBox:[],
       tldString:"",
       session: {},
-      flat:false,
+	flat:false,
+	tldNodes:[],
     };
   }
 
@@ -163,7 +157,7 @@ class LoadTLDs extends React.Component {
       '/getAvailableTLDs',
       {'session': JSON.stringify(this.props.session)},
       function(tlds) {
-          this.setState({currentTLDs: tlds, session:this.props.session, tldString: JSON.stringify(this.props.session['selected_tlds'])});
+          this.setState({currentTLDs: tlds, session:this.props.session, tldString: JSON.stringify(this.props.session['selected_tlds']),tldNodes:this.props.tldNodes});
       }.bind(this)
     );
   }
@@ -193,36 +187,54 @@ class LoadTLDs extends React.Component {
     return true;
   }
 
-  addTLD(tld){
-    var tlds = this.state.tldString.substring(1,this.state.tldString.length-1).split(",");
-    if(tlds.includes(tld)){
-      this.props.removeQueryTag(4, tld);
-    }
-    else{
-      this.props.addTLD(tld);
-    }
+    addTLD(object){
+	var checked = object["checked"];
+	console.log(checked);
+	var prevChecked = this.state.checked;
+	this.setState({checked: checked });
+	if(checked.length > 0)
+	    checked.map((tld, index)=>{
+		this.props.addTLD(tld);
+	    });
+	else {
+	}
   }
 
   render(){
-    if(this.state.currentTLDs!==undefined){
-      return(
-        <div>
-        {Object.keys(this.state.currentTLDs).map((tld, index)=>{
-          var labelTLD=  tld+" " +"(" +this.state.currentTLDs[tld]+")"; //tld (ex. www.google.com) , index (ex. 0,1,2...)
-          var checkedTLD=false;
-          var tlds = this.state.tldString.substring(1,this.state.tldString.length-1).split(",");
-          if(tlds.includes(tld))
-            checkedTLD=true;
-          return <Checkbox label={labelTLD} checked={checkedTLD} style={styles.checkbox}  onClick={this.addTLD.bind(this,tld)}/>
-        })}
-        </div>
-      );
+      if(this.state.currentTLDs!==undefined){
+	  console.log("RENDER TLDS");
+	  var nodes = this.state.tldNodes;
+	  console.log(nodes);
+	  var nodesTemp = [];
+	  nodes.map((node,index)=>{
+	      if(node.value === "tld"){
+		  node.children = [];
+		  Object.keys(this.state.currentTLDs).map((tld, index)=>{
+		      var labelTLD=  tld +" " +"(" +this.state.currentTLDs[tld]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+		      node.children.push({value:tld, label:labelTLD});
+		  });
+	      }
+	      nodesTemp.push(node);
+	  });
+	  	    
+	  //console.log("CHECKBOX TREE");
+	  //console.log(nodes);
+	  return(
+		  <div>
+		  <CheckboxTree
+              nodes={nodesTemp}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={checked => this.addTLD({checked})}
+              onExpand={expanded => this.setState({ expanded })}
+		  />
+		  </div>
+	  );
     }
     return(
       <CircularProgressSimple />
     );
   }
-
 }
 
 class LoadAnnotatedTerms extends React.Component {
@@ -499,6 +511,19 @@ class FiltersTabs extends React.Component {
       tagString:"",
       modelTagString:"",
       flat:false,
+      queryNodes:[
+	  {
+	      value: 'query',
+	      label: 'Queries',
+	      children: [],
+	  }
+      ],
+      tldNodes:[{
+	  value: 'tld',
+	  label: 'TLDs',
+	  children: [],
+      }
+      ],
     };
   }
 
@@ -759,29 +784,13 @@ class FiltersTabs extends React.Component {
           onChange={this.handleChange}
           value={this.state.slideIndex}
           inkBarStyle={{background:'#7940A0' ,height: '4px'}}
-          tabItemContainerStyle={{background: '#9A7BB0' ,height: '40px'}}
-        >
+          tabItemContainerStyle={{background: '#9A7BB0' ,height: '40px'}}>
           <Tab label="Queries" value={0} style={styles.tab} />
-            <Tab label="Tags" value={1} style={styles.tab} />
-            <Tab label="Domains" value={2} style={styles.tab} />
-          <Tab label="LTerms" value={3} style={styles.tab} />	    	    
-          <Tab label="Model" value={4} style={styles.tab} />
         </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
-          <div style={styles.headline}>
-            <LoadQueries update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
-          </div>
-          <div style={styles.headline}>
-            <LoadTag session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
-            </div>
-          <div style={styles.headline}>
-            <LoadTLDs session={this.props.session} addTLD={this.addTLD.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
-          </div>
-          <div style={styles.headline}>
-            <LoadAnnotatedTerms session={this.props.session} addATerm={this.addATerm.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
-          </div>
-          <div style={styles.headline}>
-            <LoadModel session={this.state.session} addModelTags={this.addModelTags.bind(this)}/>
+            <div style={styles.headline}>
+            <LoadQueries update={this.props.update} queryNodes={this.state.queryNodes} session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
+	    <LoadTLDs update={this.props.update} tldNodes={this.state.tldNodes} session={this.state.session} addTLD={this.addTLD.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
           </div>
         </SwipeableViews>
       </div>
