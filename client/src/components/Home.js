@@ -44,6 +44,8 @@ class Home extends Component {
       newNameDomain:"",
       delDomains: {}
     };
+    this.focusTextField = this.focusTextField.bind(this);
+    this.textInput = null;
   }
 
   getAvailableDomains(){
@@ -62,6 +64,7 @@ class Home extends Component {
 
   handleOpenCreateDomain = () => {
     this.setState({openCreateDomain: true});
+    this.focusTextField();
   };
 
   handleCloseCreateDomain = () => {
@@ -81,6 +84,11 @@ class Home extends Component {
     this.setState({ "newNameDomain": e.target.value});
   }
 
+  // Explicitly focus the text input using the raw DOM API
+   focusTextField() {
+     setTimeout(() => this.textInput.focus(), 100);
+   }
+
   //Create a new domain
   createNewDomain(){
     //createNewDomain
@@ -89,7 +97,7 @@ class Home extends Component {
       '/addDomain',
       {'index_name': nameDomain},
       function(domains) {
-        this.setState({openCreateDomain: false});
+        this.setState({openCreateDomain: false, newNameDomain:"" });
         this.getAvailableDomains();
         this.forceUpdate();
       }.bind(this)
@@ -195,6 +203,7 @@ class Home extends Component {
                      onRequestClose={this.handleCloseCreateDomain.bind(this)}
                    >
                      <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+                        ref={(input) => { this.textInput = input;}}
                        value={this.state.newNameDomain}
                        onChange={this.handleTextChangeNewNameDomain.bind(this)}
                        onKeyPress={(e) => {(e.key === 'Enter') ? this.createNewDomain(this) : null}}
