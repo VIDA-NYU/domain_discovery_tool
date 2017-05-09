@@ -250,8 +250,11 @@ class ViewTabSnippets extends React.Component{
     	'/updateOnlineClassifier',
     	{'session':  JSON.stringify(sessionTemp)},
     	function(accuracy) {
+
         //Updates the showed accuracy on the interface only if the different between the new and the previous accuracy is enough significant.
         if(accuracy >=this.state.accuracyOnlineLearning+2 || accuracy <=this.state.accuracyOnlineLearning-2){
+          //updateing filters modelTags
+          this.props.reloadFilters();
           this.setState({
               accuracyOnlineLearning:accuracy,
           });
