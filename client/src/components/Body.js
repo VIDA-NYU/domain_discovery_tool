@@ -204,11 +204,11 @@ class Body extends Component{
   	}
   }
 
-  // Start a timer and get the pages for the particular query as and when they become available on the server  
+  // Start a timer and get the pages for the particular query as and when they become available on the server
   getQueryPages(term){
     this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 100)});
   }
-    
+
   applyFilterByQuery(term){
     console.log("applyFilterByQuery----------------");
     var session =this.state.sessionBody;
@@ -229,6 +229,12 @@ class Body extends Component{
     this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
     this.forceUpdate();
   }
+
+  reloadFilters(){
+    this.setState({update:true});
+    this.forceUpdate();
+    this.setState({update:false});
+  };
 
   render(){
     console.log("------body----------");
@@ -271,7 +277,7 @@ class Body extends Component{
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)}/>
+          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)}/>
         </Row>
       </div>
       <Snackbar

@@ -121,44 +121,49 @@ class LoadTag extends React.Component {
   constructor(props){
     super(props);
     this.state={
+      currentTags:undefined,
       tagsCheckBox:[],
-      tagString:undefined,
+      tagString:"",
       session: {},
       flat:false,
     };
   }
 
-  componentWillMount(){
+  getAvailableTags(){
     $.post(
       '/getAvailableTags',
       {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
       function(tagsDomain) {
-        //console.log("tags");
-        //console.log(tagsDomain);
-        //console.log(this.props.session);
         this.setState({currentTags: tagsDomain['tags'], session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
       }.bind(this)
     );
   }
 
+
+  componentWillMount(){
+    this.getAvailableTags();
+  }
+
   componentWillReceiveProps(nextProps){
     if(JSON.stringify(nextProps.session['selected_tags']) === this.state.tagString ) {
       this.setState({ flat:true});
+      if(this.props.update){
+        this.getAvailableTags();
+      }
       return;
     }
-    //console.log("FiltersTabs componentWillReceiveProps after");
     // Calculate new state
     this.setState({
-      session:nextProps.session, tagString: JSON.stringify(nextProps.session['selected_tags']), flat:false
+      session:nextProps.session, tagString: JSON.stringify(nextProps.session['selected_tags']), flat:true
     });
 
   }
 
   shouldComponentUpdate(nextProps){
-    if(JSON.stringify(nextProps.session['selected_tags']) === this.state.tagString && this.state.flat===true ) {
-      if(this.props.update){return true;}
-      else {return false;}
-    }
+
+    /*if(JSON.stringify(nextProps.session['selected_tags']) === this.state.tagString && this.state.flat===true ) {
+      return false;
+    }*/
     return true;
   }
 
@@ -474,7 +479,7 @@ class FiltersTabs extends React.Component {
             <LoadQueries update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
           </div>
           <div style={styles.headline}>
-            <LoadTag session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
+            <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
           </div>
           <div style={styles.headline}>
             <LoadModel session={this.state.session} addModelTags={this.addModelTags.bind(this)}/>

@@ -256,6 +256,7 @@ class ViewTabSnippets extends React.Component{
               accuracyOnlineLearning:accuracy,
           });
         }
+
     	}.bind(this)
     );
   }
@@ -266,6 +267,8 @@ class ViewTabSnippets extends React.Component{
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
 	function(pages) {
+          //updateing filters Tags
+          this.props.reloadFilters();
           this.updateOnlineClassifier(this.props.session);
       }.bind(this)
     );
@@ -481,8 +484,12 @@ class Views extends React.Component {
     return false;
   }
 
+  reloadFilters(){
+    this.props.reloadFilters();
+  };
+
   render() {
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} />
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} reloadFilters={this.reloadFilters.bind(this)}/>
     : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
 
       return (
