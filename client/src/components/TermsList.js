@@ -99,6 +99,24 @@ class TermsList extends Component {
       this.setTermTag(newTerm,'Negative;Custom', true, this.props.session);
     }
 
+    //Remove a custom term.
+    removeTerm(term){
+      var updateListTerm = this.state.listTerms;
+      var removeWord = updateListTerm.indexOf(term);
+      updateListTerm.splice(removeWord,1);
+      this.setState({listTerms:updateListTerm});
+      $.post(
+        '/deleteTerm',
+        {'term': term['word'], 'session': JSON.stringify(this.props.session)},
+        function(){
+          console.log("deleting Term");
+        }.bind(this)).fail(function(){
+          console.log("Something wrong happen");
+        }.bind(this)
+
+      );
+    }
+
     startSnippets(term){
       this.setState({term:term});
     }
@@ -115,7 +133,7 @@ class TermsList extends Component {
         $.post(
           '/setTermsTag',
           {'terms': term, 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)},
-            function() {
+          function() {
               console.log("tagterm-------------");
           }.bind(this)).fail(function() {
                 console.log("Something wrong happen. Try again.");
@@ -131,18 +149,12 @@ class TermsList extends Component {
       var wordId = term['word'].replace(/ /g, "_");
       wordId = '#'+wordId;
       var color = ($(wordId).css("fill")).toString();
-      //var color = ($(wordId).css("fill")).toString();
-
-      //if (tags.indexOf("Custom") != -1)
-      //return;
-
       var isPositive = color=="rgb(0, 0, 255)";//tags.indexOf('Positive') != -1;
       var isNegative = color=="rgb(255, 0, 0)";//tags.indexOf('Negative') != -1;
       if (isPositive) {
         // It was positive, so it turns negative.
         this.setTermTag(term['word'], 'Positive', false, this.props.session);
         this.setTermTag(term['word'], 'Negative', true, this.props.session);
-
         // Removes tag 'Positive' from tags array, adds 'Negative'.
         $(wordId).css('fill','red');
       }
@@ -174,6 +186,10 @@ class TermsList extends Component {
       barScale.domain([0, maxFreq]);
       let y =0;
       let terms_array = [];
+      terms_array.push(<g transform={`translate(0, 0)`}><g>
+                    <foreignObject height="10" width="10" y="-2px" x="-10px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
+                 </g></g>);
+      y=y+10;
       let loopListTerms = this.state.listTerms.map(function(w) {
                               // Aligns left bar to right.
                               let widthPos = barScale(w['posFreq']);
@@ -182,29 +198,29 @@ class TermsList extends Component {
                               var currentTerm =w["word"];
                               var tags = w['tags']; //var isPositive = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1); var isNegative = tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1;
                               var colorPin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "black":"#E6E6E6";
-                              var removeTermButton = (tags.indexOf('Custom')!= -1)?<foreignObject height="20" width="20" ><span className={"glyphicon glyphicon-trash"}></span></foreignObject>:<span/>;
+                              var removeTermButton = (tags.indexOf('Custom')!= -1)?<foreignObject height="10" width="10" y="-2px" x="8px"><span className={"glyphicon glyphicon-trash"}></span></foreignObject>:<span/>;
                               var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
 
-                              let pins = <g className={"pins"} transform={`translate(14, 0)`} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, currentTerm)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
-                                            <foreignObject fill="blue" height="20" width="20" ><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
+                              let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, currentTerm)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
+                                            <foreignObject height="10" width="10" y="-2px" x="25px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
                                          </g>;
 
-                              let words = <g transform={`translate(30, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
+                              let words = <g transform={`translate(50, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
                                             <text id={currentTerm.replace(/ /g, "_")} fontSize="12" fontFamily="sans-serif" textAnchor="start" style={{fill:colorWord}} >{currentTerm}
                                             </text>
                                           </g>;
 
-                              let custom = <g className={"custom"} transform={`translate(2, 0)`} style={{cursor:"pointer", letterSpacing:4, color:"orange"}} onClick={this.focusTermContext.bind(this, currentTerm)} >
+                              let custom = <g className={"custom"} onClick={this.removeTerm.bind(this, w)} style={{cursor:"pointer", letterSpacing:4, color:"orange"}}  >
                                               {removeTermButton}
                                            </g>;
 
                               // Adds right bars (aligned to left).
-                              let barNegative = <g transform={`translate(182, 0)`}>
+                              let barNegative = <g transform={`translate(202, 0)`}>
                                                        <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}} />
                                                        <rect y={5} height={6} width={widthNeg} x={maxBarWidth - widthNeg} style={{fill:"red"}}/>
                                                  </g>;
                               // Adds left bars (aligned to right).
-                              let barPositive = <g transform={`translate(212, 0)`}>
+                              let barPositive = <g transform={`translate(232, 0)`}>
                                                        <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}}/>
                                                        <rect y={5} height={6} width={widthPos} x={0} style={{fill:"blue"}}/>
                                                 </g>;
