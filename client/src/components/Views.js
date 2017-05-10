@@ -178,14 +178,14 @@ class ChipViewTab extends React.Component{
                   }
             break;
           case 4: //tlds
-              sessionTemp['selected_tlds']= this.removeString(2, key);
+              sessionTemp['selected_tlds']= this.removeString(4, key);
               if(sessionTemp['selected_tlds'] === "") {
                 sessionTemp['newPageRetrievalCriteria'] = "one";
                 sessionTemp['pageRetrievalCriteria'] = "TLDs";
               }
               break;
           case 5: //Annotated Terms
-              sessionTemp['selected_aterms']= this.removeString(2, key);
+              sessionTemp['selected_aterms']= this.removeString(5, key);
               break;
 	    
         }
