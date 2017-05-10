@@ -331,6 +331,10 @@ class ViewTabSnippets extends React.Component{
         delete this.pages[url]["tags"];
         this.removeAddTags(urls, tag, applyTagFlag );
       }
+
+      //checking if the new tag belong to the filter
+      if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" )
+        setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
       this.pages=this.pages;
     }
 
@@ -360,6 +364,7 @@ class ViewTabSnippets extends React.Component{
                     else{
                       colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
                     }
+
                     var id= cont+1; cont=cont+id;
                     //style={{height:"200px"}} disableKeyboardFocus= {false} isKeyboardFocused={true} onKeyboardFocus={this.keyboardFocus.bind(this)}
                     return <ListItem key={index}  >
@@ -481,7 +486,11 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.slideIndex !== this.state.slideIndex || nextProps.pages !== this.state.pages || this.state.lengthPages==0) { //
+    console.log(this.state.session);
+    console.log(nextProps.session);
+    console.log(JSON.stringify(this.props.session['selected_tags']));
+
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.slideIndex !== this.state.slideIndex  || this.state.lengthPages==0 || JSON.stringify(this.props.session['selected_tags'])!='""' ) { //'""' if there is some selected tag.
           return true;
     }
     return false;
