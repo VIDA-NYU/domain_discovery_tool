@@ -68,6 +68,7 @@ class Body extends Component{
 	pages:{},
         update:false,
         runCurrentQuery: "*",
+        intervalFuncId:undefined,
     };
     this.sessionB={};
   }
@@ -277,7 +278,7 @@ class Body extends Component{
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)}/>
+          <Views queryFromSearch = {this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)}/>
         </Row>
       </div>
       <Snackbar
