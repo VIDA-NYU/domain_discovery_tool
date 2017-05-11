@@ -98,7 +98,7 @@ class ChipViewTab extends React.Component{
     var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
     console.log("CHIP");
     console.log(session);
-      var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
+    var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
     atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;            
@@ -109,19 +109,17 @@ class ChipViewTab extends React.Component{
     for(var i=0; i<queriesList.length && queriesList.length>0; i++){
       newChip.push({key: i, type: 0, label: queriesList[i], avatar: Qicon});
     }
-    for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
+    for(var i=(queriesList.length), j=0; i<(queriesList.length+tagsList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    for(var i=(tagsList.length+queriesList.length), j=0; i<(tagsList.length+queriesList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
+    for(var i=(queriesList.length+tagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 4, label: tldsList[j], avatar:Dicon});
     }
-    for(var i=(tagsList.length+queriesList.length+tldsList.length), j=0; i<(tagsList.length+queriesList.length+tldsList.length+atermsList.length) && atermsList.length>0 ; i++, j++){
-      newChip.push({key: i, type: 4, label: atermsList[j], avatar:Ticon});
+    for(var i=(queriesList.length+tagsList.length+tldsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length) && atermsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 5, label: atermsList[j], avatar:Ticon});
     }
-    for(var i=(tldsList.length+tagsList.length+queriesList.length), j=0; i<(tldsList.length+tagsList.length+queriesList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
+    for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.lebgth+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
-    }
-    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length + tldsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
     }
 
     this.setState({
@@ -131,7 +129,9 @@ class ChipViewTab extends React.Component{
 
   removeString(currentType, currentKey){
     var currentString = "";
-    var anyFilter = false;
+      var anyFilter = false;
+      console.log("REMOVE STRING");
+      console.log(this.state.chipData);
     this.state.chipData.map((chip) => {
       if(chip.type == currentType && chip.key != currentKey)
         currentString = currentString + chip.label + ",";
@@ -141,19 +141,22 @@ class ChipViewTab extends React.Component{
   }
 
 
-  handleRequestDelete = (key) => {
+    handleRequestDelete = (key) => {
+	console.log("handleRequestDelete");
         const sessionTemp =  this.state.session;
         const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
         switch (this.state.chipData[chipToDelete].type) {
           case 0: //query
-              sessionTemp['selected_queries']= this.removeString(0, key);
+            sessionTemp['selected_queries']= this.removeString(0, key);
+	    console.log(sessionTemp['selected_queries']);
               if(sessionTemp['selected_queries'] === "") {
                 sessionTemp['newPageRetrievalCriteria'] = "one";
                 sessionTemp['pageRetrievalCriteria'] = "Tags";
               }
               break;
           case 1://tags
-              sessionTemp['selected_tags']= this.removeString(1, key);
+            sessionTemp['selected_tags']= this.removeString(1, key);
+	    console.log(sessionTemp['selected_tags']);
               if(sessionTemp['selected_tags'] === "") {
                 sessionTemp['newPageRetrievalCriteria'] = "one";
                 sessionTemp['pageRetrievalCriteria'] = "Queries";
@@ -162,20 +165,8 @@ class ChipViewTab extends React.Component{
           case 2://filter
               sessionTemp['filter']= null;
               break;
-          case 3://tags
-                  sessionTemp['selected_model_tags']= this.removeString(3, key);
-                  if(sessionTemp['selected_model_tags'] === "") {
-                    if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
-                        sessionTemp['newPageRetrievalCriteria'] = "Queries,Tags,";
-                    else if (sessionTemp['selected_queries'] !== "") {
-                      sessionTemp['newPageRetrievalCriteria'] = "one";
-                      sessionTemp['pageRetrievalCriteria'] = "Queries";
-                    }
-                    else {
-                      sessionTemp['newPageRetrievalCriteria'] = "one";
-                      sessionTemp['pageRetrievalCriteria'] = "Tags";
-                    }
-                  }
+          case 3://model tags
+            sessionTemp['selected_model_tags']= this.removeString(3, key);
             break;
           case 4: //tlds
               sessionTemp['selected_tlds']= this.removeString(4, key);
@@ -184,9 +175,24 @@ class ChipViewTab extends React.Component{
                 sessionTemp['pageRetrievalCriteria'] = "TLDs";
               }
               break;
-          case 5: //Annotated Terms
-              sessionTemp['selected_aterms']= this.removeString(5, key);
-              break;
+        case 5: //Annotated Terms
+            sessionTemp['selected_aterms']= this.removeString(5, key);
+	    console.log("ANNOTATED TERMS REMOVE");
+	    console.log(sessionTemp['selected_aterms']);
+	    if(sessionTemp['selected_aterms'] === "")
+		sessionTemp['filter'] = null;
+	    else {
+		var checked = sessionTemp['selected_aterms'].split(",");
+		var labelTerm = "";
+		checked.map((term, index)=>{
+		    labelTerm = labelTerm + term + " OR ";
+		});
+		if(labelTerm != "")
+		    labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
+
+		sessionTemp['filter'] = labelTerm;
+	    }
+            break;
 	    
         }
         if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){

@@ -619,156 +619,179 @@ class FiltersTabs extends React.Component {
   addQuery(checked){
     var sessionTemp = this.props.session;
     var newQuery = checked.toString();
-    if(newQuery === ""){
-	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
-    }
-    else if (sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_aterms']!==""){
-	sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	sessionTemp['pageRetrievalCriteria'] = {"query":newQuery};
-	if(sessionTemp['selected_tags']!=="")
-	    sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
-	if(sessionTemp['selected_tlds']!=="")
-	    sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
-	if(sessionTemp['selected_aterms']!=="")
-	    sessionTemp['filter'] = sessionTemp['selected_aterms'];
-    }
-    else{
-	sessionTemp['newPageRetrievalCriteria'] = "one";
-	sessionTemp['pageRetrievalCriteria'] = "Queries";
+    if(newQuery !== ""){
+	if (sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""){
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {"query":newQuery};
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	    if(sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	}
+	else{
+	    sessionTemp['newPageRetrievalCriteria'] = "one";
+	    sessionTemp['pageRetrievalCriteria'] = "Queries";
+	}
     }
     sessionTemp['selected_queries']=newQuery;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
     this.props.updateSession(sessionTemp);
   }
 
   addTLD(checked){
     var sessionTemp = this.props.session;
     var newTLDs = checked.toString();
-    var labelTerm = "";
 
-    if(newTLDs === ""){
-	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
-    }
-    else if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!==""){
-	sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	sessionTemp['pageRetrievalCriteria'] = {'domain':newTLDs};
-	if(sessionTemp['selected_queries']!=="")
-	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
-	if(sessionTemp['selected_tags']!=="")
-	    sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
-    }
-    else{
-	sessionTemp['newPageRetrievalCriteria'] = "one";
-	sessionTemp['pageRetrievalCriteria'] = "TLDs";
+    if(newTLDs !== ""){
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_model_tags']!==""){
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {'domain':newTLDs};
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	}
+	else{
+	    sessionTemp['newPageRetrievalCriteria'] = "one";
+	    sessionTemp['pageRetrievalCriteria'] = "TLDs";
+	}
     }
     sessionTemp['selected_tlds']=newTLDs;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
+
     this.props.updateSession(sessionTemp);
   }
 
   addATerm(checked){
+    console.log("ADD ATERM");
     var sessionTemp = this.props.session;
     var newTerms = checked.toString();
+    console.log(newTerms);  
     var labelTerm = "";
     checked.map((term, index)=>{
-	console.log("ADD ATERM");
 	console.log(term);
 	labelTerm = labelTerm + term + " OR ";
     });
-    if(labelTerm != "")
+    if(labelTerm !== "")
 	labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
 
     console.log(labelTerm);
       
     if(newTerms === ""){
-	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+	sessionTemp['filter'] = null;
     }
-    else if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!==""){
-	sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	sessionTemp['filter'] = labelTerm;
-	sessionTemp['pageRetrievalCriteria'] = {}
-	if (sessionTemp['selected_tlds']!=="")
-	    sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
-	if(sessionTemp['selected_queries']!=="")
-	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
-	if(sessionTemp['selected_tags']!=="")
-	    sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+    else {
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""){
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['filter'] = labelTerm;
+	    sessionTemp['pageRetrievalCriteria'] = {};
+	    if (sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	} else sessionTemp['filter']=labelTerm;
     }
-    else{
-	sessionTemp['filter']=labelTerm
-    }
+    console.log(sessionTemp['pageRetrievalCriteria']);  
     sessionTemp['selected_aterms']=newTerms;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
     this.props.updateSession(sessionTemp);
   }
     
   addTags(checked){
     var sessionTemp = this.props.session;	
     var newTags = checked.toString();
-    if(newTags === ""){
+    console.log("ADD TAGS");
+    console.log(newTags);
+    if(newTags !== ""){
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] != ""){	  
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	}
+      else{
+	  sessionTemp['newPageRetrievalCriteria'] = "one";
+	  sessionTemp['pageRetrievalCriteria'] = "Tags";
+      }
+    } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['tag'];
+    }
+    sessionTemp['selected_tags']=newTags;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
 	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
-    else if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!==""){
-	sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
-	if(sessionTemp['selected_queries']!=="")
-	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
-	if(sessionTemp['selected_tlds']!=="")
-	    sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
-    }
-    else{
-	sessionTemp['newPageRetrievalCriteria'] = "one";
-	sessionTemp['pageRetrievalCriteria'] = "Tags";
-    }
-
-    sessionTemp['selected_tags']=newTags;
+      console.log(sessionTemp);  
     this.props.updateSession(sessionTemp);
   }
 
   addModelTags(checked){
     var sessionTemp = this.props.session;	
     var newTags = checked.toString();
-    if(newTags === ""){
-	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
-    }
-    else if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!==""){
-	sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
-	if(sessionTemp['selected_queries']!=="")
-	    sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
-	if(sessionTemp['selected_tlds']!=="")
-	    sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
-    }
-    else{
-	sessionTemp['newPageRetrievalCriteria'] = "one";
-	sessionTemp['pageRetrievalCriteria'] = "Model Tags";
+    if(newTags !== ""){
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== ""){	  	  
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	} else{
+	  sessionTemp['newPageRetrievalCriteria'] = "one";
+	  sessionTemp['pageRetrievalCriteria'] = "Model Tags";
+	}
     }
     sessionTemp['selected_model_tags']=newTags;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
     this.props.updateSession(sessionTemp);
   }
 
-  removeString(currentType, item){
-    var currentString = "";
-    var array=[]; // it could be a query or tag array.
-    switch (currentType) {
-      case 0: //query
-          array = this.state.session["selected_queries"].split(",");
-          break;
-      case 1://tags
-          array = this.state.session["selected_tags"].split(",");
-        break;
-      case 2: //tlds
-        array = this.state.session["selected_tlds"].split(",");
-        break;
-      case 3: //Annotated Terms
-        array = this.state.session["selected_aterms"].split(",");
-        break;
-    }
-    for(var index in array){ /* loop over all array items */
-      if(array[index] !== item){
-        currentString = currentString + array[index] + ",";
-      }
-    }
-    if(currentString != "") return currentString.substring(0, currentString.length-1);
-      return currentString;
-  }
+  // removeString(currentType, item){
+  //   var currentString = "";
+  //   var array=[]; // it could be a query or tag array.
+  //   switch (currentType) {
+  //     case 0: //query
+  //         array = this.state.session["selected_queries"].split(",");
+  //         break;
+  //     case 1://tags
+  //         array = this.state.session["selected_tags"].split(",");
+  //       break;
+  //     case 2: //tlds
+  //       array = this.state.session["selected_tlds"].split(",");
+  //       break;
+  //     case 3: //Annotated Terms
+  //       array = this.state.session["selected_aterms"].split(",");
+  //       break;
+  //   }
+  //   for(var index in array){ /* loop over all array items */
+  //     if(array[index] !== item){
+  //       currentString = currentString + array[index] + ",";
+  //     }
+  //   }
+  //   if(currentString != "") return currentString.substring(0, currentString.length-1);
+  //     return currentString;
+  // }
 
   // removeQueryTag(currentType, item){
   //   const sessionTemp =  this.state.session;
