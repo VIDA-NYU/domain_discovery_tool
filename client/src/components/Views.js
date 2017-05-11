@@ -217,16 +217,9 @@ class ViewTabSnippets extends React.Component{
       session:{},
       accuracyOnlineLearning:0,
     };
-    this.pages = [];
   }
 
   componentWillMount(){
-    console.log(this.props.pages);
-
-    this.pages=this.props.pages;
-    //var arrObj = [];
-    //var obj = Object.keys(this.pages).map((k, index)=>{  arrObj.push(this.pages[k]);};
-
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages,
     });
@@ -234,27 +227,20 @@ class ViewTabSnippets extends React.Component{
   }
 
   componentWillReceiveProps(nextProps, nextState){
-    console.log("will view");
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
       this.setState({
       session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages
       });
     }
     return;
-    //this.state.pages=nextProps.pages;
-    console.log("will in will");
 
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextState.pages);
-    console.log("state");
-    console.log(this.state.pages);
     if ( nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) { //&&
           console.log("should viw in if");
          return true;
     }
-    console.log("should false");
     return false;
   }
 
@@ -290,17 +276,6 @@ class ViewTabSnippets extends React.Component{
     );
   }
 
-  //Changing color button from css (directly).
-  setColorButton(idButton, tag, color){
-    $('#Relevant-'+idButton).css('background-color','silver');
-    $('#Irrelevant-'+idButton).css('background-color','silver');
-    $('#Neutral-'+idButton).css('background-color','silver');
-
-    var setColor= (tag=="Relevant")? ((color=="rgb(192, 192, 192)")? $('#Relevant-'+idButton).css('background-color','#4682B4'): $('#Relevant-'+idButton).css('background-color','silver'))
-                : (tag=="Irrelevant")?((color=="rgb(192, 192, 192)")? $('#Irrelevant-'+idButton).css('background-color','#CD5C5C'): $('#Irrelevant-'+idButton).css('background-color','silver'))
-                : (tag=="Neutral")? ((color=="rgb(192, 192, 192)")? $('#Neutral-'+idButton).css('background-color','silver'): $('#Neutral-'+idButton).css('background-color','silver'))
-                :"";
-  }
 
   //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
   onTagActionClicked(ev){
@@ -320,7 +295,6 @@ class ViewTabSnippets extends React.Component{
       }
       // Apply or remove tag from urls.
       var applyTagFlag = action == 'Apply';
-      //this.setColorButton(idButton[1], tag, color);
       var urls = [];
       urls.push(url);
       if (applyTagFlag && !isTagPresent) {
@@ -338,9 +312,9 @@ class ViewTabSnippets extends React.Component{
         }
         updatedPages[url]["tags"]=[];
         updatedPages[url]["tags"][auxKey] = tag;
+        //checking if the new tag belong to the filter
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           this.setState({ pages:updatedPages, });
-          setTimeout(function(){ console.log("");}, 500);
           delete updatedPages[url];
         }
         //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
@@ -354,10 +328,6 @@ class ViewTabSnippets extends React.Component{
         this.removeAddTags(urls, tag, applyTagFlag );
       }
 
-      //checking if the new tag belong to the filter
-      //if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" )
-      //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
-      //this.pages=this.pages;
 
     }
 
@@ -370,7 +340,6 @@ class ViewTabSnippets extends React.Component{
 
   render(){
     console.log("SnippetsPAges------------");
-      console.log(this.pages);
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var id=0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
@@ -492,10 +461,7 @@ class Views extends React.Component {
 
   //If there are any change in the session like a new filter, then getPages() is called.
   componentWillReceiveProps(nextProps, nextState){
-      //this.queryFromSearch = (JSON.stringify(nextProps.session) == this.state.sessionString && nextState.lengthPages !==this.state.lengthPages && nextProps.session["selected_tags"] =="" && (nextProps.session['filter'] == null || nextProps.session['filter'] == ""))? true:false;
-      console.log(this.props.queryFromSearch);
       this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
-      console.log(nextProps.session);
 	/*if (nextProps.pages !== this.state.pages) {
 	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
 	    this.forceUpdate();
@@ -520,12 +486,7 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(JSON.stringify(nextProps.session) );
-    console.log( this.state.sessionString);
-    console.log(nextState.lengthPages);
-    console.log(this.state.lengthPages);
-    //this.queryFromSearch = (JSON.stringify(nextProps.session) == this.state.sessionString && nextState.lengthPages !==this.state.lengthPages && nextProps.session["selected_tags"] =="" && (nextProps.session['filter'] == null || nextProps.session['filter'] == ""))? true:false;
-this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
+    this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
     if ((JSON.stringify(nextProps.session) !== this.state.sessionString && this.newPages) || nextState.slideIndex !== this.state.slideIndex ||this.queryFromSearch ) { //'""' if there is some selected tag.   || JSON.stringify(this.props.session['selected_tags'])!='""'
           return true;
     }
