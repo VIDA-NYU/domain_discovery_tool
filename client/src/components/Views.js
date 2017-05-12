@@ -34,12 +34,15 @@ import {fullWhite} from 'material-ui/styles/colors';
 import FontIcon from 'material-ui/FontIcon';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+import IconButton from 'material-ui/IconButton';
+import ActionHome from 'material-ui/svg-icons/action/home';
+import ReactPaginate from 'react-paginate';
 
 const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
 
-import { ButtonGroup, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import { ButtonGroup, Button, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap';
 
 
 import $ from 'jquery';
@@ -243,30 +246,32 @@ class ViewTabSnippets extends React.Component{
       sessionString:"",
       session:{},
       accuracyOnlineLearning:0,
+      offset:0,
+      currentPagination:0,
     };
-    this.pages = [];
+    this.perPage=12;
   }
 
   componentWillMount(){
-    this.pages=this.props.pages;
     this.setState({
-        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0,
     });
     this.updateOnlineClassifier(this.props.session);
   }
 
   componentWillReceiveProps(nextProps, nextState){
-    if (JSON.stringify(nextProps.session) === this.state.sessionString && nextProps.pages === this.state.pages ) { // ||
-        return;
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
+      $("div").scrollTop(0);
+      this.setState({
+      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, currentPagination:0, offset:0,
+      });
     }
-    this.pages=nextProps.pages;
-    this.setState({
-      pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
-    });
+    return;
+
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if ( nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages ) { //&&
+    if ( nextState.currentPagination!= this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
          return true;
     }
     return false;
@@ -279,12 +284,22 @@ class ViewTabSnippets extends React.Component{
     	function(accuracy) {
         //Updates the showed accuracy on the interface only if the different between the new and the previous accuracy is enough significant.
         if(accuracy >=this.state.accuracyOnlineLearning+2 || accuracy <=this.state.accuracyOnlineLearning-2){
+          //updateing filters modelTags
+          this.props.reloadFilters();
           this.setState({
               accuracyOnlineLearning:accuracy,
           });
         }
+
     	}.bind(this)
     );
+  }
+
+  handlePageClick(data){
+      $("div").scrollTop(0);
+    let selected = data.selected; //current page (number)
+    let offset = Math.ceil(selected * this.perPage);
+    this.setState({offset: offset, currentPagination:data.selected});
   }
 
   removeAddTags(urls, current_tag, applyTagFlag ){
@@ -293,67 +308,64 @@ class ViewTabSnippets extends React.Component{
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
 	function(pages) {
+          //updateing filters Tags
+          this.props.reloadFilters();
           this.updateOnlineClassifier(this.props.session);
       }.bind(this)
     );
   }
 
-  //Changing color button from css (directly).
-  setColorButton(idButton, tag, color){
-    $('#Relevant-'+idButton).css('background-color','silver');
-    $('#Irrelevant-'+idButton).css('background-color','silver');
-    $('#Neutral-'+idButton).css('background-color','silver');
-
-    var setColor= (tag=="Relevant")? ((color=="rgb(192, 192, 192)")? $('#Relevant-'+idButton).css('background-color','#4682B4'): $('#Relevant-'+idButton).css('background-color','silver'))
-                : (tag=="Irrelevant")?((color=="rgb(192, 192, 192)")? $('#Irrelevant-'+idButton).css('background-color','#CD5C5C'): $('#Irrelevant-'+idButton).css('background-color','silver'))
-                : (tag=="Neutral")? ((color=="rgb(192, 192, 192)")? $('#Neutral-'+idButton).css('background-color','silver'): $('#Neutral-'+idButton).css('background-color','silver'))
-                :"";
-  }
-
-  //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
-  onTagActionClicked(ev){
-    var idButton = (ev.target.id).split("-")
-    var tag = idButton[0];
-    var url = ev.target.value;
-    var urls=[];
-    var action = 'Apply';
-    var isTagPresent = false;
-    var nameIdButton = '#'+ev.target.id
-    var color = ($(nameIdButton).css("background-color")).toString();
-      if(this.pages[url]["tags"]){
-         isTagPresent = Object.keys(this.pages[url]["tags"]).map(key => this.pages[url]["tags"][key]).some(function(itemTag) {
-          return itemTag == tag;});
-          if(isTagPresent) action = 'Remove';
-      }
-      // Apply or remove tag from urls.
-      var applyTagFlag = action == 'Apply';
-      this.setColorButton(idButton[1], tag, color);
-      var urls = [];
-      urls.push(url);
-      if (applyTagFlag && !isTagPresent) {
-        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
-        var auxKey = "0";
-        if(this.pages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
-            var temp = Object.keys(this.pages[url]["tags"]).map(key => {
-                        var itemTag = this.pages[url]["tags"][key].toString();
-                        if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
-                          delete this.pages[url]["tags"][key];
-                          this.removeAddTags(urls, itemTag, false );
-                        }
-                      });
-            delete this.pages[url]["tags"];
+    //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
+    onTagActionClicked(inputURL, inputTag){
+      var idButton = (inputTag).split("-"); // (ev.target.id).split("-")
+      var tag = idButton[0];
+      var url = inputURL; // ev.target.value;
+      var urls=[];
+      var action = 'Apply';
+      var isTagPresent = false;
+      var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
+        if(updatedPages[url]["tags"]){
+           isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+            return itemTag == tag;});
+            if(isTagPresent) action = 'Remove';
         }
-        this.pages[url]["tags"]=[];
-        this.pages[url]["tags"][auxKey] = tag;
-        this.removeAddTags(urls, tag, applyTagFlag );
+        // Apply or remove tag from urls.
+        var applyTagFlag = action == 'Apply';
+        var urls = [];
+        urls.push(url);
+        if (applyTagFlag && !isTagPresent) {
+          // Removes tag when the tag is present for item, and applies only when tag is not present for item.
+          var auxKey = "0";
+          if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
+              var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                          var itemTag = updatedPages[url]["tags"][key].toString();
+                          if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
+                            delete updatedPages[url]["tags"][key];
+                            this.removeAddTags(urls, itemTag, false );
+                          }
+                        });
+              delete updatedPages[url]["tags"];
+          }
+          updatedPages[url]["tags"]=[];
+          updatedPages[url]["tags"][auxKey] = tag;
+          //checking if the new tag belong to the filter
+          if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+            this.setState({ pages:updatedPages, });
+            delete updatedPages[url];
+          }
+          //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
+          this.setState({ pages:updatedPages, });
+          this.removeAddTags(urls, tag, applyTagFlag );
+
+        }
+        else{
+          delete updatedPages[url]["tags"];
+          this.setState({ pages:updatedPages,});
+          this.removeAddTags(urls, tag, applyTagFlag );
+        }
+
 
       }
-      else{
-        delete this.pages[url]["tags"];
-        this.removeAddTags(urls, tag, applyTagFlag );
-      }
-      this.pages=this.pages;
-    }
 
   keyboardFocus = (event, item) => {
     console.log(event);
@@ -364,16 +376,21 @@ class ViewTabSnippets extends React.Component{
 
   render(){
     console.log("SnippetsPAges------------");
-    console.log(this.pages);
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    var cont=0;
-    var urlsList = Object.keys(this.pages).map((k, index)=>{
+    console.log("pages");
+    console.log(Object.keys(this.state.pages).length);
+    var id=0;
+    var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
+    var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
+    var urlsList = Object.keys(this.state.pages).map((k, index)=>{
+
+            if(index>this.state.offset && index<(this.state.offset+this.perPage)){
                     let colorTagRelev = "";
                     let colorTagIrrelev="";
                     let colorTagNeutral="";
                     let uniqueTag="";
-                    if(this.pages[k]["tags"]){
-                     uniqueTag = (Object.keys(this.pages[k]["tags"]).length > 0) ? (this.pages[k]["tags"]).toString():(this.pages[k]["tags"][Object.keys(this.pages[k]["tags"]).length-1]).toString();
+                    if(this.state.pages[k]["tags"]){
+                     uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
                      colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
                      colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
                      colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
@@ -381,48 +398,78 @@ class ViewTabSnippets extends React.Component{
                     else{
                       colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
                     }
-                    var id= cont+1; cont=cont+id;
+
+                    id= id+1;
+                    let urlLink= (k.length<110)?k:k.substring(0,109);
+                    let imageUrl=(this.state.pages[k]["image_url"]=="")? "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png":this.state.pages[k]["image_url"];
+
                     //style={{height:"200px"}} disableKeyboardFocus= {false} isKeyboardFocused={true} onKeyboardFocus={this.keyboardFocus.bind(this)}
                     return <ListItem key={index}  >
-                    <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
+                    <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
                       <div>
-                        <p style={{float:'left'}}><img src={this.pages[k]["image_url"]} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+                        <p style={{float:'left'}}><img src={imageUrl} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
                         <p style={{float:'right'}}>
                         <ButtonGroup bsSize="small">
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                            <Button id={"Relevant-"+id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagRelev}} >Relev</Button>
+                            <Button >
+                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                            </Button>
                           </OverlayTrigger>
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                            <Button id={"Irrelevant-" +id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagIrrelev}} >Irrel</Button>
+                            <Button>
+                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                            </Button>
                           </OverlayTrigger>
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                            <Button id={"Neutral-"+ id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagNeutral}} >Neutr</Button>
+                            <Button >
+                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                            </Button>
                           </OverlayTrigger>
                         </ButtonGroup></p>
-                        <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.pages[k]["title"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
+                        <p>
+                        <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{this.state.pages[k]["title"]}</a>
+                        <br/>
+                        <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
+                        <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
+                        </p>
                       </div>
                       <br/>
-                      <div style={{marginTop:'-3px'}}> <p style={{ marginTop:'-3px'}}>{this.pages[k]["snippet"]}</p> </div>
                       <Divider />
                     </div>
                   </ListItem>;
-                    });
+            }
+    });
 
 
     return (
-      <div>
-      <p style={{color: "#FFFFFF",}}>-</p>
-      <div style={{marginBottom:"50px"}}>
-        <p style={{float:"left", color: "#757575", fontSize: "14px", fontWeight: "500", paddingLeft: "72px",}}>{urlsList.length} pages </p>
-        <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
-      </div>
-      <div style={{marginTop:"50px"}}>
-        <List>
-        {urlsList}
-        <Divider inset={true} />
-        </List>
-      </div>
-    </div>
+      <div  style={{maxWidth:1000}}>
+        <p style={{color: "#FFFFFF",}}>-</p>
+        <div style={{marginBottom:"50px"}}>
+          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {urlsList.length} results. </p>
+          <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
+        </div>
+        <div style={{marginTop:"50px"}} >
+          <List>
+          {urlsList}
+          <Divider inset={true} />
+          </List>
+          <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
+            <ReactPaginate previousLabel={"previous"}
+                           nextLabel={"next"}
+                           initialPage={0}
+                           forcePage={this.state.currentPagination}
+                           breakLabel={<a >...</a>}
+                           breakClassName={"break-me"}
+                           pageCount={currentPageCount}
+                           marginPagesDisplayed={3}
+                           pageRangeDisplayed={8}
+                           onPageChange={this.handlePageClick.bind(this)}
+                           containerClassName={"pagination"}
+                           subContainerClassName={"pages pagination"}
+                           activeClassName={"active"} />
+          </div>
+        </div>
+     </div>
   );
   }
 }
@@ -447,6 +494,8 @@ class Views extends React.Component {
       chipData: [],
       lengthPages: 1,
     };
+    this.newPages = true;
+    this.queryFromSearch=true;
   }
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
@@ -455,6 +504,7 @@ class Views extends React.Component {
 	  '/getPages',
 	  {'session': JSON.stringify(session)},
 	  function(pages) {
+                this.newPages=true;
               this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
 	  }.bind(this)
       );
@@ -478,18 +528,21 @@ class Views extends React.Component {
   }
 
   //If there are any change in the session like a new filter, then getPages() is called.
-    componentWillReceiveProps(nextProps){
-      console.log(nextProps.session);
+  componentWillReceiveProps(nextProps, nextState){
+      this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
 	/*if (nextProps.pages !== this.state.pages) {
 	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
 	    this.forceUpdate();
-	}
-	if (JSON.stringify(nextProps.session) === this.state.sessionString) {
-	    return;
 	}*/
-  console.log("View---------------");
-  console.log(nextProps.session);
-	this.loadPages(nextProps.session);
+	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
+    console.log("View---------------");
+    this.newPages = false;
+    this.loadPages(nextProps.session);
+	}else{
+      return;
+  }
+
+
   }
 
   //Updates selected filters.
@@ -500,14 +553,20 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.slideIndex !== this.state.slideIndex || nextProps.pages !== this.state.pages || this.state.lengthPages==0) { //
+    this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
+    if ((JSON.stringify(nextProps.session) !== this.state.sessionString && this.newPages) || nextState.slideIndex !== this.state.slideIndex ||this.queryFromSearch ) { //'""' if there is some selected tag.   || JSON.stringify(this.props.session['selected_tags'])!='""'
           return true;
     }
     return false;
   }
 
+  reloadFilters(){
+    this.props.reloadFilters();
+  };
+
   render() {
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} />
+
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch}/>
     : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
 
       return (

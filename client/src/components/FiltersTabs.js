@@ -505,7 +505,7 @@ class LoadModel extends React.Component {
     };
   }
 
-  componentWillMount(){
+  getAvailableModelTags(){
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
@@ -521,6 +521,10 @@ class LoadModel extends React.Component {
     );
   }
 
+  componentWillMount(){
+    this.getAvailableModelTags();
+  }
+
   componentWillReceiveProps(nextProps){
       if(JSON.stringify(nextProps.session['selected_model_tags']) === JSON.stringify(this.state.checked) ) {
 	  if(this.props.update){
@@ -528,7 +532,6 @@ class LoadModel extends React.Component {
 	  }
 	  return;
       }
-
       var selected_model_tags = []; 
       if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== ""){
 	  if (this.props.session['selected_model_tags'].indexOf(",") > 0)
