@@ -29,7 +29,7 @@ class CircularProgressSimple extends React.Component{
 
     return(
     <div style={{borderColor:"green", marginLeft:"50%"}}>
-      <CircularProgress size={60} thickness={7} />
+      <CircularProgress size={30} thickness={7} />
     </div>
   );}
 }
@@ -60,7 +60,7 @@ class LoadQueries extends React.Component {
       {'session': JSON.stringify(this.props.session)},
 	function(queriesDomain) {
 	    var selected_queries = []; 
-	    if(this.props.session['selected_queries'] != undefined && this.props.session['selected_queries'] !== "" && this.props.session['selected_queries'].length > 1){
+	    if(this.props.session['selected_queries'] != undefined && this.props.session['selected_queries'] !== ""){
 		selected_queries = this.props.session['selected_queries'].split(",");
 	    }
             this.setState({currentQueries: queriesDomain, session:this.props.session, checked:selected_queries});
@@ -80,7 +80,7 @@ class LoadQueries extends React.Component {
 	return;
     }
     var selected_queries = []; 
-    if(nextProps.session['selected_queries'] != undefined && nextProps.session['selected_queries'] !== "" && nextProps.session['selected_queries'].length > 1)
+    if(nextProps.session['selected_queries'] != undefined && nextProps.session['selected_queries'] !== "")
 	selected_queries = this.props.session['selected_queries'].split(",");
       
     // Calculate new state
@@ -105,8 +105,10 @@ class LoadQueries extends React.Component {
       this.props.addQuery(checked);
   }
     
-  render(){
-      if(this.state.currentQueries!==undefined){
+    render(){
+	console.log("LOAD QUERIES");
+	console.log(this.state.currentQueries);
+	if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
 	  var nodes = this.state.queryNodes;
 	  var nodesTemp = [];
 	  nodes.map((node,index)=>{
@@ -134,7 +136,7 @@ class LoadQueries extends React.Component {
 	  );
       }
       return(
-	      <CircularProgressSimple />
+	      <div />
       );
   }
 }
@@ -149,7 +151,7 @@ class LoadTLDs extends React.Component {
 	  session: {},
 	  tldNodes:[{
 	      value: 'tld',
-	      label: 'TLDs',
+	      label: 'Domains',
 	      children: []
 	  }
           ]
@@ -162,7 +164,7 @@ class LoadTLDs extends React.Component {
 	  {'session': JSON.stringify(this.props.session)},
 	  function(tlds) {
 	      var selected_tlds = []; 
-	      if(this.props.session['selected_tlds'] != undefined && this.props.session['selected_tlds'] !== "" && this.props.session['selected_tlds'].length > 1){
+	      if(this.props.session['selected_tlds'] != undefined && this.props.session['selected_tlds'] !== ""){
 		  selected_tlds = this.props.session['selected_tlds'].split(",");
 	      }
 	      
@@ -183,7 +185,7 @@ class LoadTLDs extends React.Component {
     }
 
     var selected_tlds = []; 
-    if(nextProps.session['selected_tlds'] != undefined && nextProps.session['selected_tlds'] !== "" && nextProps.session['selected_tlds'].length > 1)
+    if(nextProps.session['selected_tlds'] != undefined && nextProps.session['selected_tlds'] !== "")
 	selected_tlds = this.props.session['selected_tlds'].split(",");
       
     // Calculate new state
@@ -209,7 +211,7 @@ class LoadTLDs extends React.Component {
   }
 
  render(){
-     if(this.state.currentTLDs!==undefined){
+     if(this.state.currentTLDs!==undefined && Object.keys(this.state.currentTLDs).length > 0){
 	 var nodes = this.state.tldNodes;
 	 var nodesTemp = [];
 	 nodes.map((node,index)=>{
@@ -237,7 +239,7 @@ class LoadTLDs extends React.Component {
 	  );
     }
     return(
-      <CircularProgressSimple />
+      <div />
     );
   }
 }
@@ -266,7 +268,7 @@ class LoadAnnotatedTerms extends React.Component {
       {'session': JSON.stringify(this.props.session)},
 	function(terms) {
 	    var selected_aterms = []; 
-	    if(this.props.session['selected_aterms'] != undefined && this.props.session['selected_aterms'] !== "" && this.props.session['selected_aterms'].length > 1){
+	    if(this.props.session['selected_aterms'] != undefined && this.props.session['selected_aterms'] !== ""){
 		selected_aterms = this.props.session['selected_aterms'].split(",");
 	    }
 
@@ -286,7 +288,7 @@ class LoadAnnotatedTerms extends React.Component {
 	return;
     }
     var selected_aterms = []; 
-    if(nextProps.session['selected_aterms'] != undefined && nextProps.session['selected_aterms'] !== "" && nextProps.session['selected_aterms'].length > 1)
+    if(nextProps.session['selected_aterms'] != undefined && nextProps.session['selected_aterms'] !== "")
 	selected_aterms = this.props.session['selected_aterms'].split(",");
   
     // Calculate new state
@@ -314,7 +316,7 @@ class LoadAnnotatedTerms extends React.Component {
   }
 
   render(){
-    if(this.state.currentATerms!==undefined){
+      if(this.state.currentATerms!==undefined && Object.keys(this.state.currentATerms).length > 0){
 	// Sorting the terms by Postive or Negative so that all Positive are consecutive
 	// and all Negative are consecutive
 	// Create items array from the currentATerms term and tag dict
@@ -379,7 +381,7 @@ class LoadAnnotatedTerms extends React.Component {
 	);
     }
     return(
-       <CircularProgressSimple />
+       <div />
     );
   }
 
@@ -407,7 +409,7 @@ class LoadTag extends React.Component {
 	  {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
 	  function(tagsDomain) {
 	      var selected_tags = []; 
-	      if(this.props.session['selected_tags'] != undefined && this.props.session['selected_tags'] !== "" && this.props.session['selected_tags'].length > 1){
+	      if(this.props.session['selected_tags'] != undefined && this.props.session['selected_tags'] !== ""){
 		  selected_tags = this.props.session['selected_tags'].split(",");
 	      }
 	      
@@ -429,7 +431,7 @@ class LoadTag extends React.Component {
     }
       
     var selected_tags = []; 
-    if(nextProps.session['selected_tags'] != undefined && nextProps.session['selected_tags'] !== "" && nextProps.session['selected_tags'].length > 1)
+    if(nextProps.session['selected_tags'] != undefined && nextProps.session['selected_tags'] !== "")
 	selected_tags = this.props.session['selected_tags'].split(",");
 
     this.setState({
@@ -455,7 +457,7 @@ class LoadTag extends React.Component {
   }
 
   render(){
-      if(this.state.currentTags!==undefined){
+      if(this.state.currentTags!==undefined && Object.keys(this.state.currentTags).length > 0){
 	 var nodes = this.state.tagNodes;
 	 var nodesTemp = [];
 	 nodes.map((node,index)=>{
@@ -483,7 +485,7 @@ class LoadTag extends React.Component {
 	  );
     }
     return(
-      <CircularProgressSimple />
+      <div />
     );
 
   }
@@ -511,29 +513,46 @@ class LoadModel extends React.Component {
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
-      function(modelTagDomain) {
-        this.setState({currentModelTags: modelTagDomain, session:this.props.session, modelTagString: JSON.stringify(this.props.session['selected_model_tags'])});
+	function(modelTagDomain) {
+	    var selected_model_tags = []; 
+	    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== "" ){
+		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+		    selected_model_tags = this.props.session['selected_model_tags'].split(",");
+		else selected_model_tags.push(this.props.session['selected_model_tags'])
+	    }
+	    this.setState({currentModelTags: modelTagDomain, session:this.props.session, checked:selected_model_tags});
       }.bind(this)
     );
   }
 
   componentWillReceiveProps(nextProps){
-    if(JSON.stringify(nextProps.session['selected_model_tags']) === this.state.modelTagString ) {
-      this.setState({ flat:true});
-      return;
-    }
-    this.setState({
-      session:nextProps.session, modelTagString: JSON.stringify(nextProps.session['selected_model_tags']), flat:false
-    });
+      if(JSON.stringify(nextProps.session['selected_model_tags']) === JSON.stringify(this.state.checked) ) {
+	  if(this.props.update){
+              this.getAvailableModelTags();
+	  }
+	  return;
+      }
+
+      var selected_model_tags = []; 
+      if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== ""){
+	  if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+	      selected_model_tags = this.props.session['selected_model_tags'].split(",");
+	  else  selected_model_tags.push(this.props.session['selected_model_tags'])
+      }
+
+      this.setState({session:nextProps.session, checked:selected_model_tags
+      });
 
   }
 
-  shouldComponentUpdate(nextProps){
-    if(JSON.stringify(nextProps.session['selected_model_tags']) === this.state.modelTagString && this.state.flat===true ) {
-      if(this.props.update){return true;}
-      else {return false;}
-    }
-    return true;
+    shouldComponentUpdate(nextProps, nextState){
+      if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+	 JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
+	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+	  if(this.props.update){return true;}
+	  else {return false;}
+      }
+      return true;
   }
 
   addModelTags(object){
@@ -543,7 +562,7 @@ class LoadModel extends React.Component {
   }
 
   render(){
-    if(this.state.currentModelTags!==undefined){
+      if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
 	var nodes = this.state.modeltagNodes;
 	var nodesTemp = [];
 	nodes.map((node,index)=>{
@@ -634,7 +653,10 @@ class FiltersTabs extends React.Component {
 	    sessionTemp['newPageRetrievalCriteria'] = "one";
 	    sessionTemp['pageRetrievalCriteria'] = "Queries";
 	}
+    }else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['query'];
     }
+
     sessionTemp['selected_queries']=newQuery;
     if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
        sessionTemp['pageRetrievalCriteria'] = "Most Recent";
@@ -661,7 +683,10 @@ class FiltersTabs extends React.Component {
 	    sessionTemp['newPageRetrievalCriteria'] = "one";
 	    sessionTemp['pageRetrievalCriteria'] = "TLDs";
 	}
+    } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['domain'];
     }
+
     sessionTemp['selected_tlds']=newTLDs;
     if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
        sessionTemp['pageRetrievalCriteria'] = "Most Recent";
@@ -759,7 +784,10 @@ class FiltersTabs extends React.Component {
 	  sessionTemp['newPageRetrievalCriteria'] = "one";
 	  sessionTemp['pageRetrievalCriteria'] = "Model Tags";
 	}
+    } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['model_tags'];
     }
+
     sessionTemp['selected_model_tags']=newTags;
     if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
 	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
