@@ -22,6 +22,7 @@
     "react-sidebar": "^2.2.1",
     "react-swipeable-views": "^0.8.0",
     "react-tap-event-plugin": "^2.0.1",
+    "react-checkbox-tree":"^0.5.2",
     "react-vis": "^0.6.4",
     "spawn-sync": "^1.0.15"
   },

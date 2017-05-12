@@ -124,7 +124,6 @@ class Filters extends Component{
 */
 
   render(){
-    //console.log("Filters");
     return(
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader

@@ -19,6 +19,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
+import Dicon from '../images/dicon.png';
 
 import Searchicon from '../images/searchicon.png';
 
@@ -97,11 +98,13 @@ class ChipViewTab extends React.Component{
         return;
     }
     // Calculate new state
-    var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
+    var session = nextProps.session; 
     console.log("CHIP");
     console.log(session);
-    var queriesList =[], tagsList =[], modelTagsList =[];
+    var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
+    tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
+    atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;            
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
 
@@ -109,13 +112,17 @@ class ChipViewTab extends React.Component{
     for(var i=0; i<queriesList.length && queriesList.length>0; i++){
       newChip.push({key: i, type: 0, label: queriesList[i], avatar: Qicon});
     }
-    for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
+    for(var i=(queriesList.length), j=0; i<(queriesList.length+tagsList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    for(var i=(tagsList.length+queriesList.length), j=0; i<(tagsList.length+queriesList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
-      newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
+    for(var i=(queriesList.length+tagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 4, label: tldsList[j], avatar:Dicon});
     }
-    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
+    for(var i=(queriesList.length+tagsList.length+tldsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length) && atermsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 5, label: atermsList[j], avatar:Ticon});
+    }
+    for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
     }
 
     this.setState({
@@ -135,44 +142,64 @@ class ChipViewTab extends React.Component{
   }
 
 
-  handleRequestDelete = (key) => {
+    handleRequestDelete = (key) => {
         const sessionTemp =  this.state.session;
         const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
         switch (this.state.chipData[chipToDelete].type) {
           case 0: //query
-              sessionTemp['selected_queries']= this.removeString(0, key);
-              if(sessionTemp['selected_queries'] === "") {
-                sessionTemp['newPageRetrievelCriteria'] = "one";
-                sessionTemp['pageRetrievalCriteria'] = "Tags";
+            sessionTemp['selected_queries']= this.removeString(0, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_queries'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['query'];
+		 } else sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
               }
               break;
           case 1://tags
-              sessionTemp['selected_tags']= this.removeString(1, key);
-              if(sessionTemp['selected_tags'] === "") {
-                sessionTemp['newPageRetrievelCriteria'] = "one";
-                sessionTemp['pageRetrievalCriteria'] = "Queries";
+            sessionTemp['selected_tags']= this.removeString(1, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_tags'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['tag'];
+		} else sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
               }
               break;
           case 2://filter
               sessionTemp['filter']= null;
               break;
-          case 3://tags
-                  sessionTemp['selected_model_tags']= this.removeString(3, key);
-                  if(sessionTemp['selected_model_tags'] === "") {
-                    if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
-                        sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
-                    else if (sessionTemp['selected_queries'] !== "") {
-                      sessionTemp['newPageRetrievelCriteria'] = "one";
-                      sessionTemp['pageRetrievalCriteria'] = "Queries";
-                    }
-                    else {
-                      sessionTemp['newPageRetrievelCriteria'] = "one";
-                      sessionTemp['pageRetrievalCriteria'] = "Tags";
-                    }
-                  }
-                  break;
+          case 3://model tags
+            sessionTemp['selected_model_tags']= this.removeString(3, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_model_tags'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['model_tags'];
+		} else sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	    }
+            break;
+          case 4: //tlds
+            sessionTemp['selected_tlds']= this.removeString(4, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_tlds'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['domain'];
+		} else sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+            }
+            break;
+        case 5: //Annotated Terms
+            sessionTemp['selected_aterms']= this.removeString(5, key);
+	    if(sessionTemp['selected_aterms'] === "")
+		sessionTemp['filter'] = null;
+	    else {
+		var checked = sessionTemp['selected_aterms'].split(",");
+		var labelTerm = "";
+		checked.map((term, index)=>{
+		    labelTerm = labelTerm + term + " OR ";
+		});
+		if(labelTerm != "")
+		    labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
+
+		sessionTemp['filter'] = labelTerm;
+	    }
+            break;
+	    
         }
-        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" ){
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
            sessionTemp['pageRetrievalCriteria'] = "Most Recent";
         }
 
@@ -477,8 +504,6 @@ class Views extends React.Component {
 	  '/getPages',
 	  {'session': JSON.stringify(session)},
 	  function(pages) {
-	      console.log("GET PAGES");
-              console.log(pages);
                 this.newPages=true;
               this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
 	  }.bind(this)

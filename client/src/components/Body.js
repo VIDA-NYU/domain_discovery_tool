@@ -9,6 +9,7 @@ import Filters from './Filters';
 import Views from './Views';
 import SidebarMenu from './SidebarMenu';
 import '../css/Components.css';
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import Sidebar from 'react-sidebar';
 import Avatar from 'material-ui/Avatar';
 import Assignment from 'material-ui/svg-icons/action/assignment-returned';
@@ -60,7 +61,7 @@ class Body extends Component{
         iconDomainInfo:null,
         stateDomainInfoCard:false,
         stateSearchCard:false,
-        stateFiltersCard:true,
+        stateFiltersCard:false,
         sizeAvatar:25,
         currentDomain:'',
         sessionBody:{},
@@ -89,6 +90,8 @@ class Body extends Component{
     session['pageRetrievalCriteria'] = "Most Recent";
     session['selected_morelike'] = "";
     session['selected_queries']="";
+    session['selected_tlds']="";
+    session['selected_aterms']="";            
     session['selected_tags']="";
     session['selected_model_tags']="";
     session['model'] = {};
@@ -213,7 +216,7 @@ class Body extends Component{
   applyFilterByQuery(term){
     console.log("applyFilterByQuery----------------");
     var session =this.state.sessionBody;
-    session['newPageRetrievelCriteria'] = "one";
+    session['newPageRetrievalCriteria'] = "one";
     session['pageRetrievalCriteria'] = "Queries";
     session['selected_queries']=term;
     this.updateSession(session);

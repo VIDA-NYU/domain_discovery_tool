@@ -4,6 +4,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 //import {deepPurpleA400, orange300, blue400, indigoA400, blue900} from 'material-ui/styles/colors';
 import Checkbox from 'material-ui/Checkbox';
+import CheckboxTree from 'react-checkbox-tree';
 import $ from 'jquery';
 
 import CircularProgress from 'material-ui/CircularProgress';
@@ -13,7 +14,7 @@ const styles = {
     fontSize: 12,
     paddingTop: 16,
     marginBottom: 12,
-    height: '120px',
+      height: '120px'
   },
   slide: {
     height: '100px',
@@ -28,7 +29,7 @@ class CircularProgressSimple extends React.Component{
 
     return(
     <div style={{borderColor:"green", marginLeft:"50%"}}>
-      <CircularProgress size={60} thickness={7} />
+      <CircularProgress size={30} thickness={7} />
     </div>
   );}
 }
@@ -38,12 +39,18 @@ class LoadQueries extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      currentQueries:undefined,
-      queriesCheckBox:[],
-      //checkedQueries:[],
-      queryString:"",
-      session: {},
-      flat:false,
+	currentQueries:undefined,
+	checked:[],
+	expanded:[],
+	session: {},
+	flat:false,
+	queryNodes:[
+	    {
+		value: 'query',
+		label: 'Queries',
+		children: [],
+	    }
+	]
     };
   }
 
@@ -51,8 +58,12 @@ class LoadQueries extends React.Component {
     $.post(
       '/getAvailableQueries',
       {'session': JSON.stringify(this.props.session)},
-      function(queriesDomain) {
-        this.setState({currentQueries: queriesDomain, session:this.props.session, queryString: JSON.stringify(this.props.session['selected_queries'])});
+	function(queriesDomain) {
+	    var selected_queries = []; 
+	    if(this.props.session['selected_queries'] != undefined && this.props.session['selected_queries'] !== ""){
+		selected_queries = this.props.session['selected_queries'].split(",");
+	    }
+            this.setState({currentQueries: queriesDomain, session:this.props.session, checked:selected_queries});
       }.bind(this)
     );
   }
@@ -60,58 +71,313 @@ class LoadQueries extends React.Component {
   componentWillMount(){
     this.getAvailableQueries();
   }
+    
   componentWillReceiveProps(nextProps){
-    if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString ) {
-      this.setState({ flat:true});
-      if(this.props.update){
-        this.getAvailableQueries();
-      }
-      return;
+    if(JSON.stringify(nextProps.session["selected_queries"]) === JSON.stringify(this.state.checked)){
+	if(this.props.update){
+            this.getAvailableQueries();
+	}
+	return;
     }
+    var selected_queries = []; 
+    if(nextProps.session['selected_queries'] != undefined && nextProps.session['selected_queries'] !== "")
+	selected_queries = this.props.session['selected_queries'].split(",");
+      
     // Calculate new state
     this.setState({
-      session:nextProps.session, queryString: JSON.stringify(nextProps.session['selected_queries']), flat:true
+	session:nextProps.session, checked:selected_queries
     });
-
   }
+
   shouldComponentUpdate(nextProps, nextState){
-    if(JSON.stringify(nextProps.session['selected_queries']) === this.state.queryString && this.state.flat===true) {
+      if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+	 JSON.stringify(nextState.currentQueries) === JSON.stringify(this.state.currentQueries) &&
+	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
       if(this.props.update){ return true;}
       else {return false;}
     }
     return true;
   }
 
-  addQuery(query){
-    var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-    if(queries.includes(query)){
-      this.props.removeQueryTag(0, query);
-    }
-    else{
-      this.props.addQuery(query);
-    }
-    //var queries = this.state.checkedQueries;
-    //queries.push(query);
-    //this.setState({checkedQueries: queries });
+  addQuery(object){
+      var checked = object["checked"];
+      this.setState({checked: checked });	
+      this.props.addQuery(checked);
+  }
+    
+    render(){
+	if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
+	  var nodes = this.state.queryNodes;
+	  var nodesTemp = [];
+	  nodes.map((node,index)=>{
+	     if(node.value === "query"){
+		 node.children = [];
+		 Object.keys(this.state.currentQueries).map((query, index)=>{
+		     var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+		     node.children.push({value:query, label:labelQuery});
+		 });
+	     }
+	      nodesTemp.push(node);
+	  });
+	  
+	  return(
+	      <div >
+	      <CheckboxTree
+              nodes={nodesTemp}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={checked => this.addQuery({checked})}
+              onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
+	      />
+	      </div>
+	  );
+      }
+      return(
+	      <div />
+      );
+  }
+}
+
+class LoadTLDs extends React.Component {
+  constructor(props){
+      super(props);
+      this.state={
+	  currentTLDs:undefined,
+	  checked:[],
+	  expanded:[],
+	  session: {},
+	  tldNodes:[{
+	      value: 'tld',
+	      label: 'Domains',
+	      children: []
+	  }
+          ]
+      };
   }
 
-  render(){
-    if(this.state.currentQueries!==undefined){
-      return(
-        <div>
-        {Object.keys(this.state.currentQueries).map((query, index)=>{
-          var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
-          var checkedQuery=false;
-          var queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-          if(queries.includes(query))
-            checkedQuery=true;
-          return <Checkbox label={labelQuery} checked={checkedQuery} style={styles.checkbox}  onClick={this.addQuery.bind(this,query)}/>
-        })}
-        </div>
+  getAvailableTLDs(){
+      $.post(
+	  '/getAvailableTLDs',
+	  {'session': JSON.stringify(this.props.session)},
+	  function(tlds) {
+	      var selected_tlds = []; 
+	      if(this.props.session['selected_tlds'] != undefined && this.props.session['selected_tlds'] !== ""){
+		  selected_tlds = this.props.session['selected_tlds'].split(",");
+	      }
+	      
+              this.setState({currentTLDs: tlds, session:this.props.session, checked:selected_tlds});
+	  }.bind(this)
       );
+  }
+    
+  componentWillMount(){
+    this.getAvailableTLDs();
+  }
+  componentWillReceiveProps(nextProps){
+    if(JSON.stringify(nextProps.session['selected_tlds']) === JSON.stringify(this.state.checked)) {
+	if(this.props.update){
+            this.getAvailableTLDs();
+	}
+	return;
+    }
+
+    var selected_tlds = []; 
+    if(nextProps.session['selected_tlds'] != undefined && nextProps.session['selected_tlds'] !== "")
+	selected_tlds = this.props.session['selected_tlds'].split(",");
+      
+    // Calculate new state
+    this.setState({
+      session:nextProps.session, checked:selected_tlds
+    });
+
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+       JSON.stringify(nextState.currentTLDs) === JSON.stringify(this.state.currentTLDs) &&
+       JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+	if(this.props.update){ return true;}
+      else {return false;}
+    }
+      return true;
+  }
+
+  addTLD(object){
+      var checked = object["checked"];
+      this.setState({checked: checked });
+      this.props.addTLD(checked);
+  }
+
+ render(){
+     if(this.state.currentTLDs!==undefined && Object.keys(this.state.currentTLDs).length > 0){
+	 var nodes = this.state.tldNodes;
+	 var nodesTemp = [];
+	 nodes.map((node,index)=>{
+	     if(node.value === "tld"){
+		 node.children = [];
+		 Object.keys(this.state.currentTLDs).map((tld, index)=>{
+		     var labelTLD=  tld +" " +"(" +this.state.currentTLDs[tld]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+		     node.children.push({value:tld, label:labelTLD});
+		 });
+	     }
+	     nodesTemp.push(node);
+	 });
+	  	    
+	 return(
+	      <div>
+	      <CheckboxTree
+              nodes={nodesTemp}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={checked => this.addTLD({checked})}
+              onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
+	      />
+	      </div>
+	  );
     }
     return(
-      <CircularProgressSimple />
+      <div />
+    );
+  }
+}
+
+class LoadAnnotatedTerms extends React.Component {
+  constructor(props){
+      super(props);
+      this.state={
+	  currentATerms:undefined,
+	  checked:[],
+	  expanded:[],
+	  session: {},
+	  atermNodes:[
+	      {
+		  value: 'aterm',
+		  label: 'Annotated Terms',
+		  children: [],
+	      }
+	  ]
+      };
+  }
+
+  getAnnotatedTerms(){
+    $.post(
+      '/getAnnotatedTerms',
+      {'session': JSON.stringify(this.props.session)},
+	function(terms) {
+	    var selected_aterms = []; 
+	    if(this.props.session['selected_aterms'] != undefined && this.props.session['selected_aterms'] !== ""){
+		selected_aterms = this.props.session['selected_aterms'].split(",");
+	    }
+
+            this.setState({currentATerms: terms, session:this.props.session, checked:selected_aterms});
+      }.bind(this)
+    );
+  }
+    
+  componentWillMount(){
+    this.getAnnotatedTerms();
+  }
+  componentWillReceiveProps(nextProps){
+    if(JSON.stringify(nextProps.session['selected_aterms']) === JSON.stringify(this.state.checked) ) {
+	if(this.props.update){
+            this.getAnnotatedTerms();
+	}
+	return;
+    }
+    var selected_aterms = []; 
+    if(nextProps.session['selected_aterms'] != undefined && nextProps.session['selected_aterms'] !== "")
+	selected_aterms = this.props.session['selected_aterms'].split(",");
+  
+    // Calculate new state
+    this.setState({
+	session:nextProps.session, checked:selected_aterms
+    });
+
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+       JSON.stringify(nextState.currentATerms) === JSON.stringify(this.state.currentATerms) &&
+       JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+	if(this.props.update){ return true;}
+	else {return false;}
+    }
+      return true;
+  }
+
+  addATerm(object){
+    var checked = object["checked"];
+    this.setState({checked: checked });	
+    this.props.addATerm(checked);
+  }
+
+    render(){
+      if(this.state.currentATerms!==undefined && Object.keys(this.state.currentATerms).length > 0){
+	// Sorting the terms by Postive or Negative so that all Positive are consecutive
+	// and all Negative are consecutive
+	// Create items array from the currentATerms term and tag dict
+	var items = Object.keys(this.state.currentATerms).map((key)=>{
+	    return [key, this.state.currentATerms[key]['tag']];
+	});
+	
+	// Sort the array based on the tag element
+	items.sort(function(first, second) {
+	    // Since tags can be "Positive", "Negative","Positive;Custom" or "Negative;Custom"
+	    var tag1 = "Positive";
+	    var tag2 = "Positive";
+	    if(first[1].indexOf("Positive") < 0)
+		tag1="Negative";
+	    if(second[1].indexOf("Positive") < 0)
+		tag2="Negative";
+	    
+	    //Sort by Positive first and then Negative
+	    if (tag1===tag2)
+		return 0;
+	    if (tag1<tag2)
+		return 1;
+	    return -1;
+	});
+
+	var nodes = this.state.atermNodes;
+	var nodesTemp = [];
+	nodes.map((node,index)=>{
+	    if(node.value === "aterm"){
+		node.children = [];
+		var positive = [];
+		var negative = [];
+		items.map((item, index)=>{
+		    var term = item[0];
+		    var tag = item[1];
+		    if(tag === "Positive")
+			positive.push({value:term, label:term});
+		    else if(tag === "Negative")
+			negative.push({value:term, label:term});
+		});
+		if(positive.length > 0)
+		    node.children.push({value:"positive", label:"Positive", children:positive});
+
+		if(negative.length > 0)
+		    node.children.push({value:"negative", label:"Negative", children:negative});
+
+	    }
+	    nodesTemp.push(node);
+	});
+
+	return(
+	      <div >
+	      <CheckboxTree
+              nodes={nodesTemp}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={checked => this.addATerm({checked})}
+              onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
+	      />
+	      </div>
+	);
+    }
+    return(
+       <div />
     );
   }
 
@@ -119,83 +385,105 @@ class LoadQueries extends React.Component {
 
 class LoadTag extends React.Component {
   constructor(props){
-    super(props);
-    this.state={
-      currentTags:undefined,
-      tagsCheckBox:[],
-      tagString:"",
-      session: {},
-      flat:false,
+     super(props);
+      this.state={
+	  currentTags: undefined,
+	  checked:[],
+	  expanded:[],
+	  session: {},
+	  tagNodes:[{
+	      value: 'tag',
+	      label: 'Tags',
+	      children: [],
+	  }]
     };
   }
 
   getAvailableTags(){
-    $.post(
-      '/getAvailableTags',
-      {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
-      function(tagsDomain) {
-        this.setState({currentTags: tagsDomain['tags'], session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
-      }.bind(this)
-    );
+      $.post(
+	  '/getAvailableTags',
+	  {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+	  function(tagsDomain) {
+	      var selected_tags = []; 
+	      if(this.props.session['selected_tags'] != undefined && this.props.session['selected_tags'] !== ""){
+		  selected_tags = this.props.session['selected_tags'].split(",");
+	      }
+	      
+              this.setState({currentTags: tagsDomain['tags'], session:this.props.session, checked:selected_tags});
+	  }.bind(this)
+      );
   }
-
-
+    
   componentWillMount(){
-    this.getAvailableTags();
+      this.getAvailableTags();
   }
 
   componentWillReceiveProps(nextProps){
-    if(JSON.stringify(nextProps.session['selected_tags']) === this.state.tagString ) {
-      this.setState({ flat:true});
-      if(this.props.update){
-        this.getAvailableTags();
-      }
-      return;
+    if(JSON.stringify(nextProps.session['selected_tags']) === JSON.stringify(this.state.checked) ) {
+	if(this.props.update){
+            this.getAvailableTags();
+	}
+	return;
     }
-    // Calculate new state
+      
+    var selected_tags = []; 
+    if(nextProps.session['selected_tags'] != undefined && nextProps.session['selected_tags'] !== "")
+	selected_tags = this.props.session['selected_tags'].split(",");
+
     this.setState({
-      session:nextProps.session, tagString: JSON.stringify(nextProps.session['selected_tags']), flat:true
+	session:nextProps.session, checked:selected_tags
     });
 
   }
 
-  shouldComponentUpdate(nextProps){
-
-    /*if(JSON.stringify(nextProps.session['selected_tags']) === this.state.tagString && this.state.flat===true ) {
-      return false;
-    }*/
-    return true;
+  shouldComponentUpdate(nextProps, nextState){
+    if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+       JSON.stringify(nextState.currentTags) === JSON.stringify(this.state.currentTags) &&
+       JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+	if(this.props.update){return true;}
+	else {return false;}
+    }
+      return true;
   }
 
-  addTags(tag){
-
-    var tags = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
-    if(tags.includes(tag)){
-      this.props.removeQueryTag(1, tag);
-    }
-    else{
-      this.props.addTags(tag);
-    }
+  addTags(object){
+    var checked = object["checked"];
+    this.setState({checked: checked });	
+    this.props.addTags(checked);
   }
 
   render(){
-    if(this.state.currentTags!==undefined){
-      return(
-        <div style={styles.headline}>
-        {Object.keys(this.state.currentTags).map((tag, index)=>{
-          var labelTags=  tag+" " +"(" +this.state.currentTags[tag]+")";
-          var checkedTag=false;
-          var tags = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
-          if(tags.includes(tag))
-            checkedTag=true;
-          return <Checkbox label={labelTags} checked={checkedTag} style={styles.checkbox}  onClick={this.addTags.bind(this,tag)} />
-        })}
-        </div>
-      );
+      if(this.state.currentTags!==undefined && Object.keys(this.state.currentTags).length > 0){
+	 var nodes = this.state.tagNodes;
+	 var nodesTemp = [];
+	 nodes.map((node,index)=>{
+	     if(node.value === "tag"){
+		 node.children = [];
+		 Object.keys(this.state.currentTags).map((tag, index)=>{
+		     var labelTag=  tag +" " +"(" +this.state.currentTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+		     node.children.push({value:tag, label:labelTag});
+		 });
+	     }
+	     nodesTemp.push(node);
+	 });
+	  	    
+	 return(
+	      <div>
+	      <CheckboxTree
+              nodes={nodesTemp}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={checked => this.addTags({checked})}
+              onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
+	      />
+	      </div>
+	  );
     }
     return(
-      <CircularProgressSimple />
+      <div />
     );
+
   }
 }
 
@@ -203,9 +491,17 @@ class LoadModel extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      modelTagCheckBox:[],
-      modelTagString:undefined,
-      session: {},
+	currentModelTags:undefined,
+	checked:[],
+	expanded:[],
+	session: {},
+	modeltagNodes:[
+	    {
+		value: 'modeltag',
+		label: 'Model Tags',
+		children: []
+	    }
+	]
     };
   }
 
@@ -213,8 +509,14 @@ class LoadModel extends React.Component {
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
-      function(modelTagDomain) {
-        this.setState({currentModelTags: modelTagDomain, session:this.props.session, modelTagString: JSON.stringify(this.props.session['selected_model_tags'])});
+	function(modelTagDomain) {
+	    var selected_model_tags = []; 
+	    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== "" ){
+		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+		    selected_model_tags = this.props.session['selected_model_tags'].split(",");
+		else selected_model_tags.push(this.props.session['selected_model_tags'])
+	    }
+	    this.setState({currentModelTags: modelTagDomain, session:this.props.session, checked:selected_model_tags});
       }.bind(this)
     );
   }
@@ -224,57 +526,71 @@ class LoadModel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if(JSON.stringify(nextProps.session['selected_model_tags']) === this.state.modelTagString ) {
-      if(this.props.update){
-        this.getAvailableModelTags();
+      if(JSON.stringify(nextProps.session['selected_model_tags']) === JSON.stringify(this.state.checked) ) {
+	  if(this.props.update){
+              this.getAvailableModelTags();
+	  }
+	  return;
       }
-      return;
-    }
-    //console.log("FiltersTabs componentWillReceiveProps after");
-    // Calculate new state
-    this.setState({
-      session:nextProps.session, modelTagString: JSON.stringify(nextProps.session['selected_model_tags'])
-    });
+      var selected_model_tags = []; 
+      if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== ""){
+	  if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+	      selected_model_tags = this.props.session['selected_model_tags'].split(",");
+	  else  selected_model_tags.push(this.props.session['selected_model_tags'])
+      }
+
+      this.setState({session:nextProps.session, checked:selected_model_tags
+      });
 
   }
 
-  shouldComponentUpdate(nextProps){
-    /*if(JSON.stringify(nextProps.session['selected_model_tags']) === this.state.modelTagString && this.state.flat===true ) {
-      if(this.props.update){return true;}
-      else {return false;}
-    }*/
-    return true;
+    shouldComponentUpdate(nextProps, nextState){
+      if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+	 JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
+	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+	  if(this.props.update){return true;}
+	  else {return false;}
+      }
+      return true;
   }
 
-  addModelTags(tag){
-
-    var tags = this.state.modelTagString.substring(1,this.state.modelTagString.length-1).split(",");
-    if(tags.includes(tag)){
-      this.props.removeQueryTag(3, tag);
-    }
-    else{
-      this.props.addModelTags(tag);
-    }
+  addModelTags(object){
+    var checked = object["checked"];
+    this.setState({checked: checked });	
+    this.props.addModelTags(checked);
   }
 
   render(){
-    if(this.state.currentModelTags!==undefined){
+      if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
+	var nodes = this.state.modeltagNodes;
+	var nodesTemp = [];
+	nodes.map((node,index)=>{
+	    if(node.value === "modeltag"){
+		node.children = [];
+		Object.keys(this.state.currentModelTags).map((tag, index)=>{
+		    var labelTag=  tag+" " +"(" +this.state.currentModelTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+		    node.children.push({value:tag, label:labelTag});
+		});
+	    }
+	    nodesTemp.push(node);
+	});
+	
+	return(
+	      <div >
+	      <CheckboxTree
+              nodes={nodesTemp}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={checked => this.addModelTags({checked})}
+              onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
+	      />
+	      </div>
+	  );
+      }
       return(
-        <div style={styles.headline}>
-        {Object.keys(this.state.currentModelTags).map((tag, index)=>{
-          var labelTags=  tag+" " +"(" +this.state.currentModelTags[tag]+")";
-          var checkedTag=false;
-          var tags = this.state.modelTagString.substring(1,this.state.modelTagString.length-1).split(",");
-          if(tags.includes(tag))
-            checkedTag=true;
-          return <Checkbox label={labelTags} checked={checkedTag} style={styles.checkbox}  onClick={this.addModelTags.bind(this,tag)} />
-        })}
-        </div>
+	      <CircularProgressSimple />
       );
-    }
-    return(
-      <CircularProgressSimple />
-    );
   }
 }
 
@@ -285,14 +601,10 @@ class FiltersTabs extends React.Component {
     super(props);
     this.state = {
       slideIndex: 0,
-      currentQueries:undefined,
-      currentTags:undefined,
-      currentModels:undefined,
-      queriesCheckBox:[],
-      tagsCheckBox:[],
       sessionString:"",
-      session: {},
-      queryString:"",
+	session: {},
+      tldString:"",
+      atermString:"",		
       tagString:"",
       modelTagString:"",
       flat:false,
@@ -300,28 +612,19 @@ class FiltersTabs extends React.Component {
   }
 
   componentWillMount(){
-    this.setState({session:this.props.session, sessionString: JSON.stringify(this.props.session), queryString: JSON.stringify(this.props.session['selected_queries']), tagString: JSON.stringify(this.props.session['selected_tags']) });
+    this.setState({session:this.props.session, sessionString: JSON.stringify(this.props.session)});
 
   }
 
   componentWillReceiveProps(nextProps) {
-    //console.log("FiltersTabs componentWillReceiveProps before");
     if(JSON.stringify(nextProps.session) === this.state.sessionString) {
       this.setState({  flat: true });
         return;
     }
-    //console.log("FiltersTabs componentWillReceiveProps after");
-    // Calculate new state
     this.setState({
-        session:nextProps.session, sessionString: JSON.stringify(nextProps.session), queryString: JSON.stringify(nextProps.session['selected_queries']), tagString: JSON.stringify(nextProps.session['selected_tags']), flat: true
+        session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
     });
 
-  }
-
-  handleChange = (value) => {
-    this.setState({
-      slideIndex: value,
-    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -331,163 +634,170 @@ class FiltersTabs extends React.Component {
     return false;
   }
 
-  addQuery(labelQuery){
-    var selected_queries=[];
-    if(this.state.queryString.substring(1,this.state.queryString.length-1)!="")
-      selected_queries = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-    //var selected_queries = this.state.queriesCheckBox; //  var selected_queries = [];
-    selected_queries.push(labelQuery);
-    var newQuery = selected_queries.toString();
-    this.setState({queriesCheckBox: selected_queries});
+  addQuery(checked){
     var sessionTemp = this.props.session;
-    if(sessionTemp['selected_tags']!=="")
-      sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
-    else{
-      sessionTemp['newPageRetrievelCriteria'] = "one";
+    var newQuery = checked.toString();
+    if(newQuery !== ""){
+	if (sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""){
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {"query":newQuery};
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	    if(sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	}
+	else{
+	    sessionTemp['newPageRetrievalCriteria'] = "one";
+	    sessionTemp['pageRetrievalCriteria'] = "Queries";
+	}
+    }else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['query'];
     }
-    sessionTemp['pageRetrievalCriteria'] = "Queries";
+
     sessionTemp['selected_queries']=newQuery;
-    this.props.updateSession(sessionTemp);
-  }
-
-  addTags(labelTags){
-    var selected_tags=[];
-    if(this.state.tagString.substring(1,this.state.tagString.length-1)!="")
-      selected_tags = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
-    //var selected_tags = this.state.tagsCheckBox; //  var selected_queries = [];
-    selected_tags.push(labelTags);
-    var newTags = selected_tags.toString();
-    this.setState({tagsCheckBox: selected_tags});
-    var sessionTemp = this.props.session;
-    if(sessionTemp['selected_queries']!=="")
-      sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
-    else{
-      sessionTemp['newPageRetrievelCriteria'] = "one";
-    }
-    sessionTemp['pageRetrievalCriteria'] = "Tags";
-    sessionTemp['selected_tags']=newTags;
-    this.props.updateSession(sessionTemp);
-  }
-
-  addModelTags(labelModelTags){
-    var selected_modeltags=[];
-    if(this.state.modelTagString.substring(1,this.state.modelTagString.length-1)!="")
-      selected_modeltags = this.state.modelTagString.substring(1,this.state.modelTagString.length-1).split(",");
-    //var selected_tags = this.state.tagsCheckBox; //  var selected_queries = [];
-    selected_modeltags.push(labelModelTags);
-    var newTags = selected_modeltags.toString();
-    this.setState({tagsCheckBox: selected_modeltags});
-    var sessionTemp = this.props.session;
-    sessionTemp['newPageRetrievelCriteria'] = "one";
-    sessionTemp['pageRetrievalCriteria'] = "Model Tags";
-    sessionTemp['selected_model_tags']=newTags;
-    this.props.updateSession(sessionTemp);
-  }
-
-  removeString(currentType, item){
-    var currentString = "";
-    var array=[]; // it could be a query or tag array.
-    switch (currentType) {
-      case 0: //query
-          array = this.state.queryString.substring(1,this.state.queryString.length-1).split(",");
-          break;
-      case 1://tags
-          array = this.state.tagString.substring(1,this.state.tagString.length-1).split(",");
-          break;
-    }
-    for(var index in array){ /* loop over all array items */
-      if(array[index] !== item){
-        currentString = currentString + array[index] + ",";
-      }
-    }
-    if(currentString != "") return currentString.substring(0, currentString.length-1);
-    return currentString;
-  }
-
-  removeQueryTag(currentType, item){
-    const sessionTemp =  this.state.session;
-    switch (currentType) {
-      case 0: //query
-          sessionTemp['selected_queries']= this.removeString(0, item);
-          if(sessionTemp['selected_queries'] === "") {
-            sessionTemp['newPageRetrievelCriteria'] = "one";
-            sessionTemp['pageRetrievalCriteria'] = "Tags";
-          }
-          break;
-      case 1://tags
-          sessionTemp['selected_tags']= this.removeString(1, item);
-          if(sessionTemp['selected_tags'] === "") {
-            sessionTemp['newPageRetrievelCriteria'] = "one";
-            sessionTemp['pageRetrievalCriteria'] = "Queries";
-          }
-          break;
-      case 3://tags
-          sessionTemp['selected_model_tags']= this.removeString(3, item);
-          if(sessionTemp['selected_model_tags'] === "") {
-            if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
-                sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
-            else if (sessionTemp['selected_queries'] !== "") {
-              sessionTemp['newPageRetrievelCriteria'] = "one";
-              sessionTemp['pageRetrievalCriteria'] = "Queries";
-            }
-            else {
-              sessionTemp['newPageRetrievelCriteria'] = "one";
-              sessionTemp['pageRetrievalCriteria'] = "Tags";
-            }
-          }
-          break;
-    }
-
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
        sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
-    this.props.deletedFilter(sessionTemp);
-  }
-/*
-  createCheckbox(k, index){
-    var labelQuery=  k+" " +"(" +index+")";
-    return <Checkbox
-    label={labelQuery}
-    style={styles.checkbox}
-    onClick={this.addQuery.bind(this,k )} />;
-
-    return <Checkbox
-              label={label}
-              handleCheckboxChange={this.toggleCheckbox}
-              key={label} />;
+    this.props.updateSession(sessionTemp);
   }
 
-  createImages(currentQueries) {
-     return Object.keys(currentQueries).map(this.createImage);
-   },
-*/
+  addTLD(checked){
+    var sessionTemp = this.props.session;
+    var newTLDs = checked.toString();
+
+    if(newTLDs !== ""){
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_model_tags']!==""){
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {'domain':newTLDs};
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	}
+	else{
+	    sessionTemp['newPageRetrievalCriteria'] = "one";
+	    sessionTemp['pageRetrievalCriteria'] = "TLDs";
+	}
+    } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['domain'];
+    }
+
+    sessionTemp['selected_tlds']=newTLDs;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
+
+    this.props.updateSession(sessionTemp);
+  }
+
+  addATerm(checked){
+    var sessionTemp = this.props.session;
+    var newTerms = checked.toString();
+    var labelTerm = "";
+    checked.map((term, index)=>{
+	labelTerm = labelTerm + term + " OR ";
+    });
+    if(labelTerm !== "")
+	labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
+
+    if(newTerms === ""){
+	sessionTemp['filter'] = null;
+    }
+    else {
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""){
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['filter'] = labelTerm;
+	    sessionTemp['pageRetrievalCriteria'] = {};
+	    if (sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	} else sessionTemp['filter']=labelTerm;
+    }
+    sessionTemp['selected_aterms']=newTerms;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
+    this.props.updateSession(sessionTemp);
+  }
+    
+  addTags(checked){
+    var sessionTemp = this.props.session;	
+    var newTags = checked.toString();
+    if(newTags !== ""){
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] != ""){	  
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	    if(sessionTemp['selected_model_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	}
+      else{
+	  sessionTemp['newPageRetrievalCriteria'] = "one";
+	  sessionTemp['pageRetrievalCriteria'] = "Tags";
+      }
+    } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['tag'];
+    }
+    sessionTemp['selected_tags']=newTags;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
+    this.props.updateSession(sessionTemp);
+  }
+
+  addModelTags(checked){
+    var sessionTemp = this.props.session;	
+    var newTags = checked.toString();
+    if(newTags !== ""){
+	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== ""){	  	  
+	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	    sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
+	    if(sessionTemp['selected_queries']!=="")
+		sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+	    if(sessionTemp['selected_tlds']!=="")
+		sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+	    if(sessionTemp['selected_tags']!=="")
+		sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+	} else{
+	  sessionTemp['newPageRetrievalCriteria'] = "one";
+	  sessionTemp['pageRetrievalCriteria'] = "Model Tags";
+	}
+    } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	delete sessionTemp['pageRetrievalCriteria']['model_tags'];
+    }
+
+    sessionTemp['selected_model_tags']=newTags;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
+    this.props.updateSession(sessionTemp);
+  }
+
 
   render() {
-    console.log("--------FiltersTabs---------");
-    return (
-      <div>
-        <Tabs
-          onChange={this.handleChange}
-          value={this.state.slideIndex}
-          inkBarStyle={{background:'#7940A0' ,height: '4px'}}
-          tabItemContainerStyle={{background: '#9A7BB0' ,height: '40px'}}
-        >
-          <Tab label="Queries" value={0} style={styles.tab} />
-          <Tab label="Tags" value={1} style={styles.tab} />
-          <Tab label="Model" value={2} style={styles.tab} />
-        </Tabs>
-        <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
-          <div style={styles.headline}>
-            <LoadQueries update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}  />
-          </div>
-          <div style={styles.headline}>
-            <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)} removeQueryTag={this.removeQueryTag.bind(this)}/>
-          </div>
-          <div style={styles.headline}>
-            <LoadModel update={this.props.update}  session={this.state.session} addModelTags={this.addModelTags.bind(this)}/>
-          </div>
-        </SwipeableViews>
-      </div>
+      console.log("--------FiltersTabs---------");
+      return (
+	    <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
+            <div style={styles.headline}>
+            <LoadQueries update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
+	    <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)}  />
+	    <LoadAnnotatedTerms update={this.props.update} session={this.state.session} addATerm={this.addATerm.bind(this)}  />  	      
+	    <LoadTLDs update={this.props.update} session={this.state.session} addTLD={this.addTLD.bind(this)}  />
+	    <LoadModel update={this.props.update} session={this.state.session} addModelTags={this.addModelTags.bind(this)} />	      
+            </div>
+	    </SwipeableViews>
     );
   }
 }
