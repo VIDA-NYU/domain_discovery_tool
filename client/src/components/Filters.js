@@ -25,6 +25,7 @@ const styles = {
     background: '#DCCCE7',
     padding:'0px 4px 2px 4px',
     borderRadius: '0px 0px 0px 0px',
+    height: "350px",
   },
 
 };
@@ -124,7 +125,6 @@ class Filters extends Component{
 */
 
   render(){
-    //console.log("Filters");
     return(
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
            <CardHeader

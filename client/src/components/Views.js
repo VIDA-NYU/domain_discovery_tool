@@ -19,6 +19,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
+import Dicon from '../images/dicon.png';
 
 import Searchicon from '../images/searchicon.png';
 
@@ -33,12 +34,15 @@ import {fullWhite} from 'material-ui/styles/colors';
 import FontIcon from 'material-ui/FontIcon';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+import IconButton from 'material-ui/IconButton';
+import ActionHome from 'material-ui/svg-icons/action/home';
+import ReactPaginate from 'react-paginate';
 
 const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
 
-import { ButtonGroup, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import { ButtonGroup, Button, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap';
 
 
 import $ from 'jquery';
@@ -94,11 +98,13 @@ class ChipViewTab extends React.Component{
         return;
     }
     // Calculate new state
-    var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
+    var session = nextProps.session; 
     console.log("CHIP");
     console.log(session);
-    var queriesList =[], tagsList =[], modelTagsList =[];
+    var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
+    tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
+    atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;            
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
 
@@ -106,13 +112,17 @@ class ChipViewTab extends React.Component{
     for(var i=0; i<queriesList.length && queriesList.length>0; i++){
       newChip.push({key: i, type: 0, label: queriesList[i], avatar: Qicon});
     }
-    for(var i=(queriesList.length), j=0; i<(tagsList.length+queriesList.length) && tagsList.length>0 ; i++, j++){
+    for(var i=(queriesList.length), j=0; i<(queriesList.length+tagsList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    for(var i=(tagsList.length+queriesList.length), j=0; i<(tagsList.length+queriesList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
-      newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
+    for(var i=(queriesList.length+tagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 4, label: tldsList[j], avatar:Dicon});
     }
-    if(session['filter']){newChip.push({key: (queriesList.length + tagsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
+    for(var i=(queriesList.length+tagsList.length+tldsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length) && atermsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 5, label: atermsList[j], avatar:Ticon});
+    }
+    for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
     }
 
     this.setState({
@@ -132,44 +142,64 @@ class ChipViewTab extends React.Component{
   }
 
 
-  handleRequestDelete = (key) => {
+    handleRequestDelete = (key) => {
         const sessionTemp =  this.state.session;
         const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
         switch (this.state.chipData[chipToDelete].type) {
           case 0: //query
-              sessionTemp['selected_queries']= this.removeString(0, key);
-              if(sessionTemp['selected_queries'] === "") {
-                sessionTemp['newPageRetrievelCriteria'] = "one";
-                sessionTemp['pageRetrievalCriteria'] = "Tags";
+            sessionTemp['selected_queries']= this.removeString(0, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_queries'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['query'];
+		 } else sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
               }
               break;
           case 1://tags
-              sessionTemp['selected_tags']= this.removeString(1, key);
-              if(sessionTemp['selected_tags'] === "") {
-                sessionTemp['newPageRetrievelCriteria'] = "one";
-                sessionTemp['pageRetrievalCriteria'] = "Queries";
+            sessionTemp['selected_tags']= this.removeString(1, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_tags'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['tag'];
+		} else sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
               }
               break;
           case 2://filter
               sessionTemp['filter']= null;
               break;
-          case 3://tags
-                  sessionTemp['selected_model_tags']= this.removeString(3, key);
-                  if(sessionTemp['selected_model_tags'] === "") {
-                    if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
-                        sessionTemp['newPageRetrievelCriteria'] = "Queries,Tags,";
-                    else if (sessionTemp['selected_queries'] !== "") {
-                      sessionTemp['newPageRetrievelCriteria'] = "one";
-                      sessionTemp['pageRetrievalCriteria'] = "Queries";
-                    }
-                    else {
-                      sessionTemp['newPageRetrievelCriteria'] = "one";
-                      sessionTemp['pageRetrievalCriteria'] = "Tags";
-                    }
-                  }
-                  break;
+          case 3://model tags
+            sessionTemp['selected_model_tags']= this.removeString(3, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_model_tags'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['model_tags'];
+		} else sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+	    }
+            break;
+          case 4: //tlds
+            sessionTemp['selected_tlds']= this.removeString(4, key);
+	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+		if(sessionTemp['selected_tlds'] === "") {
+		    delete sessionTemp['pageRetrievalCriteria']['domain'];
+		} else sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+            }
+            break;
+        case 5: //Annotated Terms
+            sessionTemp['selected_aterms']= this.removeString(5, key);
+	    if(sessionTemp['selected_aterms'] === "")
+		sessionTemp['filter'] = null;
+	    else {
+		var checked = sessionTemp['selected_aterms'].split(",");
+		var labelTerm = "";
+		checked.map((term, index)=>{
+		    labelTerm = labelTerm + term + " OR ";
+		});
+		if(labelTerm != "")
+		    labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
+
+		sessionTemp['filter'] = labelTerm;
+	    }
+            break;
+	    
         }
-        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" ){
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
            sessionTemp['pageRetrievalCriteria'] = "Most Recent";
         }
 
@@ -216,20 +246,24 @@ class ViewTabSnippets extends React.Component{
       sessionString:"",
       session:{},
       accuracyOnlineLearning:0,
+      offset:0,
+      currentPagination:0,
     };
+    this.perPage=12;
   }
 
   componentWillMount(){
     this.setState({
-        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0,
     });
     this.updateOnlineClassifier(this.props.session);
   }
 
   componentWillReceiveProps(nextProps, nextState){
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
+      $("div").scrollTop(0);
       this.setState({
-      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages
+      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, currentPagination:0, offset:0,
       });
     }
     return;
@@ -237,8 +271,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if ( nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) { //&&
-          console.log("should viw in if");
+    if ( nextState.currentPagination!= this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
          return true;
     }
     return false;
@@ -249,7 +282,6 @@ class ViewTabSnippets extends React.Component{
     	'/updateOnlineClassifier',
     	{'session':  JSON.stringify(sessionTemp)},
     	function(accuracy) {
-
         //Updates the showed accuracy on the interface only if the different between the new and the previous accuracy is enough significant.
         if(accuracy >=this.state.accuracyOnlineLearning+2 || accuracy <=this.state.accuracyOnlineLearning-2){
           //updateing filters modelTags
@@ -261,6 +293,13 @@ class ViewTabSnippets extends React.Component{
 
     	}.bind(this)
     );
+  }
+
+  handlePageClick(data){
+      $("div").scrollTop(0);
+    let selected = data.selected; //current page (number)
+    let offset = Math.ceil(selected * this.perPage);
+    this.setState({offset: offset, currentPagination:data.selected});
   }
 
   removeAddTags(urls, current_tag, applyTagFlag ){
@@ -276,60 +315,57 @@ class ViewTabSnippets extends React.Component{
     );
   }
 
-
-  //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
-  onTagActionClicked(ev){
-    var idButton = (ev.target.id).split("-")
-    var tag = idButton[0];
-    var url = ev.target.value;
-    var urls=[];
-    var action = 'Apply';
-    var isTagPresent = false;
-    var nameIdButton = '#'+ev.target.id
-    var color = ($(nameIdButton).css("background-color")).toString();
-    var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-      if(updatedPages[url]["tags"]){
-         isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
-          return itemTag == tag;});
-          if(isTagPresent) action = 'Remove';
-      }
-      // Apply or remove tag from urls.
-      var applyTagFlag = action == 'Apply';
-      var urls = [];
-      urls.push(url);
-      if (applyTagFlag && !isTagPresent) {
-        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
-        var auxKey = "0";
-        if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
-            var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
-                        var itemTag = updatedPages[url]["tags"][key].toString();
-                        if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
-                          delete updatedPages[url]["tags"][key];
-                          this.removeAddTags(urls, itemTag, false );
-                        }
-                      });
-            delete updatedPages[url]["tags"];
+    //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
+    onTagActionClicked(inputURL, inputTag){
+      var idButton = (inputTag).split("-"); // (ev.target.id).split("-")
+      var tag = idButton[0];
+      var url = inputURL; // ev.target.value;
+      var urls=[];
+      var action = 'Apply';
+      var isTagPresent = false;
+      var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
+        if(updatedPages[url]["tags"]){
+           isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+            return itemTag == tag;});
+            if(isTagPresent) action = 'Remove';
         }
-        updatedPages[url]["tags"]=[];
-        updatedPages[url]["tags"][auxKey] = tag;
-        //checking if the new tag belong to the filter
-        if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+        // Apply or remove tag from urls.
+        var applyTagFlag = action == 'Apply';
+        var urls = [];
+        urls.push(url);
+        if (applyTagFlag && !isTagPresent) {
+          // Removes tag when the tag is present for item, and applies only when tag is not present for item.
+          var auxKey = "0";
+          if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
+              var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                          var itemTag = updatedPages[url]["tags"][key].toString();
+                          if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
+                            delete updatedPages[url]["tags"][key];
+                            this.removeAddTags(urls, itemTag, false );
+                          }
+                        });
+              delete updatedPages[url]["tags"];
+          }
+          updatedPages[url]["tags"]=[];
+          updatedPages[url]["tags"][auxKey] = tag;
+          //checking if the new tag belong to the filter
+          if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+            this.setState({ pages:updatedPages, });
+            delete updatedPages[url];
+          }
+          //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
           this.setState({ pages:updatedPages, });
-          delete updatedPages[url];
+          this.removeAddTags(urls, tag, applyTagFlag );
+
         }
-        //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
-        this.setState({ pages:updatedPages, });
-        this.removeAddTags(urls, tag, applyTagFlag );
+        else{
+          delete updatedPages[url]["tags"];
+          this.setState({ pages:updatedPages,});
+          this.removeAddTags(urls, tag, applyTagFlag );
+        }
+
 
       }
-      else{
-        delete updatedPages[url]["tags"];
-        this.setState({ pages:updatedPages,});
-        this.removeAddTags(urls, tag, applyTagFlag );
-      }
-
-
-    }
 
   keyboardFocus = (event, item) => {
     console.log(event);
@@ -341,8 +377,14 @@ class ViewTabSnippets extends React.Component{
   render(){
     console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
+    console.log("pages");
+    console.log(Object.keys(this.state.pages).length);
     var id=0;
+    var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
+    var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
+
+            if(index>this.state.offset && index<(this.state.offset+this.perPage)){
                     let colorTagRelev = "";
                     let colorTagIrrelev="";
                     let colorTagNeutral="";
@@ -358,48 +400,76 @@ class ViewTabSnippets extends React.Component{
                     }
 
                     id= id+1;
+                    let urlLink= (k.length<110)?k:k.substring(0,109);
+                    let imageUrl=(this.state.pages[k]["image_url"]=="")? "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png":this.state.pages[k]["image_url"];
+
                     //style={{height:"200px"}} disableKeyboardFocus= {false} isKeyboardFocused={true} onKeyboardFocus={this.keyboardFocus.bind(this)}
                     return <ListItem key={index}  >
-                    <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px',}}>
+                    <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
                       <div>
-                        <p style={{float:'left'}}><img src={this.state.pages[k]["image_url"]} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+                        <p style={{float:'left'}}><img src={imageUrl} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
                         <p style={{float:'right'}}>
                         <ButtonGroup bsSize="small">
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                            <Button id={"Relevant-"+id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagRelev}} >Relev</Button>
+                            <Button >
+                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                            </Button>
                           </OverlayTrigger>
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                            <Button id={"Irrelevant-" +id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagIrrelev}} >Irrel</Button>
+                            <Button>
+                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                            </Button>
                           </OverlayTrigger>
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                            <Button id={"Neutral-"+ id} value={k} onClick={this.onTagActionClicked.bind(this)} style={{backgroundColor:colorTagNeutral}} >Neutr</Button>
+                            <Button >
+                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                            </Button>
                           </OverlayTrigger>
                         </ButtonGroup></p>
-                        <p><a target="_blank" href={k} style={{ color:'blue'}} >{this.state.pages[k]["title"]}</a> <br/><a target="_blank" href={k} style={{fontSize:'11px'}}>{k}</a></p>
+                        <p>
+                        <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{this.state.pages[k]["title"]}</a>
+                        <br/>
+                        <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
+                        <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
+                        </p>
                       </div>
                       <br/>
-                      <div style={{marginTop:'-3px'}}> <p style={{ marginTop:'-3px'}}>{this.state.pages[k]["snippet"]}</p> </div>
                       <Divider />
                     </div>
                   </ListItem>;
-
-                    });
+            }
+    });
 
 
     return (
-      <div>
-      <p style={{color: "#FFFFFF",}}>-</p>
-      <div style={{marginBottom:"50px"}}>
-        <p style={{float:"left", color: "#757575", fontSize: "14px", fontWeight: "500", paddingLeft: "72px",}}>{urlsList.length} pages </p>
-        <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
-      </div>
-      <div style={{marginTop:"50px"}}>
-        <List>
-        {urlsList}
-        <Divider inset={true} />
-        </List>
-      </div>
-    </div>
+      <div  style={{maxWidth:1000}}>
+        <p style={{color: "#FFFFFF",}}>-</p>
+        <div style={{marginBottom:"50px"}}>
+          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {urlsList.length} results. </p>
+          <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
+        </div>
+        <div style={{marginTop:"50px"}} >
+          <List>
+          {urlsList}
+          <Divider inset={true} />
+          </List>
+          <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
+            <ReactPaginate previousLabel={"previous"}
+                           nextLabel={"next"}
+                           initialPage={0}
+                           forcePage={this.state.currentPagination}
+                           breakLabel={<a >...</a>}
+                           breakClassName={"break-me"}
+                           pageCount={currentPageCount}
+                           marginPagesDisplayed={3}
+                           pageRangeDisplayed={8}
+                           onPageChange={this.handlePageClick.bind(this)}
+                           containerClassName={"pagination"}
+                           subContainerClassName={"pages pagination"}
+                           activeClassName={"active"} />
+          </div>
+        </div>
+     </div>
   );
   }
 }
@@ -434,8 +504,6 @@ class Views extends React.Component {
 	  '/getPages',
 	  {'session': JSON.stringify(session)},
 	  function(pages) {
-	      console.log("GET PAGES");
-              console.log(pages);
                 this.newPages=true;
               this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
 	  }.bind(this)
@@ -468,7 +536,6 @@ class Views extends React.Component {
 	}*/
 	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
     console.log("View---------------");
-    console.log(nextProps.session);
     this.newPages = false;
     this.loadPages(nextProps.session);
 	}else{
