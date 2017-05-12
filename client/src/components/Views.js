@@ -35,6 +35,7 @@ import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigati
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import IconButton from 'material-ui/IconButton';
 import ActionHome from 'material-ui/svg-icons/action/home';
+import ReactPaginate from 'react-paginate';
 
 const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
@@ -218,20 +219,24 @@ class ViewTabSnippets extends React.Component{
       sessionString:"",
       session:{},
       accuracyOnlineLearning:0,
+      offset:0,
+      currentPagination:0,
     };
+    this.perPage=12;
   }
 
   componentWillMount(){
     this.setState({
-        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0,
     });
     this.updateOnlineClassifier(this.props.session);
   }
 
   componentWillReceiveProps(nextProps, nextState){
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
+      $("div").scrollTop(0);
       this.setState({
-      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages
+      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, currentPagination:0, offset:0,
       });
     }
     return;
@@ -239,7 +244,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if ( nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
+    if ( nextState.currentPagination!= this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
          return true;
     }
     return false;
@@ -261,6 +266,13 @@ class ViewTabSnippets extends React.Component{
 
     	}.bind(this)
     );
+  }
+
+  handlePageClick(data){
+      $("div").scrollTop(0);
+    let selected = data.selected; //current page (number)
+    let offset = Math.ceil(selected * this.perPage);
+    this.setState({offset: offset, currentPagination:data.selected});
   }
 
   removeAddTags(urls, current_tag, applyTagFlag ){
@@ -338,8 +350,14 @@ class ViewTabSnippets extends React.Component{
   render(){
     console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
+    console.log("pages");
+    console.log(Object.keys(this.state.pages).length);
     var id=0;
+    var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
+    var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
+
+            if(index>this.state.offset && index<(this.state.offset+this.perPage)){
                     let colorTagRelev = "";
                     let colorTagIrrelev="";
                     let colorTagNeutral="";
@@ -392,22 +410,37 @@ class ViewTabSnippets extends React.Component{
                       <Divider />
                     </div>
                   </ListItem>;
-
-                    });
+            }
+    });
 
 
     return (
       <div  style={{maxWidth:1000}}>
         <p style={{color: "#FFFFFF",}}>-</p>
         <div style={{marginBottom:"50px"}}>
-          <p style={{float:"left", color: "#757575", fontSize: "14px", fontWeight: "500", paddingLeft: "72px",}}>{urlsList.length} pages </p>
+          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {urlsList.length} results. </p>
           <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
         </div>
-        <div style={{marginTop:"50px"}}>
+        <div style={{marginTop:"50px"}} >
           <List>
           {urlsList}
           <Divider inset={true} />
           </List>
+          <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
+            <ReactPaginate previousLabel={"previous"}
+                           nextLabel={"next"}
+                           initialPage={0}
+                           forcePage={this.state.currentPagination}
+                           breakLabel={<a >...</a>}
+                           breakClassName={"break-me"}
+                           pageCount={currentPageCount}
+                           marginPagesDisplayed={3}
+                           pageRangeDisplayed={8}
+                           onPageChange={this.handlePageClick.bind(this)}
+                           containerClassName={"pagination"}
+                           subContainerClassName={"pages pagination"}
+                           activeClassName={"active"} />
+          </div>
         </div>
      </div>
   );
