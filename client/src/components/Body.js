@@ -91,7 +91,7 @@ class Body extends Component{
     session['selected_morelike'] = "";
     session['selected_queries']="";
     session['selected_tlds']="";
-    session['selected_aterms']="";            
+    session['selected_aterms']="";
     session['selected_tags']="";
     session['selected_model_tags']="";
     session['model'] = {};
@@ -243,7 +243,7 @@ class Body extends Component{
   render(){
     console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
-      <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:350, background:"white"}}>
+      <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:338, background:"white"}}>
         <Row className="Menus-child">
           <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
         </Row>
