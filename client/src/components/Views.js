@@ -95,7 +95,7 @@ class ChipViewTab extends React.Component{
         return;
     }
     // Calculate new state
-    var session = nextProps.session; //this.createSession(this.props.domainId, this.state.search_engine, this.state.activeProjectionAlg, this.state.pagesCap,this.state.fromDate, this.state.toDate, this.state.filter, this.state.pageRetrievalCriteria, this.state.selected_morelike, this.state.model);
+    var session = nextProps.session; 
     console.log("CHIP");
     console.log(session);
     var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
@@ -129,9 +129,7 @@ class ChipViewTab extends React.Component{
 
   removeString(currentType, currentKey){
     var currentString = "";
-      var anyFilter = false;
-      console.log("REMOVE STRING");
-      console.log(this.state.chipData);
+    var anyFilter = false;
     this.state.chipData.map((chip) => {
       if(chip.type == currentType && chip.key != currentKey)
         currentString = currentString + chip.label + ",";
@@ -142,13 +140,11 @@ class ChipViewTab extends React.Component{
 
 
     handleRequestDelete = (key) => {
-	console.log("handleRequestDelete");
         const sessionTemp =  this.state.session;
         const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
         switch (this.state.chipData[chipToDelete].type) {
           case 0: //query
             sessionTemp['selected_queries']= this.removeString(0, key);
-	    console.log(sessionTemp['selected_queries']);
 	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
 		if(sessionTemp['selected_queries'] === "") {
 		    delete sessionTemp['pageRetrievalCriteria']['query'];
@@ -157,7 +153,6 @@ class ChipViewTab extends React.Component{
               break;
           case 1://tags
             sessionTemp['selected_tags']= this.removeString(1, key);
-	    console.log(sessionTemp['selected_tags']);
 	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
 		if(sessionTemp['selected_tags'] === "") {
 		    delete sessionTemp['pageRetrievalCriteria']['tag'];
@@ -169,8 +164,6 @@ class ChipViewTab extends React.Component{
               break;
           case 3://model tags
             sessionTemp['selected_model_tags']= this.removeString(3, key);
-	    console.log("REMOVE MODEL TAGS");
-	    console.log(sessionTemp['selected_model_tags']);
 	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
 		if(sessionTemp['selected_model_tags'] === "") {
 		    delete sessionTemp['pageRetrievalCriteria']['model_tags'];
@@ -187,8 +180,6 @@ class ChipViewTab extends React.Component{
             break;
         case 5: //Annotated Terms
             sessionTemp['selected_aterms']= this.removeString(5, key);
-	    console.log("ANNOTATED TERMS REMOVE");
-	    console.log(sessionTemp['selected_aterms']);
 	    if(sessionTemp['selected_aterms'] === "")
 		sessionTemp['filter'] = null;
 	    else {
@@ -373,7 +364,7 @@ class ViewTabSnippets extends React.Component{
 
   render(){
     console.log("SnippetsPAges------------");
-      console.log(this.pages);
+    console.log(this.pages);
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var cont=0;
     var urlsList = Object.keys(this.pages).map((k, index)=>{
@@ -464,8 +455,6 @@ class Views extends React.Component {
 	  '/getPages',
 	  {'session': JSON.stringify(session)},
 	  function(pages) {
-	      console.log("GET PAGES");
-              console.log(pages);
               this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
 	  }.bind(this)
       );

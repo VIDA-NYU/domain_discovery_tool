@@ -106,8 +106,6 @@ class LoadQueries extends React.Component {
   }
     
     render(){
-	console.log("LOAD QUERIES");
-	console.log(this.state.currentQueries);
 	if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
 	  var nodes = this.state.queryNodes;
 	  var nodesTemp = [];
@@ -309,13 +307,11 @@ class LoadAnnotatedTerms extends React.Component {
 
   addATerm(object){
     var checked = object["checked"];
-    console.log("ADD ATERM");
-    console.log(checked);
     this.setState({checked: checked });	
     this.props.addATerm(checked);
   }
 
-  render(){
+    render(){
       if(this.state.currentATerms!==undefined && Object.keys(this.state.currentATerms).length > 0){
 	// Sorting the terms by Postive or Negative so that all Positive are consecutive
 	// and all Negative are consecutive
@@ -696,20 +692,15 @@ class FiltersTabs extends React.Component {
   }
 
   addATerm(checked){
-    console.log("ADD ATERM");
     var sessionTemp = this.props.session;
     var newTerms = checked.toString();
-    console.log(newTerms);  
     var labelTerm = "";
     checked.map((term, index)=>{
-	console.log(term);
 	labelTerm = labelTerm + term + " OR ";
     });
     if(labelTerm !== "")
 	labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
 
-    console.log(labelTerm);
-      
     if(newTerms === ""){
 	sessionTemp['filter'] = null;
     }
@@ -728,7 +719,6 @@ class FiltersTabs extends React.Component {
 		sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
 	} else sessionTemp['filter']=labelTerm;
     }
-    console.log(sessionTemp['pageRetrievalCriteria']);  
     sessionTemp['selected_aterms']=newTerms;
     if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
        sessionTemp['pageRetrievalCriteria'] = "Most Recent";
@@ -739,8 +729,6 @@ class FiltersTabs extends React.Component {
   addTags(checked){
     var sessionTemp = this.props.session;	
     var newTags = checked.toString();
-    console.log("ADD TAGS");
-    console.log(newTags);
     if(newTags !== ""){
 	if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] != ""){	  
 	    sessionTemp['newPageRetrievalCriteria'] = "Multi";
@@ -763,7 +751,6 @@ class FiltersTabs extends React.Component {
     if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
 	sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
-      console.log(sessionTemp);  
     this.props.updateSession(sessionTemp);
   }
 
@@ -795,115 +782,9 @@ class FiltersTabs extends React.Component {
     this.props.updateSession(sessionTemp);
   }
 
-  // removeString(currentType, item){
-  //   var currentString = "";
-  //   var array=[]; // it could be a query or tag array.
-  //   switch (currentType) {
-  //     case 0: //query
-  //         array = this.state.session["selected_queries"].split(",");
-  //         break;
-  //     case 1://tags
-  //         array = this.state.session["selected_tags"].split(",");
-  //       break;
-  //     case 2: //tlds
-  //       array = this.state.session["selected_tlds"].split(",");
-  //       break;
-  //     case 3: //Annotated Terms
-  //       array = this.state.session["selected_aterms"].split(",");
-  //       break;
-  //   }
-  //   for(var index in array){ /* loop over all array items */
-  //     if(array[index] !== item){
-  //       currentString = currentString + array[index] + ",";
-  //     }
-  //   }
-  //   if(currentString != "") return currentString.substring(0, currentString.length-1);
-  //     return currentString;
-  // }
-
-  // removeQueryTag(currentType, item){
-  //   const sessionTemp =  this.state.session;
-  //   switch (currentType) {
-  //     case 0: //query
-  //         sessionTemp['selected_queries']= this.removeString(0, item);
-  //         if(sessionTemp['selected_queries'] === "") {
-  //           sessionTemp['newPageRetrievalCriteria'] = "one";
-  //           sessionTemp['pageRetrievalCriteria'] = "Tags";
-  //         }
-  //         break;
-  //     case 1://tags
-  //         sessionTemp['selected_tags']= this.removeString(1, item);
-  //         if(sessionTemp['selected_tags'] === "") {
-  //           sessionTemp['newPageRetrievalCriteria'] = "one";
-  //           sessionTemp['pageRetrievalCriteria'] = "Queries";
-  //         }
-  //       break;
-  //     case 2://tags
-  //         sessionTemp['selected_tags']= this.removeString(1, item);
-  //         if(sessionTemp['selected_tags'] === "") {
-  //           sessionTemp['newPageRetrievalCriteria'] = "one";
-  //           sessionTemp['pageRetrievalCriteria'] = "Queries";
-  //         }
-  //         break;
-  //     case 3://tags
-  //         sessionTemp['selected_model_tags']= this.removeString(3, item);
-  //         if(sessionTemp['selected_model_tags'] === "") {
-  //           if(sessionTemp['selected_queries'] !== "" && sessionTemp['selected_tags'] !== "")
-  //               sessionTemp['newPageRetrievalCriteria'] = "Multi";
-  //           else if (sessionTemp['selected_queries'] !== "") {
-  //             sessionTemp['newPageRetrievalCriteria'] = "one";
-  //             sessionTemp['pageRetrievalCriteria'] = "Queries";
-  //           }
-  //           else {
-  //             sessionTemp['newPageRetrievalCriteria'] = "one";
-  //             sessionTemp['pageRetrievalCriteria'] = "Tags";
-  //           }
-  //         }
-  //       break;
-  //     case 4: //TLD
-  //         sessionTemp['selected_tlds']= this.removeString(2, item);
-  //         if(sessionTemp['selected_tlds'] === "") {
-  //           sessionTemp['newPageRetrievalCriteria'] = "one";
-  //           sessionTemp['pageRetrievalCriteria'] = "TLDs";
-  //         }
-  //       break;
-  //     case 5: //Annotated Terms
-  //         sessionTemp['selected_aterms']= this.removeString(3, item);
-  //         break;
-  //   }
-  //   if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
-  //      sessionTemp['pageRetrievalCriteria'] = "Most Recent";
-  //   }
-  //   this.props.deletedFilter(sessionTemp);
-  // }
-/*
-  createCheckbox(k, index){
-    var labelQuery=  k+" " +"(" +index+")";
-    return <Checkbox
-    label={labelQuery}
-    style={styles.checkbox}
-    onClick={this.addQuery.bind(this,k )} />;
-
-    return <Checkbox
-              label={label}
-              handleCheckboxChange={this.toggleCheckbox}
-              key={label} />;
-  }
-
-  createImages(currentQueries) {
-     return Object.keys(currentQueries).map(this.createImage);
-   },
-*/
 
   render() {
       console.log("--------FiltersTabs---------");
-      // <Tabs
-      //     onChange={this.handleChange}
-      //     value={this.state.slideIndex}
-      //     inkBarStyle={{background:'#7940A0' ,height: '4px'}}
-      //     tabItemContainerStyle={{background: '#9A7BB0' ,height: '40px'}}>
-      //     <Tab label="Queries" value={0} style={styles.tab} />
-      //   </Tabs>
       return (
 	    <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
             <div style={styles.headline}>
