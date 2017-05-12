@@ -471,7 +471,7 @@ class LoadTag extends React.Component {
                     expanded={this.state.expanded}
                     onCheck={checked => this.addTags({checked})}
                     onExpand={expanded => this.setState({ expanded })}
-      	      showNodeIcon={false}
+      	            showNodeIcon={false}
       	      />
       	      </div>
       	  );
@@ -487,17 +487,17 @@ class LoadModel extends React.Component {
   constructor(props){
     super(props);
     this.state={
-	currentModelTags:undefined,
-	checked:[],
-	expanded:[],
-	session: {},
-	modeltagNodes:[
-	    {
-		value: 'modeltag',
-		label: 'Model Tags',
-		children: []
-	    }
-	]
+    	currentModelTags:undefined,
+    	checked:[],
+    	expanded:[],
+    	session: {},
+    	modeltagNodes:[
+    	    {
+    		value: 'modeltag',
+    		label: 'Model Tags',
+    		children: []
+    	    }
+    	]
     };
   }
 
@@ -505,15 +505,15 @@ class LoadModel extends React.Component {
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
-	function(modelTagDomain) {
-	    var selected_model_tags = [];
-	    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== "" ){
-		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
-		    selected_model_tags = this.props.session['selected_model_tags'].split(",");
-		else selected_model_tags.push(this.props.session['selected_model_tags'])
-	    }
-	    this.setState({currentModelTags: modelTagDomain, session:this.props.session, checked:selected_model_tags});
-      }.bind(this)
+    	function(modelTagDomain) {
+    	    var selected_model_tags = [];
+    	    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== "" ){
+        		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+        		    selected_model_tags = this.props.session['selected_model_tags'].split(",");
+        		else selected_model_tags.push(this.props.session['selected_model_tags'])
+    	    }
+    	    this.setState({currentModelTags: modelTagDomain, session:this.props.session, checked:selected_model_tags});
+       }.bind(this)
     );
   }
 
@@ -522,32 +522,30 @@ class LoadModel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-      if(JSON.stringify(nextProps.session['selected_model_tags']) === JSON.stringify(this.state.checked) ) {
-	  if(this.props.update){
-              this.getAvailableModelTags();
-	  }
-	  return;
-      }
-      var selected_model_tags = [];
-      if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== ""){
-	  if (this.props.session['selected_model_tags'].indexOf(",") > 0)
-	      selected_model_tags = this.props.session['selected_model_tags'].split(",");
-	  else  selected_model_tags.push(this.props.session['selected_model_tags'])
-      }
-
-      this.setState({session:nextProps.session, checked:selected_model_tags
-      });
-
+    var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_model_tags'] be an array
+    if(JSON.stringify(array_selected_model_tags) === JSON.stringify(this.state.checked) ) {
+  	  if(this.props.update){
+                this.getAvailableModelTags();
+  	  }
+  	  return;
+    }
+    var selected_model_tags = [];
+    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== ""){
+  	  if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+  	      selected_model_tags = this.props.session['selected_model_tags'].split(",");
+  	  else  selected_model_tags.push(this.props.session['selected_model_tags'])
+    }
+    this.setState({session:nextProps.session, checked:selected_model_tags});
   }
 
-    shouldComponentUpdate(nextProps, nextState){
-      if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
-	 JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
-	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
-	  if(this.props.update){return true;}
-	  else {return false;}
-      }
-      return true;
+  shouldComponentUpdate(nextProps, nextState){
+    if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+    	 JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
+    	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+      	  if(this.props.update){return true;}
+      	  else {return false;}
+    }
+    return true;
   }
 
   addModelTags(object){
@@ -557,32 +555,32 @@ class LoadModel extends React.Component {
   }
 
   render(){
-      if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
-	var nodes = this.state.modeltagNodes;
-	var nodesTemp = [];
-	nodes.map((node,index)=>{
-	    if(node.value === "modeltag"){
-		node.children = [];
-		Object.keys(this.state.currentModelTags).map((tag, index)=>{
-		    var labelTag=  tag+" " +"(" +this.state.currentModelTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
-		    node.children.push({value:tag, label:labelTag});
-		});
-	    }
-	    nodesTemp.push(node);
-	});
+    if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
+  	  var nodes = this.state.modeltagNodes;
+  	  var nodesTemp = [];
+  	  nodes.map((node,index)=>{
+  	    if(node.value === "modeltag"){
+    		  node.children = [];
+    		  Object.keys(this.state.currentModelTags).map((tag, index)=>{
+    		    var labelTag=  tag+" " +"(" +this.state.currentModelTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+    		    node.children.push({value:tag, label:labelTag});
+    		  });
+  	    }
+  	    nodesTemp.push(node);
+  	   });
 
-	return(
-	      <div >
-	      <CheckboxTree
-              nodes={nodesTemp}
-              checked={this.state.checked}
-              expanded={this.state.expanded}
-              onCheck={checked => this.addModelTags({checked})}
-              onExpand={expanded => this.setState({ expanded })}
-	      showNodeIcon={false}
-	      />
-	      </div>
-	  );
+  	   return(
+  	      <div >
+  	      <CheckboxTree
+                nodes={nodesTemp}
+                checked={this.state.checked}
+                expanded={this.state.expanded}
+                onCheck={checked => this.addModelTags({checked})}
+                onExpand={expanded => this.setState({ expanded })}
+  	            showNodeIcon={false}
+  	      />
+  	      </div>
+  	    );
       }
       return(
 	      <CircularProgressSimple />
