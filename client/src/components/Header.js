@@ -18,6 +18,16 @@ import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import Body from './Body';
 import TextField from 'material-ui/TextField';
 
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
+import FileFileDownload from 'material-ui/svg-icons/file/file-download';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
+import Checkbox from 'material-ui/Checkbox';
+import CircularProgress from 'material-ui/CircularProgress';
+
+import $ from 'jquery';
 
 const styles = {
   backgound: {
@@ -69,6 +79,11 @@ class ToolBarHeader extends Component {
     this.state = {
       currentDomain:'',
       term:'',
+      openCreateModel: false,
+      currentTags:undefined,
+      tagsPosCheckBox:["Relevant"],
+      tagsNegCheckBox:["Irrelevant"],
+      loadingModel:false,
     };
   }
   componentWillMount(){
@@ -83,8 +98,8 @@ class ToolBarHeader extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-     if (nextProps.currentDomain === this.state.currentDomain) {
-       if(nextState.term !==this.state.term){ return true; }
+     if (nextProps.currentDomain === this.state.currentDomain ) {
+       if(nextState.term !==this.state.term || nextState.openCreateModel ){ return true; }
        return false;
      }
      return true;
@@ -94,7 +109,147 @@ class ToolBarHeader extends Component {
      this.props.filterKeyword(terms);
    }
 
+   handleOnRequestChange = (event, value)=> {
+     var session = this.createSession(this.props.idDomain);
+     if(value == 2){
+       this.getAvailableTags(session);
+       this.setState({ openCreateModel: true });
+     }
+     else{
+       this.createModel();
+     }
+  }
+
+   handleOpenCreateModel = () => {
+     this.setState({openCreateModel: true});
+   };
+
+   handleCloseCreateModel = () => {
+     this.setState({openCreateModel: false});
+     this.forceUpdate();
+   };
+
+   handleCloseCancelCreateModel = () => {
+     this.setState({openCreateModel: false});
+     this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
+     this.forceUpdate();
+   };
+
+   createSession(domainId){
+     var session = {};
+     session['search_engine'] = "GOOG";
+     session['activeProjectionAlg'] = "Group by Correlation";
+     session['domainId'] = domainId;
+     session['pagesCap'] = "100";
+     session['fromDate'] = null;
+     session['toDate'] = null;
+     session['filter'] = null;
+     session['pageRetrievalCriteria'] = "Most Recent";
+     session['selected_morelike'] = "";
+     session['selected_queries']="";
+     session['selected_tlds']="";
+     session['selected_aterms']="";
+     session['selected_tags']="";
+     session['selected_model_tags']="";
+     session['model'] = {};
+     session['model']['positive'] = "Relevant";
+     session['model']['nagative'] = "Irrelevant";
+     return session;
+   }
+
+   getAvailableTags(session){
+     $.post(
+        '/getAvailableTags',
+        {'session': JSON.stringify(session), 'event': 'Tags'},
+        function(tagsDomain) {
+          //tagString: JSON.stringify(this.props.session['selected_tags'])
+          this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
+          this.forceUpdate();
+        }.bind(this)
+      );
+   }
+   getCreatedModel(session){
+     $.post(
+        '/createModel',
+        {'session': JSON.stringify(session)},
+        function(model_file) {
+          var url = model_file;
+          window.open(url,'Download');
+          this.setState({loadingModel:false})
+          this.forceUpdate();
+        }.bind(this)
+      );
+   }
+   //Create model
+   createModel(){
+     //createNewDomain
+     var session = this.createSession(this.props.idDomain);
+     this.setState({loadingModel:true});
+     this.forceUpdate();
+     this.getCreatedModel(session);
+   };
+
+   addPosTags(tag){
+      var tags = this.state.tagsPosCheckBox;
+      if(tags.includes(tag)){
+        var index = tags.indexOf(tag);
+        tags.splice(index, 1);
+      }
+      else{
+        tags.push(tag);
+      }
+      this.setState({tagsPosCheckBox:tags})
+      this.forceUpdate();
+   }
+
+   addNegTags(tag){
+      var tags = this.state.tagsNegCheckBox;
+      if(tags.includes(tag)){
+        var index = tags.indexOf(tag);
+        tags.splice(index, 1);
+      }
+      else{
+        tags.push(tag);
+      }
+      this.setState({tagsNegCheckBox:tags})
+      this.forceUpdate();
+   }
+
    render() {
+     const actionsCreateModel = [
+       <FlatButton
+         label="Cancel"
+         primary={true}
+         onTouchTap={this.handleCloseCancelCreateModel}
+       />,
+       <FlatButton
+         label="Save"
+         primary={true}
+         keyboardFocused={true}
+         onTouchTap={this.handleCloseCreateModel}
+       />,
+     ];
+
+      var checkedTagsPosNeg = (this.state.currentTags!==undefined)?<div><p>Positive</p>
+           {Object.keys(this.state.currentTags).map((tag, index)=>{
+             var labelTags=  tag+" " +"(" +this.state.currentTags[tag]+")";
+             var checkedTag=false;
+             var tags = this.state.tagsPosCheckBox;
+             if(tags.includes(tag))
+               checkedTag=true;
+             return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
+           })}
+           <p>Negative</p>
+           {Object.keys(this.state.currentTags).map((tag, index)=>{
+             var labelTags=  tag+" " +"(" +this.state.currentTags[tag]+")";
+             var checkedTag=false;
+             var tags = this.state.tagsNegCheckBox;
+             if(tags.includes(tag))
+               checkedTag=true;
+             return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
+           })}
+           </div>:<div />;
+     var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
      </IconButton>}*/
      return (
@@ -105,6 +260,18 @@ class ToolBarHeader extends Component {
            <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
            </IconButton>
          </Link>
+         <IconMenu
+          iconButtonElement={<RaisedButton style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            label="Model"
+            labelPosition="before"
+            containerElement="label"
+          />}
+          onChange={this.handleOnRequestChange.bind(this)}
+         >
+          <MenuItem value="1" primaryText="Create Model" />
+          <MenuItem value="2" primaryText="Settings" />
+         </IconMenu>
+         {loadingModel}
          <ToolbarSeparator style={{ marginTop:"5px"}} />
         <TextField
          style={{width:'35%',marginRight:'-120px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
@@ -121,6 +288,17 @@ class ToolBarHeader extends Component {
          <IconButton style={{marginRight:'-25px'}} onClick={this.filterKeyword.bind(this, this.state.term)}>
           <Search />
          </IconButton>
+
+         <Dialog
+            title=" Model Settings"
+            actions={actionsCreateModel}
+            modal={false}
+            open={this.state.openCreateModel}
+            onRequestClose={this.handleCloseCreateModel.bind(this)}
+          >
+          {checkedTagsPosNeg}
+          </Dialog>
+
        </Toolbar>
      );
    }
@@ -160,8 +338,10 @@ filterKeyword(newFilterKeyword){
     this.forceUpdate();
 }
 
+
 render() {
   console.log("header");
+  console.log(this.props.location.query.idDomain);
   return (
     <div>
       <AppBar showMenuIconButton={true}
@@ -171,7 +351,7 @@ render() {
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
       >
-      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} filterKeyword={this.filterKeyword.bind(this)} />
+      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} />
       </AppBar>
 
       <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>

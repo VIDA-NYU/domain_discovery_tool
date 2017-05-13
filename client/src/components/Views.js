@@ -98,13 +98,13 @@ class ChipViewTab extends React.Component{
         return;
     }
     // Calculate new state
-    var session = nextProps.session; 
+    var session = nextProps.session;
     console.log("CHIP");
     console.log(session);
     var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
-    atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;            
+    atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
 
@@ -197,7 +197,7 @@ class ChipViewTab extends React.Component{
 		sessionTemp['filter'] = labelTerm;
 	    }
             break;
-	    
+
         }
         if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
            sessionTemp['pageRetrievalCriteria'] = "Most Recent";
