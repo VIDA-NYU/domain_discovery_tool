@@ -7,6 +7,7 @@
 SHELL := /bin/bash
 CONDA_ROOT := $(shell conda info --root)
 CONDA_ENV := $(CONDA_ROOT)/envs/ddt
+ACHE_HOME := $(CONDA_ENV)/lib/ache
 
 CONDA_ENV_TARGET := $(CONDA_ENV)/conda-meta/history
 CHERRY_PY_CONFIG_TARGET := server/config.conf
@@ -62,7 +63,6 @@ $(CHERRY_PY_CONFIG_TARGET): server/config.conf-in
 
 $(ACHE_CONFIG_TARGET):
 	source activate ddt; \
-	export ACHE_HOME=$(dirname $(which ache))/../lib/ache/	
 	cp $(ACHE_HOME)/config/ache.yml server/ache.yml-in
 
 $(GET_NLTK_DATA_TARGET): 
