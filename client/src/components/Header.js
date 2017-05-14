@@ -17,7 +17,9 @@ import Search from 'material-ui/svg-icons/action/search';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import Body from './Body';
 import TextField from 'material-ui/TextField';
-
+import $ from "jquery";
+import CircularProgress from 'material-ui/CircularProgress';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const styles = {
   backgound: {
@@ -69,6 +71,7 @@ class ToolBarHeader extends Component {
     this.state = {
       currentDomain:'',
       term:'',
+      stopCrawlerSignal:false,
     };
   }
   componentWillMount(){
@@ -94,9 +97,63 @@ class ToolBarHeader extends Component {
      this.props.filterKeyword(terms);
    }
 
+   createSession(domainId){
+      var session = {};
+      session['search_engine'] = "GOOG";
+      session['activeProjectionAlg'] = "Group by Correlation";
+      session['domainId'] = domainId;
+      session['pagesCap'] = "100";
+      session['fromDate'] = null;
+      session['toDate'] = null;
+      session['filter'] = null;
+      session['pageRetrievalCriteria'] = "Most Recent";
+      session['selected_morelike'] = "";
+      session['selected_queries']="";
+      session['selected_tlds']="";
+      session['selected_aterms']="";
+      session['selected_tags']="";
+      session['selected_model_tags']="";
+      session['model'] = {};
+      session['model']['positive'] = "Relevant";
+      session['model']['nagative'] = "Irrelevant";
+      return session;
+    }
+
+   startCrawler(){
+     console.log("start crawler");
+     var session = this.createSession(this.props.idDomain);
+     this.setState({stopCrawlerSignal:true,});
+     this.forceUpdate();
+     $.post(
+       '/startCrawler',
+       {'session': JSON.stringify(session)},
+       function(model) {
+       }.bind(this)
+     );
+   }
+
+   stopCrawler(){
+     console.log("stop crawler");
+     var session = this.createSession(this.props.idDomain);
+     this.setState({stopCrawlerSignal:false,});
+     this.forceUpdate();
+     $.post(
+       '/stopCrawler',
+       {'session': JSON.stringify(session)},
+       function(model) {
+       }.bind(this)
+     );
+   }
+
    render() {
      /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
      </IconButton>}*/
+     var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
+     var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, width:98}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+        label="Stop"
+        labelPosition="before"
+        containerElement="label"/> : <div/>;
+     var disabledStartCrawler = (this.state.stopCrawlerSignal)?true:false;
      return (
        <Toolbar style={styles.toolBarHeader}>
          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
@@ -105,9 +162,19 @@ class ToolBarHeader extends Component {
            <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
            </IconButton>
          </Link>
+
+         <ToolbarSeparator style={{ marginTop:"5px"}} />
+         <RaisedButton  onClick={this.startCrawler.bind(this)} disabled={disabledStartCrawler} style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            label="Crawler"
+            labelPosition="before"
+            containerElement="label"
+          />
+          {crawler}
+          {crawlingProgress}
+
          <ToolbarSeparator style={{ marginTop:"5px"}} />
         <TextField
-         style={{width:'35%',marginRight:'-120px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+         style={{width:'35%',marginRight:'-80px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
          hintText="Search ..."
          hintStyle={{marginBottom:"-8px", marginLeft:10}}
          inputStyle={{marginBottom:10, marginLeft:10}}
@@ -171,7 +238,7 @@ render() {
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
       >
-      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} filterKeyword={this.filterKeyword.bind(this)} />
+      <ToolBarHeader currentDomain={this.props.location.query.nameDomain} filterKeyword={this.filterKeyword.bind(this)} idDomain={this.props.location.query.idDomain} />
       </AppBar>
 
       <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>
