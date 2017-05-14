@@ -112,20 +112,6 @@ class ToolBarHeader extends Component {
      this.props.filterKeyword(terms);
    }
 
-    stopCrawlerSignal(flag){
-     this.props.setStopCrawlerSignal(flag);
-    }
-
-    messageCrawler(message){
-     this.props.setMessageCrawler(message);
-    }
-
-    disabledStartCrawler(flag){
-     this.props.setDisabledStartCrawler(flag);
-    }
-
-
-
    createSession(domainId){
       var session = {};
       session['search_engine'] = "GOOG";
@@ -152,18 +138,12 @@ class ToolBarHeader extends Component {
        var session = this.createSession(this.props.idDomain);
        var message = "Crawler is running";
        this.setState({stopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message});
-       this.stopCrawlerSignal(true);
-       this.disabledStartCrawler(true);       
-       this.messageCrawler(message);
        this.forceUpdate();
      $.post(
        '/startCrawler',
        {'session': JSON.stringify(session)},
        function(message) {
 	   this.setState({ stopCrawlerSignal:false, disabledStartCrawler:false, messageCrawler:message,});
-	   this.stopCrawlerSignal(false);
-	   this.disabledStartCrawler(false);       	   
-	   this.messageCrawler(message);
 	   this.forceUpdate();
        }.bind(this)
      );
@@ -173,17 +153,12 @@ class ToolBarHeader extends Component {
        var session = this.createSession(this.props.idDomain);
        var message = "Crawler shutting down"
        this.setState({stopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message,});
-       this.stopCrawlerSignal(false);
-       this.disabledStartCrawler(true);       	   
-       this.messageCrawler(message);       
        this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
        function(message) {
            this.setState({messageCrawler:message, disabledStartCrawler:false,});
-	   this.messageCrawler(message);
-	   this.disabledStartCrawler(false);       	   
            this.forceUpdate();
            setTimeout(function(){
              this.setState({messageCrawler:"",});
@@ -192,7 +167,7 @@ class ToolBarHeader extends Component {
        }.bind(this)
      );
    }
-    
+
    handleOnRequestChange = (event, value)=> {
      var session = this.createSession(this.props.idDomain);
      if(value == 2){
@@ -218,7 +193,7 @@ class ToolBarHeader extends Component {
      this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
      this.forceUpdate();
    };
-   
+
    getAvailableTags(session){
      $.post(
         '/getAvailableTags',
@@ -422,20 +397,6 @@ filterKeyword(newFilterKeyword){
     this.forceUpdate();
 }
 
-setStopCrawlerSignal(newStopCrawlerSignal){
-    this.setState({stopCrawlerSignal:newStopCrawlerSignal});
-    this.forceUpdate();
-}	
-
-setMessageCrawler(newMessageCrawler){
-    this.setState({messageCrawler:newMessageCrawler});
-    this.forceUpdate();
-}	
-setDisabledStartCrawler(newState){
-    this.setState({disabledStartCrawler:newState});
-    this.forceUpdate();
-}	
-    
 render() {
   console.log("header");
   console.log(this.props.location.query.idDomain);
@@ -448,7 +409,7 @@ render() {
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
 	  >
-	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} setStopCrawlerSignal={this.setStopCrawlerSignal.bind(this)} setMessageCrawler={this.setMessageCrawler.bind(this)}  setDisabledStartCrawler={this.setDisabledStartCrawler.bind(this)} disabledStartCrawler={this.state.disabledStartCrawler}  stopCrawlerSignal={this.state.stopCrawlerSignal} messageCrawler={this.state.messageCrawler} />
+	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} />
       </AppBar>
 
       <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>
