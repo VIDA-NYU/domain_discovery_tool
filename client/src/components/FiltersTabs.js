@@ -507,11 +507,11 @@ class LoadModel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_model_tags'] be an array
+    var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[]; 
     if(JSON.stringify(array_selected_model_tags) === JSON.stringify(this.state.checked) ) {
-  	  if(this.props.update){
-                this.getAvailableModelTags();
-  	  }
+  	  // if(this.props.update){
+          //       this.getAvailableModelTags();
+  	  // }
   	  return;
     }
     var selected_model_tags = [];
@@ -528,7 +528,11 @@ class LoadModel extends React.Component {
     	 JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
     	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
       	  if(this.props.update){return true;}
-      	  else {return false;}
+      	else {return false;}
+	return false
+    }
+    if(JSON.stringify(nextState.expanded) !== JSON.stringify(this.state.expanded)) {
+	this.getAvailableModelTags();
     }
     return true;
   }
