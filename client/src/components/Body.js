@@ -111,6 +111,7 @@ class Body extends Component{
 
   //handling update of props (ex. filters, session, etc)
   componentWillReceiveProps  = (newProps) => {
+    console.log(newProps.filterKeyword);
     if(newProps.filterKeyword !== '' || newProps.filterKeyword !== null){
       const sessionTemp =  this.state.sessionBody;
       sessionTemp['filter']= newProps.filterKeyword;
