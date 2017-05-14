@@ -290,7 +290,7 @@ class ToolBarHeader extends Component {
      /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
      </IconButton>}*/
      var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
-       var messageCrawlerRunning = <div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
+       var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
      var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, width:98}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
         label="Stop"
         labelPosition="before"
