@@ -120,12 +120,16 @@ class Body extends Component{
     if(newProps.currentDomain === this.state.currentDomain){
       return;
     }
+      
     this.setState({currentDomain: this.props.currentDomain});
   };
 
   //Verify if it is necessary an update.
-  shouldComponentUpdate(nextProps, nextState) {
-     if (nextState.sessionString  === this.state.sessionString) {
+    shouldComponentUpdate(nextProps, nextState) {
+    if(nextProps.currentDomain === this.state.currentDomain){
+	return false;
+    }
+    if (nextState.sessionString  === this.state.sessionString) {
        if(nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
        }
