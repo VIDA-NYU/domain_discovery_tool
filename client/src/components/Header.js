@@ -122,7 +122,7 @@ class ToolBarHeader extends Component {
 
    startCrawler(){
      var session = this.createSession(this.props.idDomain);
-     this.setState({stopCrawlerSignal:true,});
+       this.setState({stopCrawlerSignal:true, messageCrawler:"Crawler is running"});
      this.forceUpdate();
      $.post(
        '/startCrawler',
@@ -136,6 +136,8 @@ class ToolBarHeader extends Component {
 
    stopCrawler(){
      var session = this.createSession(this.props.idDomain);
+       this.setState({messageCrawler:"Crawler shutting down",});
+       this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
@@ -154,7 +156,7 @@ class ToolBarHeader extends Component {
      /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
      </IconButton>}*/
      var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
-     var messageCrawlerRunning = (this.state.stopCrawlerSignal)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{"Crawler is running"} </div>:"";
+     var messageCrawlerRunning = (this.state.stopCrawlerSignal)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
      var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, width:98}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
         label="Stop"
         labelPosition="before"
@@ -179,7 +181,6 @@ class ToolBarHeader extends Component {
           {crawler}
           {messageCrawlerRunning}
           {crawlingProgress}
-          {messageCrawler}
 
          <ToolbarSeparator style={{ marginTop:"5px"}} />
         <TextField
