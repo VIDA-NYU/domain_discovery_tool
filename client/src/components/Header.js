@@ -79,6 +79,8 @@ class ToolBarHeader extends Component {
     this.state = {
       currentDomain:'',
       term:'',
+      stopCrawlerSignal:false,
+      messageCrawler:"",
       openCreateModel: false,
       currentTags:undefined,
       tagsPosCheckBox:["Relevant"],
@@ -109,6 +111,58 @@ class ToolBarHeader extends Component {
      this.props.filterKeyword(terms);
    }
 
+   createSession(domainId){
+      var session = {};
+      session['search_engine'] = "GOOG";
+      session['activeProjectionAlg'] = "Group by Correlation";
+      session['domainId'] = domainId;
+      session['pagesCap'] = "100";
+      session['fromDate'] = null;
+      session['toDate'] = null;
+      session['filter'] = null;
+      session['pageRetrievalCriteria'] = "Most Recent";
+      session['selected_morelike'] = "";
+      session['selected_queries']="";
+      session['selected_tlds']="";
+      session['selected_aterms']="";
+      session['selected_tags']="";
+      session['selected_model_tags']="";
+      session['model'] = {};
+      session['model']['positive'] = "Relevant";
+      session['model']['nagative'] = "Irrelevant";
+      return session;
+    }
+
+   startCrawler(){
+     var session = this.createSession(this.props.idDomain);
+       this.setState({stopCrawlerSignal:true, messageCrawler:"Crawler is running"});
+     this.forceUpdate();
+     $.post(
+       '/startCrawler',
+       {'session': JSON.stringify(session)},
+       function(message) {
+         this.setState({ stopCrawlerSignal:false, messageCrawler:message,});
+         this.forceUpdate();
+       }.bind(this)
+     );
+   }
+
+   stopCrawler(){
+     var session = this.createSession(this.props.idDomain);
+       this.setState({messageCrawler:"Crawler shutting down",});
+       this.forceUpdate();
+     $.post(
+       '/stopCrawler',
+       {'session': JSON.stringify(session)},
+       function(message) {
+           this.setState({stopCrawlerSignal:false, messageCrawler:message,});
+           this.forceUpdate();
+           setTimeout(function(){
+             this.setState({messageCrawler:"",});
+             this.forceUpdate();
+           }.bind(this), 700);
+       }.bind(this)
+     );
    handleOnRequestChange = (event, value)=> {
      var session = this.createSession(this.props.idDomain);
      if(value == 2){
@@ -134,29 +188,7 @@ class ToolBarHeader extends Component {
      this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
      this.forceUpdate();
    };
-
-   createSession(domainId){
-     var session = {};
-     session['search_engine'] = "GOOG";
-     session['activeProjectionAlg'] = "Group by Correlation";
-     session['domainId'] = domainId;
-     session['pagesCap'] = "100";
-     session['fromDate'] = null;
-     session['toDate'] = null;
-     session['filter'] = null;
-     session['pageRetrievalCriteria'] = "Most Recent";
-     session['selected_morelike'] = "";
-     session['selected_queries']="";
-     session['selected_tlds']="";
-     session['selected_aterms']="";
-     session['selected_tags']="";
-     session['selected_model_tags']="";
-     session['model'] = {};
-     session['model']['positive'] = "Relevant";
-     session['model']['nagative'] = "Irrelevant";
-     return session;
-   }
-
+   
    getAvailableTags(session){
      $.post(
         '/getAvailableTags',
@@ -252,6 +284,14 @@ class ToolBarHeader extends Component {
      var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
      </IconButton>}*/
+     var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
+     var messageCrawlerRunning = (this.state.stopCrawlerSignal)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
+     var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, width:98}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+        label="Stop"
+        labelPosition="before"
+        containerElement="label"/> : <div/>;
+     var disabledStartCrawler = (this.state.stopCrawlerSignal)?true:false;
+     var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
      return (
        <Toolbar style={styles.toolBarHeader}>
          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
@@ -260,6 +300,17 @@ class ToolBarHeader extends Component {
            <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <Domain />
            </IconButton>
          </Link>
+
+         <ToolbarSeparator style={{ marginTop:"5px"}} />
+         <RaisedButton  onClick={this.startCrawler.bind(this)} disabled={disabledStartCrawler} style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            label="Crawler"
+            labelPosition="before"
+            containerElement="label"
+          />
+          {crawler}
+          {messageCrawlerRunning}
+          {crawlingProgress}
+
          <IconMenu
           iconButtonElement={<RaisedButton style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
             label="Model"
@@ -274,7 +325,7 @@ class ToolBarHeader extends Component {
          {loadingModel}
          <ToolbarSeparator style={{ marginTop:"5px"}} />
         <TextField
-         style={{width:'35%',marginRight:'-120px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+         style={{width:'35%',marginRight:'-80px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
          hintText="Search ..."
          hintStyle={{marginBottom:"-8px", marginLeft:10}}
          inputStyle={{marginBottom:10, marginLeft:10}}

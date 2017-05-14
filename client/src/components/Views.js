@@ -95,7 +95,7 @@ class ChipViewTab extends React.Component{
 
   componentWillReceiveProps(nextProps, nextState){
     if (JSON.stringify(nextProps.session) === this.state.sessionString ) {
-        return;
+      return;
     }
     // Calculate new state
     var session = nextProps.session;
@@ -124,89 +124,90 @@ class ChipViewTab extends React.Component{
     for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
     }
-
+    if(session['filter']){
+      newChip.push({key: (queriesList.length + tagsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
+    }
     this.setState({
       chipData:newChip, pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
     });
   }
 
-  removeString(currentType, currentKey){
-    var currentString = "";
-    var anyFilter = false;
-    this.state.chipData.map((chip) => {
-      if(chip.type == currentType && chip.key != currentKey)
-        currentString = currentString + chip.label + ",";
-    });
-    if(currentString != "") return currentString.substring(0, currentString.length-1);
-    return currentString;
+removeString(currentType, currentKey){
+  var currentString = "";
+  var anyFilter = false;
+  this.state.chipData.map((chip) => {
+    if(chip.type == currentType && chip.key != currentKey)
+    currentString = currentString + chip.label + ",";
+  });
+  if(currentString != "") return currentString.substring(0, currentString.length-1);
+  return currentString;
+}
+
+handleRequestDelete = (key) => {
+  const sessionTemp =  this.state.session;
+  const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
+  switch (this.state.chipData[chipToDelete].type) {
+    case 0: //query
+    sessionTemp['selected_queries']= this.removeString(0, key);
+    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+      if(sessionTemp['selected_queries'] === "") {
+        delete sessionTemp['pageRetrievalCriteria']['query'];
+      } else sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+    }
+    break;
+    case 1://tags
+    sessionTemp['selected_tags']= this.removeString(1, key);
+    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+      if(sessionTemp['selected_tags'] === "") {
+        delete sessionTemp['pageRetrievalCriteria']['tag'];
+      } else sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+    }
+    break;
+    case 2://filter
+    sessionTemp['filter']= null;
+    break;
+    case 3://model tags
+    sessionTemp['selected_model_tags']= this.removeString(3, key);
+    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+      if(sessionTemp['selected_model_tags'] === "") {
+        delete sessionTemp['pageRetrievalCriteria']['model_tags'];
+      } else sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+    }
+    break;
+    case 4: //tlds
+    sessionTemp['selected_tlds']= this.removeString(4, key);
+    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+      if(sessionTemp['selected_tlds'] === "") {
+        delete sessionTemp['pageRetrievalCriteria']['domain'];
+      } else sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+    }
+    break;
+    case 5: //Annotated Terms
+    sessionTemp['selected_aterms']= this.removeString(5, key);
+    if(sessionTemp['selected_aterms'] === "")
+    sessionTemp['filter'] = null;
+    else {
+      var checked = sessionTemp['selected_aterms'].split(",");
+      var labelTerm = "";
+      checked.map((term, index)=>{
+        labelTerm = labelTerm + term + " OR ";
+      });
+      if(labelTerm != "")
+      labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
+
+      sessionTemp['filter'] = labelTerm;
+    }
+    break;
+
+  }
+  if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
+    sessionTemp['pageRetrievalCriteria'] = "Most Recent";
   }
 
-
-    handleRequestDelete = (key) => {
-        const sessionTemp =  this.state.session;
-        const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);
-        switch (this.state.chipData[chipToDelete].type) {
-          case 0: //query
-            sessionTemp['selected_queries']= this.removeString(0, key);
-	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
-		if(sessionTemp['selected_queries'] === "") {
-		    delete sessionTemp['pageRetrievalCriteria']['query'];
-		 } else sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
-              }
-              break;
-          case 1://tags
-            sessionTemp['selected_tags']= this.removeString(1, key);
-	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
-		if(sessionTemp['selected_tags'] === "") {
-		    delete sessionTemp['pageRetrievalCriteria']['tag'];
-		} else sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
-              }
-              break;
-          case 2://filter
-              sessionTemp['filter']= null;
-              break;
-          case 3://model tags
-            sessionTemp['selected_model_tags']= this.removeString(3, key);
-	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
-		if(sessionTemp['selected_model_tags'] === "") {
-		    delete sessionTemp['pageRetrievalCriteria']['model_tags'];
-		} else sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
-	    }
-            break;
-          case 4: //tlds
-            sessionTemp['selected_tlds']= this.removeString(4, key);
-	    if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
-		if(sessionTemp['selected_tlds'] === "") {
-		    delete sessionTemp['pageRetrievalCriteria']['domain'];
-		} else sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
-            }
-            break;
-        case 5: //Annotated Terms
-            sessionTemp['selected_aterms']= this.removeString(5, key);
-	    if(sessionTemp['selected_aterms'] === "")
-		sessionTemp['filter'] = null;
-	    else {
-		var checked = sessionTemp['selected_aterms'].split(",");
-		var labelTerm = "";
-		checked.map((term, index)=>{
-		    labelTerm = labelTerm + term + " OR ";
-		});
-		if(labelTerm != "")
-		    labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
-
-		sessionTemp['filter'] = labelTerm;
-	    }
-            break;
-
-        }
-        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
-           sessionTemp['pageRetrievalCriteria'] = "Most Recent";
-        }
-
-        this.state.chipData.splice(chipToDelete, 1);
-        this.setState({chipData: this.state.chipData});
-        this.props.deletedFilter(sessionTemp);
-  };
+  this.state.chipData.splice(chipToDelete, 1);
+  this.setState({chipData: this.state.chipData});
+  this.props.deletedFilter(sessionTemp);
+};
 
   renderChip(data) {
         return (
@@ -377,14 +378,13 @@ class ViewTabSnippets extends React.Component{
   render(){
     console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    console.log("pages");
-    console.log(Object.keys(this.state.pages).length);
+  //  console.log("pages");
     var id=0;
     var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
     var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
 
-            if(index>this.state.offset && index<(this.state.offset+this.perPage)){
+            if(index>=this.state.offset && index<(this.state.offset+this.perPage)){
                     let colorTagRelev = "";
                     let colorTagIrrelev="";
                     let colorTagNeutral="";
