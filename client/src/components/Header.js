@@ -72,6 +72,7 @@ class ToolBarHeader extends Component {
       currentDomain:'',
       term:'',
       stopCrawlerSignal:false,
+      messageCrawler:"",
     };
   }
   componentWillMount(){
@@ -120,27 +121,31 @@ class ToolBarHeader extends Component {
     }
 
    startCrawler(){
-     console.log("start crawler");
      var session = this.createSession(this.props.idDomain);
      this.setState({stopCrawlerSignal:true,});
      this.forceUpdate();
      $.post(
        '/startCrawler',
        {'session': JSON.stringify(session)},
-       function(model) {
+       function(message) {
+         this.setState({ stopCrawlerSignal:false, messageCrawler:message,});
+         this.forceUpdate();
        }.bind(this)
      );
    }
 
    stopCrawler(){
-     console.log("stop crawler");
      var session = this.createSession(this.props.idDomain);
-     this.setState({stopCrawlerSignal:false,});
-     this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
-       function(model) {
+       function(message) {
+           this.setState({stopCrawlerSignal:false, messageCrawler:message,});
+           this.forceUpdate();
+           setTimeout(function(){
+             this.setState({messageCrawler:"",});
+             this.forceUpdate();
+           }.bind(this), 700);
        }.bind(this)
      );
    }
@@ -149,11 +154,13 @@ class ToolBarHeader extends Component {
      /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
      </IconButton>}*/
      var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
+     var messageCrawlerRunning = (this.state.stopCrawlerSignal)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{"Crawler is running"} </div>:"";
      var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, width:98}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
         label="Stop"
         labelPosition="before"
         containerElement="label"/> : <div/>;
      var disabledStartCrawler = (this.state.stopCrawlerSignal)?true:false;
+     var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
      return (
        <Toolbar style={styles.toolBarHeader}>
          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
@@ -170,7 +177,9 @@ class ToolBarHeader extends Component {
             containerElement="label"
           />
           {crawler}
+          {messageCrawlerRunning}
           {crawlingProgress}
+          {messageCrawler}
 
          <ToolbarSeparator style={{ marginTop:"5px"}} />
         <TextField
