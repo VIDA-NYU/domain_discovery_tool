@@ -143,7 +143,6 @@ removeString(currentType, currentKey){
   return currentString;
 }
 
-
 handleRequestDelete = (key) => {
   const sessionTemp =  this.state.session;
   const chipToDelete = this.state.chipData.map((chip) => chip.key).indexOf(key);

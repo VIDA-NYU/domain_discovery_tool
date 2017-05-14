@@ -4,7 +4,7 @@ server.socket_port = 8084
 server.thread_pool = 10
 
 [/]
-tools.staticdir.root = .	
+tools.staticdir.root = .
 tools.encode.on = True
 tools.gzip.on = True
 
@@ -12,3 +12,6 @@ tools.gzip.on = True
 tools.staticdir.on = True
 tools.staticdir.dir = static
 
+[/models]
+tools.staticdir.on = True
+tools.staticdir.dir = models
