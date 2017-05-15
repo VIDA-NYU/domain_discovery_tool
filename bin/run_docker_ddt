@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo "Stopping elastisearch container"
+docker container stop elastic
+
+echo "Removing elastisearch container"
+docker rm elastic
+
+echo -n "Enter path to store data [Default $HOME/elasticsearch]: "
+read path
+
+echo $path
+
+if [$path == ""]; then
+    path=$HOME/data
+fi
+
+echo "Starting elastisearch container"
+CID=$(docker run -d --name=elastic -p 9200:9200 -v $path:/usr/share/elasticsearch/data -t elasticsearch:1.6);
+docker inspect $CID
+ELASTIC_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CID);
+echo "Elasticsearch running at = $ELASTIC_IP"
+
+echo "Stopping DD Tool container"
+docker container stop dd_tool
+
+echo "Removing DD Tool container"
+docker rm dd_tool
+
+echo "Starting DD Tool container"
+docker run -i  --name=dd_tool -p 8084:8084 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -t vidanyu/ddt:package
