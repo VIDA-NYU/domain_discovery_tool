@@ -29,7 +29,8 @@ help                : Makefile
 
 clean:
 	rm -rf client/build; \
-	rm server/config.conf
+	rm server/config.conf; \
+	rm server/ache.yml-in
 
 ## conda_env        : Install/update a conda environment with needed packages
 conda_env: $(CONDA_ENV_TARGET)
