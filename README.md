@@ -62,8 +62,19 @@ or (from the top-level `domain_discovery_tool_react` directory) execute:
 ./bin/ddt-dev
 ```
 
-Now you should be able to head to http://localhost:8084/ to interact
-with the tool.
+## Docker Version
+
+To run using the docker version download the scrip run_docker_ddt(https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt) and run it:
+
+```
+./run_docker_ddt
+```
+
+This will start elasticsearch and the domain discovery tool.
+
+## Use Domain Discovery Tool
+
+Now you should be able to head to http://localhost:8084/ to interact with the tool.
 
 ## Publication
 
