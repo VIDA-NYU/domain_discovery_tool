@@ -212,7 +212,7 @@ class Body extends Component{
 
   // Start a timer and get the pages for the particular query as and when they become available on the server
   getQueryPages(term){
-    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 100)});
+    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 1000)});
   }
 
   applyFilterByQuery(term){
