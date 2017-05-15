@@ -6,13 +6,13 @@ docker stop elastic
 echo "Removing elastisearch container"
 docker rm elastic
 
-echo -n "Enter path to store data [Default $HOME/elasticsearch]: "
+echo -n "Provide path to store domain data [Press ENTER for default path $HOME/dd_data]: "
 read path
 
 echo $path
 
-if [ $path == "" ]; then
-    path=$HOME/data:/
+if [[ $path == "" ]]; then
+    path=$HOME/dd_data
 fi
 
 echo "Starting elastisearch container"
