@@ -64,7 +64,7 @@ or (from the top-level `domain_discovery_tool_react` directory) execute:
 
 ## Docker Version
 
-To run using the docker version download the scrip run_docker_ddt(https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt) and run it:
+To run using the docker version download the scrip [run_docker_ddt](https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt) and run it:
 
 ```
 ./run_docker_ddt
