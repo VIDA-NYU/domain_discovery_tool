@@ -37,6 +37,7 @@ import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import IconButton from 'material-ui/IconButton';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ReactPaginate from 'react-paginate';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
@@ -249,8 +250,10 @@ class ViewTabSnippets extends React.Component{
       accuracyOnlineLearning:0,
       offset:0,
       currentPagination:0,
+      allRelevant:false,
     };
-    this.perPage=12;
+    this.perPage=12; //default 12
+    this.currentUrls=[];
   }
 
   componentWillMount(){
@@ -308,12 +311,52 @@ class ViewTabSnippets extends React.Component{
     $.post(
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
-	function(pages) {
+	    function(pages) {
           //updateing filters Tags
           this.props.reloadFilters();
           this.updateOnlineClassifier(this.props.session);
       }.bind(this)
     );
+  }
+
+  //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
+  onTagAllPages(inputTag){
+    console.log("tagging all like a :" + inputTag);
+    console.log(this.currentUrls);
+    var arrayInputURL =this.currentUrls;
+    var tag = inputTag;
+    var urls=[];
+    var action = 'Apply';
+    var isTagPresent = false;
+    var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
+
+    //Removing Relevant, Irrelevant tag
+    for (var i in arrayInputURL) {
+        var url = arrayInputURL[i];
+        var urls =[];
+        urls.push(url);
+        console.log();
+        var auxKey = "0";
+        if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
+            var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                        var itemTag = updatedPages[url]["tags"][key].toString();
+                        if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTags(urls, itemTag, false );
+                        }
+                      });
+            delete updatedPages[url]["tags"];
+        }
+        updatedPages[url]["tags"]=[];
+        updatedPages[url]["tags"][auxKey] = tag;
+        if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+          delete updatedPages[url];
+        }
+    }
+    this.setState({ pages:updatedPages, });
+    this.forceUpdate();
+    this.removeAddTags(arrayInputURL, tag, true );
+    //Applying the new tag
   }
 
     //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
@@ -325,48 +368,49 @@ class ViewTabSnippets extends React.Component{
       var action = 'Apply';
       var isTagPresent = false;
       var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-        if(updatedPages[url]["tags"]){
-           isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
-            return itemTag == tag;});
-            if(isTagPresent) action = 'Remove';
+
+      if(updatedPages[url]["tags"]){
+         isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+                                    return itemTag == tag;});
+         if(isTagPresent) action = 'Remove';
+      }
+      // Apply or remove tag from urls.
+      var applyTagFlag = action == 'Apply';
+      var urls = [];
+      urls.push(url);
+      if (applyTagFlag && !isTagPresent) {
+        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
+        var auxKey = "0";
+        if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
+            var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                        var itemTag = updatedPages[url]["tags"][key].toString();
+                        if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTags(urls, itemTag, false );
+                        }
+                      });
+            delete updatedPages[url]["tags"];
         }
-        // Apply or remove tag from urls.
-        var applyTagFlag = action == 'Apply';
-        var urls = [];
-        urls.push(url);
-        if (applyTagFlag && !isTagPresent) {
-          // Removes tag when the tag is present for item, and applies only when tag is not present for item.
-          var auxKey = "0";
-          if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant" || tag==="Neutral")){
-              var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
-                          var itemTag = updatedPages[url]["tags"][key].toString();
-                          if(itemTag==="Relevant" || itemTag==="Irrelevant" || itemTag==="Neutral"){
-                            delete updatedPages[url]["tags"][key];
-                            this.removeAddTags(urls, itemTag, false );
-                          }
-                        });
-              delete updatedPages[url]["tags"];
-          }
-          updatedPages[url]["tags"]=[];
-          updatedPages[url]["tags"][auxKey] = tag;
-          //checking if the new tag belong to the filter
-          if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
-            this.setState({ pages:updatedPages, });
-            delete updatedPages[url];
-          }
-          //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
+        updatedPages[url]["tags"]=[];
+        updatedPages[url]["tags"][auxKey] = tag;
+        //checking if the new tag belong to the filter
+        if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           this.setState({ pages:updatedPages, });
-          this.removeAddTags(urls, tag, applyTagFlag );
-
+          delete updatedPages[url];
         }
-        else{
-          delete updatedPages[url]["tags"];
-          this.setState({ pages:updatedPages,});
-          this.removeAddTags(urls, tag, applyTagFlag );
-        }
-
+        //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
+        this.setState({ pages:updatedPages, });
+        console.log("Add");
+        this.removeAddTags(urls, tag, applyTagFlag );
 
       }
+      else{
+        delete updatedPages[url]["tags"];
+        console.log("delete");
+        this.setState({ pages:updatedPages,});
+        this.removeAddTags(urls, tag, applyTagFlag );
+      }
+    }
 
   keyboardFocus = (event, item) => {
     console.log(event);
@@ -375,13 +419,22 @@ class ViewTabSnippets extends React.Component{
     };
 
 
+
   render(){
     console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-  //  console.log("pages");
+    console.log("pages");
+    console.log(this.state.pages);
     var id=0;
     var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
     var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
+    /*if(allRelevant){
+      Object.keys(this.state.pages).map((k, index)=>{
+          if(index>=this.state.offset && index<(this.state.offset+this.perPage)){
+            this.onTagActionClicked(k, "Relevant");
+          }
+    }*/
+    this.currentUrls=[];
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
 
             if(index>=this.state.offset && index<(this.state.offset+this.perPage)){
@@ -403,6 +456,8 @@ class ViewTabSnippets extends React.Component{
                     let urlLink= (k.length<110)?k:k.substring(0,109);
                     let imageUrl=(this.state.pages[k]["image_url"]=="")? "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png":this.state.pages[k]["image_url"];
 
+                    this.currentUrls.push(k);
+
                     //style={{height:"200px"}} disableKeyboardFocus= {false} isKeyboardFocused={true} onKeyboardFocus={this.keyboardFocus.bind(this)}
                     return <ListItem key={index}  >
                     <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
@@ -412,7 +467,7 @@ class ViewTabSnippets extends React.Component{
                         <ButtonGroup bsSize="small">
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
                             <Button >
-                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                               <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
                             </Button>
                           </OverlayTrigger>
                           <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
@@ -448,7 +503,14 @@ class ViewTabSnippets extends React.Component{
           <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {urlsList.length} results. </p>
           <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
         </div>
-        <div style={{marginTop:"50px"}} >
+        <div style={{marginBottom:"50px", marginTop:"-10px"}}>
+          <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>
+            <RaisedButton label="Tag All" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+            <RaisedButton label="Tag All" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+            <RaisedButton label="Tag All" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+          </p>
+        </div>
+        <div style={{marginTop:"80px"}} >
           <List>
           {urlsList}
           <Divider inset={true} />

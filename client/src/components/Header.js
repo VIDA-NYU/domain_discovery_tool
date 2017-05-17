@@ -398,7 +398,7 @@ filterKeyword(newFilterKeyword){
 }
 
 render() {
-  console.log("header");
+  console.log("new header ");
   console.log(this.props.location.query.idDomain);
   return (
     <div>
