@@ -29,3 +29,16 @@ docker rm dd_tool
 
 echo "Starting DD Tool container"
 docker run -i  --name=dd_tool -p 8084:8084 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -t vidanyu/ddt:package
+
+echo "Stopping elastisearch container"
+docker stop elastic
+
+echo "Removing elastisearch container"
+docker rm elastic
+
+echo "Stopping DD Tool container"
+docker stop dd_tool
+
+echo "Removing DD Tool container"
+docker rm dd_tool
+
