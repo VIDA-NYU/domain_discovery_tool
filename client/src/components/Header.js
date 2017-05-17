@@ -308,7 +308,7 @@ class ToolBarHeader extends Component {
 
          <ToolbarSeparator style={{ marginTop:"5px"}} />
          <RaisedButton  onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-            label="Crawler"
+            label="Start Crawler"
             labelPosition="before"
             containerElement="label"
           />
@@ -395,6 +395,10 @@ shouldComponentUpdate(nextProps, nextState) {
 filterKeyword(newFilterKeyword){
     this.setState({filterKeyword:newFilterKeyword});
     this.forceUpdate();
+}
+availableCrawlerButton(isthereModel){
+    this.setState({isthereModel:isthereModel});
+    //this.forceUpdate();
 }
 
 render() {
