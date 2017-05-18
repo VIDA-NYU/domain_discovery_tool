@@ -165,7 +165,7 @@ handleRequestDelete = (key) => {
     }
     break;
     case 2://filter
-    sessionTemp['filter']= null;
+    sessionTemp['filter']=null;//null;
     break;
     case 3://model tags
     sessionTemp['selected_model_tags']= this.removeString(3, key);
@@ -186,7 +186,7 @@ handleRequestDelete = (key) => {
     case 5: //Annotated Terms
     sessionTemp['selected_aterms']= this.removeString(5, key);
     if(sessionTemp['selected_aterms'] === "")
-    sessionTemp['filter'] = null;
+    sessionTemp['filter'] =null;//null;
     else {
       var checked = sessionTemp['selected_aterms'].split(",");
       var labelTerm = "";
@@ -254,6 +254,7 @@ class ViewTabSnippets extends React.Component{
     };
     this.perPage=12; //default 12
     this.currentUrls=[];
+    this.disableCrawlerButton=true;
   }
 
   componentWillMount(){
@@ -286,6 +287,14 @@ class ViewTabSnippets extends React.Component{
     	'/updateOnlineClassifier',
     	{'session':  JSON.stringify(sessionTemp)},
     	function(accuracy) {
+        if(accuracy>0 && this.disableCrawlerButton){
+          this.disableCrawlerButton=false;
+          this.props.availableCrawlerButton(false); // disable
+        }
+        if(accuracy==0){
+          this.disableCrawlerButton=true;
+          this.props.availableCrawlerButton(true); // disable
+        }
         //Updates the showed accuracy on the interface only if the different between the new and the previous accuracy is enough significant.
         if(accuracy >=this.state.accuracyOnlineLearning+2 || accuracy <=this.state.accuracyOnlineLearning-2){
           //updateing filters modelTags
@@ -574,6 +583,7 @@ class Views extends React.Component {
 
   //Loads pages in the first time.
   componentWillMount(){
+    console.log("getPages componentWillMount");
       this.getPages(this.props.session);
   }
 
@@ -591,11 +601,18 @@ class Views extends React.Component {
 
   //If there are any change in the session like a new filter, then getPages() is called.
   componentWillReceiveProps(nextProps, nextState){
+
+    console.log("getPages componentWillReceiveProps");
+    console.log(this.props.queryFromSearch);
       this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
 	/*if (nextProps.pages !== this.state.pages) {
 	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
 	    this.forceUpdate();
 	}*/
+
+  console.log(this.queryFromSearch);
+  console.log(JSON.stringify(nextProps.session));
+  console.log(this.state.sessionString);
 	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
     console.log("View---------------");
     this.newPages = false;
@@ -626,9 +643,14 @@ class Views extends React.Component {
     this.props.reloadFilters();
   };
 
+  availableCrawlerButton(isthereModel){
+    this.props.availableCrawlerButton(isthereModel);
+  };
+
+
   render() {
 
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch}/>
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
 
       return (

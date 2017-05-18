@@ -507,7 +507,7 @@ class LoadModel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[]; 
+    var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[];
     if(JSON.stringify(array_selected_model_tags) === JSON.stringify(this.state.checked) ) {
   	  // if(this.props.update){
           //       this.getAvailableModelTags();
@@ -688,7 +688,7 @@ class FiltersTabs extends React.Component {
       labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
 
     if(newTerms === ""){
-      sessionTemp['filter'] = null;
+      sessionTemp['filter'] = null;//null
     }
     else {
       if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""){

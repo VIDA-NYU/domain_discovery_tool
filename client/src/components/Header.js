@@ -80,7 +80,7 @@ class ToolBarHeader extends Component {
       currentDomain:'',
       term:'',
 	stopCrawlerSignal:false,
-	disabledStartCrawler:false,
+	disabledStartCrawler:true, //false
       messageCrawler:"",
       openCreateModel: false,
       currentTags:undefined,
@@ -90,18 +90,24 @@ class ToolBarHeader extends Component {
     };
   }
   componentWillMount(){
-    this.setState({currentDomain: this.props.currentDomain});
+    this.setState({currentDomain: this.props.currentDomain, disabledStartCrawler:this.props.disabledStartCrawler});
   };
 
   componentWillReceiveProps  = (nextProps) => {
+    console.log("new disabledStartCrawler");
+    console.log(nextProps.disabledStartCrawler);
+    console.log(this.state.disabledStartCrawler);
     if(nextProps.currentDomain ===this.state.currentDomain){
-      return;
+      if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {var auxVariable=1;}
+      else return;
     }
-    this.setState({currentDomain: nextProps.currentDomain});
+    this.setState({currentDomain: nextProps.currentDomain, disabledStartCrawler:nextProps.disabledStartCrawler});
   };
 
   shouldComponentUpdate(nextProps, nextState) {
      if (nextProps.currentDomain === this.state.currentDomain ) {
+       console.log("in shouldComponentUpdate");
+       if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {return true;}
        if(nextState.term !==this.state.term || nextState.openCreateModel ){ return true; }
        return false;
      }
@@ -120,7 +126,7 @@ class ToolBarHeader extends Component {
       session['pagesCap'] = "100";
       session['fromDate'] = null;
       session['toDate'] = null;
-      session['filter'] = null;
+      session['filter'] = null;//null;
       session['pageRetrievalCriteria'] = "Most Recent";
       session['selected_morelike'] = "";
       session['selected_queries']="";
@@ -307,7 +313,7 @@ class ToolBarHeader extends Component {
          </Link>
 
          <ToolbarSeparator style={{ marginTop:"5px"}} />
-         <RaisedButton  onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+         <RaisedButton  onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{height:20, marginTop: 15, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
             label="Start Crawler"
             labelPosition="before"
             containerElement="label"
@@ -367,9 +373,9 @@ class Header extends Component {
     this.state = {
 	idDomain:'',
 	filterKeyword:'',
-	stopCrawlerSignal:false,
-	disabledStartCrawler:false,
+	disabledStartCrawler:true,
 	messageCrawler:"",
+  reloadBody:true,
     };
 };
 
@@ -393,12 +399,15 @@ shouldComponentUpdate(nextProps, nextState) {
 };
 
 filterKeyword(newFilterKeyword){
-    this.setState({filterKeyword:newFilterKeyword});
+    this.setState({filterKeyword:newFilterKeyword, reloadBody:true,});
     this.forceUpdate();
 }
 availableCrawlerButton(isthereModel){
-    this.setState({isthereModel:isthereModel});
-    //this.forceUpdate();
+    console.log("accuracy Header");
+    console.log(isthereModel);
+    this.setState({disabledStartCrawler:isthereModel, reloadBody:false,});
+    this.forceUpdate();
+
 }
 
 render() {
@@ -413,10 +422,10 @@ render() {
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
 	  >
-	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} />
+	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} disabledStartCrawler={this.state.disabledStartCrawler} />
       </AppBar>
 
-      <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword}/>
+      <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
 
     </div>
   );
