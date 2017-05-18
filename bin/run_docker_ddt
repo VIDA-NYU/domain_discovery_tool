@@ -27,6 +27,9 @@ docker stop dd_tool
 echo "Removing DD Tool container"
 docker rm dd_tool
 
+echo "Updating DDT Package"
+docker pull vidanyu/ddt:package
+
 echo "Starting DD Tool container"
 docker run -i  --name=dd_tool -p 8084:8084 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -t vidanyu/ddt:package
 
