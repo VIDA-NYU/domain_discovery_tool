@@ -171,8 +171,8 @@ handleRequestDelete = (key) => {
     sessionTemp['selected_model_tags']= this.removeString(3, key);
     if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
       if(sessionTemp['selected_model_tags'] === "") {
-        delete sessionTemp['pageRetrievalCriteria']['model_tags'];
-      } else sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+        delete sessionTemp['pageRetrievalCriteria']['model_tag'];
+      } else sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
     }
     break;
     case 4: //tlds
