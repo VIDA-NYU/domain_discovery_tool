@@ -81,6 +81,7 @@ class ToolBarHeader extends Component {
       term:'',
 	stopCrawlerSignal:false,
 	disabledStartCrawler:true, //false
+  disabledCreateModel:true, //false
       messageCrawler:"",
       openCreateModel: false,
       currentTags:undefined,
@@ -90,7 +91,7 @@ class ToolBarHeader extends Component {
     };
   }
   componentWillMount(){
-    this.setState({currentDomain: this.props.currentDomain, disabledStartCrawler:this.props.disabledStartCrawler});
+    this.setState({currentDomain: this.props.currentDomain, disabledStartCrawler:this.props.disabledStartCrawler, disabledCreateModel:this.props.disabledStartCrawler});
   };
 
   componentWillReceiveProps  = (nextProps) => {
@@ -101,7 +102,7 @@ class ToolBarHeader extends Component {
       if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {var auxVariable=1;}
       else return;
     }
-    this.setState({currentDomain: nextProps.currentDomain, disabledStartCrawler:nextProps.disabledStartCrawler});
+    this.setState({currentDomain: nextProps.currentDomain, disabledStartCrawler:nextProps.disabledStartCrawler, disabledCreateModel:nextProps.disabledStartCrawler});
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -218,7 +219,7 @@ class ToolBarHeader extends Component {
         function(model_file) {
           var url = model_file;
           window.open(url,'Download');
-          this.setState({loadingModel:false})
+          this.setState({loadingModel:false, disabledCreateModel:false})
           this.forceUpdate();
         }.bind(this)
       );
@@ -227,7 +228,7 @@ class ToolBarHeader extends Component {
    createModel(){
      //createNewDomain
      var session = this.createSession(this.props.idDomain);
-     this.setState({loadingModel:true});
+     this.setState({loadingModel:true, disabledCreateModel:true});
      this.forceUpdate();
      this.getCreatedModel(session);
    };
@@ -323,7 +324,7 @@ class ToolBarHeader extends Component {
           {crawlingProgress}
 
          <IconMenu
-          iconButtonElement={<RaisedButton style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+          iconButtonElement={<RaisedButton disabled={this.state.disabledCreateModel} style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
             label="Model"
             labelPosition="before"
             containerElement="label"
