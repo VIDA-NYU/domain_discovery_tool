@@ -405,7 +405,7 @@ class LoadTag extends React.Component {
   componentWillReceiveProps(nextProps){
     var array_selected_tags =  (nextProps.session['selected_tags']!=="")?nextProps.session['selected_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
     if(JSON.stringify(array_selected_tags) === JSON.stringify(this.state.checked) ) {
-      	if(this.props.update){
+      	if(this.props.update && this.state.expanded.length > 0){
           this.getAvailableTags();
       	}
       	return;
@@ -472,7 +472,7 @@ class LoadModel extends React.Component {
   constructor(props){
     super(props);
     this.state={
-    	currentModelTags:undefined,
+    	currentModelTags:{"Maybe Relevant":0, "Maybe Irrelevant":0,"Unsure":0},
     	checked:[],
     	expanded:[],
     	session: {},
@@ -484,13 +484,16 @@ class LoadModel extends React.Component {
     	    }
     	]
     };
+      this.callModelTags = false;  
   }
 
-  getAvailableModelTags(){
+    getAvailableModelTags(){
+	this.callModelTags = true;  
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
     	function(modelTagDomain) {
+	    this.callModelTags = false;
     	    var selected_model_tags = [];
     	    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== "" ){
         		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
@@ -498,21 +501,22 @@ class LoadModel extends React.Component {
         		else selected_model_tags.push(this.props.session['selected_model_tags'])
     	    }
     	    this.setState({currentModelTags: modelTagDomain, session:this.props.session, checked:selected_model_tags});
+	    this.forceUpdate();
        }.bind(this)
     );
   }
 
   componentWillMount(){
-    this.getAvailableModelTags();
+    //this.getAvailableModelTags();
   }
 
   componentWillReceiveProps(nextProps){
     var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[];
     if(JSON.stringify(array_selected_model_tags) === JSON.stringify(this.state.checked) ) {
-  	  // if(this.props.update){
-          //       this.getAvailableModelTags();
-  	  // }
-  	  return;
+  	if(this.props.update && this.state.expanded.length > 0){
+            this.getAvailableModelTags();
+  	}
+  	return;
     }
     var selected_model_tags = [];
     if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== ""){
@@ -523,7 +527,7 @@ class LoadModel extends React.Component {
     this.setState({session:nextProps.session, checked:selected_model_tags});
   }
 
-  shouldComponentUpdate(nextProps, nextState){
+    shouldComponentUpdate(nextProps, nextState){
     if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
     	 JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
     	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
@@ -531,7 +535,7 @@ class LoadModel extends React.Component {
       	else {return false;}
 	return false
     }
-    if(JSON.stringify(nextState.expanded) !== JSON.stringify(this.state.expanded)) {
+    if(JSON.stringify(nextState.expanded) !== JSON.stringify(this.state.expanded) && nextState.expanded.length > 0) {
 	this.getAvailableModelTags();
     }
     return true;
@@ -543,37 +547,39 @@ class LoadModel extends React.Component {
     this.props.addModelTags(checked);
   }
 
-  render(){
-    if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
-      var nodes = this.state.modeltagNodes;
-      var nodesTemp = [];
-      nodes.map((node,index)=>{
-        if(node.value === "modeltag"){
-          node.children = [];
-          Object.keys(this.state.currentModelTags).map((tag, index)=>{
-            var labelTag=  tag+" " +"(" +this.state.currentModelTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
-            node.children.push({value:tag, label:labelTag});
-          });
-        }
-        nodesTemp.push(node);
-      });
-
+    render(){
+	var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>; 
+      if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
+	  var nodes = this.state.modeltagNodes;
+	  var nodesTemp = [];
+	  nodes.map((node,index)=>{
+	      if(node.value === "modeltag"){
+		  node.children = [];
+		  Object.keys(this.state.currentModelTags).map((tag, index)=>{
+		      var labelTag=  tag+" " +"(" +this.state.currentModelTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+		      node.children.push({value:tag, label:labelTag});
+		  });
+	      }
+	      nodesTemp.push(node);
+	  });
+	  
+	  return(
+	      <div >
+	      <CheckboxTree
+	      nodes={nodesTemp}
+	      checked={this.state.checked}
+	      expanded={this.state.expanded}
+	      onCheck={checked => this.addModelTags({checked})}
+	      onExpand={expanded => this.setState({ expanded })}
+	      showNodeIcon={false}
+		  />
+		  {cursor_waiting}
+		  </div>
+	  );
+      }
       return(
-        <div >
-        <CheckboxTree
-          nodes={nodesTemp}
-          checked={this.state.checked}
-          expanded={this.state.expanded}
-          onCheck={checked => this.addModelTags({checked})}
-          onExpand={expanded => this.setState({ expanded })}
-          showNodeIcon={false}
-        />
-        </div>
+	      <CircularProgressSimple />
       );
-    }
-    return(
-      <CircularProgressSimple />
-    );
   }
 }
 
@@ -627,7 +633,7 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
         if(sessionTemp['selected_tlds']!=="")
           sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
       }
@@ -659,7 +665,7 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
       }
       else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
@@ -702,7 +708,7 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
       } else sessionTemp['filter']=labelTerm;
     }
     sessionTemp['selected_aterms']=newTerms;
@@ -724,7 +730,7 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tlds']!=="")
           sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tags'] = sessionTemp['selected_model_tags'];
+          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
       }
       else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
@@ -746,7 +752,7 @@ class FiltersTabs extends React.Component {
     if(newTags !== ""){
       if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== ""){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
-        sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
+        sessionTemp['pageRetrievalCriteria'] = {'model_tag':newTags};
         if(sessionTemp['selected_queries']!=="")
           sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
         if(sessionTemp['selected_tlds']!=="")
@@ -758,7 +764,7 @@ class FiltersTabs extends React.Component {
         sessionTemp['pageRetrievalCriteria'] = "Model Tags";
       }
     } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
-      delete sessionTemp['pageRetrievalCriteria']['model_tags'];
+      delete sessionTemp['pageRetrievalCriteria']['model_tag'];
     }
 
     sessionTemp['selected_model_tags']=newTags;
