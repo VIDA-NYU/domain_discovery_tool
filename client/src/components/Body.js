@@ -86,7 +86,7 @@ class Body extends Component{
     session['pagesCap'] = "100";
     session['fromDate'] = null;
     session['toDate'] = null;
-    session['filter'] = null;
+    session['filter'] = null; //null
     session['pageRetrievalCriteria'] = "Most Recent";
     session['selected_morelike'] = "";
     session['selected_queries']="";
@@ -114,7 +114,9 @@ class Body extends Component{
     console.log(newProps.filterKeyword);
     if(newProps.filterKeyword !== '' || newProps.filterKeyword !== null){
       const sessionTemp =  this.state.sessionBody;
-      sessionTemp['filter']= newProps.filterKeyword;
+      sessionTemp['filter']= (newProps.filterKeyword === '')?null:newProps.filterKeyword;
+      console.log("sessionTemp['filter']");
+      console.log(JSON.stringify(sessionTemp));
       this.setState({sessionBody: sessionTemp, sessionString: JSON.stringify(sessionTemp)});
     }
     if(newProps.currentDomain === this.state.currentDomain){
@@ -126,10 +128,15 @@ class Body extends Component{
 
   //Verify if it is necessary an update.
     shouldComponentUpdate(nextProps, nextState) {
+    /*  console.log(nextProps.reloadBody);
+    if(nextProps.reloadBody !==undefined && !nextProps.reloadBody){
+      return false;
+    }*/
     if (nextState.sessionString  === this.state.sessionString) {
        if(nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
        }
+       console.log("shold body false");
           return false;
      }
       return true;
@@ -241,6 +248,9 @@ class Body extends Component{
     this.forceUpdate();
     this.setState({update:false});
   };
+   availableCrawlerButton(isthereModel){
+     this.props.availableCrawlerButton(isthereModel);
+   }
 
   render(){
     console.log("------body----------");
@@ -283,7 +293,7 @@ class Body extends Component{
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views queryFromSearch = {this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)}/>
+          <Views queryFromSearch = {this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
         </Row>
       </div>
       <Snackbar
