@@ -99,6 +99,7 @@ class ToolBarHeader extends Component {
     console.log(nextProps.disabledStartCrawler);
     console.log(this.state.disabledStartCrawler);*/
     if(nextProps.currentDomain ===this.state.currentDomain){
+      if(nextProps.term=="remove"){ this.setState({term:""});}
       if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {var auxVariable=1;}
       else return;
     }
@@ -109,6 +110,7 @@ class ToolBarHeader extends Component {
      if (nextProps.currentDomain === this.state.currentDomain ) {
        if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {return true;}
        if(nextState.term !==this.state.term || nextState.openCreateModel ){ return true; }
+       if(nextProps.term=="remove"){  return true;}
        return false;
      }
      return true;
@@ -373,6 +375,7 @@ class Header extends Component {
     this.state = {
 	idDomain:'',
 	filterKeyword:'',
+  term:'',
 	disabledStartCrawler:true,
 	messageCrawler:"",
   reloadBody:true,
@@ -399,7 +402,7 @@ shouldComponentUpdate(nextProps, nextState) {
 };
 
 filterKeyword(newFilterKeyword){
-    this.setState({filterKeyword:newFilterKeyword, reloadBody:true,});
+    this.setState({filterKeyword:newFilterKeyword, reloadBody:true, term:"apply"});
     this.forceUpdate();
 }
 availableCrawlerButton(isthereModel){
@@ -410,8 +413,9 @@ availableCrawlerButton(isthereModel){
 
 deletedFilter(filter_Keyword){
   this.setState({
-      filterKeyword:filter_Keyword,
+      filterKeyword:filter_Keyword, term:"remove",
   });
+  this.forceUpdate();
 }
 
 render() {
@@ -425,10 +429,10 @@ render() {
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
 	  >
-	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} disabledStartCrawler={this.state.disabledStartCrawler} />
+	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} term={this.state.term} disabledStartCrawler={this.state.disabledStartCrawler} />
       </AppBar>
 
-      <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.filterKeyword.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
+      <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
 
     </div>
   );
