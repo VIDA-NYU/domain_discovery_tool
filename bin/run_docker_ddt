@@ -31,7 +31,7 @@ echo "Updating DDT Package"
 docker pull vidanyu/ddt:package
 
 echo "Starting DD Tool container"
-docker run -i  --name=dd_tool -p 8084:8084 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -t vidanyu/ddt:package
+docker run -i  --name=dd_tool -p 8084:8084 -p 8080:8080 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -t vidanyu/ddt:package
 
 echo "Stopping elastisearch container"
 docker stop elastic
