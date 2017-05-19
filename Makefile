@@ -7,11 +7,9 @@
 SHELL := /bin/bash
 CONDA_ROOT := $(shell conda info --root)
 CONDA_ENV := $(CONDA_ROOT)/envs/ddt
-ACHE_HOME := $(CONDA_ENV)/lib/ache
 
 CONDA_ENV_TARGET := $(CONDA_ENV)/conda-meta/history
 CHERRY_PY_CONFIG_TARGET := server/config.conf
-ACHE_CONFIG_TARGET := server/ache.yml-in
 GET_REACT_NPM_INSTALL := client/node_modules
 GET_REACT_NPM_BUILD := client/build/index.html
 GET_NLTK_DATA_TARGET := nltk_data
@@ -19,7 +17,7 @@ GET_NLTK_DATA_TARGET := nltk_data
 # Makefile commands, see below for actual builds
 
 ## all              : set up DDT development environment
-all: conda_env downloader_app cherrypy_config ache_config get_react_install get_react_build get_nltk_data
+all: conda_env downloader_app cherrypy_config get_react_install get_react_build get_nltk_data
 
 ## help             : show all commands.
 # Note the double '##' in the line above: this is what's matched to produce
@@ -29,8 +27,7 @@ help                : Makefile
 
 clean:
 	rm -rf client/build; \
-	rm server/config.conf; \
-	rm server/ache.yml-in
+	rm server/config.conf
 
 ## conda_env        : Install/update a conda environment with needed packages
 conda_env: $(CONDA_ENV_TARGET)
@@ -40,9 +37,6 @@ downloader_app: $(DOWNLOADER_APP_TARGET)
 
 ## cherrypy_config  : Configure CherryPy (set absolute root environment)
 cherrypy_config: $(CHERRY_PY_CONFIG_TARGET)
-
-## ache_config  : Configure ACHE
-ache_config: $(ACHE_CONFIG_TARGET)
 
 ## get_nltk_data    : Download NLTK corpus and tokenizers 
 get_nltk_data: $(GET_NLTK_DATA_TARGET)
@@ -61,10 +55,6 @@ $(CONDA_ENV_TARGET): environment.yml
 
 $(CHERRY_PY_CONFIG_TARGET): server/config.conf-in
 	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf
-
-$(ACHE_CONFIG_TARGET):
-	source activate ddt; \
-	cp $(ACHE_HOME)/config/ache.yml server/ache.yml-in
 
 $(GET_NLTK_DATA_TARGET): 
 	source activate ddt; \
