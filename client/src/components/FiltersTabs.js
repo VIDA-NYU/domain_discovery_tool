@@ -71,7 +71,7 @@ class LoadQueries extends React.Component {
 
   componentWillReceiveProps(nextProps){
     if(JSON.stringify(nextProps.session["selected_queries"]) === JSON.stringify(this.state.checked)){
-      if(this.props.update){
+      if(this.props.update  && this.state.expanded.length > 0){
         this.getAvailableQueries();
       }
       return;
