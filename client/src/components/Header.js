@@ -37,7 +37,7 @@ const styles = {
     color: 'white'
   },
   toolBarHeader: {
-    width:'70%',
+    width:'75%',
     height:45,
     marginTop:8,
     marginRight:'-15px',
@@ -298,12 +298,12 @@ class ToolBarHeader extends Component {
      </IconButton>}*/
      var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
        var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
-     var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, width:98}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+     var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
         label="Stop"
         labelPosition="before"
         containerElement="label"/> : <div/>;
      //var disabledStartCrawler = (this.state.stopCrawlerSignal)?true:false;
-     var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
+     var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:12 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
      return (
        <Toolbar style={styles.toolBarHeader}>
          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
@@ -313,8 +313,8 @@ class ToolBarHeader extends Component {
            </IconButton>
          </Link>
 
-         <ToolbarSeparator style={{ marginTop:"5px"}} />
-         <RaisedButton  onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{height:20, marginTop: 15, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+         <ToolbarSeparator style={{ marginTop:"5px", marginLeft:"-20px"}} />
+         <RaisedButton  onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
             label="Start Crawler"
             labelPosition="before"
             containerElement="label"
@@ -324,7 +324,7 @@ class ToolBarHeader extends Component {
           {crawlingProgress}
 
          <IconMenu
-          iconButtonElement={<RaisedButton disabled={this.state.disabledCreateModel} style={{height:20, marginTop: 15, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+          iconButtonElement={<RaisedButton disabled={this.state.disabledCreateModel} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
             label="Model"
             labelPosition="before"
             containerElement="label"
@@ -337,7 +337,7 @@ class ToolBarHeader extends Component {
          {loadingModel}
          <ToolbarSeparator style={{ marginTop:"5px"}} />
         <TextField
-         style={{width:'35%',marginRight:'-80px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+         style={{width:'25%',marginRight:'-80px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
          hintText="Search ..."
          hintStyle={{marginBottom:"-8px", marginLeft:10}}
          inputStyle={{marginBottom:10, marginLeft:10}}
