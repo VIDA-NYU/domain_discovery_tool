@@ -111,7 +111,7 @@ class Body extends Component{
   //handling update of props (ex. filters, session, etc)
   componentWillReceiveProps  = (newProps) => {
     if(newProps.filterKeyword !== '' || newProps.filterKeyword !== null){
-      const sessionTemp =  this.state.sessionBody;
+      let sessionTemp =  this.state.sessionBody;
       sessionTemp['filter']= (newProps.filterKeyword === '')?null:newProps.filterKeyword;
       //console.log("sessionTemp['filter']");
       //console.log(JSON.stringify(sessionTemp));
@@ -190,6 +190,7 @@ class Body extends Component{
 
   //function from FiltersTabs Component. Add or Remove some query or tag which was used to filter data.
   deletedFilter(sessionTemp){
+    this.props.deletedFilter(sessionTemp["filter"]);
     this.setState({
         sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp)
     });
@@ -220,7 +221,6 @@ class Body extends Component{
   }
 
   applyFilterByQuery(term){
-    //console.log("applyFilterByQuery----------------");
     var session =this.state.sessionBody;
     session['newPageRetrievalCriteria'] = "one";
     session['pageRetrievalCriteria'] = "Queries";

@@ -408,7 +408,14 @@ availableCrawlerButton(isthereModel){
 
 }
 
+deletedFilter(filter_Keyword){
+  this.setState({
+      filterKeyword:filter_Keyword,
+  });
+}
+
 render() {
+  console.log("HEADER " + this.state.filterKeyword);
   return (
     <div>
       <AppBar showMenuIconButton={true}
@@ -421,7 +428,7 @@ render() {
 	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} disabledStartCrawler={this.state.disabledStartCrawler} />
       </AppBar>
 
-      <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
+      <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.filterKeyword.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
 
     </div>
   );

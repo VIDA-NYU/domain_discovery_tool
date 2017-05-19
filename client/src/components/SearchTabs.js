@@ -52,6 +52,7 @@ class SearchTabs extends React.Component {
     	var session =this.props.session;
     	session['search_engine']=this.state.search_engine;
       this.props.getQueryPages(this.state.valueQuery);
+
     	$.post(
               '/queryWeb',
               {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},

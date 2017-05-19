@@ -100,7 +100,7 @@ class ChipViewTab extends React.Component{
     }
     // Calculate new state
     var session = nextProps.session;
-    var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
+    var queriesList =[], tagsList =[], tldsList=[],atermsList=[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
     atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;
@@ -123,8 +123,8 @@ class ChipViewTab extends React.Component{
     for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
     }
-    if(session['filter']){
-      newChip.push({key: (queriesList.length + tagsList.length + modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
+    if(session['filter'] != null){
+      newChip.push({key: (queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
     }
     this.setState({
       chipData:newChip, pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
@@ -553,7 +553,7 @@ class Views extends React.Component {
     super(props);
     this.state = {
       slideIndex: 0,
-	pages:{},
+	    pages:{},
       sessionString:"",
       session:{},
       chipData: [],
@@ -569,7 +569,7 @@ class Views extends React.Component {
 	  '/getPages',
 	  {'session': JSON.stringify(session)},
 	  function(pages) {
-                this.newPages=true;
+              this.newPages=true;
               this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
 	  }.bind(this)
       );
@@ -632,7 +632,6 @@ class Views extends React.Component {
 
 
   render() {
-
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
 
