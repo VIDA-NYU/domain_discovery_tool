@@ -95,9 +95,9 @@ class ToolBarHeader extends Component {
   };
 
   componentWillReceiveProps  = (nextProps) => {
-    console.log("new disabledStartCrawler");
+    /*console.log("new disabledStartCrawler");
     console.log(nextProps.disabledStartCrawler);
-    console.log(this.state.disabledStartCrawler);
+    console.log(this.state.disabledStartCrawler);*/
     if(nextProps.currentDomain ===this.state.currentDomain){
       if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {var auxVariable=1;}
       else return;
@@ -107,7 +107,6 @@ class ToolBarHeader extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
      if (nextProps.currentDomain === this.state.currentDomain ) {
-       console.log("in shouldComponentUpdate");
        if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {return true;}
        if(nextState.term !==this.state.term || nextState.openCreateModel ){ return true; }
        return false;
@@ -404,16 +403,12 @@ filterKeyword(newFilterKeyword){
     this.forceUpdate();
 }
 availableCrawlerButton(isthereModel){
-    console.log("accuracy Header");
-    console.log(isthereModel);
     this.setState({disabledStartCrawler:isthereModel, reloadBody:false,});
     this.forceUpdate();
 
 }
 
 render() {
-  console.log("new header ");
-  console.log(this.props.location.query.idDomain);
   return (
     <div>
       <AppBar showMenuIconButton={true}

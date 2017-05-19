@@ -46,7 +46,6 @@ const styles = {
 class Body extends Component{
 
   constructor(props) {
-      console.log("body constructor");
       super(props);
       this.state = {
         docked: true,
@@ -111,12 +110,11 @@ class Body extends Component{
 
   //handling update of props (ex. filters, session, etc)
   componentWillReceiveProps  = (newProps) => {
-    console.log(newProps.filterKeyword);
     if(newProps.filterKeyword !== '' || newProps.filterKeyword !== null){
       const sessionTemp =  this.state.sessionBody;
       sessionTemp['filter']= (newProps.filterKeyword === '')?null:newProps.filterKeyword;
-      console.log("sessionTemp['filter']");
-      console.log(JSON.stringify(sessionTemp));
+      //console.log("sessionTemp['filter']");
+      //console.log(JSON.stringify(sessionTemp));
       this.setState({sessionBody: sessionTemp, sessionString: JSON.stringify(sessionTemp)});
     }
     if(newProps.currentDomain === this.state.currentDomain){
@@ -136,8 +134,7 @@ class Body extends Component{
        if(nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
        }
-       console.log("shold body false");
-          return false;
+       return false;
      }
       return true;
   }
@@ -183,7 +180,7 @@ class Body extends Component{
   }
 
   setActiveMenu (expanded, menu) {
-    console.log("setActiveMenu " + expanded.toString() + " " + this.state.open.toString());
+    //console.log("setActiveMenu " + expanded.toString() + " " + this.state.open.toString());
     if(!this.state.open){
       this.openMenu();
     }
@@ -223,7 +220,7 @@ class Body extends Component{
   }
 
   applyFilterByQuery(term){
-    console.log("applyFilterByQuery----------------");
+    //console.log("applyFilterByQuery----------------");
     var session =this.state.sessionBody;
     session['newPageRetrievalCriteria'] = "one";
     session['pageRetrievalCriteria'] = "Queries";

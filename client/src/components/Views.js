@@ -100,8 +100,6 @@ class ChipViewTab extends React.Component{
     }
     // Calculate new state
     var session = nextProps.session;
-    console.log("CHIP");
-    console.log(session);
     var queriesList =[], tldsList=[],atermsList=[],tagsList =[], modelTagsList =[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
@@ -421,48 +419,29 @@ class ViewTabSnippets extends React.Component{
           }
           //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
           this.setState({ pages:updatedPages, });
-          console.log("Add");
-          this.removeAddTagElasticSearch(urls, tag, applyTagFlag );
+          this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
 
         }
         else{
           delete updatedPages[url]["tags"];
-          console.log("delete");
           this.setState({ pages:updatedPages,});
-          this.removeAddTagElasticSearch(urls, tag, applyTagFlag );
+          this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
         }
       }
 
     }
 
-  keyboardFocus = (event, item) => {
-    console.log(event);
-    console.log(item);
-      console.log("keyboardFocus");
-    };
-
-
-
   render(){
     console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    console.log("pages");
-    console.log(this.state.pages);
+    //console.log(this.state.pages);
     var id=0;
     var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
     var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
-    /*if(allRelevant){
-      Object.keys(this.state.pages).map((k, index)=>{
-          if(index>=this.state.offset && index<(this.state.offset+this.perPage)){
-            this.onTagActionClicked(k, "Relevant");
-          }
-    }*/
     this.currentUrls=[];
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
 
             if(index>=this.state.offset && index<(this.state.offset+this.perPage)){
-                    console.log(k);
-                    console.log(this.state.pages[k]);
                     let colorTagRelev = "";
                     let colorTagIrrelev="";
                     let colorTagNeutral="";
@@ -483,7 +462,6 @@ class ViewTabSnippets extends React.Component{
 
                     this.currentUrls.push(k);
 
-                    //style={{height:"200px"}} disableKeyboardFocus= {false} isKeyboardFocused={true} onKeyboardFocus={this.keyboardFocus.bind(this)}
                     return <ListItem key={index}  >
                     <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
                       <div>
@@ -599,7 +577,6 @@ class Views extends React.Component {
 
   //Loads pages in the first time.
   componentWillMount(){
-    console.log("getPages componentWillMount");
       this.getPages(this.props.session);
   }
 
@@ -617,27 +594,17 @@ class Views extends React.Component {
 
   //If there are any change in the session like a new filter, then getPages() is called.
   componentWillReceiveProps(nextProps, nextState){
-
-    console.log("getPages componentWillReceiveProps");
-    console.log(this.props.queryFromSearch);
-      this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
-	/*if (nextProps.pages !== this.state.pages) {
-	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
-	    this.forceUpdate();
-	}*/
-
-  console.log(this.queryFromSearch);
-  console.log(JSON.stringify(nextProps.session));
-  console.log(this.state.sessionString);
-	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
-    console.log("View---------------");
-    this.newPages = false;
-    this.loadPages(nextProps.session);
-	}else{
-      return;
-  }
-
-
+    this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
+  	/*if (nextProps.pages !== this.state.pages) {
+  	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
+  	    this.forceUpdate();
+  	}*/
+  	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
+      this.newPages = false;
+      this.loadPages(nextProps.session);
+  	}else{
+        return;
+    }
   }
 
   //Updates selected filters.
