@@ -90,14 +90,12 @@ class ToolBarHeader extends Component {
       loadingModel:false,
     };
   }
-  componentWillMount(){
-    this.setState({currentDomain: this.props.currentDomain, disabledStartCrawler:this.props.disabledStartCrawler, disabledCreateModel:this.props.disabledStartCrawler});
+    componentWillMount(){
+	this.getStatus();
+    this.setState({currentDomain: this.props.currentDomain});
   };
 
   componentWillReceiveProps  = (nextProps) => {
-    /*console.log("new disabledStartCrawler");
-    console.log(nextProps.disabledStartCrawler);
-    console.log(this.state.disabledStartCrawler);*/
     if(nextProps.currentDomain ===this.state.currentDomain){
       if(nextProps.term=="remove"){ this.setState({term:""});}
       if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {var auxVariable=1;}
@@ -140,6 +138,35 @@ class ToolBarHeader extends Component {
       session['model']['positive'] = "Relevant";
       session['model']['nagative'] = "Irrelevant";
       return session;
+   }
+
+    getStatus(){
+	var session = this.createSession(this.props.idDomain);
+	console.log("GET STATUS");
+	$.post(
+	    '/getStatus',
+	    {'session': JSON.stringify(session)},
+	    function(result) {
+		console.log("STATUS");
+		console.log(result);
+		var status = JSON.parse(JSON.stringify(result));
+		console.log(status);
+		if(status !== undefined) {
+		    var message = status.crawler;
+		    console.log(message);
+		    if( message !== undefined){
+			var stopCrawlerFlag = false;
+			var disabledStartCrawlerFlag = false;
+			if(message === "Crawler is running"){
+			    console.log("Setting crawler flags");
+			    stopCrawlerFlag = true;
+			    disabledStartCrawlerFlag = true;
+			}
+			this.setState({ stopCrawlerSignal:stopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+		    }
+		}
+	    }.bind(this)
+	);
     }
 
    startCrawler(){
@@ -150,10 +177,10 @@ class ToolBarHeader extends Component {
      $.post(
        '/startCrawler',
        {'session': JSON.stringify(session)},
-       function(message) {
-	   this.setState({ stopCrawlerSignal:false, disabledStartCrawler:false, messageCrawler:message,});
-	   this.forceUpdate();
-       }.bind(this)
+	 function(message) {
+	     this.setState({ stopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message});
+	     this.forceUpdate();
+	 }.bind(this)
      );
    }
 
