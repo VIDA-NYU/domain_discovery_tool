@@ -70,8 +70,9 @@ class LoadQueries extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if(JSON.stringify(nextProps.session["selected_queries"]) === JSON.stringify(this.state.checked)){
-      if(this.props.update  && this.state.expanded.length > 0){
+    var array_selected_queries =  (nextProps.session['selected_queries']!=="")?nextProps.session['selected_queries'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
+    if(JSON.stringify(array_selected_queries) === JSON.stringify(this.state.checked) ) {
+      if(this.props.update  && this.state.expanded.length > 0 ||  this.state.expanded.length > 0 && this.props.queryFromSearch){
         this.getAvailableQueries();
       }
       return;
@@ -87,7 +88,7 @@ class LoadQueries extends React.Component {
     if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
     JSON.stringify(nextState.currentQueries) === JSON.stringify(this.state.currentQueries) &&
     JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
-      if(this.props.update){ return true;}
+      if(this.props.update ||  this.props.queryFromSearch){ return true;}
       else {return false;}
     }
     return true;
@@ -484,11 +485,11 @@ class LoadModel extends React.Component {
     	    }
     	]
     };
-      this.callModelTags = false;  
+      this.callModelTags = false;
   }
 
     getAvailableModelTags(){
-	this.callModelTags = true;  
+	this.callModelTags = true;
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
@@ -548,7 +549,7 @@ class LoadModel extends React.Component {
   }
 
     render(){
-	var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>; 
+	var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>;
       if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
 	  var nodes = this.state.modeltagNodes;
 	  var nodesTemp = [];
@@ -562,7 +563,7 @@ class LoadModel extends React.Component {
 	      }
 	      nodesTemp.push(node);
 	  });
-	  
+
 	  return(
 	      <div >
 	      <CheckboxTree
@@ -598,6 +599,7 @@ class FiltersTabs extends React.Component {
       modelTagString:"",
       flat:false,
     };
+    this.queryFromSearch=true;
   }
 
   componentWillMount(){
@@ -606,6 +608,7 @@ class FiltersTabs extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    //this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
     if(JSON.stringify(nextProps.session) === this.state.sessionString) {
       this.setState({  flat: true });
       return;
@@ -617,7 +620,8 @@ class FiltersTabs extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
+    this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
+    if(this.queryFromSearch || this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
       return true;
     }
     return false;
@@ -780,7 +784,7 @@ class FiltersTabs extends React.Component {
       return (
 	    <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
         <div style={styles.headline}>
-            <LoadQueries update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
+            <LoadQueries queryFromSearch = {this.queryFromSearch} update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
 	          <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)}  />
 	          <LoadAnnotatedTerms update={this.props.update} session={this.state.session} addATerm={this.addATerm.bind(this)}  />
 	          <LoadTLDs update={this.props.update} session={this.state.session} addTLD={this.addTLD.bind(this)}  />

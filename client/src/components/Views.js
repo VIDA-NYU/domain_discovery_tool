@@ -430,6 +430,10 @@ class ViewTabSnippets extends React.Component{
       }
 
     }
+  getTag(k){
+    var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
+    return uniqueTag;
+  }
 
   render(){
     console.log("SnippetsPAges------------");
@@ -439,15 +443,25 @@ class ViewTabSnippets extends React.Component{
     var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
     var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
+    var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-
+            if(this.state.pages[k]["tags"]){
+             let uniqueTag="";
+             uniqueTag = this.getTag(k);
+             if(uniqueTag==='Relevant')relev_total++;
+             if(uniqueTag==='Irrelevant')irrelev_total++;
+             if(uniqueTag==='Neutral')neut_total++;
+            }
+            else{
+              neut_total++;
+            }
             if(index>=this.state.offset && index<(this.state.offset+this.perPage)){
                     let colorTagRelev = "";
                     let colorTagIrrelev="";
                     let colorTagNeutral="";
                     let uniqueTag="";
                     if(this.state.pages[k]["tags"]){
-                     uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
+                     uniqueTag = this.getTag(k);
                      colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
                      colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
                      colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
@@ -496,6 +510,11 @@ class ViewTabSnippets extends React.Component{
                     </div>
                   </ListItem>;
             }
+    });
+    this.props.session['selected_tags'].split(",").forEach(function(tag) {
+      if(tag==='Relevant' && relev_total==0)relev_total++;
+      if(tag==='Irrelevant' && irrelev_total==0)irrelev_total++;
+      if(tag==='Neutral'&& neut_total==0)neut_total++;
     });
 
 
@@ -612,6 +631,7 @@ class Views extends React.Component {
     this.getPages(sessionTemp);
     this.props.deletedFilter(sessionTemp);
   }
+
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {

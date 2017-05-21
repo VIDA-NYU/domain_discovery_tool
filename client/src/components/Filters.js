@@ -42,6 +42,7 @@ class Filters extends Component{
         checked_queries:[],
         checked_tags:[],
       };
+      this.queryFromSearch=true;
     }
 
     componentWillMount(){
@@ -54,28 +55,29 @@ class Filters extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
+      this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
       // Calculate new state
       if(nextProps.statedCard !== this.state.statedCard){
         this.setState({expanded: nextProps.statedCard}, function() {
              this.setState({expanded: nextProps.statedCard});
         });
       }
-      if(JSON.stringify(nextProps.session) === this.state.sessionString) {
-            return;
-      }
-
-      if(JSON.stringify(nextProps.session) !== this.state.sessionString){
+      if(JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch){
         this.setState({
           session:nextProps.session,
           sessionString:JSON.stringify(this.props.session),
         });
       }
+      else{
+        return;
+      }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+      this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
       //console.log("filter before shouldComponentUpdate");
       //console.log(this.props.update);
-      if(this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
+      if(this.queryFromSearch || this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
             return true;
       }
       //console.log("filter after shouldComponentUpdate");
@@ -135,7 +137,7 @@ class Filters extends Component{
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <FiltersTabs update = {this.props.update}  session={this.state.session} updateSession={this.updateSession.bind(this)} checkedQueries={this.state.checked_queries} deletedFilter={this.deletedFilter.bind(this)}/>
+              <FiltersTabs queryFromSearch = {this.queryFromSearch} update = {this.props.update}  session={this.state.session} updateSession={this.updateSession.bind(this)} checkedQueries={this.state.checked_queries} deletedFilter={this.deletedFilter.bind(this)}/>
            </CardMedia>
        </Card>
     )
