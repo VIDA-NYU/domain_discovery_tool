@@ -522,6 +522,7 @@ class ViewTabSnippets extends React.Component{
                   </ListItem>;
             }
     });
+
     //When we check the Relevant tag and then make all of them neutral then the Relevant tag disappears in the checkbox tree and the Chip on top associated with it.
     this.props.session['selected_tags'].split(",").forEach(function(tag) {
       const sessionTemp =  this.state.session;
@@ -535,8 +536,9 @@ class ViewTabSnippets extends React.Component{
         if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
           sessionTemp['pageRetrievalCriteria'] = "Most Recent";
         }
+        this.props.deletedFilter(sessionTemp);
       }
-      this.props.deletedFilter(sessionTemp);
+
     }.bind(this));
 
 
