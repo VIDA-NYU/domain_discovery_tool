@@ -280,6 +280,17 @@ class ViewTabSnippets extends React.Component{
     return false;
   }
 
+  removeString(currentTag){
+    var currentString = "";
+    var anyFilter = false;
+    this.state.session['selected_tags'].split(",").forEach(function(tag) {
+      if(tag !== currentTag && tag != "")
+      currentString = currentString + tag + ",";
+    });
+    if(currentString != "") return currentString.substring(0, currentString.length-1);
+    return currentString;
+  }
+
   updateOnlineClassifier(sessionTemp){
     $.post(
     	'/updateOnlineClassifier',
@@ -511,11 +522,22 @@ class ViewTabSnippets extends React.Component{
                   </ListItem>;
             }
     });
+    //When we check the Relevant tag and then make all of them neutral then the Relevant tag disappears in the checkbox tree and the Chip on top associated with it.
     this.props.session['selected_tags'].split(",").forEach(function(tag) {
-      if(tag==='Relevant' && relev_total==0)relev_total++;
-      if(tag==='Irrelevant' && irrelev_total==0)irrelev_total++;
-      if(tag==='Neutral'&& neut_total==0)neut_total++;
-    });
+      const sessionTemp =  this.state.session;
+      if(tag==='Relevant' && relev_total==0 || tag==='Irrelevant' && irrelev_total==0 || tag==='Neutral'&& neut_total==0){
+        sessionTemp['selected_tags']= this.removeString(tag);
+        if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+          if(sessionTemp['selected_tags'] === "") {
+            delete sessionTemp['pageRetrievalCriteria']['tag'];
+          } else sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+        }
+        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
+          sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+        }
+      }
+      this.props.deletedFilter(sessionTemp);
+    }.bind(this));
 
 
     return (
@@ -652,7 +674,7 @@ class Views extends React.Component {
 
 
   render() {
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages}  deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
 
       return (
