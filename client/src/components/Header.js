@@ -74,35 +74,38 @@ const styles = {
 
 class ToolBarHeader extends Component {
 
-  constructor(props){
-    super(props);
-    this.state = {
-      currentDomain:'',
-      term:'',
-	stopCrawlerSignal:false,
-	disabledStartCrawler:true, //false
-  disabledCreateModel:true, //false
-      messageCrawler:"",
-      openCreateModel: false,
-      currentTags:undefined,
-      tagsPosCheckBox:["Relevant"],
-      tagsNegCheckBox:["Irrelevant"],
-      loadingModel:false,
-    };
-  }
+    constructor(props){
+	super(props);
+	this.state = {
+	    currentDomain:'',
+	    term:'',
+	    stopCrawlerSignal:false,
+	    disabledStartCrawler:true, //false
+	    disabledCreateModel:true, //false
+	    messageCrawler:"",
+	    openCreateModel: false,
+	    currentTags:undefined,
+	    tagsPosCheckBox:["Relevant"],
+	    tagsNegCheckBox:["Irrelevant"],
+	    loadingModel:false,
+	};
+    }
     componentWillMount(){
-	this.getStatus();
     this.setState({currentDomain: this.props.currentDomain});
   };
 
-  componentWillReceiveProps  = (nextProps) => {
-    if(nextProps.currentDomain ===this.state.currentDomain){
-      if(nextProps.term=="remove"){ this.setState({term:""});}
-      if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {var auxVariable=1;}
-      else return;
-    }
-    this.setState({currentDomain: nextProps.currentDomain, disabledStartCrawler:nextProps.disabledStartCrawler, disabledCreateModel:nextProps.disabledStartCrawler});
-  };
+    componentWillReceiveProps  = (nextProps) => {
+	if(nextProps.currentDomain ===this.state.currentDomain){
+	    if(nextProps.term=="remove"){ this.setState({term:""});}
+	    if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {var auxVariable=1;}
+	    else return;
+	}
+	this.setState({currentDomain: nextProps.currentDomain,
+		       disabledStartCrawler:nextProps.disabledStartCrawler,
+		       stopCrawlerSignal:nextProps.stopCrawlerSignal,
+		       messageCrawler:nextProps.messageCrawler,
+		       disabledCreateModel:nextProps.disabledStartCrawler});
+    };
 
   shouldComponentUpdate(nextProps, nextState) {
      if (nextProps.currentDomain === this.state.currentDomain ) {
@@ -140,45 +143,23 @@ class ToolBarHeader extends Component {
       return session;
    }
 
-    getStatus(){
-	var session = this.createSession(this.props.idDomain);
-	console.log("GET STATUS");
-	$.post(
-	    '/getStatus',
-	    {'session': JSON.stringify(session)},
-	    function(result) {
-		console.log("STATUS");
-		console.log(result);
-		var status = JSON.parse(JSON.stringify(result));
-		console.log(status);
-		if(status !== undefined) {
-		    var message = status.crawler;
-		    console.log(message);
-		    if( message !== undefined){
-			var stopCrawlerFlag = false;
-			var disabledStartCrawlerFlag = false;
-			if(message === "Crawler is running"){
-			    console.log("Setting crawler flags");
-			    stopCrawlerFlag = true;
-			    disabledStartCrawlerFlag = true;
-			}
-			this.setState({ stopCrawlerSignal:stopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-		    }
-		}
-	    }.bind(this)
-	);
-    }
 
    startCrawler(){
        var session = this.createSession(this.props.idDomain);
-       var message = "Crawler is running";
+       var message = "Crawler is running";       
        this.setState({stopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message});
        this.forceUpdate();
      $.post(
        '/startCrawler',
        {'session': JSON.stringify(session)},
 	 function(message) {
-	     this.setState({ stopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message});
+	     var stopCrawlerFlag = true;
+	     var disabledStartCrawlerFlag = true;
+	     if(message !== "Crawler is running"){
+		 stopCrawlerFlag = false;
+		 disabledStartCrawlerFlag = true;
+	     }
+	     this.setState({ stopCrawlerSignal:stopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
 	     this.forceUpdate();
 	 }.bind(this)
      );
@@ -187,18 +168,21 @@ class ToolBarHeader extends Component {
    stopCrawler(){
        var session = this.createSession(this.props.idDomain);
        var message = "Crawler shutting down"
+       this.props.setStatusInterval();
        this.setState({stopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message,});
        this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
-       function(message) {
-           this.setState({messageCrawler:message, disabledStartCrawler:false,});
-           this.forceUpdate();
-           setTimeout(function(){
-             this.setState({messageCrawler:"",});
-             this.forceUpdate();
-           }.bind(this), 700);
+	 function(message) {
+	     console.log("STOP CRAWLER");
+	     console.log(message);
+           // this.setState({messageCrawler:message, disabledStartCrawler:false,});
+           // this.forceUpdate();
+           // setTimeout(function(){
+           //   this.setState({messageCrawler:"",});
+           //   this.forceUpdate();
+           //}.bind(this), 700);
        }.bind(this)
      );
    }
@@ -324,7 +308,7 @@ class ToolBarHeader extends Component {
      var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      /*{<IconButton tooltip="Create Model" style={{marginLeft:'-15px', marginRight:'-10px'}} > <Model />
      </IconButton>}*/
-     var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
+       var crawlingProgress = (this.state.stopCrawlerSignal)?<CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />:<div />;
        var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
      var crawler = (this.state.stopCrawlerSignal)?<RaisedButton  onClick={this.stopCrawler.bind(this)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
         label="Stop"
@@ -396,19 +380,22 @@ class ToolBarHeader extends Component {
  }
 
 class Header extends Component {
+    
+    constructor(props) {
+	super(props);
+      this.state = {
+	  idDomain:'',
+	  filterKeyword:'',
+	  term:'',
+	  disabledStartCrawler:false,
+	  messageCrawler:"",
+	  stopCrawlerSignal:false,
+	  reloadBody:true,
+      };
+	this.intervalFuncId = undefined;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-	idDomain:'',
-	filterKeyword:'',
-  term:'',
-	disabledStartCrawler:true,
-	messageCrawler:"",
-  reloadBody:true,
-    };
-};
-
+  };
+    
 componentWillMount(){
     this.setState({idDomain: this.props.location.query.idDomain});
 };
@@ -428,14 +415,62 @@ shouldComponentUpdate(nextProps, nextState) {
     return true;
 };
 
+ getStatus(){
+     var session = {'domainId':this.state.idDomain};
+     $.post(
+	 '/getStatus',
+	 {'session': JSON.stringify(session)},
+	 function(result) {
+	     var status = JSON.parse(JSON.stringify(result));
+	     if(status !== undefined) {
+		 var message = status.crawler;
+		 console.log("GET STATUS");
+		 console.log(message);
+		 if( message !== undefined){
+		     var stopCrawlerFlag = false;
+		     var disabledStartCrawlerFlag = false;
+		     if(message === "Crawler is running"){
+			 stopCrawlerFlag = true;
+			 disabledStartCrawlerFlag = true;
+		     }else if(message === "Crawler shutting down"){
+			 disabledStartCrawlerFlag = true;
+		     }
+		     this.setState({reloadBody:false,stopCrawlerSignal:stopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+		     this.forceUpdate();
+		 }else {
+		     if(this.intervalFuncId !== undefined){
+			 console.log("CLEAR INTERVAL");
+			 console.log(this.intervalFuncId);
+			 this.setState({ stopCrawlerSignal:false, disabledStartCrawler: false, messageCrawler:""});
+			 this.forceUpdate();
+			 window.clearInterval(this.intervalFuncId);
+			 this.intervalFuncId = undefined;
+		     }
+		 }
+	     } 
+	 }.bind(this)
+     );
+ }
+
+setStatusInterval(){
+    console.log("INTERVAL FUNC ID");
+    console.log(this.intervalFuncId);
+    if(this.intervalFuncId === undefined){
+	this.intervalFuncId = window.setInterval(function() {this.getStatus();}.bind(this), 1000);
+	console.log(this.intervalFuncId);
+    }
+}
+    
 filterKeyword(newFilterKeyword){
     this.setState({filterKeyword:newFilterKeyword, reloadBody:true, term:"apply"});
     this.forceUpdate();
 }
-availableCrawlerButton(isthereModel){
-    this.setState({disabledStartCrawler:isthereModel, reloadBody:false,});
+availableCrawlerButton(noModelAvailable){
+    if(!noModelAvailable)
+	this.getStatus();
+    else this.setState({disabledStartCrawler:noModelAvailable,});
+    this.setState({reloadBody:false,});
     this.forceUpdate();
-
 }
 
 deletedFilter(filter_Keyword){
@@ -444,9 +479,10 @@ deletedFilter(filter_Keyword){
   });
   this.forceUpdate();
 }
-
+    
 render() {
-  console.log("HEADER " + this.state.filterKeyword);
+    console.log("HEADER " + this.state.filterKeyword);
+    console.log(this.intervalFuncId);
   return (
     <div>
       <AppBar showMenuIconButton={true}
@@ -456,7 +492,7 @@ render() {
         iconElementLeft={<img src={logoNYU}  height='45' width='40'  />}
         //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
 	  >
-	  <ToolBarHeader currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} term={this.state.term} disabledStartCrawler={this.state.disabledStartCrawler} />
+	  <ToolBarHeader setStatusInterval={this.setStatusInterval.bind(this)} currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} term={this.state.term} disabledStartCrawler={this.state.disabledStartCrawler} stopCrawlerSignal={this.state.stopCrawlerSignal} messageCrawler={this.state.messageCrawler}/>
       </AppBar>
 
       <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
