@@ -1,34 +1,8 @@
 import React, { Component } from 'react';
-import AppBar from 'material-ui/AppBar';
-import logoNYU from '../images/nyu_logo_purple.png';
-
-import { } from 'material-ui/styles/colors';
-
-import IconButton from 'material-ui/IconButton';
-import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import FontIcon from 'material-ui/FontIcon';
-import Model from 'material-ui/svg-icons/image/blur-linear';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
-import { FormControl} from 'react-bootstrap';
-import Search from 'material-ui/svg-icons/action/search';
-import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import Body from './Body';
 import Header from './Header';
-import TextField from 'material-ui/TextField';
-
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import Checkbox from 'material-ui/Checkbox';
-import CircularProgress from 'material-ui/CircularProgress';
-
-import $ from 'jquery';
-
-
 
 class Domain extends Component {
 
@@ -39,7 +13,6 @@ class Domain extends Component {
       deleteKeywordSignal:false,
       reloadBody:true,
       noModelAvailable:true,
-      reloadHeader : false,
     };
 
   };
@@ -63,30 +36,28 @@ shouldComponentUpdate(nextProps, nextState) {
     return true;
 };
 
+//This function is called from Header component when user applies a filter by keyword (serch by keyword)
 filterKeyword(newFilterKeyword){
-    this.setState({filterKeyword:newFilterKeyword, deleteKeywordSignal:false, reloadBody:true, reloadHeader : false, });
+    this.setState({filterKeyword:newFilterKeyword, deleteKeywordSignal:false, reloadBody:true });
     this.forceUpdate();
 }
+//This function is called from the Body. Check if there is a available model for the current domain.
 availableCrawlerButton(noModelAvailable){ //false means that there is a available model
-    this.setState({noModelAvailable:noModelAvailable,reloadBody:false, reloadHeader : false, });
+    this.setState({noModelAvailable:noModelAvailable,reloadBody:false });
     this.forceUpdate();
 }
 
+//This function is called from the Body. It just update the Header in order to clear the textfield associated with the search by keyword.
 deletedFilter(filter_Keyword){
-  this.setState({ deleteKeywordSignal:true, reloadBody:false, reloadHeader : false,  });
-  this.forceUpdate();
-}
-
-updateHeader(){
-  this.setState({ reloadHeader : true, noModelAvailable:this.state.noModelAvailable, reloadBody:false, });
+  this.setState({ deleteKeywordSignal:true, reloadBody:false });
   this.forceUpdate();
 }
 
 render() {
-    console.log("HEADER " + this.state.filterKeyword);
+    //console.log("HEADER " + this.state.filterKeyword);
   return (
     <div>
-	     <Header reloadHeader = {this.state.reloadHeader} updateHeader = {this.updateHeader.bind(this)} deleteKeywordSignal = {this.state.deleteKeywordSignal} currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} noModelAvailable={this.state.noModelAvailable}/>
+	     <Header deleteKeywordSignal = {this.state.deleteKeywordSignal} currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} noModelAvailable={this.state.noModelAvailable}/>
        <Body nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
     </div>
   );
