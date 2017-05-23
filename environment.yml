@@ -27,3 +27,4 @@ dependencies:
     - networkx=1.11
     - nodejs
     - futures
+    - openjdk
