@@ -14,7 +14,7 @@ You can install the system from source or using Docker.
 
 Building and deploying the Domain Discovery Tool can be done using its Makefile to create a local development environment.  The conda build environment is currently only supported on 64-bit OS X and Linux.
 
-First install conda (ADD link to conda install), either through the Anaconda or miniconda installers provided by Continuum.  You will also need Git and a Java Development Kit (>=1.8) which are not provided by conda.
+First install conda (ADD link to conda install), either through the Anaconda or miniconda installers provided by Continuum.  You will also need Git (ADD link) and a Java Development Kit (>=1.8) (ADD link) which are not provided by conda.
 
 Set up Domain Discovery API 
 
