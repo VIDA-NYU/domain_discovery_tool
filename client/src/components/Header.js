@@ -101,23 +101,17 @@ class Header extends Component {
 
   componentWillReceiveProps  = (nextProps) => {
     if(nextProps.deleteKeywordSignal){ this.setState({term:""});}
-    if(nextProps.reloadHeader){
-      this.setState({ disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
-      this.forceUpdate();
-    }
     if(nextProps.noModelAvailable !== this.state.noModelAvailable ){
       if(!nextProps.noModelAvailable){ //if there is a model
-          this.getStatus();
+          this.setStatusInterval();
       }
       else this.setState({noModelAvailable:true, disableStopCrawlerSignal:true, disabledStartCrawler:true,  disabledCreateModel:true,});
-      //this.setState({currentDomain: nextProps.currentDomain, disabledStartCrawler:false, disabledCreateModel:false,});
       }
     else {return;}
     }
 
     shouldComponentUpdate(nextProps, nextState) {
       if(nextProps.deleteKeywordSignal){ return true; }
-      if(nextProps.reloadHeader){ return true; }
       if(nextProps.noModelAvailable !== this.state.noModelAvailable){ return true; }
       if(nextState.term !==this.state.term || nextState.openCreateModel ){ return true; }
 
@@ -126,6 +120,11 @@ class Header extends Component {
         return false;
       }*/
       return false;
+    }
+
+    //Kill window.setInterval() for the current intervalFuncId. It happen when you go out from the domain (switching domain)
+    componentWillUnmount() {
+      window.clearInterval(this.intervalFuncId);
     }
 
    filterKeyword(terms){
@@ -156,17 +155,15 @@ class Header extends Component {
 
 
    getStatus(){
-     var session = this.createSession(this.props.idDomain); // {'domainId':this.state.idDomain};
+     //console.log("Get status");
+     var session = this.createSession(this.props.idDomain);
      $.post(
        '/getStatus',
        {'session': JSON.stringify(session)},
        function(result) {
          var status = JSON.parse(JSON.stringify(result));
-         //console.log(status);
          if(status !== undefined) {
            var message = status.crawler;
-           //console.log("GET STATUS");
-           //console.log(message);
            if( message !== undefined){
              var disableStopCrawlerFlag = true;
              var disabledStartCrawlerFlag = false;
@@ -180,16 +177,11 @@ class Header extends Component {
              this.forceUpdate();
            }else {
              if(this.intervalFuncId !== undefined){
-               //console.log("CLEAR INTERVAL");
-              // console.log(this.intervalFuncId);
+               window.clearInterval(this.intervalFuncId);
+               this.intervalFuncId = undefined;
+               //console.log("stop status");
                this.setState({ disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
                this.forceUpdate();
-               //console.log("updating render");
-               setTimeout(function(){
-                   window.clearInterval(this.intervalFuncId);
-                   this.intervalFuncId = undefined;
-               }.bind(this), 1800);
-
              }
              else {
                this.setState({disabledStartCrawler:false, disabledCreateModel:false, noModelAvailable:false,});
@@ -202,12 +194,9 @@ class Header extends Component {
    }
 
    setStatusInterval(){
-     //console.log("INTERVAL FUNC ID");
-     //console.log(this.intervalFuncId);
-     if(this.intervalFuncId === undefined){
+     //if(this.intervalFuncId === undefined){
        this.intervalFuncId = window.setInterval(function() {this.getStatus();}.bind(this), 1000);
-       //console.log(this.intervalFuncId);
-     }
+     //}
    }
 
    startCrawler(){
@@ -233,19 +222,15 @@ class Header extends Component {
 
    stopCrawler(flag){
      var session = this.createSession(this.props.idDomain);
-     var message = "Crawler shutting down"
-     if(flag) this.setStatusInterval();
+     var message = "Crawler shutting down";
      this.setState({disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
      this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
        function(message) {
-         //console.log("STOP CRAWLER");
-         //console.log(message);
          this.setState({ disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
          this.forceUpdate();
-         this.props.updateHeader();
          // this.setState({messageCrawler:message, disabledStartCrawler:false,});
          // this.forceUpdate();
          // setTimeout(function(){
@@ -307,8 +292,7 @@ class Header extends Component {
    }
    //Create model
    createModel(){
-     //createNewDomain
-     var session = this.createSession(this.props.idDomain);
+     var session = this.createSession(this.props.idDomain); //createNewDomain
      this.setState({loadingModel:true, disabledCreateModel:true});
      this.forceUpdate();
      this.getCreatedModel(session);
@@ -341,7 +325,6 @@ class Header extends Component {
    }
 
    render() {
-     //console.log("RENDER HEADER ");
      const actionsCreateModel = [
                                  <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />,
                                  <FlatButton label="Save"   primary={true} keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
