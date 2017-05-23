@@ -1,31 +1,34 @@
 # Domain Discovery Tool
 
-This repository contains the Domain Discovery Tool (DDT) project. DDT is an interactive system that helps users explore and better understand a domain (or topic) as it is represented on the Web. It achieves this by integrating human insights with machine computation (data mining and machine learning) through visualization. DDT allows a domain expert to visualize and analyze pages returned by a search engine or a crawler, and easily provide feedback about relevance. This feedback, in turn, can be used to address two challenges:
+This repository contains the Domain Discovery Tool (DDT) project. DDT is an interactive system that helps users explore and better understand a domain (or topic) as it is represented on the Web. It achieves this by integrating human insights with machine computation (data mining and machine learning) through visualization. DDT allows a domain expert to visualize and analyze pages returned by a search engine or a crawler, and easily provide feedback about relevance. DDT addresses important challenges:
 
-* Guide users in the process of domain understanding and help them construct effective queries to be issued to a search engine; and
-* Configure focused crawlers that efficiently search the Web for additional pages on the topic. DDT allows users to quickly select crawling seeds as well as positive and negatives required to create a page classifier for the focus topic.
+* It assist users in the process of domain understanding and discovery, guiding them to construct effective queries to be issued to a search engine to find additional relevant information; 
+* It provides an easy-to-use interface whereby users can quickly provide feedback regarding the relevance of pages which can then be used to create learning classifiers for the domains of interest; and
+* It supports the configuration and deployment of focused crawlers that automatically and efficiently search the Web for additional pages on the topic. DDT allows users to quickly select crawling seeds as well as positive and negatives required to create the page classifier required for the focus topic.
 
-## Installing on your machine
+## Installing DDT on your machine
 
-Building and deploying the Domain Discovery Tool React can be done using its Makefile to create a local development environment.  The conda build environment is currently only supported on 64-bit OS X and Linux.
+You can install the system from source or using Docker.
 
 ### Local development
 
-First install conda, either through the Anaconda or miniconda installers provided by Continuum.  You will also need Git and a Java Development Kit (>=1.8). These are system tools that are generally not provided by conda.
+Building and deploying the Domain Discovery Tool can be done using its Makefile to create a local development environment.  The conda build environment is currently only supported on 64-bit OS X and Linux.
+
+First install conda (ADD link to conda install), either through the Anaconda or miniconda installers provided by Continuum.  You will also need Git and a Java Development Kit (>=1.8) which are not provided by conda.
 
 Set up Domain Discovery API 
 
 ```
-https://github.com/ViDA-NYU/domain_discovery_API.git
+git clone https://github.com/ViDA-NYU/domain_discovery_API
 cd domain_discovery_API
 ```
-Use the `make` command to build MDPROJ and download/install its dependencies.
+The `make` command builds MDPROJ,  downloads and installs its dependencies.
 
 ```
 make
 ```
 
-Make domain_discovery_API available by adding it to the environment:
+Then, add domain_discovery_API to the environment:
 
 ```
 export DD_API_HOME="{path-to-cloned-domain_discovery_API-repository}"
