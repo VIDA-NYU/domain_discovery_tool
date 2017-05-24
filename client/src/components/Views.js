@@ -317,11 +317,28 @@ class ViewTabSnippets extends React.Component{
     );
   }
 
+  //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
+  /*getPages(session){
+      $.post(
+    '/getPages',
+    {'session': JSON.stringify(session)},
+    function(pages) {
+              this.setState({pages:pages["data"], lengthPages : Object.keys(pages["data"]).length}, lengthTotalPages:pages["total"] ); //we need length total pages. for example to filter by query we dont know how many pages we have.
+    }.bind(this)
+      );
+  }*/
+
   handlePageClick(data){
-      $("div").scrollTop(0);
+    $("div").scrollTop(0);
     let selected = data.selected; //current page (number)
     let offset = Math.ceil(selected * this.perPage);
     this.setState({offset: offset, currentPagination:data.selected});
+    //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
+  /*  var tempSession = JSON.parse(JSON.stringify(this.props.session));
+    tempSession["from"] = offset;
+    tempSession["size"] = this.perPage;
+    this.getPages(tempSession);
+*/
   }
 
   //Remove or Add tags from elasticSearch
@@ -449,9 +466,9 @@ class ViewTabSnippets extends React.Component{
   render(){
     console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    //console.log(this.state.pages);
     var id=0;
     var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
+    //var currentPageCount = this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
