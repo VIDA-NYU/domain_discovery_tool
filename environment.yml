@@ -7,13 +7,9 @@ channels:
   - vida-nyu
 
 dependencies:
-    - elasticsearch
-    - supervisor
     - meld3
     - dateutil
     - cython >=0.22
-    - ddt-word2vec
-    - maven
     - nltk
     - scipy
     - numexpr >=2.4
