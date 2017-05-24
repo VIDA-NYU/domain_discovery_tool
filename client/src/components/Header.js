@@ -14,6 +14,7 @@ var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 import { FormControl} from 'react-bootstrap';
 import Search from 'material-ui/svg-icons/action/search';
+import OpenInNewTab from 'material-ui/svg-icons/action/open-in-new';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import Body from './Body';
 import TextField from 'material-ui/TextField';
@@ -80,6 +81,7 @@ class Header extends Component {
       currentDomain:'',
       term:'',
       disableStopCrawlerSignal:true,
+      disableAcheInterfaceSignal:true,
       disabledStartCrawler:true, //false
       disabledCreateModel:true, //false
       messageCrawler:"",
@@ -105,7 +107,7 @@ class Header extends Component {
       if(!nextProps.noModelAvailable){ //if there is a model
           this.setStatusInterval();
       }
-      else this.setState({noModelAvailable:true, disableStopCrawlerSignal:true, disabledStartCrawler:true,  disabledCreateModel:true,});
+      else this.setState({noModelAvailable:true, disableStopCrawlerSignal:true, disableAcheInterfaceSignal:true, disabledStartCrawler:true,  disabledCreateModel:true,});
       }
     else {return;}
     }
@@ -166,21 +168,23 @@ class Header extends Component {
            var message = status.crawler;
            if( message !== undefined){
              var disableStopCrawlerFlag = true;
+             var disableAcheInterfaceFlag =true;
              var disabledStartCrawlerFlag = false;
              if(message === "Crawler is running"){
                disableStopCrawlerFlag = false;
+               disableAcheInterfaceFlag =false;
                disabledStartCrawlerFlag = true;
              }else if(message === "Crawler shutting down"){
                disabledStartCrawlerFlag = true;
              }
-             this.setState({disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message});
+             this.setState({disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message});
              this.forceUpdate();
            }else {
              if(this.intervalFuncId !== undefined){
                window.clearInterval(this.intervalFuncId);
                this.intervalFuncId = undefined;
                //console.log("stop status");
-               this.setState({ disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
+               this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
                this.forceUpdate();
              }
              else {
@@ -202,19 +206,21 @@ class Header extends Component {
    startCrawler(){
      var session = this.createSession(this.props.idDomain);
      var message = "Crawler is running";
-     this.setState({disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
+     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
      this.forceUpdate();
      $.post(
        '/startCrawler',
        {'session': JSON.stringify(session)},
        function(message) {
          var disableStopCrawlerFlag = false;
+         var disableAcheInterfaceFlag = false;
          var disabledStartCrawlerFlag = true;
          if(message !== "Crawler is running"){
            disableStopCrawlerFlag = true;
+           disableAcheInterfaceFlag =true;
            disabledStartCrawlerFlag = true;
          }
-         this.setState({ disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+         this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
          this.forceUpdate();
        }.bind(this)
      );
@@ -223,13 +229,34 @@ class Header extends Component {
    stopCrawler(flag){
      var session = this.createSession(this.props.idDomain);
      var message = "Crawler shutting down";
-     this.setState({disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+     this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
      this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
        function(message) {
-         this.setState({ disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
+         this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
+         this.forceUpdate();
+         // this.setState({messageCrawler:message, disabledStartCrawler:false,});
+         // this.forceUpdate();
+         // setTimeout(function(){
+         //   this.setState({messageCrawler:"",});
+         //   this.forceUpdate();
+         //}.bind(this), 700);
+       }.bind(this)
+     );
+   }
+
+   acheInterfaceCrawler(flag){
+     var session = this.createSession(this.props.idDomain);
+     var message = "Crawler shutting down";
+     this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+     this.forceUpdate();
+     $.post(
+       '/stopCrawler',
+       {'session': JSON.stringify(session)},
+       function(message) {
+         this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
          this.forceUpdate();
          // this.setState({messageCrawler:message, disabledStartCrawler:false,});
          // this.forceUpdate();
@@ -355,8 +382,15 @@ class Header extends Component {
      var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      var crawlingProgress = (this.state.disableStopCrawlerSignal)?<div />: <CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />;
      var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
-     var crawler = (this.state.disableStopCrawlerSignal)?<div/>:<RaisedButton  onClick={this.stopCrawler.bind(this, true)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+     var crawlerStop = (this.state.disableStopCrawlerSignal)?<div/>:<RaisedButton  onClick={this.stopCrawler.bind(this, true)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                    label="Stop" labelPosition="before" containerElement="label"/>;
+     var crawlerAcheInterface = (this.state.disableStopCrawlerSignal)?<div/>:<IconButton tooltip="Click to open ACHE Interface"
+      href="http://localhost:8080/"
+      target="_blank"
+      style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
+    >
+      <OpenInNewTab />
+    </IconButton>;
      var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:12 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
 
 
@@ -367,12 +401,14 @@ class Header extends Component {
              <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
              <ToolbarSeparator style={{ marginTop:"5px"}} />
                  <Link to='/'>
-                  <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} > <SwitchDomain /> </IconButton>
+                  <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} tooltipStyles={{fontSize:14, fontWeight:"bold"}} > <SwitchDomain /> </IconButton>
                  </Link>
              <ToolbarSeparator style={{ marginTop:"5px", marginLeft:"-20px"}} />
              <RaisedButton onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                            label="Start Crawler" labelPosition="before" containerElement="label" />
-             {crawler}
+             {crawlerAcheInterface}
+             {crawlerStop}
+
              {messageCrawlerRunning}
              {crawlingProgress}
 
