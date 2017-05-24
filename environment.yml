@@ -7,7 +7,6 @@ channels:
   - vida-nyu
 
 dependencies:
-    - meld3
     - dateutil
     - cython >=0.22
     - nltk
@@ -18,9 +17,8 @@ dependencies:
     - cherrypy
     - requests
     - ache ==latest
-    - jinja2
     - functools32
-    - networkx=1.11
+    - jinja2    
     - nodejs
     - futures
     - openjdk
