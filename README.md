@@ -16,6 +16,12 @@ Building and deploying the Domain Discovery Tool can be done using its Makefile 
 
 First install conda (ADD link to conda install), either through the Anaconda or miniconda installers provided by Continuum.  You will also need Git (ADD link) and a Java Development Kit (>=1.8) (ADD link) which are not provided by conda.
 
+Download Elastic Search 1.6.2 from <a href="https://www.elastic.co/downloads/past-releases/elasticsearch-1-6-2">here</a>, extract the file and run Elastic Search: 
+
+```
+./bin/elasticsearch
+```
+
 Set up Domain Discovery API 
 
 ```
