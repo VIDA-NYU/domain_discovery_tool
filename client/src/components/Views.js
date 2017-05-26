@@ -249,6 +249,7 @@ class ViewTabSnippets extends React.Component{
       offset:0,
       currentPagination:0,
       allRelevant:false,
+      lengthTotalPages:0,
     };
     this.perPage=12; //default 12
     this.currentUrls=[];
@@ -256,8 +257,9 @@ class ViewTabSnippets extends React.Component{
   }
 
   componentWillMount(){
+    console.log(this.props.session);
     this.setState({
-        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0, lengthTotalPages:this.props.lengthTotalPages,
     });
     this.updateOnlineClassifier(this.props.session);
   }
@@ -318,15 +320,24 @@ class ViewTabSnippets extends React.Component{
   }
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
-  /*getPages(session){
-      $.post(
-    '/getPages',
-    {'session': JSON.stringify(session)},
-    function(pages) {
-              this.setState({pages:pages["data"], lengthPages : Object.keys(pages["data"]).length}, lengthTotalPages:pages["total"] ); //we need length total pages. for example to filter by query we dont know how many pages we have.
-    }.bind(this)
-      );
-  }*/
+  //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
+  getPages(session){
+    var tempSession = session;
+    tempSession["from"]=0;
+    $.post(
+	     '/getPages',
+	      {'session': JSON.stringify(tempSession)},
+      	  function(pages) {
+                    console.log("NEW PAGES");
+                    console.log(pages);
+                    console.log(pages['data']['results']);
+                    console.log(pages['data']['total']);
+                    this.newPages=true;
+                    this.setState({session:tempSession, pages:pages["data"]["results"], sessionString: JSON.stringify(session), });
+                    this.forceUpdate();
+      	  }.bind(this)
+    );
+  }
 
   handlePageClick(data){
     $("div").scrollTop(0);
@@ -334,11 +345,11 @@ class ViewTabSnippets extends React.Component{
     let offset = Math.ceil(selected * this.perPage);
     this.setState({offset: offset, currentPagination:data.selected});
     //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
-  /*  var tempSession = JSON.parse(JSON.stringify(this.props.session));
+    var tempSession = JSON.parse(JSON.stringify(this.props.session));
     tempSession["from"] = offset;
-    tempSession["size"] = this.perPage;
+    //tempSession["size"] = this.perPage;
     this.getPages(tempSession);
-*/
+
   }
 
   //Remove or Add tags from elasticSearch
@@ -467,8 +478,9 @@ class ViewTabSnippets extends React.Component{
     console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var id=0;
-    var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
-    //var currentPageCount = this.state.lengthTotalPages/this.perPage);
+    //var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
+    var currentPageCount = (this.state.lengthTotalPages/this.perPage);
+    //var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
@@ -541,7 +553,7 @@ class ViewTabSnippets extends React.Component{
     });
 
     //When we check the Relevant tag and then make all of them neutral then the Relevant tag disappears in the checkbox tree and the Chip on top associated with it.
-    this.props.session['selected_tags'].split(",").forEach(function(tag) {
+    this.state.session['selected_tags'].split(",").forEach(function(tag) {
       const sessionTemp =  this.state.session;
       if(tag==='Relevant' && relev_total==0 || tag==='Irrelevant' && irrelev_total==0 || tag==='Neutral'&& neut_total==0){
         sessionTemp['selected_tags']= this.removeString(tag);
@@ -563,7 +575,7 @@ class ViewTabSnippets extends React.Component{
       <div  style={{maxWidth:1000}}>
         <p style={{color: "#FFFFFF",}}>-</p>
         <div style={{marginBottom:"50px"}}>
-          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {urlsList.length} results. </p>
+          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
           <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
         </div>
         <div style={{marginBottom:"50px", marginTop:"-10px"}}>
@@ -618,6 +630,7 @@ class Views extends React.Component {
       session:{},
       chipData: [],
       lengthPages: 1,
+      lengthTotalPages:0,
     };
     this.newPages = true;
     this.queryFromSearch=true;
@@ -625,14 +638,20 @@ class Views extends React.Component {
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
   getPages(session){
-      $.post(
-	  '/getPages',
-	  {'session': JSON.stringify(session)},
-	  function(pages) {
-              this.newPages=true;
-              this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
-	  }.bind(this)
-      );
+    var tempSession = session;
+    tempSession["from"]=0;
+    $.post(
+	     '/getPages',
+	      {'session': JSON.stringify(tempSession)},
+      	  function(pages) {
+                    console.log("NEW PAGES");
+                    console.log(pages);
+                    console.log(pages['data']['results']);
+                    console.log(pages['data']['total']);
+                    this.newPages=true;
+                    this.setState({session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+      	  }.bind(this)
+    );
   }
 
   //Loads pages in the first time.
@@ -693,7 +712,7 @@ class Views extends React.Component {
 
 
   render() {
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages}  deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages}  deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
 
       return (
