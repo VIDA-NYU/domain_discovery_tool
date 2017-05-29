@@ -269,7 +269,7 @@ class ViewTabSnippets extends React.Component{
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
       $("div").scrollTop(0);
       this.setState({
-      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, currentPagination:0, offset:0,
+      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:0, offset:0,
       });
     }
     return;
@@ -327,7 +327,7 @@ class ViewTabSnippets extends React.Component{
       {'session': JSON.stringify(session)},
       function(pages) {
         this.newPages=true;
-        this.setState({session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), });
+        this.setState({session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthTotalPages:pages['data']['total'], });
         this.forceUpdate();
       }.bind(this)
     );
