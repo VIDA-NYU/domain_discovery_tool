@@ -20,7 +20,7 @@ import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
-
+import NoFoundImg from '../images/images_not_available.png';
 import Searchicon from '../images/searchicon.png';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -249,6 +249,7 @@ class ViewTabSnippets extends React.Component{
       offset:0,
       currentPagination:0,
       allRelevant:false,
+      lengthTotalPages:0,
     };
     this.perPage=12; //default 12
     this.currentUrls=[];
@@ -257,7 +258,7 @@ class ViewTabSnippets extends React.Component{
 
   componentWillMount(){
     this.setState({
-        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0, lengthTotalPages:this.props.lengthTotalPages,
     });
     this.updateOnlineClassifier(this.props.session);
   }
@@ -266,7 +267,7 @@ class ViewTabSnippets extends React.Component{
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
       $("div").scrollTop(0);
       this.setState({
-      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, currentPagination:0, offset:0,
+      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:0, offset:0,
       });
     }
     return;
@@ -318,15 +319,17 @@ class ViewTabSnippets extends React.Component{
   }
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
-  /*getPages(session){
-      $.post(
-    '/getPages',
-    {'session': JSON.stringify(session)},
-    function(pages) {
-              this.setState({pages:pages["data"], lengthPages : Object.keys(pages["data"]).length}, lengthTotalPages:pages["total"] ); //we need length total pages. for example to filter by query we dont know how many pages we have.
-    }.bind(this)
-      );
-  }*/
+  getPages(session){
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(session)},
+      function(pages) {
+        this.newPages=true;
+        this.setState({session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthTotalPages:pages['data']['total'], });
+        this.forceUpdate();
+      }.bind(this)
+    );
+  }
 
   handlePageClick(data){
     $("div").scrollTop(0);
@@ -334,23 +337,20 @@ class ViewTabSnippets extends React.Component{
     let offset = Math.ceil(selected * this.perPage);
     this.setState({offset: offset, currentPagination:data.selected});
     //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
-  /*  var tempSession = JSON.parse(JSON.stringify(this.props.session));
+    var tempSession = JSON.parse(JSON.stringify(this.props.session));
     tempSession["from"] = offset;
-    tempSession["size"] = this.perPage;
     this.getPages(tempSession);
-*/
   }
 
   //Remove or Add tags from elasticSearch
   removeAddTagElasticSearch(urls, current_tag, applyTagFlag ){
-
     $.post(
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
-	    function(pages) {
-          //updateing filters Tags
-          this.props.reloadFilters();
-          this.updateOnlineClassifier(this.props.session);
+      function(pages) {
+        //updateing filters Tags
+        this.props.reloadFilters();
+        this.updateOnlineClassifier(this.props.session);
       }.bind(this)
     );
   }
@@ -463,12 +463,19 @@ class ViewTabSnippets extends React.Component{
     return uniqueTag;
   }
 
+  ImgError(source){
+    console.log("error");
+    console.log(source.src);
+    //source.src = "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png";
+    //source.onerror = "";
+    return true;
+  }
+
   render(){
-    console.log("SnippetsPAges------------");
+    //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var id=0;
-    var currentPageCount = Math.ceil((Object.keys(this.state.pages).length)/this.perPage);
-    //var currentPageCount = this.state.lengthTotalPages/this.perPage);
+    var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
@@ -483,61 +490,59 @@ class ViewTabSnippets extends React.Component{
             else{
               neut_total++;
             }
-            if(index>=this.state.offset && index<(this.state.offset+this.perPage)){
-                    let colorTagRelev = "";
-                    let colorTagIrrelev="";
-                    let colorTagNeutral="";
-                    let uniqueTag="";
-                    if(this.state.pages[k]["tags"]){
-                     uniqueTag = this.getTag(k);
-                     colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
-                     colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
-                     colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
-                    }
-                    else{
-                      colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
-                    }
-
-                    id= id+1;
-                    let urlLink= (k.length<110)?k:k.substring(0,109);
-                    let imageUrl=(this.state.pages[k]["image_url"]=="")? "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png":this.state.pages[k]["image_url"];
-
-                    this.currentUrls.push(k);
-
-                    return <ListItem key={index}  >
-                    <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
-                      <div>
-                        <p style={{float:'left'}}><img src={imageUrl} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
-                        <p style={{float:'right'}}>
-                        <ButtonGroup bsSize="small">
-                          <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                            <Button >
-                               <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                            <Button>
-                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                            <Button >
-                              <IconButton onClick={this.onTagActionClicked.bind(this,k,"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
-                            </Button>
-                          </OverlayTrigger>
-                        </ButtonGroup></p>
-                        <p>
-                        <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{this.state.pages[k]["title"]}</a>
-                        <br/>
-                        <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
-                        <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
-                        </p>
-                      </div>
-                      <br/>
-                      <Divider />
-                    </div>
-                  </ListItem>;
+            let colorTagRelev = "";
+            let colorTagIrrelev="";
+            let colorTagNeutral="";
+            let uniqueTag="";
+            if(this.state.pages[k]["tags"]){
+               uniqueTag = this.getTag(k);
+               colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
+               colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
+               colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
             }
+            else{
+              colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
+            }
+
+            id= id+1;
+            let urlLink= (k.length<110)?k:k.substring(0,109);
+            let imageUrl=(this.state.pages[k]["image_url"]=="")? NoFoundImg:this.state.pages[k]["image_url"];
+
+            this.currentUrls.push(k);
+
+            return <ListItem key={index}  >
+            <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
+              <div>
+                <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+                <p style={{float:'right'}}>
+                <ButtonGroup bsSize="small">
+                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
+                    <Button >
+                       <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                    </Button>
+                  </OverlayTrigger>
+                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
+                    <Button>
+                      <IconButton onClick={this.onTagActionClicked.bind(this,k,"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                    </Button>
+                  </OverlayTrigger>
+                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
+                    <Button >
+                      <IconButton onClick={this.onTagActionClicked.bind(this,k,"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                    </Button>
+                  </OverlayTrigger>
+                </ButtonGroup></p>
+                <p>
+                <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{this.state.pages[k]["title"]}</a>
+                <br/>
+                <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
+                <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
+                </p>
+              </div>
+              <br/>
+              <Divider />
+            </div>
+          </ListItem>;
     });
 
     //When we check the Relevant tag and then make all of them neutral then the Relevant tag disappears in the checkbox tree and the Chip on top associated with it.
@@ -563,7 +568,7 @@ class ViewTabSnippets extends React.Component{
       <div  style={{maxWidth:1000}}>
         <p style={{color: "#FFFFFF",}}>-</p>
         <div style={{marginBottom:"50px"}}>
-          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {urlsList.length} results. </p>
+          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
           <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
         </div>
         <div style={{marginBottom:"50px", marginTop:"-10px"}}>
@@ -618,6 +623,7 @@ class Views extends React.Component {
       session:{},
       chipData: [],
       lengthPages: 1,
+      lengthTotalPages:0,
     };
     this.newPages = true;
     this.queryFromSearch=true;
@@ -625,14 +631,16 @@ class Views extends React.Component {
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
   getPages(session){
-      $.post(
-	  '/getPages',
-	  {'session': JSON.stringify(session)},
-	  function(pages) {
-              this.newPages=true;
-              this.setState({session:session, pages:pages["data"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages["data"]).length});
-	  }.bind(this)
-      );
+    var tempSession = session;
+    tempSession["from"]=0;
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(tempSession)},
+      function(pages) {
+        this.newPages=true;
+        this.setState({session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+      }.bind(this)
+    );
   }
 
   //Loads pages in the first time.
@@ -693,7 +701,7 @@ class Views extends React.Component {
 
 
   render() {
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets session={this.state.session} pages={this.state.pages}  deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages}  deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
 
       return (
@@ -705,7 +713,6 @@ class Views extends React.Component {
             tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
               <Tab label="Snippets" value={0} style={styles.tab} />
           </Tabs>
-
           <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
             <div style={styles.headline}>
               <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>

@@ -248,7 +248,7 @@ class Body extends Component{
    }
 
   render(){
-    console.log("------body----------");
+    //console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
       <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:338, background:"white"}}>
         <Row className="Menus-child">
