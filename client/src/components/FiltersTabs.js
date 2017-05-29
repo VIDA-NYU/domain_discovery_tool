@@ -780,7 +780,7 @@ class FiltersTabs extends React.Component {
 
 
   render() {
-      console.log("--------FiltersTabs---------");
+      //console.log("--------FiltersTabs---------");
       return (
 	    <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
         <div style={styles.headline}>

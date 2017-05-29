@@ -257,7 +257,6 @@ class ViewTabSnippets extends React.Component{
   }
 
   componentWillMount(){
-    console.log(this.props.session);
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0, lengthTotalPages:this.props.lengthTotalPages,
     });
@@ -265,7 +264,6 @@ class ViewTabSnippets extends React.Component{
   }
 
   componentWillReceiveProps(nextProps, nextState){
-    console.log("will props");
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
       $("div").scrollTop(0);
       this.setState({
@@ -466,7 +464,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   render(){
-    console.log("SnippetsPAges------------");
+    //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var id=0;
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
