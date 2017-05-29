@@ -20,7 +20,7 @@ import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
-
+import NoFoundImg from '../images/images_not_available.png';
 import Searchicon from '../images/searchicon.png';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -463,6 +463,14 @@ class ViewTabSnippets extends React.Component{
     return uniqueTag;
   }
 
+  ImgError(source){
+    console.log("error");
+    console.log(source.src);
+    //source.src = "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png";
+    //source.onerror = "";
+    return true;
+  }
+
   render(){
     //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
@@ -498,14 +506,14 @@ class ViewTabSnippets extends React.Component{
 
             id= id+1;
             let urlLink= (k.length<110)?k:k.substring(0,109);
-            let imageUrl=(this.state.pages[k]["image_url"]=="")? "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png":this.state.pages[k]["image_url"];
+            let imageUrl=(this.state.pages[k]["image_url"]=="")? NoFoundImg:this.state.pages[k]["image_url"];
 
             this.currentUrls.push(k);
 
             return <ListItem key={index}  >
             <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
               <div>
-                <p style={{float:'left'}}><img src={imageUrl} alt="HTML5 Icon" style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+                <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
                 <p style={{float:'right'}}>
                 <ButtonGroup bsSize="small">
                   <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
