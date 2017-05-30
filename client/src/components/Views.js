@@ -264,7 +264,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   componentWillReceiveProps(nextProps, nextState){
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { // ||
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { 
       $("div").scrollTop(0);
       this.setState({
       session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:0, offset:0,
@@ -463,14 +463,6 @@ class ViewTabSnippets extends React.Component{
     return uniqueTag;
   }
 
-  ImgError(source){
-    console.log("error");
-    console.log(source.src);
-    //source.src = "http://www.kanomax-usa.com/wp-content/uploads/2015/09/images-not-available.png";
-    //source.onerror = "";
-    return true;
-  }
-
   render(){
     //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
@@ -481,14 +473,14 @@ class ViewTabSnippets extends React.Component{
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
             if(this.state.pages[k]["tags"]){
-             let uniqueTag="";
-             uniqueTag = this.getTag(k);
-             if(uniqueTag==='Relevant')relev_total++;
-             if(uniqueTag==='Irrelevant')irrelev_total++;
-             if(uniqueTag==='Neutral')neut_total++;
+                 let uniqueTag="";
+                 uniqueTag = this.getTag(k);
+                 if(uniqueTag==='Relevant')relev_total++;
+                 if(uniqueTag==='Irrelevant')irrelev_total++;
+                 if(uniqueTag==='Neutral')neut_total++;
             }
             else{
-              neut_total++;
+                neut_total++;
             }
             let colorTagRelev = "";
             let colorTagIrrelev="";
@@ -501,7 +493,7 @@ class ViewTabSnippets extends React.Component{
                colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
             }
             else{
-              colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
+               colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
             }
 
             id= id+1;
@@ -544,24 +536,6 @@ class ViewTabSnippets extends React.Component{
             </div>
           </ListItem>;
     });
-
-    //When we check the Relevant tag and then make all of them neutral then the Relevant tag disappears in the checkbox tree and the Chip on top associated with it.
-    this.props.session['selected_tags'].split(",").forEach(function(tag) {
-      const sessionTemp =  this.state.session;
-      if(tag==='Relevant' && relev_total==0 || tag==='Irrelevant' && irrelev_total==0 || tag==='Neutral'&& neut_total==0){
-        sessionTemp['selected_tags']= this.removeString(tag);
-        if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
-          if(sessionTemp['selected_tags'] === "") {
-            delete sessionTemp['pageRetrievalCriteria']['tag'];
-          } else sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
-        }
-        if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
-          sessionTemp['pageRetrievalCriteria'] = "Most Recent";
-        }
-        this.props.deletedFilter(sessionTemp);
-      }
-
-    }.bind(this));
 
 
     return (
