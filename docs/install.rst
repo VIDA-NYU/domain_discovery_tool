@@ -14,7 +14,9 @@ To run using the docker version download the script <a href="https://github.com/
 
 This will start elasticsearch and the domain discovery tool.
 
-`Using Domain Discovery Tool <https://github.com/ViDA-NYU/domain_discovery_tool_react#use-domain-discovery-tool>`_
+Use Domain Discovery Tool
+
+`Using Domain Discovery Tool`_
 
 Local development
 -----------------
@@ -33,7 +35,6 @@ Download Elasticsearch 1.6.2 from <a href="https://www.elastic.co/downloads/past
 
 >>> cd {path-to-installed-Elasticsearch}
 >>> ./bin/elasticsearch
-```
 
 Install Domain Discovery API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,6 +67,8 @@ After a successful installation, you can activate the DDT development environmen
 (from the top-level `domain_discovery_tool_react` directory) execute:
 
 >>> ./bin/ddt-dev
+
+`Using Domain Discovery Tool`_
 
 Use Domain Discovery Tool
 -------------------------
