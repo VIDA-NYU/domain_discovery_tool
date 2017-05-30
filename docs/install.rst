@@ -8,13 +8,11 @@ Docker Version
 
 You must have docker installed (`Docker Installation <https://docs.docker.com/engine/installation/>`_)
 
-To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
+To run using the docker version download the script `run_docker_ddt(https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip)`_ and run it:
 
 >>> ./run_docker_ddt
 
 This will start elasticsearch and the domain discovery tool.
-
-Use Domain Discovery Tool
 
 `Using Domain Discovery Tool`_
 
@@ -31,7 +29,7 @@ First install `conda <https://conda.io/docs/install/quick.html>`_.
 Install Elasticsearch
 ~~~~~~~~~~~~~~~~~~~~~
 
-Download Elasticsearch 1.6.2 from <a href="https://www.elastic.co/downloads/past-releases/elasticsearch-1-6-2">here</a>, extract the file and run Elasticsearch: 
+Download Elasticsearch 1.6.2 `here(https://www.elastic.co/downloads/past-releases/elasticsearch-1-6-2)`_, extract the file and run Elasticsearch: 
 
 >>> cd {path-to-installed-Elasticsearch}
 >>> ./bin/elasticsearch
