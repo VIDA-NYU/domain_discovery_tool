@@ -1,5 +1,5 @@
-Installation
-============
+Install and Run
+===============
 
 You can install the system from source or using Docker.
 
@@ -68,7 +68,3 @@ After a successful installation, you can activate the DDT development environmen
 
 `Use Domain Discovery Tool`_
 
-Use Domain Discovery Tool
--------------------------
-
-Now you should be able to head to http://localhost:8084/ to interact with the tool.
