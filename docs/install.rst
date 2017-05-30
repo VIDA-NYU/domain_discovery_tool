@@ -6,7 +6,7 @@ You can install the system from source or using Docker.
 Docker Version
 --------------
 
-You must have docker installed ([Docker Installation](https://docs.docker.com/engine/installation/))
+You must have docker installed (`Docker Installation <https://docs.docker.com/engine/installation/>`_)
 
 To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
 
@@ -14,7 +14,7 @@ To run using the docker version download the script <a href="https://github.com/
 
 This will start elasticsearch and the domain discovery tool.
 
-[Using Domain Discovery Tool](https://github.com/ViDA-NYU/domain_discovery_tool_react#use-domain-discovery-tool)
+`Using Domain Discovery Tool <https://github.com/ViDA-NYU/domain_discovery_tool_react#use-domain-discovery-tool>`_
 
 Local development
 -----------------
@@ -24,7 +24,7 @@ Building and deploying the Domain Discovery Tool can be done using its Makefile 
 Install Conda
 ~~~~~~~~~~~~~~
 
-First install [conda](https://conda.io/docs/install/quick.html).
+First install `conda <https://conda.io/docs/install/quick.html>`_.
 
 Install Elasticsearch
 ~~~~~~~~~~~~~~~~~~~~~
