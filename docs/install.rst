@@ -14,7 +14,7 @@ To run using the docker version download the script `run_docker_ddt <https://git
 
 This will start elasticsearch and the domain discovery tool.
 
-`Use Domain Discovery Tool`_
+`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/use.html>`_
 
 Local development
 -----------------
@@ -29,7 +29,7 @@ First install `conda <https://conda.io/docs/install/quick.html>`_.
 Install Elasticsearch
 ~~~~~~~~~~~~~~~~~~~~~
 
-Download Elasticsearch 1.6.2 `here<https://www.elastic.co/downloads/past-releases/elasticsearch-1-6-2>`_, extract the file and run Elasticsearch: 
+Download Elasticsearch 1.6.2 `here <https://www.elastic.co/downloads/past-releases/elasticsearch-1-6-2>`_, extract the file and run Elasticsearch: 
 
 >>> cd {path-to-installed-Elasticsearch}
 >>> ./bin/elasticsearch
@@ -66,5 +66,5 @@ After a successful installation, you can activate the DDT development environmen
 
 >>> ./bin/ddt-dev
 
-`Use Domain Discovery Tool`_
+`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/use.html>`_
 
