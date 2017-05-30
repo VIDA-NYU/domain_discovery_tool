@@ -26,6 +26,7 @@ Contents
 
    install
    publication
+   contact
 	      
 Links
 ========
