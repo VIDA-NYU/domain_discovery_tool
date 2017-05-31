@@ -35,7 +35,7 @@ class SearchTabs extends React.Component {
     this.state = {
       slideIndex: 0,
       dataSource: [],
-      "search_engine":"GOOG",
+      "search_engine":"BING",
       "valueQuery":"",
       "valueLoadUrls":"",
       flat:true,
@@ -182,8 +182,8 @@ class SearchTabs extends React.Component {
                     onSelect={this.handleDropdownButton.bind(this)}
                     title={this.state.search_engine}
                     >
-                    <MenuItem key="0" eventKey='GOOG'>Goog</MenuItem>
-                    <MenuItem key="1" eventKey='BING' >Bing</MenuItem>
+                    <MenuItem key="0" eventKey='BING'>Bing</MenuItem>
+                    <MenuItem key="1" eventKey='GOOG' >Goog</MenuItem>
                   </DropdownButton>
                 </InputGroup>
               </Col>
