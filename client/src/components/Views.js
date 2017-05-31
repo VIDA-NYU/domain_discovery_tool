@@ -371,6 +371,7 @@ class ViewTabSnippets extends React.Component{
   //If the tag already exits then it is removed from elasticsearch, in other case it is applied. If it is a Neutral tag then Relevant and Irrelevant tags are removed.
   removeTags(arrayInputURL,  tag){
     var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
+    var totalTagRemoved = 0;
     //Removing Relevant, Irrelevant tag
     for (var i in arrayInputURL) {
         var url = arrayInputURL[i];
@@ -392,10 +393,11 @@ class ViewTabSnippets extends React.Component{
           updatedPages[url]["tags"][auxKey] = tag;
         }
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+          totalTagRemoved++;
           delete updatedPages[url];
         }
     }
-    this.setState({ pages:updatedPages, });
+    this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - totalTagRemoved});
     this.forceUpdate();
 
     return updatedPages;
@@ -455,17 +457,17 @@ class ViewTabSnippets extends React.Component{
           updatedPages[url]["tags"][auxKey] = tag;
           //checking if the new tag belong to the filter
           if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
-            this.setState({ pages:updatedPages, });
+            this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
             delete updatedPages[url];
           }
           //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
-          this.setState({ pages:updatedPages, });
+          this.setState({ pages:updatedPages});
           this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
 
         }
         else{
           delete updatedPages[url]["tags"];
-          this.setState({ pages:updatedPages,});
+          this.setState({ pages:updatedPages});
           this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
         }
       }
