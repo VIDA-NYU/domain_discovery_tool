@@ -264,7 +264,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   componentWillReceiveProps(nextProps, nextState){
-    if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) { 
+    if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) {
       $("div").scrollTop(0);
       this.setState({
       session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:0, offset:0,
@@ -472,69 +472,70 @@ class ViewTabSnippets extends React.Component{
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-            if(this.state.pages[k]["tags"]){
-                 let uniqueTag="";
-                 uniqueTag = this.getTag(k);
-                 if(uniqueTag==='Relevant')relev_total++;
-                 if(uniqueTag==='Irrelevant')irrelev_total++;
-                 if(uniqueTag==='Neutral')neut_total++;
-            }
-            else{
-                neut_total++;
-            }
-            let colorTagRelev = "";
-            let colorTagIrrelev="";
-            let colorTagNeutral="";
-            let uniqueTag="";
-            if(this.state.pages[k]["tags"]){
-               uniqueTag = this.getTag(k);
-               colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
-               colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
-               colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
-            }
-            else{
-               colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
-            }
+        if(this.state.pages[k]["tags"]){
+             let uniqueTag="";
+             uniqueTag = this.getTag(k);
+             if(uniqueTag==='Relevant')relev_total++;
+             if(uniqueTag==='Irrelevant')irrelev_total++;
+             if(uniqueTag==='Neutral')neut_total++;
+        }
+        else{
+            neut_total++;
+        }
+        let colorTagRelev = "";
+        let colorTagIrrelev="";
+        let colorTagNeutral="";
+        let uniqueTag="";
+        if(this.state.pages[k]["tags"]){
+           uniqueTag = this.getTag(k);
+           colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
+           colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
+           colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
+        }
+        else{
+           colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
+        }
 
-            id= id+1;
-            let urlLink= (k.length<110)?k:k.substring(0,109);
-            let imageUrl=(this.state.pages[k]["image_url"]=="")? NoFoundImg:this.state.pages[k]["image_url"];
+        id= id+1;
+        let urlLink= (k.length<110)?k:k.substring(0,109);
+        let tittleUrl = (this.state.pages[k]["title"] == "" || this.state.pages[k]["title"] == undefined )?k.substring(k.indexOf("//")+2, k.indexOf("//")+15) + "..." : this.state.pages[k]["title"] ;
+        let imageUrl=(this.state.pages[k]["image_url"]=="")? NoFoundImg:this.state.pages[k]["image_url"];
 
-            this.currentUrls.push(k);
+        this.currentUrls.push(k);
 
-            return <ListItem key={index}  >
-            <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
-              <div>
-                <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
-                <p style={{float:'right'}}>
-                <ButtonGroup bsSize="small">
-                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                    <Button >
-                       <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
-                    </Button>
-                  </OverlayTrigger>
-                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                    <Button>
-                      <IconButton onClick={this.onTagActionClicked.bind(this,k,"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
-                    </Button>
-                  </OverlayTrigger>
-                  <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                    <Button >
-                      <IconButton onClick={this.onTagActionClicked.bind(this,k,"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
-                    </Button>
-                  </OverlayTrigger>
-                </ButtonGroup></p>
-                <p>
-                <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{this.state.pages[k]["title"]}</a>
-                <br/>
-                <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
-                <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
-                </p>
-              </div>
+        return <ListItem key={index}  >
+        <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
+          <div>
+            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+            <p style={{float:'right'}}>
+            <ButtonGroup bsSize="small">
+              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
+                <Button >
+                   <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                </Button>
+              </OverlayTrigger>
+              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
+                <Button>
+                  <IconButton onClick={this.onTagActionClicked.bind(this,k,"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                </Button>
+              </OverlayTrigger>
+              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
+                <Button >
+                  <IconButton onClick={this.onTagActionClicked.bind(this,k,"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                </Button>
+              </OverlayTrigger>
+            </ButtonGroup></p>
+            <p>
+              <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
-              <Divider />
-            </div>
-          </ListItem>;
+              <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
+              <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
+            </p>
+          </div>
+          <br/>
+          <Divider />
+        </div>
+      </ListItem>;
     });
 
 
