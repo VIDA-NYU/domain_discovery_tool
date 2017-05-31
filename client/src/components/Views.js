@@ -278,7 +278,7 @@ class ViewTabSnippets extends React.Component{
 
   componentWillReceiveProps(nextProps, nextState){
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) {
-      $("div").scrollTop(0);
+      if(!this.props.queryFromSearch) $("div").scrollTop(0);
       this.setState({
       session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:0, offset:0,
       });
