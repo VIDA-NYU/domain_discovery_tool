@@ -620,7 +620,7 @@ class Views extends React.Component {
 
   //Loads pages in the first time.
   componentWillMount(){
-      this.getPages(this.props.session);
+      this.loadPages(this.props.session);
   }
 
   //Handling SwipeableViews.
@@ -652,7 +652,7 @@ class Views extends React.Component {
 
   //Updates selected filters.
   deletedFilter(sessionTemp){
-    this.getPages(sessionTemp);
+    this.loadPages(sessionTemp);
     this.props.deletedFilter(sessionTemp);
   }
 
@@ -676,8 +676,12 @@ class Views extends React.Component {
 
 
   render() {
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages}  deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
-    : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> No pages found.</div> : <CircularProgressSimple />;
+    var messageSearch = (this.queryFromSearch)? "Searching..." :"No pages found.";
+    //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
+    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+    reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+    : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
 
       return (
         <div>
