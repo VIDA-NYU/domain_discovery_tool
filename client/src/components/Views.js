@@ -628,14 +628,14 @@ class Views extends React.Component {
       {'session': JSON.stringify(tempSession)},
       function(pages) {
         this.newPages=true;
-        this.setState({session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+        this.setState({session:tempSession, pages:pages["data"]["results"], sessionString: JSON.stringify(tempSession), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
       }.bind(this)
     );
   }
 
   //Loads pages in the first time.
   componentWillMount(){
-      this.loadPages(this.props.session);
+      this.loadPages(this.props.session, this.queryFromSearch);
   }
 
   //Handling SwipeableViews.
@@ -646,20 +646,20 @@ class Views extends React.Component {
   };
 
   //Loads pages
-  loadPages(session){
+  loadPages(session, queryFromSearch){
       this.getPages(session);
   }
 
   //If there are any change in the session like a new filter, then getPages() is called.
   componentWillReceiveProps(nextProps, nextState){
-    this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
+    this.queryFromSearch = (nextProps.queryFromSearch ==undefined)?false:true;
   	/*if (nextProps.pages !== this.state.pages) {
   	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
   	    this.forceUpdate();
   	}*/
   	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
       this.newPages = false;
-      this.loadPages(nextProps.session);
+      this.loadPages(nextProps.session, this.queryFromSearch);
   	}else{
         return;
     }
@@ -667,17 +667,19 @@ class Views extends React.Component {
 
   //Updates selected filters.
   deletedFilter(sessionTemp){
-    this.loadPages(sessionTemp);
+    this.loadPages(sessionTemp, this.queryFromSearch);
     this.props.deletedFilter(sessionTemp);
   }
 
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
+    this.queryFromSearch = (nextProps.queryFromSearch ==undefined)?false:true;
     if ((JSON.stringify(nextProps.session) !== this.state.sessionString && this.newPages) || nextState.slideIndex !== this.state.slideIndex ||this.queryFromSearch ) { //'""' if there is some selected tag.   || JSON.stringify(this.props.session['selected_tags'])!='""'
           return true;
     }
+    if(!this.queryFromSearch && this.state.lengthTotalPages==0) return true;
+
     return false;
   }
 
@@ -691,7 +693,8 @@ class Views extends React.Component {
 
 
   render() {
-    var messageSearch = (this.queryFromSearch)? "Searching..." :"No pages found.";
+    var searchOtherEngine =(this.state.session['search_engine']=='BING')?"Query failed. Try Google.":(this.state.session['search_engine'] == 'GOOG')?"Query failed. Try Bing.":"";
+    var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
     lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
