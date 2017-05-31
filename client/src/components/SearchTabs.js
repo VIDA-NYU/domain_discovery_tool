@@ -47,10 +47,23 @@ class SearchTabs extends React.Component {
       this.setState({  slideIndex: value,  });
     };
 
+  resetAllFilters(session){
+    session['newPageRetrievalCriteria'] = "one";
+    session['pageRetrievalCriteria'] = "Queries";
+    session['selected_morelike'] = "";
+    session['selected_queries']="";
+    session['selected_tlds']="";
+    session['selected_aterms']="";
+    session['selected_tags']="";
+    session['selected_model_tags']="";
+    session['filter'] = null;
+    return session;
+  }
   //Submits a web query for a list of terms, e.g. 'ebola disease'
   RunQuery(){
     	var session =this.props.session;
     	session['search_engine']=this.state.search_engine;
+      session = this.resetAllFilters(session);
       this.props.getQueryPages(this.state.valueQuery);
 
     	$.post(
@@ -71,7 +84,8 @@ class SearchTabs extends React.Component {
     runSeedFinderQuery(){
       console.log("run seedQuery");
       var session =this.props.session;
-	session['search_engine']=this.state.search_engine;
+	    session['search_engine']=this.state.search_engine;
+      session = this.resetAllFilters(session);
       $.post(
         '/runSeedFinder',
         {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
@@ -86,21 +100,22 @@ class SearchTabs extends React.Component {
 
     // Download the pages of uploaded urls
     runLoadUrls(valueLoadUrls){
-	var session =this.props.session;
-	session['search_engine']=this.state.search_engine;
-	this.props.getQueryPages("uploaded");
-	$.post(
-            '/uploadUrls',
-            {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
-            function(data) {
-		this.props.queryPagesDone();
-		this.props.updateStatusMessage(false, "process*concluded" );
-            }.bind(this)).fail(function() {
-		console.log("Something is wrong. Try again.");
-		this.props.updateStatusMessage(false, "uploaded");
-            }.bind(this));
-	this.props.updateStatusMessage(true, "Uploading URLs");
-    }
+      var session =this.props.session;
+      session['search_engine']=this.state.search_engine;
+      session = this.resetAllFilters(session);
+      this.props.getQueryPages("uploaded");
+      $.post(
+        '/uploadUrls',
+        {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
+        function(data) {
+          this.props.queryPagesDone();
+          this.props.updateStatusMessage(false, "process*concluded" );
+        }.bind(this)).fail(function() {
+          console.log("Something is wrong. Try again.");
+          this.props.updateStatusMessage(false, "uploaded");
+        }.bind(this));
+        this.props.updateStatusMessage(true, "Uploading URLs");
+      }
 
     // Download the pages of uploaded urls from textfield
     runLoadUrlsQuery(){
