@@ -100,12 +100,13 @@ class ChipViewTab extends React.Component{
     }
     // Calculate new state
     var session = nextProps.session;
-    var queriesList =[], tagsList =[], tldsList=[],atermsList=[], modelTagsList =[];
+      var queriesList =[], tagsList =[], tldsList=[],atermsList=[], modelTagsList =[], crawledTagsList=[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
     atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
+    crawledTagsList=session['selected_crawled_tags']!=="" ? session['selected_crawled_tags'].split(",") : crawledTagsList;
 
     var newChip = [];
     for(var i=0; i<queriesList.length && queriesList.length>0; i++){
@@ -123,8 +124,12 @@ class ChipViewTab extends React.Component{
     for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
     }
+    for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length+crawledTagsList.length) && crawledTagsList.length>0 ; i++, j++){
+      newChip.push({key: i, type: 6, label: crawledTagsList[j], avatar:Ticon});
+    }
+
     if(session['filter'] != null){
-      newChip.push({key: (queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length), type: 2, label: session['filter'] , avatar: Searchicon});
+      newChip.push({key: (queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length+crawledTagsList), type: 2, label: session['filter'] , avatar: Searchicon});
     }
     this.setState({
       chipData:newChip, pages:nextProps.pages, session:nextProps.session, sessionString: JSON.stringify(nextProps.session)
@@ -197,9 +202,17 @@ handleRequestDelete = (key) => {
       sessionTemp['filter'] = labelTerm;
     }
     break;
+    case 6://crawled tags
+      sessionTemp['selected_crawled_tags']= this.removeString(6, key);
+      if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+	  if(sessionTemp['selected_crawled_tags'] === "") {
+              delete sessionTemp['pageRetrievalCriteria']['crawled_tag'];
+	  } else sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
+    }
+    break;
 
   }
-  if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
+  if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === ""&& sessionTemp['selected_aterms'] === "" ){
     sessionTemp['pageRetrievalCriteria'] = "Most Recent";
   }
 

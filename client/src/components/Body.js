@@ -93,6 +93,7 @@ class Body extends Component{
     session['selected_aterms']="";
     session['selected_tags']="";
     session['selected_model_tags']="";
+    session['selected_crawled_tags']="";      
     session['model'] = {};
     session['model']['positive'] = "Relevant";
     session['model']['nagative'] = "Irrelevant";

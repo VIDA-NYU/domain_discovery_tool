@@ -134,6 +134,106 @@ class LoadQueries extends React.Component {
   }
 }
 
+class LoadCrawledData extends React.Component {
+  constructor(props){
+    super(props);
+      this.state={
+	  currentCrawledTags:{"CD Relevant":0, "CD Irrelevant":0},
+      checked:[],
+      expanded:[],
+      session: {},
+      flat:false,
+      crawledNodes:[{
+          value: 'crawled',
+          label: 'Crawled Data (CD)',
+          children: [],
+        }]
+    };
+  }
+
+  getAvailableCrawledData(){
+    $.post(
+      '/getAvailableCrawledData',
+      {'session': JSON.stringify(this.props.session)},
+      function(crawledTagDomain) {
+        var selected_crawled_tags = [];
+        if(this.props.session['selected_crawled_tags'] != undefined && this.props.session['selected_crawled_tags'] !== ""){
+          selected_crawled_tags = this.props.session['selected_crawled_tags'].split(",");
+        }
+        this.setState({currentCrawledTags: crawledTagDomain, session:this.props.session, checked:selected_crawled_tags});
+      }.bind(this)
+    );
+  }
+
+  componentWillMount(){
+    this.getAvailableCrawledData();
+  }
+
+  componentWillReceiveProps(nextProps){
+      var array_selected_crawled_tags =  (nextProps.session['selected_crawled_tags']!=="")?nextProps.session['selected_crawled_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
+    if(JSON.stringify(array_selected_crawled_tags) === JSON.stringify(this.state.checked) ) {
+      if(this.props.update  && this.state.expanded.length > 0 ||  this.state.expanded.length > 0 && this.props.queryFromSearch){
+        this.getAvailableCrawledData();
+      }
+      return;
+    }
+    var selected_crawled_tags = [];
+    if(nextProps.session['selected_crawled_tags'] != undefined && nextProps.session['selected_crawled_tags'] !== "")
+    selected_crawled_tags = this.props.session['selected_crawled_tags'].split(",");
+    // Calculate new state
+    this.setState({ session:nextProps.session, checked:selected_crawled_tags});
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
+    JSON.stringify(nextState.currentCrawledTags) === JSON.stringify(this.state.currentCrawledTags) &&
+    JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+      if(this.props.update ||  this.props.queryFromSearch){ return true;}
+      else {return false;}
+    }
+    return true;
+  }
+
+  addCrawledTags(object){
+    var checked = object["checked"];
+    this.setState({checked: checked });
+    this.props.addCrawledTags(checked);
+  }
+
+  render(){
+    if(this.state.currentCrawledTags!==undefined && Object.keys(this.state.currentCrawledTags).length > 0){
+      var nodes = this.state.crawledNodes;
+      var nodesTemp = [];
+      nodes.map((node,index)=>{
+        if(node.value === "crawled"){
+          node.children = [];
+          Object.keys(this.state.currentCrawledTags).map((tag, index)=>{
+            var labelTag = tag+" " +"(" +this.state.currentCrawledTags[tag]+")"; 
+            node.children.push({value:tag, label:labelTag});
+          });
+        }
+        nodesTemp.push(node);
+      });
+
+      return(
+        <div >
+        <CheckboxTree
+          nodes={nodesTemp}
+          checked={this.state.checked}
+          expanded={this.state.expanded}
+          onCheck={checked => this.addCrawledTags({checked})}
+          onExpand={expanded => this.setState({ expanded })}
+          showNodeIcon={false}
+        />
+        </div>
+      );
+    }
+    return(
+      <div />
+    );
+  }
+}
+
 class LoadTLDs extends React.Component {
   constructor(props){
     super(props);
@@ -777,6 +877,37 @@ class FiltersTabs extends React.Component {
     }
     this.props.updateSession(sessionTemp);
   }
+    
+  addCrawledTags(checked){
+    var sessionTemp = this.props.session;
+    var newTags = checked.toString();
+    if(newTags !== ""){
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== "" || sessionTemp['selected_model_tags']){
+          sessionTemp['newPageRetrievalCriteria'] = "Multi";
+	  sessionTemp['pageRetrievalCriteria'] = {'crawled_tag':newTags};
+        if(sessionTemp['selected_queries']!=="")
+          sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+        if(sessionTemp['selected_tlds']!=="")
+          sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+        if(sessionTemp['selected_tags']!=="")
+            sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+        if(sessionTemp['selected_model_tags']!=="")	  
+	  sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+
+      } else{
+        sessionTemp['newPageRetrievalCriteria'] = "one";
+        sessionTemp['pageRetrievalCriteria'] = "Crawled Tags";
+      }
+    } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+      delete sessionTemp['pageRetrievalCriteria']['crawled_tag'];
+    }
+
+    sessionTemp['selected_crawled_tags']=newTags;
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === "" && sessionTemp['selected_crawled_tags'] === ""){
+      sessionTemp['pageRetrievalCriteria'] = "Most Recent";
+    }
+    this.props.updateSession(sessionTemp);
+  }
 
 
   render() {
@@ -784,7 +915,8 @@ class FiltersTabs extends React.Component {
       return (
 	    <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
         <div style={styles.headline}>
-            <LoadQueries queryFromSearch = {this.queryFromSearch} update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
+              <LoadQueries queryFromSearch = {this.queryFromSearch} update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
+	      <LoadCrawledData update={this.props.update} session={this.state.session} addCrawledTags={this.addCrawledTags.bind(this)} />
 	          <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)}  />
 	          <LoadAnnotatedTerms update={this.props.update} session={this.state.session} addATerm={this.addATerm.bind(this)}  />
 	          <LoadTLDs update={this.props.update} session={this.state.session} addTLD={this.addTLD.bind(this)}  />
