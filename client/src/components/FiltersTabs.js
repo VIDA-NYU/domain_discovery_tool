@@ -692,11 +692,7 @@ class FiltersTabs extends React.Component {
     this.state = {
       slideIndex: 0,
       sessionString:"",
-	    session: {},
-      tldString:"",
-      atermString:"",
-      tagString:"",
-      modelTagString:"",
+      session: {},
       flat:false,
     };
     this.queryFromSearch=true;
@@ -731,13 +727,15 @@ class FiltersTabs extends React.Component {
     var sessionTemp = this.props.session;
     var newQuery = checked.toString();
     if(newQuery !== ""){
-      if (sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""){
+      if (sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== "" || sessionTemp['selected_crawled_tags'] !== ""){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['pageRetrievalCriteria'] = {"query":newQuery};
         if(sessionTemp['selected_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+            sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+        if(sessionTemp['selected_crawled_tags']!=="")
+          sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
         if(sessionTemp['selected_tlds']!=="")
           sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
       }
@@ -750,7 +748,7 @@ class FiltersTabs extends React.Component {
     }
 
     sessionTemp['selected_queries']=newQuery;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -761,7 +759,7 @@ class FiltersTabs extends React.Component {
     var newTLDs = checked.toString();
 
     if(newTLDs !== ""){
-      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_model_tags']!==""){
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_model_tags']!=="" || sessionTemp['selected_crawled_tags'] !== ""){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['pageRetrievalCriteria'] = {'domain':newTLDs};
         if(sessionTemp['selected_queries']!=="")
@@ -769,7 +767,10 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+            sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+        if(sessionTemp['selected_crawled_tags']!=="")
+          sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
+	  
       }
       else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
@@ -780,7 +781,7 @@ class FiltersTabs extends React.Component {
     }
 
     sessionTemp['selected_tlds']=newTLDs;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
 
@@ -801,7 +802,7 @@ class FiltersTabs extends React.Component {
       sessionTemp['filter'] = null;//null
     }
     else {
-      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""){
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tags']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== ""  || sessionTemp['selected_crawled_tags'] !== ""){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['filter'] = labelTerm;
         sessionTemp['pageRetrievalCriteria'] = {};
@@ -812,11 +813,14 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+            sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+        if(sessionTemp['selected_crawled_tags']!=="")
+          sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
+	  
       } else sessionTemp['filter']=labelTerm;
     }
     sessionTemp['selected_aterms']=newTerms;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -826,7 +830,7 @@ class FiltersTabs extends React.Component {
     var sessionTemp = this.props.session;
     var newTags = checked.toString();
     if(newTags !== ""){
-      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] != ""){
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] != "" || sessionTemp['selected_crawled_tags'] !== ""){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
         if(sessionTemp['selected_queries']!=="")
@@ -834,7 +838,9 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tlds']!=="")
           sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
         if(sessionTemp['selected_model_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+            sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+        if(sessionTemp['selected_crawled_tags']!=="")
+          sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
       }
       else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
@@ -844,7 +850,7 @@ class FiltersTabs extends React.Component {
       delete sessionTemp['pageRetrievalCriteria']['tag'];
     }
     sessionTemp['selected_tags']=newTags;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -854,7 +860,7 @@ class FiltersTabs extends React.Component {
     var sessionTemp = this.props.session;
     var newTags = checked.toString();
     if(newTags !== ""){
-      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== ""){
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== "" || sessionTemp['selected_crawled_tags'] !== ""){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['pageRetrievalCriteria'] = {'model_tag':newTags};
         if(sessionTemp['selected_queries']!=="")
@@ -862,7 +868,10 @@ class FiltersTabs extends React.Component {
         if(sessionTemp['selected_tlds']!=="")
           sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
         if(sessionTemp['selected_tags']!=="")
-          sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+            sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+        if(sessionTemp['selected_crawled_tags']!=="")
+          sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
+	  
       } else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
         sessionTemp['pageRetrievalCriteria'] = "Model Tags";
@@ -872,7 +881,7 @@ class FiltersTabs extends React.Component {
     }
 
     sessionTemp['selected_model_tags']=newTags;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
