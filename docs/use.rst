@@ -45,7 +45,7 @@ Filtering
    :height: 400px
    :alt: alternate text
 
-Once some pages are loaded into the domain they can be analysed with various filters available in the Filters tab on the left panel such as:
+Once some pages are loaded into the domain, they can be analyzed with various filters available in the Filters tab on the left panel such as:
 
 QUERIES: Filter by keyword web searches 
 
@@ -53,7 +53,7 @@ CRAWLED DATA: Filter the relevant and irrelevant crawled data
 
 TAGS: Filter by annotation tags
 
-DOMAINS: Filter by top level domains of all the pages in the domain
+DOMAINS: Filter by the top level domains of all the pages in the domain
 
 MODEL TAGS: Filter by predicted model tags
 
@@ -62,12 +62,12 @@ SEARCH: Search by keywords within the downloaded text. NOTE: This search is avai
 Annotation
 ~~~~~~~~~~
 
-Currently pages can be annotated as Relevant, Irrelevant or Neutral. Annotations are used to build a domain model.
+Currently, pages can be annotated as Relevant, Irrelevant or Neutral. Annotations are used to build a domain model.
 
 Domain Model
 ~~~~~~~~~~~~
 
-The accuracy of the domain model is displayed on the top right corner. It provides an indication of the model coverage of the domain and how it is influenced by annotations.
+DDT incrementally builds a model as the user annotates the retrieved pages. The accuracy of the domain model is displayed on the top right corner. It provides an indication of the model coverage of the domain and how it is influenced by annotations.
 
 Run Crawler
 ~~~~~~~~~~~
