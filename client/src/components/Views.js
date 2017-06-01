@@ -693,7 +693,10 @@ class Views extends React.Component {
 
 
   render() {
-    var searchOtherEngine =(this.state.session['search_engine']=='BING')?"Query failed. Try Google.":(this.state.session['search_engine'] == 'GOOG')?"Query failed. Try Bing.":"";
+    var searchOtherEngine = "No Pages Found.";
+    if(this.state.session['newPageRetrievalCriteria'] == "one" &&  this.state.session['pageRetrievalCriteria'] == "Queries"){
+      searchOtherEngine = (this.state.session['search_engine']=='BING')?"Query failed. Try Google.":(this.state.session['search_engine'] == 'GOOG')?"Query failed. Try Bing.":"";
+    }
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
