@@ -61,28 +61,27 @@ class SearchTabs extends React.Component {
   }
   //Submits a web query for a list of terms, e.g. 'ebola disease'
   RunQuery(){
-    	var session =this.props.session;
-    	session['search_engine']=this.state.search_engine;
-      session = this.resetAllFilters(session);
-      this.props.getQueryPages(this.state.valueQuery);
-
-    	$.post(
-              '/queryWeb',
-              {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
-              function(data) {
-		  var num_pages = data["pages"];
-                  this.props.queryPagesDone();
-                  this.props.updateStatusMessage(false, "process*concluded");
-              }.bind(this)).fail(function() {
-                            	      console.log("Something is wrong. Try again.");
-                            	      this.props.updateStatusMessage(false, this.state.valueQuery);
-                    }.bind(this));
-              this.props.updateStatusMessage(true, this.state.valueQuery);
+    var session =this.props.session;
+    session['search_engine']=this.state.search_engine;
+    session = this.resetAllFilters(session);
+    this.props.getQueryPages(this.state.valueQuery);
+    
+    $.post(
+      '/queryWeb',
+      {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
+      function(data) {
+        var num_pages = data["pages"];
+        this.props.queryPagesDone();
+        this.props.updateStatusMessage(false, "process*concluded");
+      }.bind(this)).fail(function() {
+        console.log("Something is wrong. Try again.");
+        this.props.updateStatusMessage(false, this.state.valueQuery);
+      }.bind(this));
+      this.props.updateStatusMessage(true, this.state.valueQuery);
     }
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
     runSeedFinderQuery(){
-      console.log("run seedQuery");
       var session =this.props.session;
 	    session['search_engine']=this.state.search_engine;
       session = this.resetAllFilters(session);
@@ -139,7 +138,7 @@ class SearchTabs extends React.Component {
 
     //Hadling value into loadUrls textfield
     handleTextChangeLoadUrls(e){
-      console.log("valueLoadUrls" + e.target.value);
+      //console.log("valueLoadUrls" + e.target.value);
       this.setState({ "valueLoadUrls": e.target.value});
     }
 
