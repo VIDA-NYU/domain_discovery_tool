@@ -45,7 +45,7 @@ Filtering
    :height: 400px
    :alt: alternate text
 
-Once some pages are loaded into the domain it can be analysed with various filters available in the Filters tab on the left panel such as:
+Once some pages are loaded into the domain they can be analysed with various filters available in the Filters tab on the left panel such as:
 
 QUERIES: Filter by keyword web searches 
 
@@ -57,7 +57,7 @@ DOMAINS: Filter by top level domains of all the pages in the domain
 
 MODEL TAGS: Filter by predicted model tags
 
-SEARCH: Search by keywords within the downloaded text
+SEARCH: Search by keywords within the downloaded text. NOTE: This search is available on the top right corner.
 
 Annotation
 ~~~~~~~~~~
