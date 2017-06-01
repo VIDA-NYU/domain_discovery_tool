@@ -9,9 +9,9 @@ Add Domain
 Begin by adding domain. Domain maintains context of domain discovery. 
 
 .. image:: add_domain.png
-   :width: 600px
+   :width: 800px
    :align: center
-   :height: 300px
+   :height: 400px
    :alt: alternate text
 
 Once domain is added click on it to collect and annotate data.
@@ -20,9 +20,9 @@ Domain Discovery
 ----------------
 
 .. image:: query_web.png
-   :width: 600px
+   :width: 800px
    :align: center
-   :height: 300px
+   :height: 400px
    :alt: alternate text
 
 Data Loading
