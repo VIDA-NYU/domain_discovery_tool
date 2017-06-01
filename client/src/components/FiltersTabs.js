@@ -14,7 +14,7 @@ const styles = {
     fontSize: 12,
     paddingTop: 16,
     marginBottom: 12,
-    height: '350px'
+    height: '480px'
   },
   slide: {
     height: '100px',
