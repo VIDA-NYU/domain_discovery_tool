@@ -33,7 +33,7 @@ const styles = {
 
 };
 
-class LoadSearch extends Component{
+class Search extends Component{
 
   constructor(props) {
     super(props);
@@ -108,4 +108,4 @@ class LoadSearch extends Component{
   }
 }
 
-export default LoadSearch;
+export default Search;
