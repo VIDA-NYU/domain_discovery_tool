@@ -137,18 +137,19 @@ class LoadQueries extends React.Component {
 class LoadCrawledData extends React.Component {
   constructor(props){
     super(props);
-      this.state={
-	  currentCrawledTags:{"CD Relevant":0, "CD Irrelevant":0},
+    this.state={
+      currentCrawledTags:{"CD Relevant":0, "CD Irrelevant":0},
       checked:[],
       expanded:[],
       session: {},
       flat:false,
       crawledNodes:[{
-          value: 'crawled',
-          label: 'Crawled Data (CD)',
-          children: [],
-        }]
+        value: 'crawled',
+        label: 'Crawled Data (CD)',
+        children: [],
+      }]
     };
+    this.intervalFuncId = undefined;
   }
 
   getAvailableCrawledData(){
@@ -169,10 +170,23 @@ class LoadCrawledData extends React.Component {
     this.getAvailableCrawledData();
   }
 
+  setStatusInterval(){
+    //if(this.intervalFuncId === undefined){
+      this.intervalFuncId = window.setInterval(function() {this.getAvailableCrawledData();}.bind(this), 1000);
+    //}
+  }
+
   componentWillReceiveProps(nextProps){
-      var array_selected_crawled_tags =  (nextProps.session['selected_crawled_tags']!=="")?nextProps.session['selected_crawled_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
+    var array_selected_crawled_tags =  (nextProps.session['selected_crawled_tags']!=="")?nextProps.session['selected_crawled_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
+    if(nextProps.updateCrawlerData=="updateCrawler" && this.intervalFuncId==undefined){
+      this.setStatusInterval();
+    }
+    if(nextProps.updateCrawlerData=="stopCrawler"){
+      window.clearInterval(this.intervalFuncId);
+      this.intervalFuncId = undefined;
+    }
     if(JSON.stringify(array_selected_crawled_tags) === JSON.stringify(this.state.checked) ) {
-      if(this.props.update  && this.state.expanded.length > 0 ||  this.state.expanded.length > 0 && this.props.queryFromSearch){
+      if(this.props.update  && this.state.expanded.length > 0 ||  (this.state.expanded.length > 0 && nextProps.updateCrawlerData=="updateCrawler")){
         this.getAvailableCrawledData();
       }
       return;
@@ -188,7 +202,7 @@ class LoadCrawledData extends React.Component {
     if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
     JSON.stringify(nextState.currentCrawledTags) === JSON.stringify(this.state.currentCrawledTags) &&
     JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
-      if(this.props.update ||  this.props.queryFromSearch){ return true;}
+      if(nextProps.updateCrawlerData=="updateCrawler" || nextProps.updateCrawlerData=="stopCrawler"){ return true;}
       else {return false;}
     }
     return true;
@@ -208,7 +222,7 @@ class LoadCrawledData extends React.Component {
         if(node.value === "crawled"){
           node.children = [];
           Object.keys(this.state.currentCrawledTags).map((tag, index)=>{
-            var labelTag = tag+" " +"(" +this.state.currentCrawledTags[tag]+")"; 
+            var labelTag = tag+" " +"(" +this.state.currentCrawledTags[tag]+")";
             node.children.push({value:tag, label:labelTag});
           });
         }
@@ -717,7 +731,7 @@ class FiltersTabs extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
-    if(this.queryFromSearch || this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
+    if(nextProps.updateCrawlerData=="updateCrawler" || nextProps.updateCrawlerData=="stopCrawler" || this.queryFromSearch || this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
       return true;
     }
     return false;
@@ -770,7 +784,7 @@ class FiltersTabs extends React.Component {
             sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
         if(sessionTemp['selected_crawled_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
-	  
+
       }
       else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
@@ -816,7 +830,7 @@ class FiltersTabs extends React.Component {
             sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
         if(sessionTemp['selected_crawled_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
-	  
+
       } else sessionTemp['filter']=labelTerm;
     }
     sessionTemp['selected_aterms']=newTerms;
@@ -871,7 +885,7 @@ class FiltersTabs extends React.Component {
             sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
         if(sessionTemp['selected_crawled_tags']!=="")
           sessionTemp['pageRetrievalCriteria']['crawled_tag'] = sessionTemp['selected_crawled_tags'];
-	  
+
       } else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
         sessionTemp['pageRetrievalCriteria'] = "Model Tags";
@@ -886,22 +900,22 @@ class FiltersTabs extends React.Component {
     }
     this.props.updateSession(sessionTemp);
   }
-    
+
   addCrawledTags(checked){
     var sessionTemp = this.props.session;
     var newTags = checked.toString();
     if(newTags !== ""){
-      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== "" || sessionTemp['selected_model_tags']){
-          sessionTemp['newPageRetrievalCriteria'] = "Multi";
-	  sessionTemp['pageRetrievalCriteria'] = {'crawled_tag':newTags};
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== "" || sessionTemp['selected_model_tags']!= "" ){
+        sessionTemp['newPageRetrievalCriteria'] = "Multi";
+        sessionTemp['pageRetrievalCriteria'] = {'crawled_tag':newTags};
         if(sessionTemp['selected_queries']!=="")
-          sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
+        sessionTemp['pageRetrievalCriteria']['query'] = sessionTemp['selected_queries'];
         if(sessionTemp['selected_tlds']!=="")
-          sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
+        sessionTemp['pageRetrievalCriteria']['domain'] = sessionTemp['selected_tlds'];
         if(sessionTemp['selected_tags']!=="")
-            sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
-        if(sessionTemp['selected_model_tags']!=="")	  
-	  sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
+        sessionTemp['pageRetrievalCriteria']['tag'] = sessionTemp['selected_tags'];
+        if(sessionTemp['selected_model_tags']!=="")
+        sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
 
       } else{
         sessionTemp['newPageRetrievalCriteria'] = "one";
@@ -924,8 +938,8 @@ class FiltersTabs extends React.Component {
       return (
 	    <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
         <div style={styles.headline}>
-              <LoadQueries queryFromSearch = {this.queryFromSearch} update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
-	      <LoadCrawledData update={this.props.update} session={this.state.session} addCrawledTags={this.addCrawledTags.bind(this)} />
+            <LoadQueries queryFromSearch = {this.queryFromSearch} update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
+	          <LoadCrawledData updateCrawlerData={this.props.updateCrawlerData} update={this.props.update} session={this.state.session} addCrawledTags={this.addCrawledTags.bind(this)} />
 	          <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)}  />
 	          <LoadAnnotatedTerms update={this.props.update} session={this.state.session} addATerm={this.addATerm.bind(this)}  />
 	          <LoadTLDs update={this.props.update} session={this.state.session} addTLD={this.addTLD.bind(this)}  />
