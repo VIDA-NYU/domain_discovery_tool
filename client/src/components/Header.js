@@ -220,6 +220,7 @@ class Header extends Component {
            disableAcheInterfaceFlag =true;
            disabledStartCrawlerFlag = true;
          }
+         this.props.updateFilterCrawlerData("updateCrawler");
          this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
          this.forceUpdate();
        }.bind(this)
@@ -235,6 +236,7 @@ class Header extends Component {
        '/stopCrawler',
        {'session': JSON.stringify(session)},
        function(message) {
+         this.props.updateFilterCrawlerData("stopCrawler");
          this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
          this.forceUpdate();
          // this.setState({messageCrawler:message, disabledStartCrawler:false,});
