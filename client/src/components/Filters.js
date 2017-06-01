@@ -25,7 +25,7 @@ const styles = {
     background: '#DCCCE7',
     padding:'0px 4px 2px 4px',
     borderRadius: '0px 0px 0px 0px',
-    height: "370px",
+    height: "500px",
   },
 
 };
