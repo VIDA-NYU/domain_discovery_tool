@@ -157,44 +157,46 @@ class Header extends Component {
 
 
    getStatus(){
-     //console.log("Get status");
-     var session = this.createSession(this.props.idDomain);
-     $.post(
-       '/getStatus',
-       {'session': JSON.stringify(session)},
-       function(result) {
-         var status = JSON.parse(JSON.stringify(result));
-         if(status !== undefined) {
-           var message = status.crawler;
-           if( message !== undefined){
-             var disableStopCrawlerFlag = true;
-             var disableAcheInterfaceFlag =true;
-             var disabledStartCrawlerFlag = false;
-             if(message === "Crawler is running"){
-               disableStopCrawlerFlag = false;
-               disableAcheInterfaceFlag =false;
-               disabledStartCrawlerFlag = true;
-             }else if(message === "Crawler shutting down"){
-               disabledStartCrawlerFlag = true;
-             }
-             this.setState({disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message});
-             this.forceUpdate();
-           }else {
-             if(this.intervalFuncId !== undefined){
-               window.clearInterval(this.intervalFuncId);
-               this.intervalFuncId = undefined;
-               //console.log("stop status");
-               this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
-               this.forceUpdate();
-             }
-             else {
-               this.setState({disabledStartCrawler:false, disabledCreateModel:false, noModelAvailable:false,});
-               this.forceUpdate();
-             }
-           }
-         }
-       }.bind(this)
-     );
+       //console.log("Get status");
+       var session = this.createSession(this.props.idDomain);
+       $.post(
+	   '/getStatus',
+	   {'session': JSON.stringify(session)},
+	   function(result) {
+               var status = JSON.parse(JSON.stringify(result));
+               if(status !== undefined) {
+		   if(status.crawler != undefined && status.crawler.length > 0){
+		       var message = status.crawler[0].status;
+		       console.log(message);
+		       if( message !== undefined){
+			   var disableStopCrawlerFlag = true;
+			   var disableAcheInterfaceFlag =true;
+			   var disabledStartCrawlerFlag = false;
+			   if(message === "Crawler is running"){
+			       disableStopCrawlerFlag = false;
+			       disableAcheInterfaceFlag =false;
+			       disabledStartCrawlerFlag = true;
+			   }else if(message === "Crawler shutting down"){
+			       disabledStartCrawlerFlag = true;
+			   }
+			   this.setState({disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message});
+			   this.forceUpdate();
+		       }
+		   }
+               }else {
+		   if(this.intervalFuncId !== undefined){
+		       window.clearInterval(this.intervalFuncId);
+		       this.intervalFuncId = undefined;
+		       this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
+		       this.forceUpdate();
+		   }
+		   else {
+		       this.setState({disabledStartCrawler:false, disabledCreateModel:false, noModelAvailable:false,});
+		       this.forceUpdate();
+		   }
+	       }
+	   }.bind(this)
+       );
    }
 
    setStatusInterval(){
