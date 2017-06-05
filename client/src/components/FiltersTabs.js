@@ -1,9 +1,7 @@
 import React from 'react';
-import {Tabs, Tab} from 'material-ui/Tabs';
 // From https://github.com/oliviertassinari/react-swipeable-views
 import SwipeableViews from 'react-swipeable-views';
 //import {deepPurpleA400, orange300, blue400, indigoA400, blue900} from 'material-ui/styles/colors';
-import Checkbox from 'material-ui/Checkbox';
 import CheckboxTree from 'react-checkbox-tree';
 import $ from 'jquery';
 
@@ -57,7 +55,7 @@ class LoadQueries extends React.Component {
       {'session': JSON.stringify(this.props.session)},
       function(queriesDomain) {
         var selected_queries = [];
-        if(this.props.session['selected_queries'] != undefined && this.props.session['selected_queries'] !== ""){
+        if(this.props.session['selected_queries'] !== undefined && this.props.session['selected_queries'] !== ""){
           selected_queries = this.props.session['selected_queries'].split(",");
         }
         this.setState({currentQueries: queriesDomain, session:this.props.session, checked:selected_queries});
@@ -72,13 +70,13 @@ class LoadQueries extends React.Component {
   componentWillReceiveProps(nextProps){
     var array_selected_queries =  (nextProps.session['selected_queries']!=="")?nextProps.session['selected_queries'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
     if(JSON.stringify(array_selected_queries) === JSON.stringify(this.state.checked) ) {
-      if(this.props.update  && this.state.expanded.length > 0 ||  this.state.expanded.length > 0 && this.props.queryFromSearch){
+      if((this.props.update  && this.state.expanded.length > 0) ||  (this.state.expanded.length > 0 && this.props.queryFromSearch)){
         this.getAvailableQueries();
       }
       return;
     }
     var selected_queries = [];
-    if(nextProps.session['selected_queries'] != undefined && nextProps.session['selected_queries'] !== "")
+    if(nextProps.session['selected_queries'] !== undefined && nextProps.session['selected_queries'] !== "")
     selected_queries = this.props.session['selected_queries'].split(",");
     // Calculate new state
     this.setState({ session:nextProps.session, checked:selected_queries });
@@ -104,21 +102,21 @@ class LoadQueries extends React.Component {
     if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
       var nodes = this.state.queryNodes;
       var nodesTemp = [];
-      nodes.map((node,index)=>{
+      var currentNodes = nodes.map((node,index)=>{
         if(node.value === "query"){
           node.children = [];
           Object.keys(this.state.currentQueries).map((query, index)=>{
-            var labelQuery=  query+" " +"(" +this.state.currentQueries[query]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+            var labelQuery=  query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
             node.children.push({value:query, label:labelQuery});
           });
         }
-        nodesTemp.push(node);
+        return nodesTemp.push(node);
       });
 
       return(
         <div >
         <CheckboxTree
-          nodes={nodesTemp}
+          nodes={currentNodes}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addQuery({checked})}
@@ -158,7 +156,7 @@ class LoadCrawledData extends React.Component {
       {'session': JSON.stringify(this.props.session)},
       function(crawledTagDomain) {
         var selected_crawled_tags = [];
-        if(this.props.session['selected_crawled_tags'] != undefined && this.props.session['selected_crawled_tags'] !== ""){
+        if(this.props.session['selected_crawled_tags'] !== undefined && this.props.session['selected_crawled_tags'] !== ""){
           selected_crawled_tags = this.props.session['selected_crawled_tags'].split(",");
         }
         this.setState({currentCrawledTags: crawledTagDomain, session:this.props.session, checked:selected_crawled_tags});
@@ -178,21 +176,21 @@ class LoadCrawledData extends React.Component {
 
   componentWillReceiveProps(nextProps){
     var array_selected_crawled_tags =  (nextProps.session['selected_crawled_tags']!=="")?nextProps.session['selected_crawled_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
-    if(nextProps.updateCrawlerData=="updateCrawler" && this.intervalFuncId==undefined){
+    if(nextProps.updateCrawlerData==="updateCrawler" && this.intervalFuncId===undefined){
       this.setStatusInterval();
     }
-    if(nextProps.updateCrawlerData=="stopCrawler"){
+    if(nextProps.updateCrawlerData==="stopCrawler"){
       window.clearInterval(this.intervalFuncId);
       this.intervalFuncId = undefined;
     }
     if(JSON.stringify(array_selected_crawled_tags) === JSON.stringify(this.state.checked) ) {
-      if(this.props.update  && this.state.expanded.length > 0 ||  (this.state.expanded.length > 0 && nextProps.updateCrawlerData=="updateCrawler")){
+      if((this.props.update  && this.state.expanded.length > 0) ||  (this.state.expanded.length > 0 && nextProps.updateCrawlerData==="updateCrawler")){
         this.getAvailableCrawledData();
       }
       return;
     }
     var selected_crawled_tags = [];
-    if(nextProps.session['selected_crawled_tags'] != undefined && nextProps.session['selected_crawled_tags'] !== "")
+    if(nextProps.session['selected_crawled_tags'] !== undefined && nextProps.session['selected_crawled_tags'] !== "")
     selected_crawled_tags = this.props.session['selected_crawled_tags'].split(",");
     // Calculate new state
     this.setState({ session:nextProps.session, checked:selected_crawled_tags});
@@ -202,7 +200,7 @@ class LoadCrawledData extends React.Component {
     if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
     JSON.stringify(nextState.currentCrawledTags) === JSON.stringify(this.state.currentCrawledTags) &&
     JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
-      if(nextProps.updateCrawlerData=="updateCrawler" || nextProps.updateCrawlerData=="stopCrawler"){ return true;}
+      if(nextProps.updateCrawlerData==="updateCrawler" || nextProps.updateCrawlerData==="stopCrawler"){ return true;}
       else {return false;}
     }
     return true;
@@ -218,21 +216,21 @@ class LoadCrawledData extends React.Component {
     if(this.state.currentCrawledTags!==undefined && Object.keys(this.state.currentCrawledTags).length > 0){
       var nodes = this.state.crawledNodes;
       var nodesTemp = [];
-      nodes.map((node,index)=>{
+      var currentNodes = nodes.map((node,index)=>{
         if(node.value === "crawled"){
           node.children = [];
           Object.keys(this.state.currentCrawledTags).map((tag, index)=>{
-            var labelTag = tag+" " +"(" +this.state.currentCrawledTags[tag]+")";
+            var labelTag = tag+" (" +this.state.currentCrawledTags[tag]+")";
             node.children.push({value:tag, label:labelTag});
           });
         }
-        nodesTemp.push(node);
+        return nodesTemp.push(node);
       });
 
       return(
         <div >
         <CheckboxTree
-          nodes={nodesTemp}
+          nodes={currentNodes}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addCrawledTags({checked})}
@@ -270,7 +268,7 @@ class LoadTLDs extends React.Component {
       {'session': JSON.stringify(this.props.session)},
       function(tlds) {
         var selected_tlds = [];
-        if(this.props.session['selected_tlds'] != undefined && this.props.session['selected_tlds'] !== ""){
+        if(this.props.session['selected_tlds'] !== undefined && this.props.session['selected_tlds'] !== ""){
           selected_tlds = this.props.session['selected_tlds'].split(",");
         }
 
@@ -291,7 +289,7 @@ class LoadTLDs extends React.Component {
       return;
     }
     var selected_tlds = [];
-    if(nextProps.session['selected_tlds'] != undefined && nextProps.session['selected_tlds'] !== "")
+    if(nextProps.session['selected_tlds'] !== undefined && nextProps.session['selected_tlds'] !== "")
     selected_tlds = this.props.session['selected_tlds'].split(",");
     // Calculate new state
     this.setState({ session:nextProps.session, checked:selected_tlds });
@@ -317,21 +315,21 @@ class LoadTLDs extends React.Component {
     if(this.state.currentTLDs!==undefined && Object.keys(this.state.currentTLDs).length > 0){
       var nodes = this.state.tldNodes;
       var nodesTemp = [];
-      nodes.map((node,index)=>{
+      var currentNodes = nodes.map((node,index)=>{
         if(node.value === "tld"){
           node.children = [];
           Object.keys(this.state.currentTLDs).map((tld, index)=>{
-            var labelTLD=  tld +" " +"(" +this.state.currentTLDs[tld]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+            var labelTLD=  tld +" (" +this.state.currentTLDs[tld]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
             node.children.push({value:tld, label:labelTLD});
           });
         }
-        nodesTemp.push(node);
+        return nodesTemp.push(node);
       });
 
       return(
         <div>
         <CheckboxTree
-          nodes={nodesTemp}
+          nodes={currentNodes}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addTLD({checked})}
@@ -371,7 +369,7 @@ class LoadAnnotatedTerms extends React.Component {
       {'session': JSON.stringify(this.props.session)},
       function(terms) {
         var selected_aterms = [];
-        if(this.props.session['selected_aterms'] != undefined && this.props.session['selected_aterms'] !== ""){
+        if(this.props.session['selected_aterms'] !== undefined && this.props.session['selected_aterms'] !== ""){
           selected_aterms = this.props.session['selected_aterms'].split(",");
         }
         this.setState({currentATerms: terms, session:this.props.session, checked:selected_aterms});
@@ -391,7 +389,7 @@ class LoadAnnotatedTerms extends React.Component {
       return;
     }
     var selected_aterms = [];
-    if(nextProps.session['selected_aterms'] != undefined && nextProps.session['selected_aterms'] !== "")
+    if(nextProps.session['selected_aterms'] !== undefined && nextProps.session['selected_aterms'] !== "")
     selected_aterms = this.props.session['selected_aterms'].split(",");
     // Calculate new state
     this.setState({ session:nextProps.session, checked:selected_aterms });
@@ -442,7 +440,7 @@ class LoadAnnotatedTerms extends React.Component {
 
       var nodes = this.state.atermNodes;
       var nodesTemp = [];
-      nodes.map((node,index)=>{
+      var currentNodes = nodes.map((node,index)=>{
         if(node.value === "aterm"){
           node.children = [];
           var positive = [];
@@ -461,13 +459,13 @@ class LoadAnnotatedTerms extends React.Component {
           if(negative.length > 0)
           node.children.push({value:"negative", label:"Negative", children:negative});
         }
-        nodesTemp.push(node);
+        return nodesTemp.push(node);
       });
 
       return(
         <div >
         <CheckboxTree
-          nodes={nodesTemp}
+          nodes={currentNodes}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addATerm({checked})}
@@ -505,7 +503,7 @@ class LoadTag extends React.Component {
     	  {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
     	  function(tagsDomain) {
     	      var selected_tags = [];
-    	      if(this.props.session['selected_tags'] != undefined && this.props.session['selected_tags'] !== ""){
+    	      if(this.props.session['selected_tags'] !== undefined && this.props.session['selected_tags'] !== ""){
     		        selected_tags = this.props.session['selected_tags'].split(",");
     	      }
             this.setState({currentTags: tagsDomain['tags'], session:this.props.session, checked:selected_tags});
@@ -526,7 +524,7 @@ class LoadTag extends React.Component {
       	return;
     }
     var selected_tags = [];
-    if(nextProps.session['selected_tags'] != undefined && nextProps.session['selected_tags'] !== "")
+    if(nextProps.session['selected_tags'] !== undefined && nextProps.session['selected_tags'] !== "")
 	     selected_tags = this.props.session['selected_tags'].split(",");
     this.setState({session:nextProps.session, checked:selected_tags});
   }
@@ -552,21 +550,21 @@ class LoadTag extends React.Component {
       if(this.state.currentTags!==undefined && Object.keys(this.state.currentTags).length > 0){
       	 var nodes = this.state.tagNodes;
       	 var nodesTemp = [];
-      	 nodes.map((node,index)=>{
+      	 var currentNodes = nodes.map((node,index)=>{
       	     if(node.value === "tag"){
           		 node.children = [];
           		 Object.keys(this.state.currentTags).map((tag, index)=>{
-          		     var labelTag=  tag +" " +"(" +this.state.currentTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+          		     var labelTag=  tag+" (" +this.state.currentTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
           		     node.children.push({value:tag, label:labelTag});
           		 });
       	     }
-      	     nodesTemp.push(node);
+      	    return nodesTemp.push(node);
       	 });
 
       	 return(
       	      <div>
       	      <CheckboxTree
-                    nodes={nodesTemp}
+                    nodes={currentNodes}
                     checked={this.state.checked}
                     expanded={this.state.expanded}
                     onCheck={checked => this.addTags({checked})}
@@ -610,7 +608,7 @@ class LoadModel extends React.Component {
     	function(modelTagDomain) {
 	    this.callModelTags = false;
     	    var selected_model_tags = [];
-    	    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== "" ){
+    	    if(this.props.session['selected_model_tags'] !== undefined && this.props.session['selected_model_tags'] !== "" ){
         		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
         		    selected_model_tags = this.props.session['selected_model_tags'].split(",");
         		else selected_model_tags.push(this.props.session['selected_model_tags'])
@@ -628,30 +626,29 @@ class LoadModel extends React.Component {
   componentWillReceiveProps(nextProps){
     var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[];
     if(JSON.stringify(array_selected_model_tags) === JSON.stringify(this.state.checked) ) {
-  	if(this.props.update && this.state.expanded.length > 0){
-            this.getAvailableModelTags();
-  	}
-  	return;
+      if(this.props.update && this.state.expanded.length > 0){
+        this.getAvailableModelTags();
+      }
+      return;
     }
     var selected_model_tags = [];
-    if(this.props.session['selected_model_tags'] != undefined && this.props.session['selected_model_tags'] !== ""){
-  	  if (this.props.session['selected_model_tags'].indexOf(",") > 0)
-  	      selected_model_tags = this.props.session['selected_model_tags'].split(",");
-  	  else  selected_model_tags.push(this.props.session['selected_model_tags'])
+    if(this.props.session['selected_model_tags'] !== undefined && this.props.session['selected_model_tags'] !== ""){
+      if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+      selected_model_tags = this.props.session['selected_model_tags'].split(",");
+      else  selected_model_tags.push(this.props.session['selected_model_tags'])
     }
     this.setState({session:nextProps.session, checked:selected_model_tags});
   }
 
-    shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps, nextState){
     if(JSON.stringify(nextState.checked) === JSON.stringify(this.state.checked) &&
-    	 JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
-    	 JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
-      	  if(this.props.update){return true;}
-      	else {return false;}
-	return false
+    JSON.stringify(nextState.currentModelTags) === JSON.stringify(this.state.currentModelTags) &&
+    JSON.stringify(nextState.expanded) === JSON.stringify(this.state.expanded)) {
+      if(this.props.update){return true;}
+      else {return false;}
     }
     if(JSON.stringify(nextState.expanded) !== JSON.stringify(this.state.expanded) && nextState.expanded.length > 0) {
-	this.getAvailableModelTags();
+      this.getAvailableModelTags();
     }
     return true;
   }
@@ -662,39 +659,39 @@ class LoadModel extends React.Component {
     this.props.addModelTags(checked);
   }
 
-    render(){
-	var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>;
-      if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
-	  var nodes = this.state.modeltagNodes;
-	  var nodesTemp = [];
-	  nodes.map((node,index)=>{
-	      if(node.value === "modeltag"){
-		  node.children = [];
-		  Object.keys(this.state.currentModelTags).map((tag, index)=>{
-		      var labelTag=  tag+" " +"(" +this.state.currentModelTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
-		      node.children.push({value:tag, label:labelTag});
-		  });
-	      }
-	      nodesTemp.push(node);
-	  });
+  render(){
+    var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>;
+    if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
+      var nodes = this.state.modeltagNodes;
+      var nodesTemp = [];
+      var currentNodes = nodes.map((node,index)=>{
+        if(node.value === "modeltag"){
+          node.children = [];
+          Object.keys(this.state.currentModelTags).map((tag, index)=>{
+            var labelTag=  tag+" (" +this.state.currentModelTags[tag]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+            node.children.push({value:tag, label:labelTag});
+          });
+        }
+        return nodesTemp.push(node);
+      });
 
-	  return(
-	      <div >
-	      <CheckboxTree
-	      nodes={nodesTemp}
-	      checked={this.state.checked}
-	      expanded={this.state.expanded}
-	      onCheck={checked => this.addModelTags({checked})}
-	      onExpand={expanded => this.setState({ expanded })}
-	      showNodeIcon={false}
-		  />
-		  {cursor_waiting}
-		  </div>
-	  );
-      }
       return(
-	      <CircularProgressSimple />
+        <div >
+        <CheckboxTree
+        nodes={currentNodes}
+        checked={this.state.checked}
+        expanded={this.state.expanded}
+        onCheck={checked => this.addModelTags({checked})}
+        onExpand={expanded => this.setState({ expanded })}
+        showNodeIcon={false}
+        />
+        {cursor_waiting}
+        </div>
       );
+    }
+    return(
+      <CircularProgressSimple />
+    );
   }
 }
 
@@ -730,8 +727,8 @@ class FiltersTabs extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    this.queryFromSearch = (this.props.queryFromSearch ==undefined)?false:true;
-    if(nextProps.updateCrawlerData=="updateCrawler" || nextProps.updateCrawlerData=="stopCrawler" || this.queryFromSearch || this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
+    this.queryFromSearch = (this.props.queryFromSearch ===undefined)?false:true;
+    if(nextProps.updateCrawlerData==="updateCrawler" || nextProps.updateCrawlerData==="stopCrawler" || this.queryFromSearch || this.props.update || JSON.stringify(nextProps.session) !== this.state.sessionString || nextState.slideIndex !== this.state.slideIndex) {
       return true;
     }
     return false;
@@ -844,7 +841,7 @@ class FiltersTabs extends React.Component {
     var sessionTemp = this.props.session;
     var newTags = checked.toString();
     if(newTags !== ""){
-      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] != "" || sessionTemp['selected_crawled_tags'] !== ""){
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_model_tags'] !== "" || sessionTemp['selected_crawled_tags'] !== ""){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['pageRetrievalCriteria'] = {'tag':newTags};
         if(sessionTemp['selected_queries']!=="")
@@ -905,7 +902,7 @@ class FiltersTabs extends React.Component {
     var sessionTemp = this.props.session;
     var newTags = checked.toString();
     if(newTags !== ""){
-      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== "" || sessionTemp['selected_model_tags']!= "" ){
+      if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== "" || sessionTemp['selected_model_tags']!== "" ){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['pageRetrievalCriteria'] = {'crawled_tag':newTags};
         if(sessionTemp['selected_queries']!=="")
@@ -938,7 +935,7 @@ class FiltersTabs extends React.Component {
       return (
 	    <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
         <div style={styles.headline}>
-            <LoadQueries queryFromSearch = {this.queryFromSearch} update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
+            <LoadQueries queryFromSearch={this.queryFromSearch} update={this.props.update} session={this.state.session} addQuery={this.addQuery.bind(this)}  />
 	          <LoadCrawledData updateCrawlerData={this.props.updateCrawlerData} update={this.props.update} session={this.state.session} addCrawledTags={this.addCrawledTags.bind(this)} />
 	          <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)}  />
 	          <LoadAnnotatedTerms update={this.props.update} session={this.state.session} addATerm={this.addATerm.bind(this)}  />
