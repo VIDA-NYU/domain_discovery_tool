@@ -98,11 +98,11 @@ class Header extends Component {
   componentWillReceiveProps  = (nextProps) => {
     if(nextProps.deleteKeywordSignal){ this.setState({term:""});}
     if(nextProps.noModelAvailable !== this.state.noModelAvailable ){
-      if(!nextProps.noModelAvailable){ //if there is a model
-          this.setStatusInterval();
-      }
-      else this.setState({noModelAvailable:true, disableStopCrawlerSignal:true, disableAcheInterfaceSignal:true, disabledStartCrawler:true,  disabledCreateModel:true,});
-      }
+        if(!nextProps.noModelAvailable){ //if there is a model
+            this.setStatusInterval();
+        }
+        else this.setState({noModelAvailable:true, disableStopCrawlerSignal:true, disableAcheInterfaceSignal:true, disabledStartCrawler:true,  disabledCreateModel:true,});
+        }
     else {return;}
     }
 
@@ -172,7 +172,13 @@ class Header extends Component {
                }else if(message === "Crawler shutting down"){
                  disabledStartCrawlerFlag = true;
                }
-               this.setState({disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message});
+               if(this.props.currentDomain !== status.crawler[0].domain){
+                 disableStopCrawlerFlag = true;
+                 disableAcheInterfaceFlag =true;
+                 disabledStartCrawlerFlag = true;
+                 message = message +" in " +  status.crawler[0].domain;
+               }
+               this.setState({disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message, noModelAvailable:false,});
                this.forceUpdate();
              }
            }
@@ -180,7 +186,7 @@ class Header extends Component {
            if(this.intervalFuncId !== undefined){
              window.clearInterval(this.intervalFuncId);
              this.intervalFuncId = undefined;
-             this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
+             this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:"", noModelAvailable:false,});
              this.forceUpdate();
            }
            else {
@@ -193,9 +199,7 @@ class Header extends Component {
    }
 
    setStatusInterval(){
-     //if(this.intervalFuncId === undefined){
        this.intervalFuncId = window.setInterval(function() {this.getStatus();}.bind(this), 1000);
-     //}
    }
 
    startCrawler(){
@@ -204,21 +208,21 @@ class Header extends Component {
      this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
      this.forceUpdate();
      $.post(
-       '/startCrawler',
-       {'session': JSON.stringify(session)},
-       function(message) {
-         var disableStopCrawlerFlag = false;
-         var disableAcheInterfaceFlag = false;
-         var disabledStartCrawlerFlag = true;
-         if(message !== "Crawler is running"){
-           disableStopCrawlerFlag = true;
-           disableAcheInterfaceFlag =true;
-           disabledStartCrawlerFlag = true;
-         }
-         this.props.updateFilterCrawlerData("updateCrawler");
-         this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-         this.forceUpdate();
-       }.bind(this)
+         '/startCrawler',
+         {'session': JSON.stringify(session)},
+         function(message) {
+           var disableStopCrawlerFlag = false;
+           var disableAcheInterfaceFlag = false;
+           var disabledStartCrawlerFlag = true;
+           if(message !== "Crawler is running"){
+             disableStopCrawlerFlag = true;
+             disableAcheInterfaceFlag =true;
+             disabledStartCrawlerFlag = true;
+           }
+           this.props.updateFilterCrawlerData("updateCrawler");
+           this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+           this.forceUpdate();
+         }.bind(this)
      );
    }
 
@@ -234,12 +238,6 @@ class Header extends Component {
          this.props.updateFilterCrawlerData("stopCrawler");
          this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
          this.forceUpdate();
-         // this.setState({messageCrawler:message, disabledStartCrawler:false,});
-         // this.forceUpdate();
-         // setTimeout(function(){
-         //   this.setState({messageCrawler:"",});
-         //   this.forceUpdate();
-         //}.bind(this), 700);
        }.bind(this)
      );
    }
