@@ -70,7 +70,7 @@ class SearchTabs extends React.Component {
       '/queryWeb',
       {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
       function(data) {
-        var num_pages = data["pages"];
+        //var num_pages = data["pages"];
         this.props.queryPagesDone();
         this.props.updateStatusMessage(false, "process*concluded");
       }.bind(this)).fail(function() {
@@ -182,7 +182,7 @@ class SearchTabs extends React.Component {
                   <DropdownButton
                     componentClass={InputGroup.Button}
                     id="input-dropdown-addon"
-                    pullRight id="split-button-pull-right"
+                    pullRight="split-button-pull-right"
                     onSelect={this.handleDropdownButton.bind(this)}
                     title={this.state.search_engine}
                     >
