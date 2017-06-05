@@ -102,7 +102,7 @@ class LoadQueries extends React.Component {
     if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
       var nodes = this.state.queryNodes;
       var nodesTemp = [];
-      var currentNodes = nodes.map((node,index)=>{
+      nodes.map((node,index)=>{
         if(node.value === "query"){
           node.children = [];
           Object.keys(this.state.currentQueries).map((query, index)=>{
@@ -110,13 +110,13 @@ class LoadQueries extends React.Component {
             node.children.push({value:query, label:labelQuery});
           });
         }
-        return nodesTemp.push(node);
+        nodesTemp.push(node);
       });
 
       return(
         <div >
         <CheckboxTree
-          nodes={currentNodes}
+          nodes={nodesTemp}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addQuery({checked})}
@@ -216,7 +216,7 @@ class LoadCrawledData extends React.Component {
     if(this.state.currentCrawledTags!==undefined && Object.keys(this.state.currentCrawledTags).length > 0){
       var nodes = this.state.crawledNodes;
       var nodesTemp = [];
-      var currentNodes = nodes.map((node,index)=>{
+      nodes.map((node,index)=>{
         if(node.value === "crawled"){
           node.children = [];
           Object.keys(this.state.currentCrawledTags).map((tag, index)=>{
@@ -224,13 +224,13 @@ class LoadCrawledData extends React.Component {
             node.children.push({value:tag, label:labelTag});
           });
         }
-        return nodesTemp.push(node);
+        nodesTemp.push(node);
       });
 
       return(
         <div >
         <CheckboxTree
-          nodes={currentNodes}
+          nodes={nodesTemp}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addCrawledTags({checked})}
@@ -315,7 +315,7 @@ class LoadTLDs extends React.Component {
     if(this.state.currentTLDs!==undefined && Object.keys(this.state.currentTLDs).length > 0){
       var nodes = this.state.tldNodes;
       var nodesTemp = [];
-      var currentNodes = nodes.map((node,index)=>{
+      nodes.map((node,index)=>{
         if(node.value === "tld"){
           node.children = [];
           Object.keys(this.state.currentTLDs).map((tld, index)=>{
@@ -323,13 +323,13 @@ class LoadTLDs extends React.Component {
             node.children.push({value:tld, label:labelTLD});
           });
         }
-        return nodesTemp.push(node);
+         nodesTemp.push(node);
       });
 
       return(
         <div>
         <CheckboxTree
-          nodes={currentNodes}
+          nodes={nodesTemp}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addTLD({checked})}
@@ -440,7 +440,7 @@ class LoadAnnotatedTerms extends React.Component {
 
       var nodes = this.state.atermNodes;
       var nodesTemp = [];
-      var currentNodes = nodes.map((node,index)=>{
+      nodes.map((node,index)=>{
         if(node.value === "aterm"){
           node.children = [];
           var positive = [];
@@ -459,13 +459,13 @@ class LoadAnnotatedTerms extends React.Component {
           if(negative.length > 0)
           node.children.push({value:"negative", label:"Negative", children:negative});
         }
-        return nodesTemp.push(node);
+         nodesTemp.push(node);
       });
 
       return(
         <div >
         <CheckboxTree
-          nodes={currentNodes}
+          nodes={nodesTemp}
           checked={this.state.checked}
           expanded={this.state.expanded}
           onCheck={checked => this.addATerm({checked})}
@@ -550,7 +550,7 @@ class LoadTag extends React.Component {
       if(this.state.currentTags!==undefined && Object.keys(this.state.currentTags).length > 0){
       	 var nodes = this.state.tagNodes;
       	 var nodesTemp = [];
-      	 var currentNodes = nodes.map((node,index)=>{
+      	 nodes.map((node,index)=>{
       	     if(node.value === "tag"){
           		 node.children = [];
           		 Object.keys(this.state.currentTags).map((tag, index)=>{
@@ -558,13 +558,13 @@ class LoadTag extends React.Component {
           		     node.children.push({value:tag, label:labelTag});
           		 });
       	     }
-      	    return nodesTemp.push(node);
+      	    nodesTemp.push(node);
       	 });
 
       	 return(
       	      <div>
       	      <CheckboxTree
-                    nodes={currentNodes}
+                    nodes={nodesTemp}
                     checked={this.state.checked}
                     expanded={this.state.expanded}
                     onCheck={checked => this.addTags({checked})}
@@ -664,7 +664,7 @@ class LoadModel extends React.Component {
     if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
       var nodes = this.state.modeltagNodes;
       var nodesTemp = [];
-      var currentNodes = nodes.map((node,index)=>{
+      nodes.map((node,index)=>{
         if(node.value === "modeltag"){
           node.children = [];
           Object.keys(this.state.currentModelTags).map((tag, index)=>{
@@ -672,13 +672,13 @@ class LoadModel extends React.Component {
             node.children.push({value:tag, label:labelTag});
           });
         }
-        return nodesTemp.push(node);
+         nodesTemp.push(node);
       });
 
       return(
         <div >
         <CheckboxTree
-        nodes={currentNodes}
+        nodes={nodesTemp}
         checked={this.state.checked}
         expanded={this.state.expanded}
         onCheck={checked => this.addModelTags({checked})}
