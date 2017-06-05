@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
 import Body from './Body';
 import Header from './Header';
 
@@ -58,7 +56,7 @@ deletedFilter(filter_Keyword){
 updateFilterCrawlerData(updateCrawlerData){
   this.setState({ updateCrawlerData:updateCrawlerData, reloadBody:true });
   this.forceUpdate();
-  if(updateCrawlerData=="stopCrawler"){
+  if(updateCrawlerData==="stopCrawler"){
       this.setState({ updateCrawlerData:"", reloadBody:true });
       this.forceUpdate();
   }
@@ -68,7 +66,7 @@ render() {
     //console.log("HEADER " + this.state.filterKeyword);
   return (
     <div>
-	     <Header deleteKeywordSignal = {this.state.deleteKeywordSignal} currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} noModelAvailable={this.state.noModelAvailable} updateFilterCrawlerData={this.updateFilterCrawlerData.bind(this)}/>
+	     <Header deleteKeywordSignal={this.state.deleteKeywordSignal} currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} noModelAvailable={this.state.noModelAvailable} updateFilterCrawlerData={this.updateFilterCrawlerData.bind(this)}/>
        <Body updateCrawlerData={this.state.updateCrawlerData} nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
     </div>
   );
