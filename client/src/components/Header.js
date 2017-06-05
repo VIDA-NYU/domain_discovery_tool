@@ -7,22 +7,16 @@ import { } from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 //import Body from './Body';
 import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import FontIcon from 'material-ui/FontIcon';
-import Model from 'material-ui/svg-icons/image/blur-linear';
 import SwitchDomain from 'material-ui/svg-icons/maps/transfer-within-a-station';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
-import { FormControl} from 'react-bootstrap';
 import Search from 'material-ui/svg-icons/action/search';
 import OpenInNewTab from 'material-ui/svg-icons/action/open-in-new';
-import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
-import Body from './Body';
 import TextField from 'material-ui/TextField';
 
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Checkbox from 'material-ui/Checkbox';
@@ -165,7 +159,7 @@ class Header extends Component {
        function(result) {
          var status = JSON.parse(JSON.stringify(result));
          if(status !== undefined && Object.keys(status).length > 0) {
-           if(status.crawler != undefined && status.crawler.length > 0){
+           if(status.crawler !== undefined && status.crawler.length > 0){
              var message = status.crawler[0].status;
              if( message !== undefined){
                var disableStopCrawlerFlag = true;
@@ -273,7 +267,7 @@ class Header extends Component {
 
    handleOnRequestChange = (event, value)=> {
      var session = this.createSession(this.props.idDomain);
-     if(value == 2){
+     if(value === 2){
        this.getAvailableTags(session);
        this.setState({ openCreateModel: true });
      }
@@ -364,7 +358,7 @@ class Header extends Component {
                              <div>
                                <p>Positive</p>
                                  {Object.keys(this.state.currentTags).map((tag, index)=>{
-                                   var labelTags=  tag+" " +"(" +this.state.currentTags[tag]+")";
+                                   var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                                    var checkedTag=false;
                                    var tags = this.state.tagsPosCheckBox;
                                    if(tags.includes(tag))
@@ -373,7 +367,7 @@ class Header extends Component {
                                  })}
                               <p>Negative</p>
                                  {Object.keys(this.state.currentTags).map((tag, index)=>{
-                                   var labelTags=  tag+" " +"(" +this.state.currentTags[tag]+")";
+                                   var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                                    var checkedTag=false;
                                    var tags = this.state.tagsNegCheckBox;
                                    if(tags.includes(tag))
@@ -394,12 +388,12 @@ class Header extends Component {
     >
       <OpenInNewTab />
     </IconButton>;
-     var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:12 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
+     //var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:12 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
 
 
      return (
        <AppBar showMenuIconButton={true} style={styles.backgound} title={<span style={styles.titleText}> Domain Discovery Tool </span>}
-        iconElementLeft={<img src={logoNYU}  height='45' width='40'  />} >
+        iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40'  />} >
          <Toolbar style={styles.toolBarHeader}>
              <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
              <ToolbarSeparator style={{ marginTop:"5px"}} />
