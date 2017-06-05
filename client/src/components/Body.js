@@ -7,16 +7,12 @@ import DomainInfo from './DomainInfo';
 import Search from './Search';
 import Filters from './Filters';
 import Views from './Views';
-import SidebarMenu from './SidebarMenu';
 import '../css/Components.css';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import Sidebar from 'react-sidebar';
-import Avatar from 'material-ui/Avatar';
-import Assignment from 'material-ui/svg-icons/action/assignment-returned';
 import Plus from 'material-ui/svg-icons/action/swap-horiz';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Snackbar from 'material-ui/Snackbar'; //Adding an indicator which tell us that the pages are being downloaded
-import $ from 'jquery';
 
 const styles = {
   button:{
@@ -130,7 +126,7 @@ class Body extends Component{
       return false;
     }*/
     if (nextState.sessionString  === this.state.sessionString) {
-       if(nextProps.updateCrawlerData=="updateCrawler" || nextProps.updateCrawlerData=="stopCrawler" || nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
+       if(nextProps.updateCrawlerData==="updateCrawler" || nextProps.updateCrawlerData==="stopCrawler" || nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
        }
        return false;
@@ -259,7 +255,7 @@ class Body extends Component{
 		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
         </Row>
         <Row className="Menus-child">
-          <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
+          <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch={this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
         </Row>
         <Row className="Menus-child">
           <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
@@ -289,7 +285,7 @@ class Body extends Component{
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views queryFromSearch = {this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+          <Views queryFromSearch={this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
         </Row>
       </div>
       <Snackbar
