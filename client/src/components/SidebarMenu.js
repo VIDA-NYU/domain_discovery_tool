@@ -3,16 +3,9 @@ import { Row, Col} from 'react-bootstrap';
 import DomainInfo from './DomainInfo';
 import Search from './Search';
 import Filters from './Filters';
-import Views from './Views';
 import '../css/Components.css';
-
-import Sidebar from 'react-sidebar';
-
-import Avatar from 'material-ui/Avatar';
-import Assignment from 'material-ui/svg-icons/action/assignment-returned';
 import Plus from 'material-ui/svg-icons/action/swap-horiz';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import $ from 'jquery';
 
 const styles = {
   button:{
