@@ -52,7 +52,7 @@ class DomainInfo extends Component{
   }
 
   componentWillMount = () => {
-    var aux = this.getTags();
+    this.getTags();
     this.setState({expanded: this.props.statedCard, });
   };
 
