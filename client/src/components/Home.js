@@ -3,8 +3,6 @@ var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 
 import Checkbox from 'material-ui/Checkbox';
-import ActionFavorite from 'material-ui/svg-icons/action/favorite';
-import ActionFavoriteBorder from 'material-ui/svg-icons/action/favorite-border';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import { Row, Col} from 'react-bootstrap';
@@ -13,7 +11,6 @@ import { Row, Col} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
 import Forward from 'material-ui/svg-icons/content/forward';
 import AddBox from 'material-ui/svg-icons/content/add-box';
-import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import {fullWhite} from 'material-ui/styles/colors';
 import $ from 'jquery';
@@ -120,7 +117,9 @@ class Home extends Component {
 
   // Get all the domains selected for deletion
   addDelDomains(id,name){
-      this.state.delDomains[id] = name
+    var tempDelDomains = this.state.delDomains;
+    tempDelDomains[id]=name;
+    this.setState({delDomains:tempDelDomains});
   }
 
   render(){
@@ -161,7 +160,7 @@ class Home extends Component {
             style={{background: "#50137A"}}
             title={  <span style={{color: 'white'}}> Domain Discovery Tool </span>}
             //iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-            iconElementLeft={<img src={logoNYU}  height='45' width='40' />}
+            iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40' />}
             //onLeftIconButtonTouchTap={this.removeRecord.bind(this)}
           >
           </AppBar>
