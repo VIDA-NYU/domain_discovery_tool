@@ -12,6 +12,7 @@ var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 import Search from 'material-ui/svg-icons/action/search';
 import OpenInNewTab from 'material-ui/svg-icons/action/open-in-new';
+import InfoIcon from 'material-ui/svg-icons/action/info';
 import TextField from 'material-ui/TextField';
 
 import IconMenu from 'material-ui/IconMenu';
@@ -21,6 +22,14 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
 import $ from 'jquery';
 
@@ -80,6 +89,7 @@ class Header extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       openCreateModel: false,
+      openInfo:false,
       currentTags:undefined,
       tagsPosCheckBox:["Relevant"],
       tagsNegCheckBox:["Irrelevant"],
@@ -109,7 +119,7 @@ class Header extends Component {
     shouldComponentUpdate(nextProps, nextState) {
       if(nextProps.deleteKeywordSignal){ return true; }
       if(nextProps.noModelAvailable !== this.state.noModelAvailable){ return true; }
-      if(nextState.term !==this.state.term || nextState.openCreateModel ){ return true; }
+      if(nextState.term !==this.state.term || nextState.openCreateModel || nextState.openInfo){ return true; }
 
       /*if (nextProps.currentDomain === this.state.currentDomain ) {
         if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {return true;}
@@ -289,6 +299,17 @@ class Header extends Component {
      this.forceUpdate();
    };
 
+   handleOpenInfo = () => {
+      this.setState({openInfo: true});
+      this.forceUpdate();
+    };
+
+    handleCloseInfo = () => {
+      this.setState({openInfo: false});
+      this.forceUpdate();
+    };
+
+
    getAvailableTags(session){
      $.post(
         '/getAvailableTags',
@@ -351,6 +372,9 @@ class Header extends Component {
                                  <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />,
                                  <FlatButton label="Save"   primary={true} keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
                                 ];
+    const actionsShowInfo = [
+                                <FlatButton label="Ok" primary={true}   keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
+                               ];
 
      var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
                              <div>
@@ -377,6 +401,11 @@ class Header extends Component {
      var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      var crawlingProgress = (this.state.disableStopCrawlerSignal)?<div />: <CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />;
      var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
+     var infoCrawlerRunning = (this.state.disabledStartCrawler)?<IconButton tooltip="Info" onTouchTap={this.handleOpenInfo.bind(this)}
+      style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
+    >
+      <InfoIcon />
+    </IconButton>:<div/>;
      var crawlerStop = (this.state.disableStopCrawlerSignal)?<div/>:<RaisedButton  onClick={this.stopCrawler.bind(this, true)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                    label="Stop" labelPosition="before" containerElement="label"/>;
      var crawlerAcheInterface = (this.state.disableStopCrawlerSignal)?<div/>:<IconButton tooltip="Click to open ACHE Interface"
@@ -405,6 +434,7 @@ class Header extends Component {
              {crawlerStop}
 
              {messageCrawlerRunning}
+             {infoCrawlerRunning}
              {crawlingProgress}
 
              <IconMenu
@@ -426,6 +456,26 @@ class Header extends Component {
 
              <Dialog title=" Model Settings" actions={actionsCreateModel} modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
                 {checkedTagsPosNeg}
+             </Dialog>
+             <Dialog title="Monitoring processes" actions={actionsShowInfo} modal={false} open={this.state.openInfo} onRequestClose={this.handleCloseInfo.bind(this)}>
+             <Table>
+                       <TableHeader>
+                         <TableRow>
+                           <TableHeaderColumn>Process</TableHeaderColumn>
+                           <TableHeaderColumn>Domain</TableHeaderColumn>
+                           <TableHeaderColumn>Status</TableHeaderColumn>
+                           <TableHeaderColumn>Description</TableHeaderColumn>
+                         </TableRow>
+                       </TableHeader>
+                       <TableBody>
+                         <TableRow>
+                           <TableRowColumn>Crawler</TableRowColumn>
+                           <TableRowColumn>{this.props.currentDomain}</TableRowColumn>
+                           <TableRowColumn>{this.state.messageCrawler}</TableRowColumn>
+                            <TableRowColumn>...</TableRowColumn>
+                         </TableRow>
+                       </TableBody>
+                     </Table>
              </Dialog>
          </Toolbar>
        </AppBar>
