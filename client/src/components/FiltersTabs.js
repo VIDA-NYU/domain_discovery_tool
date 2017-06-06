@@ -169,10 +169,14 @@ class LoadCrawledData extends React.Component {
   }
 
   setStatusInterval(){
-    //if(this.intervalFuncId === undefined){
       this.intervalFuncId = window.setInterval(function() {this.getAvailableCrawledData();}.bind(this), 1000);
-    //}
   }
+  //Kill window.setInterval() for the current intervalFuncId. It happen when the Filter tab is closed
+  //Stop to ask if there are new downloaded pages.
+  componentWillUnmount() {
+    window.clearInterval(this.intervalFuncId);
+  }
+
 
   componentWillReceiveProps(nextProps){
     var array_selected_crawled_tags =  (nextProps.session['selected_crawled_tags']!=="")?nextProps.session['selected_crawled_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
