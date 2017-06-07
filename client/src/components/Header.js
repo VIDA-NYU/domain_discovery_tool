@@ -22,6 +22,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
+import Monitoring from './Monitoring.js';
 import {
   Table,
   TableBody,
@@ -94,6 +95,7 @@ class Header extends Component {
       tagsPosCheckBox:["Relevant"],
       tagsNegCheckBox:["Irrelevant"],
       loadingModel:false,
+      nameDifferentDomain:'',
 
       noModelAvailable:true, //the first time we dont have a model
     };
@@ -102,7 +104,7 @@ class Header extends Component {
   }
 
   componentWillMount(){
-    this.setState({currentDomain: this.props.currentDomain});
+    this.setState({currentDomain: this.props.currentDomain, nameDifferentDomain: this.props.currentDomain});
   };
 
   componentWillReceiveProps  = (nextProps) => {
@@ -182,13 +184,16 @@ class Header extends Component {
                }else if(message === "Crawler shutting down"){
                  disabledStartCrawlerFlag = true;
                }
+               var nameDifferentDomain = this.props.currentDomain;
                if(this.props.currentDomain !== status.crawler[0].domain){
                  disableStopCrawlerFlag = true;
                  disableAcheInterfaceFlag =true;
                  disabledStartCrawlerFlag = true;
-                 message = message +" in " +  status.crawler[0].domain;
+                 nameDifferentDomain = status.crawler[0].domain;
+                 message = message +" in " +  nameDifferentDomain;
                }
-               this.setState({disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message, noModelAvailable:false,});
+
+               this.setState({nameDifferentDomain:nameDifferentDomain, disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message, noModelAvailable:false,});
                this.forceUpdate();
              }
            }
@@ -373,7 +378,7 @@ class Header extends Component {
                                  <FlatButton label="Save"   primary={true} keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
                                 ];
     const actionsShowInfo = [
-                                <FlatButton label="Ok" primary={true}   keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
+                                <FlatButton label="Ok" primary={true}   keyboardFocused={true} onTouchTap={this.handleCloseInfo} />,
                                ];
 
      var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
@@ -458,24 +463,7 @@ class Header extends Component {
                 {checkedTagsPosNeg}
              </Dialog>
              <Dialog title="Monitoring processes" actions={actionsShowInfo} modal={false} open={this.state.openInfo} onRequestClose={this.handleCloseInfo.bind(this)}>
-             <Table>
-                       <TableHeader>
-                         <TableRow>
-                           <TableHeaderColumn>Process</TableHeaderColumn>
-                           <TableHeaderColumn>Domain</TableHeaderColumn>
-                           <TableHeaderColumn>Status</TableHeaderColumn>
-                           <TableHeaderColumn>Description</TableHeaderColumn>
-                         </TableRow>
-                       </TableHeader>
-                       <TableBody>
-                         <TableRow>
-                           <TableRowColumn>Crawler</TableRowColumn>
-                           <TableRowColumn>{this.props.currentDomain}</TableRowColumn>
-                           <TableRowColumn>{this.state.messageCrawler}</TableRowColumn>
-                            <TableRowColumn>...</TableRowColumn>
-                         </TableRow>
-                       </TableBody>
-                     </Table>
+              <Monitoring nameDifferentDomain={this.state.nameDifferentDomain} messageCrawler={this.state.messageCrawler}/>
              </Dialog>
          </Toolbar>
        </AppBar>
