@@ -19,7 +19,7 @@ class Monitoring extends Component {
 
   render(){
     return ( <Table>
-              <TableHeader>
+              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
                   <TableHeaderColumn width={this.props.widthProcess}>Process</TableHeaderColumn>
                   <TableHeaderColumn width={this.props.widthDomain}>Domain</TableHeaderColumn>
