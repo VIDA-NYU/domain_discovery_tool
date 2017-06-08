@@ -268,12 +268,6 @@ class Header extends Component {
        function(message) {
          this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
          this.forceUpdate();
-         // this.setState({messageCrawler:message, disabledStartCrawler:false,});
-         // this.forceUpdate();
-         // setTimeout(function(){
-         //   this.setState({messageCrawler:"",});
-         //   this.forceUpdate();
-         //}.bind(this), 700);
        }.bind(this)
      );
    }
@@ -406,23 +400,18 @@ class Header extends Component {
      var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      var crawlingProgress = (this.state.disableStopCrawlerSignal)?<div />: <CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />;
      var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
-     var infoCrawlerRunning = (this.state.disabledStartCrawler)?<IconButton tooltip="Info" onTouchTap={this.handleOpenInfo.bind(this)}
-      style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
-    >
-      <InfoIcon />
-    </IconButton>:<div/>;
+     var infoCrawlerRunning = (this.state.disabledStartCrawler && this.state.messageCrawler!=="")?<IconButton tooltip="Info" onTouchTap={this.handleOpenInfo.bind(this)}
+                                  style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
+                              >
+                                <InfoIcon />
+                              </IconButton>:<div/>;
      var crawlerStop = (this.state.disableStopCrawlerSignal)?<div/>:<RaisedButton  onClick={this.stopCrawler.bind(this, true)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                   label="Stop" labelPosition="before" containerElement="label"/>;
+                                                                                   label="Stop" labelPosition="before" containerElement="label"/>;
      var crawlerAcheInterface = (this.state.disableStopCrawlerSignal)?<div/>:<IconButton tooltip="Click to open ACHE Interface"
-      href="http://localhost:8080/"
-      target="_blank"
-      style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
-    >
-      <OpenInNewTab />
-    </IconButton>;
-     //var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:12 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
-
-
+                                  href="http://localhost:8080/" target="_blank" style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
+                                >
+                                  <OpenInNewTab />
+                                </IconButton>;
      return (
        <AppBar showMenuIconButton={true} style={styles.backgound} title={<span style={styles.titleText}> Domain Discovery Tool </span>}
         iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40'  />} >
@@ -437,7 +426,6 @@ class Header extends Component {
                            label="Start Crawler" labelPosition="before" containerElement="label" />
              {crawlerAcheInterface}
              {crawlerStop}
-
              {messageCrawlerRunning}
              {infoCrawlerRunning}
              {crawlingProgress}
@@ -458,7 +446,6 @@ class Header extends Component {
              <IconButton style={{marginRight:'-25px'}} onClick={this.filterKeyword.bind(this, this.state.term)}>
                 <Search />
              </IconButton>
-
              <Dialog title=" Model Settings" actions={actionsCreateModel} modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
                 {checkedTagsPosNeg}
              </Dialog>
