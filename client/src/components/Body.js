@@ -6,6 +6,7 @@ import { Row, Col} from 'react-bootstrap';
 import DomainInfo from './DomainInfo';
 import Search from './Search';
 import Filters from './Filters';
+import Terms from './Terms';
 import Views from './Views';
 import '../css/Components.css';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
@@ -15,10 +16,8 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Snackbar from 'material-ui/Snackbar'; //Adding an indicator which tell us that the pages are being downloaded
 
 import {Card, CardActions, CardHeader, CardText, CardMedia} from 'material-ui/Card';
-import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-import TermsList from './TermsList';
 
 const styles = {
   button:{
@@ -58,23 +57,11 @@ const styles = {
     padding:'10px 1px 10px 6px',
     borderRadius: '0px 0px 0px 0px',
   },
-  cardHeaderTermSummary:{
-    background: '#DCCCE7',
-    padding:'10px 1px 10px 6px',
-    borderRadius: '0px 0px 0px 0px',
-  },
-
   cardMedia:{
     background: '#DCCCE7',
     padding:'2px 4px 2px 4px',
     borderRadius: '0px 0px 0px 0px',
     height: "200px",
-  },
-  cardMediaTermSummary:{
-    background: '#DCCCE7',
-    padding:'2px 4px 2px 4px',
-    borderRadius: '0px 0px 0px 0px',
-    height: "390px",
   },
 };
 
@@ -97,9 +84,10 @@ class Body extends Component{
         iconDomainInfo:null,
         stateDomainInfoCard:false,
         stateSearchCard:false,
-          stateFiltersCard:false,
-	  offset:0,
-	  currentPagination:0,
+	offset:0,
+	currentPagination:0,
+        stateFiltersCard:false,
+        stateTermsCard:false,
         sizeAvatar:25,
         currentDomain:'',
         sessionBody:{},
@@ -108,7 +96,7 @@ class Body extends Component{
         update:false,
         runCurrentQuery: "*",
         intervalFuncId:undefined,
-        listTerms: [],
+
     };
     this.sessionB={};
   }
@@ -143,29 +131,11 @@ class Body extends Component{
     return session;
   }
 
-  loadTerms(session){
-    console.log("session");
-    console.log(session);
-    $.post(
-      '/extractTerms',
-	{'numberOfTerms': 40, 'session': JSON.stringify(session)},
-        function(summary) {
-            console.log(summary);
-            var entries = [];
-            entries = summary.map(function(w) {
-                                    return {'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]}
-                                  });
-            this.setState({listTerms: entries});
-      }.bind(this)).fail(function() {
-            console.log("Something wrong happen. Try again.");
-      }.bind(this));
-  };
 
 
   //Get queries, tags, urls from a speficic domain.
   componentWillMount() {
     this.setState({currentDomain: this.props.currentDomain, sessionBody: this.createSession(this.props.currentDomain), sessionString: JSON.stringify(this.createSession(this.props.currentDomain)) });
-    this.loadTerms(this.createSession(this.props.currentDomain));
   }
 
   //handling update of props (ex. filters, session, etc)
@@ -175,7 +145,6 @@ class Body extends Component{
       sessionTemp['filter']= (newProps.filterKeyword === '')?null:newProps.filterKeyword;
       this.setState({sessionBody: sessionTemp, sessionString: JSON.stringify(sessionTemp)});
     }
-    this.loadTerms(this.state.sessionBody);
     if(newProps.currentDomain === this.state.currentDomain){
       return;
     }
@@ -187,7 +156,7 @@ class Body extends Component{
   //Verify if it is necessary an update.
     shouldComponentUpdate(nextProps, nextState) {
     if (nextState.sessionString  === this.state.sessionString) {
-       if(nextProps.updateCrawlerData==="updateCrawler" || nextProps.updateCrawlerData==="stopCrawler" || nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
+       if(nextProps.updateCrawlerData=="updateCrawler" || nextProps.updateCrawlerData=="stopCrawler" || nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateTermsCard!==this.state.stateTermsCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
        }
        return false;
@@ -224,6 +193,7 @@ class Body extends Component{
         stateDomainInfoCard:false,
         stateSearchCard:false,
         stateFiltersCard:false,
+        stateTermsCard:false,
     });}
     else{
       this.openMenu();
@@ -231,6 +201,7 @@ class Body extends Component{
         stateDomainInfoCard:false,
         stateSearchCard:false,
         stateFiltersCard:false,
+        stateTermsCard:false,
       });
     }
   }
@@ -239,8 +210,14 @@ class Body extends Component{
     if(!this.state.open){
       this.openMenu();
     }
-    var item = menu===0 ? this.setState({stateSearchCard: expanded,  stateFiltersCard :!expanded, stateDomainInfoCard:!expanded}) :
-    ( menu===1 ? this.setState({stateFiltersCard: expanded, stateSearchCard: !expanded, stateDomainInfoCard:!expanded}) : this.setState({ stateDomainInfoCard:expanded, stateFiltersCard: !expanded, stateSearchCard: !expanded}));
+    //stateSearchCard: menu=0
+    //stateFiltersCard: menu=1
+    //stateDomainInfoCard: menu=2
+    //stateTermsCard: menu=3
+    var item = menu===0 ? this.setState({stateSearchCard: expanded,  stateFiltersCard :!expanded, stateDomainInfoCard:!expanded, stateTermsCard:!expanded}) :
+               ( menu===1 ? this.setState({stateFiltersCard: expanded, stateSearchCard: !expanded, stateDomainInfoCard:!expanded, stateTermsCard:!expanded}) :
+               menu===2 ? this.setState({ stateDomainInfoCard:expanded, stateFiltersCard: !expanded, stateSearchCard: !expanded, stateTermsCard:!expanded}):
+               this.setState({stateTermsCard:expanded, stateDomainInfoCard:!expanded, stateFiltersCard: !expanded, stateSearchCard: !expanded}));
   }
 
   //function from FiltersTabs Component. Add or Remove some query or tag which was used to filter data.
@@ -296,7 +273,6 @@ class Body extends Component{
   //Update session
   updateSession(newSession){
     this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
-    this.loadTerms(newSession);
     this.forceUpdate();
   }
 
@@ -316,68 +292,46 @@ class Body extends Component{
 
 
   render(){
-    console.log(this.state.listTerms.length);
-    let terms = " ";
-    if(this.state.listTerms.length>0){
-      terms = this.state.listTerms.map(function(w) {
-                  return <p>{w["word"]}</p>;
-               });
 
-    }
     //console.log(this.state.sessionBody);
     console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
-      <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:335, background:"white"}}>
-        <Row className="Menus-child">
-          <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
-        </Row>
-        <Row className="Menus-child">
-		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
-        </Row>
-        <Row className="Menus-child">
-          <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch={this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
-        </Row>
-        <Row className="Menus-child">
-            <Card expanded={true} style={styles.card}>
-                 <CardHeader
-                   title="Terms"
-                   avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
-                   actAsExpander={true}
-                   style={styles.cardHeaderTermSummary}
-                   showExpandableButton={true}
-                 />
-                 <CardMedia expandable={true} style={styles.cardMediaTermSummary}>
-                  <Divider/>
-                  <div>
-                    <TermsList listTerms={this.state.listTerms} session={this.state.sessionBody}></TermsList>
-                  </div>
-                 </CardMedia>
-             </Card>
-        </Row>
+    <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:335, background:"white"}}>
+          <Row className="Menus-child">
+            <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
+          </Row>
+          <Row className="Menus-child">
+  		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
+          </Row>
+          <Row className="Menus-child">
+            <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
+          </Row>
+          <Row className="Menus-child">
+            <Terms statedCard={this.state.stateTermsCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody}/>
+          </Row>
 
-        <Row className="Menus-child">
-          <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
-            <Plus />
-          </FloatingActionButton>
-        </Row>
-      </Col>
+          <Row className="Menus-child">
+            <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
+              <Plus />
+            </FloatingActionButton>
+          </Row>
+        </Col>
+      </div>
+    );
 
-    </div>
-  );
-
-  const sidebarProps = {
-    sidebar: sidebar,
-    docked: this.state.docked,
-    sidebarClassName: 'custom-sidebar-class',
-    open: this.state.open,
-    touch: this.state.touch,
-    shadow: this.state.shadow,
-    pullRight: this.state.pullRight,
-    touchHandleWidth: this.state.touchHandleWidth,
-    dragToggleDistance: this.state.dragToggleDistance,
-    transitions: this.state.transitions,
-    onSetOpen: this.onSetOpen,
-  };
+    const sidebarProps = {
+      sidebar: sidebar,
+      docked: this.state.docked,
+      sidebarClassName: 'custom-sidebar-class',
+      open: this.state.open,
+      touch: this.state.touch,
+      shadow: this.state.shadow,
+      pullRight: this.state.pullRight,
+      touchHandleWidth: this.state.touchHandleWidth,
+      dragToggleDistance: this.state.dragToggleDistance,
+      transitions: this.state.transitions,
+      onSetOpen: this.onSetOpen,
+    };
 
   return (
     <Sidebar {...sidebarProps}>
