@@ -325,76 +325,72 @@ class Body extends Component{
     //console.log(this.state.sessionBody);
     console.log("------body----------");
     const sidebar = (<div style={{width:this.state.size}}>
-      <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:335, background:"white"}}>
-        <Row className="Menus-child">
-          <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
-        </Row>
-        <Row className="Menus-child">
-		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
-        </Row>
-        <Row className="Menus-child">
-          <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
-        </Row>
-        <Row className="Menus-child">
-            <Card expanded={true} style={styles.card}>
-                 <CardHeader
-                   title="Terms"
-                   avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
-                   actAsExpander={true}
-                   style={styles.cardHeaderTermSummary}
-                   showExpandableButton={true}
-                 />
-                 <CardMedia expandable={true} style={styles.cardMediaTermSummary}>
-                  <Divider/>
-                  <div>
-                    <TermsList listTerms={this.state.listTerms} session={this.state.sessionBody}></TermsList>
-                  </div>
-                 </CardMedia>
-             </Card>
-        </Row>
+        <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:335, background:"white"}}>
+          <Row className="Menus-child">
+            <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
+          </Row>
+          <Row className="Menus-child">
+  		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
+          </Row>
+          <Row className="Menus-child">
+            <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
+          </Row>
+          <Row className="Menus-child">
+              <Card expanded={true} style={styles.card}>
+                   <CardHeader
+                     title="Terms"
+                     avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
+                     actAsExpander={true}
+                     style={styles.cardHeaderTermSummary}
+                     showExpandableButton={true}
+                   />
+                   <CardMedia expandable={true} style={styles.cardMediaTermSummary}>
+                    <Divider/>
+                    <div>
+                      <TermsList listTerms={this.state.listTerms} session={this.state.sessionBody}></TermsList>
+                    </div>
+                   </CardMedia>
+               </Card>
+          </Row>
 
-        <Row className="Menus-child">
-          <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
-            <Plus />
-          </FloatingActionButton>
-        </Row>
-      </Col>
-
-    </div>
-  );
-
-  const sidebarProps = {
-    sidebar: sidebar,
-    docked: this.state.docked,
-    sidebarClassName: 'custom-sidebar-class',
-    open: this.state.open,
-    touch: this.state.touch,
-    shadow: this.state.shadow,
-    pullRight: this.state.pullRight,
-    touchHandleWidth: this.state.touchHandleWidth,
-    dragToggleDistance: this.state.dragToggleDistance,
-    transitions: this.state.transitions,
-    onSetOpen: this.onSetOpen,
-  };
-
-  return (
-    <Sidebar {...sidebarProps}>
-      <div>
-        <Row style={styles.content}>
-          <Views queryFromSearch = {this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
-        </Row>
-        <Col xs={12} md={12}  style={styles.content}>
-          <Views domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)}/>
+          <Row className="Menus-child">
+            <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
+              <Plus />
+            </FloatingActionButton>
+          </Row>
         </Col>
       </div>
-      <Snackbar
-      open={(this.state.runCurrentQuery === "*")? false: (this.state.runCurrentQuery === "process*concluded")?false:true}
-      message={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? "Searching: " + this.state.runCurrentQuery : (this.state.runCurrentQuery === "process*concluded")? "Search was completed.": ""}
-      //autoHideDuration={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? 30000: (this.state.runCurrentQuery === "process*concluded")?2000: 0}
-    />
-    </Sidebar>
-  )
-}
+    );
+
+    const sidebarProps = {
+      sidebar: sidebar,
+      docked: this.state.docked,
+      sidebarClassName: 'custom-sidebar-class',
+      open: this.state.open,
+      touch: this.state.touch,
+      shadow: this.state.shadow,
+      pullRight: this.state.pullRight,
+      touchHandleWidth: this.state.touchHandleWidth,
+      dragToggleDistance: this.state.dragToggleDistance,
+      transitions: this.state.transitions,
+      onSetOpen: this.onSetOpen,
+    };
+
+    return (
+      <Sidebar {...sidebarProps}>
+        <div>
+          <Row style={styles.content}>
+            <Views queryFromSearch = {this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+          </Row>
+        </div>
+        <Snackbar
+        open={(this.state.runCurrentQuery === "*")? false: (this.state.runCurrentQuery === "process*concluded")?false:true}
+        message={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? "Searching: " + this.state.runCurrentQuery : (this.state.runCurrentQuery === "process*concluded")? "Search was completed.": ""}
+        //autoHideDuration={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? 30000: (this.state.runCurrentQuery === "process*concluded")?2000: 0}
+      />
+      </Sidebar>
+    )
+  }
 }
 
 
