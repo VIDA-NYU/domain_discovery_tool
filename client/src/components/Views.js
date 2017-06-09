@@ -284,7 +284,7 @@ class ViewTabSnippets extends React.Component{
   }
   keyboardListener(){
       window.addEventListener('keydown', function(event) {
-         if (event.keyCode == 91 || event.keyCode == 93) {
+         if (event.keyCode == 91 || event.keyCode == 93 || event.keyCode ===17) {
              this.check_click_down=true;
              console.log('command was pressed');
 
@@ -292,7 +292,7 @@ class ViewTabSnippets extends React.Component{
       }.bind(this), true);
 
       window.addEventListener('keyup', function(event) {
-         if (event.keyCode == 91 || event.keyCode == 93) {//91 and 93 are command keys.
+         if (event.keyCode == 91 || event.keyCode == 93 || event.keyCode ===17) {//91 and 93 are command keys.
             this.currentUrls = [];
             this.handleOpenCreateModel();
   //            console.log(this.currentUrls);
