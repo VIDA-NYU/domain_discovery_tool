@@ -282,24 +282,22 @@ class ViewTabSnippets extends React.Component{
     this.updateOnlineClassifier(this.props.session);
     this.keyboardListener();
   }
+
   keyboardListener(){
-      window.addEventListener('keydown', function(event) {
-         if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {
-             this.check_click_down=true;
-             console.log('command was pressed');
-
-         }
-      }.bind(this), true);
-
-      window.addEventListener('keyup', function(event) {
-         if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
-            this.currentUrls = [];
-            this.handleOpenMultipleSelection();
-            this.forceUpdate();
-             this.currentUrls = this.multipleSelectionPages;
-             this.multipleSelectionPages=[];
-         }
-      }.bind(this), true);
+    window.addEventListener('keydown', function(event) {
+      if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {
+        this.check_click_down=true;
+      }
+    }.bind(this), true);
+    window.addEventListener('keyup', function(event) {
+      if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
+        this.currentUrls = [];
+        this.handleOpenMultipleSelection();
+        this.forceUpdate();
+        this.currentUrls = this.multipleSelectionPages;
+        this.multipleSelectionPages=[];
+      }
+    }.bind(this), true);
   }
 
   componentWillReceiveProps(nextProps, nextState){
@@ -447,62 +445,63 @@ class ViewTabSnippets extends React.Component{
     this.handleCloseMultipleSelection();
   }
 
-    //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
-    onTagActionClicked(inputURL, inputTag){
-      var idButton = (inputTag).split("-"); // (ev.target.id).split("-")
-      var tag = idButton[0];
-      var url = inputURL; // ev.target.value;
-      var action = 'Apply';
-      var isTagPresent = false;
-      var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-      if(tag ==="Neutral"){
-        let arrayInputURL = [];
-        arrayInputURL.push(url);
-        this.removeTags(arrayInputURL,  tag);
+  //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
+  onTagActionClicked(inputURL, inputTag){
+    var idButton = (inputTag).split("-"); // (ev.target.id).split("-")
+    var tag = idButton[0];
+    var url = inputURL; // ev.target.value;
+    var action = 'Apply';
+    var isTagPresent = false;
+    var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
+    if(tag ==="Neutral"){
+      let arrayInputURL = [];
+      arrayInputURL.push(url);
+      this.removeTags(arrayInputURL,  tag);
+    }
+    else{
+      if(updatedPages[url]["tags"]){
+         isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+                                    return itemTag === tag;});
+         if(isTagPresent) action = 'Remove';
+      }
+      // Apply or remove tag from urls.
+      var applyTagFlag = action === 'Apply';
+      var urls = [];
+      urls.push(url);
+      if (applyTagFlag && !isTagPresent) {
+        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
+        var auxKey = "0";
+        if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant")){ // || tag==="Neutral")){
+            var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                        var itemTag = updatedPages[url]["tags"][key].toString();
+                        if(itemTag==="Relevant" || itemTag==="Irrelevant"){// || itemTag==="Neutral"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTagElasticSearch(urls, itemTag, false );
+                        }
+                      });
+            delete updatedPages[url]["tags"];
+        }
+        updatedPages[url]["tags"]=[];
+        updatedPages[url]["tags"][auxKey] = tag;
+        //checking if the new tag belong to the filter
+        if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+          this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
+          delete updatedPages[url];
+        }
+        //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
+        this.setState({ pages:updatedPages});
+        this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
+
       }
       else{
-        if(updatedPages[url]["tags"]){
-           isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
-                                      return itemTag === tag;});
-           if(isTagPresent) action = 'Remove';
-        }
-        // Apply or remove tag from urls.
-        var applyTagFlag = action === 'Apply';
-        var urls = [];
-        urls.push(url);
-        if (applyTagFlag && !isTagPresent) {
-          // Removes tag when the tag is present for item, and applies only when tag is not present for item.
-          var auxKey = "0";
-          if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant")){ // || tag==="Neutral")){
-              var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
-                          var itemTag = updatedPages[url]["tags"][key].toString();
-                          if(itemTag==="Relevant" || itemTag==="Irrelevant"){// || itemTag==="Neutral"){
-                            delete updatedPages[url]["tags"][key];
-                            this.removeAddTagElasticSearch(urls, itemTag, false );
-                          }
-                        });
-              delete updatedPages[url]["tags"];
-          }
-          updatedPages[url]["tags"]=[];
-          updatedPages[url]["tags"][auxKey] = tag;
-          //checking if the new tag belong to the filter
-          if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
-            this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
-            delete updatedPages[url];
-          }
-          //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
-          this.setState({ pages:updatedPages});
-          this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
-
-        }
-        else{
-          delete updatedPages[url]["tags"];
-          this.setState({ pages:updatedPages});
-          this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
-        }
+        delete updatedPages[url]["tags"];
+        this.setState({ pages:updatedPages});
+        this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
       }
-
     }
+
+  }
+
   getTag(k){
     var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
     return uniqueTag;
@@ -512,14 +511,12 @@ class ViewTabSnippets extends React.Component{
     if(this.check_click_down){
         var tempArray = this.state.change_color_urls;
         tempArray.push(urlLink);
-        console.log(tempArray);
         this.setState({click_flag: true, change_color_urls:tempArray});
         this.multipleSelectionPages.push(urlLink);
         this.forceUpdate();
-        console.log(this.multipleSelectionPages);
-        console.log("clickEvent");
       }
   }
+
   handleClick(){
     this.setState({
 
