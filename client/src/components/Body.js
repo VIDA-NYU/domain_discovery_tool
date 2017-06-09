@@ -147,8 +147,8 @@ class Body extends Component{
     console.log("session");
     console.log(session);
     $.post(
-      '/getTermsSummary',
-      {'session': JSON.stringify(session)},
+      '/extractTerms',
+	{'numberOfTerms': 40, 'session': JSON.stringify(session)},
         function(summary) {
             console.log(summary);
             var entries = [];
