@@ -262,7 +262,7 @@ class ViewTabSnippets extends React.Component{
       allRelevant:false,
       lengthTotalPages:0,
       flatKeyBoard:false,
-      openCreateModel: false,
+      openMultipleSelection: false,
       click_flag: false,
       change_color_urls:[],
 
@@ -294,16 +294,10 @@ class ViewTabSnippets extends React.Component{
       window.addEventListener('keyup', function(event) {
          if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
             this.currentUrls = [];
-            this.handleOpenCreateModel();
-  //            console.log(this.currentUrls);
-            // this.onTagSelectedPages("Neutral");
+            this.handleOpenMultipleSelection();
             this.forceUpdate();
              this.currentUrls = this.multipleSelectionPages;
              this.multipleSelectionPages=[];
-             console.log('command was released');
-
-
-      //       console.log(this.multipleSelectionPages);
          }
       }.bind(this), true);
   }
@@ -450,9 +444,7 @@ class ViewTabSnippets extends React.Component{
   onTagSelectedPages(inputTag){
     this.onTagAllPages(inputTag);
     this.currentUrls = [];
-    this.handleCloseCreateModel();
-    this.setState({change_color_urls:[], click_flag:false});
-    this.check_click_down=false;
+    this.handleCloseMultipleSelection();
   }
 
     //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
@@ -533,23 +525,20 @@ class ViewTabSnippets extends React.Component{
 
     });
   }
-  handleOpenCreateModel = () => {
-    this.setState({openCreateModel: true});
+  handleOpenMultipleSelection = () => {
+    this.setState({openMultipleSelection: true});
   };
 
-  handleCloseCreateModel = () => {
-    this.setState({openCreateModel: false});
+  handleCloseMultipleSelection = () => {
+    this.setState({openMultipleSelection: false, change_color_urls:[], click_flag:false});
+    this.check_click_down=false;
     this.forceUpdate();
   };
 
   render(){
     //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    const actionsCreateModel = [
-                                <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />,
-                                <FlatButton label="Close"   primary={true} keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
-                               ];
-
+    const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
     var id=0;
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
@@ -669,7 +658,7 @@ class ViewTabSnippets extends React.Component{
                            activeClassName={"active"} />
           </div>
         </div>
-        <Dialog title="Tag Selected?"  modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
+        <Dialog title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
         {popUpButton}
         </Dialog>
      </div>
