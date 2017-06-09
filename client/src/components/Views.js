@@ -22,7 +22,6 @@ import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
 import NoFoundImg from '../images/images_not_available.png';
 import Searchicon from '../images/searchicon.png';
-import FilteredMultiSelect from '../components/multiselect.js'
 import FlatButton from 'material-ui/FlatButton';
 import AddBox from 'material-ui/svg-icons/content/add-box';
 import Settings from 'material-ui/svg-icons/action/settings';
