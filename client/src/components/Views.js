@@ -107,26 +107,26 @@ class ChipViewTab extends React.Component{
     crawledTagsList=session['selected_crawled_tags']!=="" ? session['selected_crawled_tags'].split(",") : crawledTagsList;
 
     var newChip = [];
-    for(var i=0; i<queriesList.length && queriesList.length>0; i++){
+    for(let i=0; i<queriesList.length && queriesList.length>0; i++){
       newChip.push({key: i, type: 0, label: queriesList[i], avatar: Qicon});
     }
-    for(var i=(queriesList.length), j=0; i<(queriesList.length+tagsList.length) && tagsList.length>0 ; i++, j++){
+    for(let i=(queriesList.length), j=0; i<(queriesList.length+tagsList.length) && tagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 1, label: tagsList[j], avatar:Ticon});
     }
-    for(var i=(queriesList.length+tagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
+    for(let i=(queriesList.length+tagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length) && tldsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 4, label: tldsList[j], avatar:Dicon});
     }
-    for(var i=(queriesList.length+tagsList.length+tldsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length) && atermsList.length>0 ; i++, j++){
+    for(let i=(queriesList.length+tagsList.length+tldsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length) && atermsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 5, label: atermsList[j], avatar:Ticon});
     }
-    for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
+    for(let i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length) && modelTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 3, label: modelTagsList[j], avatar:Ticon});
     }
-    for(var i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length+crawledTagsList.length) && crawledTagsList.length>0 ; i++, j++){
+    for(let i=(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length), j=0; i<(queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length+crawledTagsList.length) && crawledTagsList.length>0 ; i++, j++){
       newChip.push({key: i, type: 6, label: crawledTagsList[j], avatar:Ticon});
     }
 
-    if(session['filter'] != null){
+    if(session['filter'] !== null){
       newChip.push({key: (queriesList.length+tagsList.length+tldsList.length+atermsList.length+modelTagsList.length+crawledTagsList), type: 2, label: session['filter'] , avatar: Searchicon});
     }
     this.setState({
@@ -138,10 +138,10 @@ removeString(currentType, currentKey){
   var currentString = "";
   var anyFilter = false;
   this.state.chipData.map((chip) => {
-    if(chip.type == currentType && chip.key != currentKey)
+    if(chip.type === currentType && chip.key !== currentKey)
     currentString = currentString + chip.label + ",";
   });
-  if(currentString != "") return currentString.substring(0, currentString.length-1);
+  if(currentString !== "") return currentString.substring(0, currentString.length-1);
   return currentString;
 }
 
@@ -194,7 +194,7 @@ handleRequestDelete = (key) => {
       checked.map((term, index)=>{
         labelTerm = labelTerm + term + " OR ";
       });
-      if(labelTerm != "")
+      if(labelTerm !== "")
       labelTerm = labelTerm.substring(0, labelTerm.length-" OR ".length);
 
       sessionTemp['filter'] = labelTerm;
@@ -284,7 +284,7 @@ class ViewTabSnippets extends React.Component{
   }
   keyboardListener(){
       window.addEventListener('keydown', function(event) {
-         if (event.keyCode == 91 || event.keyCode == 93 || event.keyCode ===17) {
+         if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {
              this.check_click_down=true;
              console.log('command was pressed');
 
@@ -292,7 +292,7 @@ class ViewTabSnippets extends React.Component{
       }.bind(this), true);
 
       window.addEventListener('keyup', function(event) {
-         if (event.keyCode == 91 || event.keyCode == 93 || event.keyCode ===17) {//91 and 93 are command keys.
+         if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
             this.currentUrls = [];
             this.handleOpenCreateModel();
   //            console.log(this.currentUrls);
@@ -320,7 +320,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if ( nextState.currentPagination!= this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
+    if ( nextState.currentPagination!== this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
          return true;
     }
     return false;
@@ -330,10 +330,10 @@ class ViewTabSnippets extends React.Component{
     var currentString = "";
     var anyFilter = false;
     this.state.session['selected_tags'].split(",").forEach(function(tag) {
-      if(tag !== currentTag && tag != "")
+      if(tag !== currentTag && tag !== "")
       currentString = currentString + tag + ",";
     });
-    if(currentString != "") return currentString.substring(0, currentString.length-1);
+    if(currentString !== "") return currentString.substring(0, currentString.length-1);
     return currentString;
   }
 
@@ -346,7 +346,7 @@ class ViewTabSnippets extends React.Component{
           this.disableCrawlerButton=false;
           this.props.availableCrawlerButton(false); // disable
         }
-        if(accuracy==0){
+        if(accuracy===0){
           this.disableCrawlerButton=true;
           this.props.availableCrawlerButton(true); // disable
         }
@@ -463,7 +463,7 @@ class ViewTabSnippets extends React.Component{
       var action = 'Apply';
       var isTagPresent = false;
       var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-      if(tag =="Neutral"){
+      if(tag ==="Neutral"){
         let arrayInputURL = [];
         arrayInputURL.push(url);
         this.removeTags(arrayInputURL,  tag);
@@ -471,11 +471,11 @@ class ViewTabSnippets extends React.Component{
       else{
         if(updatedPages[url]["tags"]){
            isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
-                                      return itemTag == tag;});
+                                      return itemTag === tag;});
            if(isTagPresent) action = 'Remove';
         }
         // Apply or remove tag from urls.
-        var applyTagFlag = action == 'Apply';
+        var applyTagFlag = action === 'Apply';
         var urls = [];
         urls.push(url);
         if (applyTagFlag && !isTagPresent) {
@@ -546,7 +546,7 @@ class ViewTabSnippets extends React.Component{
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var id=0;
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
-    var messageNumberPages = (this.state.offset==0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
+    var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
 
     /*if(this.state.click_flag === 'true')
@@ -588,8 +588,8 @@ class ViewTabSnippets extends React.Component{
 
         id= id+1;
         let urlLink= (k.length<110)?k:k.substring(0,109);
-        let tittleUrl = (this.state.pages[k]["title"] == "" || this.state.pages[k]["title"] == undefined )?k.substring(k.indexOf("//")+2, k.indexOf("//")+15) + "..." : this.state.pages[k]["title"] ;
-        let imageUrl=(this.state.pages[k]["image_url"]=="")? NoFoundImg:this.state.pages[k]["image_url"];
+        let tittleUrl = (this.state.pages[k]["title"] === "" || this.state.pages[k]["title"] === undefined )?k.substring(k.indexOf("//")+2, k.indexOf("//")+15) + "..." : this.state.pages[k]["title"] ;
+        let imageUrl=(this.state.pages[k]["image_url"] === "")? NoFoundImg:this.state.pages[k]["image_url"];
 
         this.currentUrls.push(k);
 
@@ -738,7 +738,7 @@ class Views extends React.Component {
 
   //If there are any change in the session like a new filter, then getPages() is called.
   componentWillReceiveProps(nextProps, nextState){
-    this.queryFromSearch = (nextProps.queryFromSearch ==undefined)?false:true;
+    this.queryFromSearch = (nextProps.queryFromSearch === undefined)?false:true;
   	/*if (nextProps.pages !== this.state.pages) {
   	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
   	    this.forceUpdate();
@@ -760,11 +760,11 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    this.queryFromSearch = (nextProps.queryFromSearch ==undefined)?false:true;
+    this.queryFromSearch = (nextProps.queryFromSearch === undefined)?false:true;
     if ((JSON.stringify(nextProps.session) !== this.state.sessionString && this.newPages) || nextState.slideIndex !== this.state.slideIndex ||this.queryFromSearch ) { //'""' if there is some selected tag.   || JSON.stringify(this.props.session['selected_tags'])!='""'
           return true;
     }
-    if(!this.queryFromSearch && this.state.lengthTotalPages==0) return true;
+    if(!this.queryFromSearch && this.state.lengthTotalPages === 0) return true;
 
     return false;
   }
@@ -780,15 +780,15 @@ class Views extends React.Component {
 
   render() {
     var searchOtherEngine = "No Pages Found.";
-    if(this.state.session['newPageRetrievalCriteria'] == "one" &&  this.state.session['pageRetrievalCriteria'] == "Queries"){
-      searchOtherEngine = (this.state.session['search_engine']=='BING')?"Query failed. Try Google.":(this.state.session['search_engine'] == 'GOOG')?"Query failed. Try Bing.":"";
+    if(this.state.session['newPageRetrievalCriteria'] === "one" &&  this.state.session['pageRetrievalCriteria'] == "Queries"){
+      searchOtherEngine = (this.state.session['search_engine'] === 'BING')?"Query failed. Try Google.":(this.state.session['search_engine'] === 'GOOG')?"Query failed. Try Bing.":"";
     }
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
     lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
-    : (this.state.lengthPages==0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
+    : (this.state.lengthPages === 0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
 
       return (
         <div>
