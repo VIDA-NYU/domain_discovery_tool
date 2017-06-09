@@ -520,6 +520,7 @@ class ViewTabSnippets extends React.Component{
     if(this.check_click_down){
         var tempArray = this.state.change_color_urls;
         tempArray.push(urlLink);
+        console.log(tempArray);
         this.setState({click_flag: true, change_color_urls:tempArray});
         this.multipleSelectionPages.push(urlLink);
         this.forceUpdate();
@@ -544,20 +545,16 @@ class ViewTabSnippets extends React.Component{
   render(){
     //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    var id=0;
-    var currentPageCount = (this.state.lengthTotalPages/this.perPage);
-    var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
-    this.currentUrls=[];
-
-    /*if(this.state.click_flag === 'true')
-    {
-      bgColor = "silver";
-    }*/
-    var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     const actionsCreateModel = [
                                 <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />,
                                 <FlatButton label="Close"   primary={true} keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
                                ];
+
+    var id=0;
+    var currentPageCount = (this.state.lengthTotalPages/this.perPage);
+    var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
+    this.currentUrls=[];
+    var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
 
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
         var bgColor = "";
@@ -587,14 +584,14 @@ class ViewTabSnippets extends React.Component{
         }
 
         id= id+1;
-        let urlLink= (k.length<110)?k:k.substring(0,109);
+        let urlLink= (k.length<110)?k:k.substring(0,109); //urlLink is the reduced form of the longe urls. It should be used  just to show on the snippet but never like an Id or to calling some function ('k' should be send in this case).
         let tittleUrl = (this.state.pages[k]["title"] === "" || this.state.pages[k]["title"] === undefined )?k.substring(k.indexOf("//")+2, k.indexOf("//")+15) + "..." : this.state.pages[k]["title"] ;
         let imageUrl=(this.state.pages[k]["image_url"] === "")? NoFoundImg:this.state.pages[k]["image_url"];
 
         this.currentUrls.push(k);
 
 
-        return <ListItem key={index} onClick={this.clickEvent.bind(this, urlLink)} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
+        return <ListItem key={index} onClick={this.clickEvent.bind(this, k)} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
             <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px',}}/>
