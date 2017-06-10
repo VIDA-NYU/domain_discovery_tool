@@ -131,8 +131,6 @@ class Body extends Component{
     return session;
   }
 
-
-
   //Get queries, tags, urls from a speficic domain.
   componentWillMount() {
     this.setState({currentDomain: this.props.currentDomain, sessionBody: this.createSession(this.props.currentDomain), sessionString: JSON.stringify(this.createSession(this.props.currentDomain)) });

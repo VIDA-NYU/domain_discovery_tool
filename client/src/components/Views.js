@@ -254,6 +254,7 @@ class ViewTabSnippets extends React.Component{
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthTotalPages:this.props.lengthTotalPages,
     });
+      console.log("MOUNT VIEW TAB SNIPPETS");  
     this.updateOnlineClassifier(this.props.session);
   }
 
@@ -286,7 +287,8 @@ class ViewTabSnippets extends React.Component{
     return currentString;
   }
 
-  updateOnlineClassifier(sessionTemp){
+    updateOnlineClassifier(sessionTemp){
+	console.log("UPDATE ONLINE CLASSIFIER");
     $.post(
     	'/updateOnlineClassifier',
     	{'session':  JSON.stringify(sessionTemp)},
