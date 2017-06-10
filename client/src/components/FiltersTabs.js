@@ -449,11 +449,11 @@ class LoadAnnotatedTerms extends React.Component {
           var negative = [];
           items.map((item, index)=>{
             var term = item[0];
-            var tag = item[1];
-            if(tag === "Positive")
-            positive.push({value:term, label:term});
-            else if(tag === "Negative")
-            negative.push({value:term, label:term});
+              var tag = item[1];
+            if(tag.includes("Positive"))
+		positive.push({value:term, label:term});
+            else if(tag.includes("Negative"))
+		negative.push({value:term, label:term});
           });
           if(positive.length > 0)
           node.children.push({value:"positive", label:"Positive", children:positive});
