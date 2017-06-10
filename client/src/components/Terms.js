@@ -8,6 +8,8 @@ import Avatar from 'material-ui/Avatar';
 import Assignment from 'material-ui/svg-icons/action/assignment-returned';
 import Divider from 'material-ui/Divider';
 import $ from 'jquery';
+import CircularProgress from 'material-ui/CircularProgress';
+
 const styles = {
   card: {
 
@@ -33,6 +35,16 @@ const styles = {
   },
 
 };
+
+class CircularProgressSimple extends React.Component{
+  render(){
+    return(
+    <div style={{borderColor:"green", marginLeft:"50%"}}>
+      <CircularProgress size={30} thickness={7} />
+    </div>
+  );}
+}
+
 
 class Terms extends Component{
 
@@ -100,35 +112,35 @@ class Terms extends Component{
   }
 
 
-    render(){
-      console.log(this.state.listTerms.length);
-      let terms = " ";
-      if(this.state.listTerms.length>0){
-        terms = this.state.listTerms.map(function(w) {
-                    return <p>{w["word"]}</p>;
-                 });
+  render(){
+    console.log(this.state.listTerms.length);
+    let terms = " ";
+    if(this.state.listTerms.length>0){
+      terms = this.state.listTerms.map(function(w) {
+        return <p>{w["word"]}</p>;
+      });
+    }
+    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session}></TermsList>:<CircularProgressSimple />;
+    return(
 
-      }
-	return(
-
-    <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
-         <CardHeader
-           title="Terms"
-           avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
-           style={styles.cardHeader}
-           actAsExpander={true}
-           showExpandableButton={true}
-         />
-         <CardMedia expandable={true} style={styles.cardMedia}>
-          <Divider/>
-          <div>
-            <TermsList listTerms={this.state.listTerms}  session={this.props.session}></TermsList>
-          </div>
-         </CardMedia>
-     </Card>
-      )
-
+      <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
+      <CardHeader
+      title="Terms"
+      avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
+      style={styles.cardHeader}
+      actAsExpander={true}
+      showExpandableButton={true}
+      />
+      <CardMedia expandable={true} style={styles.cardMedia}>
+      <Divider/>
+      <div>
+      {isThereTerms}
+      </div>
+      </CardMedia>
+      </Card>
+    )
   }
+
 }
 
 export default Terms;
