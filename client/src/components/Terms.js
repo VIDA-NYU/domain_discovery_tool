@@ -54,22 +54,36 @@ class Terms extends Component{
       expanded: this.props.statedCard,
       update:true,
       listTerms: [],
+      session:{},
+      sessionString:"",
     };
   };
 
   componentWillMount = () => {
-   this.setState({expanded: this.props.statedCard, });
+   this.setState({expanded: this.props.statedCard, session:this.props.session, sessionString:JSON.stringify(this.props.session) });
   };
 
 
   //Handling state's changes of search card. (expanded or reduced)
-  componentWillReceiveProps  = (newProps) => {
-     if(!this.props.statedCard){
-       this.loadTerms(this.props.session);
+  componentWillReceiveProps  = (nextProps) => {
+    // Calculate new state
+    if(nextProps.statedCard !== this.state.statedCard){
+      this.setState({expanded: nextProps.statedCard}, function() {
+           this.setState({expanded: nextProps.statedCard});
+      });
+    }
+
+     if(JSON.stringify(nextProps.session) !== this.state.sessionString){
+         this.loadTerms(this.props.session);
+       this.setState({
+         session:nextProps.session,
+         sessionString:JSON.stringify(this.props.session),
+       });
      }
-     this.setState({expanded: this.props.statedCard}, function() {
-          this.setState({expanded: this.props.statedCard});
-     });
+     else{
+       return;
+     }
+
    };
 
   handleExpandChange = (expanded) => {
@@ -86,6 +100,7 @@ class Terms extends Component{
 
 
   loadTerms(session){
+    console.log("loadTerms");
     $.post(
       '/extractTerms',
       {'numberOfTerms': 40, 'session': JSON.stringify(session)},
@@ -105,9 +120,14 @@ class Terms extends Component{
   }
 
   //Check if the component should be updated or not
-  shouldComponentUpdate(){
-    return true;
-
+  shouldComponentUpdate(nextProps, nextState) {
+    //console.log("filter before shouldComponentUpdate");
+    //console.log(this.props.update);
+    if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
+          return true;
+    }
+    //console.log("filter after shouldComponentUpdate");
+    return false;
   }
 
 
