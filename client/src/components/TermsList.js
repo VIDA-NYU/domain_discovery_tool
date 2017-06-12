@@ -21,6 +21,7 @@ import AddTermIcon from 'material-ui/svg-icons/content/add-box';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
+import { Col, Row} from 'react-bootstrap';
 //import {select} from 'd3-selection';
 //import cloud from 'd3-cloud';
 //import ReactFauxDom from 'react-faux-dom';
@@ -40,6 +41,7 @@ class TermsList extends Component {
         };
         this.focusTextField = this.focusTextField.bind(this);
         this.textInput = null;
+        this.termsFromFile=[];
 
         //this.startTermsList = this.startTermsList.bind(this);
         //this.drawWordCloud = this.drawWordCloud.bind(this);
@@ -50,7 +52,6 @@ class TermsList extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-      console.log(nextProps.listTerms);
       this.setState({listTerms:nextProps.listTerms});
     }
 
@@ -61,6 +62,7 @@ class TermsList extends Component {
     };
     handleCloseAddTerm = () => {
       this.setState({openCreateTerm: false, newNameTerm:"",});
+      this.termsFromFile=[]; // Empting the terms from file.
     };
     //Handling changes into TextField newNameTerm (updating TextField).
     handleTextChangeNewNameTerm(e){
@@ -72,31 +74,91 @@ class TermsList extends Component {
     }
 
     //Checking whether there is already the word.
-    addEntries(newTerm, entries){
+    addEntries(newTerms, entries){
       var updateListTerm = this.state.listTerms;
-      var duplicate = false;
-      var found = updateListTerm.some(function (obj) {
-        return obj.word === newTerm;
-      });
-      if (found) duplicate = true;
-      if (duplicate === false) updateListTerm = entries.concat(updateListTerm);
+      var entriesUpdated = [];
+      var newTermsUpdated = [];
+      for (var i = 0; i < newTerms.length; i++) {
+        if(newTerms[i]!==""){
+          var duplicate = false;
+          var found = updateListTerm.some(function (obj) {
+            return obj.word === newTerms[i];
+          });
+          if (found) duplicate = true;
+          if (duplicate === false) {
+            entriesUpdated.push(entries[i]);
+            newTermsUpdated.push(newTerms[i]);
+            var tempArray=[];
+            tempArray.push(entries[i]);
+            updateListTerm = tempArray.concat(updateListTerm);
+          }
+        }
+      }
+      //if (duplicate === false) updateListTerm = entries.concat(updateListTerm);
       this.setState({listTerms:updateListTerm, openCreateTerm: false, newNameTerm:"",});
+      this.forceUpdate();
+    }
+
+    //Adding custom positive terms (just one term or more than one from file).
+    addPosTerms(){
+      if(this.termsFromFile.length===0){
+        var newTerm = this.state.newNameTerm;
+        var arrayTerms = [];
+        arrayTerms.push(newTerm);
+        this.addPosTerm(arrayTerms);
+      }
+      else{
+        this.addPosTermFromFile();
+      }
+    }
+
+    //Adding custom negative terms (just one term or more than one from file).
+    addNegTerms(){
+      if(this.termsFromFile.length===0){
+        var newTerm = this.state.newNameTerm;
+        var arrayTerms = [];
+        arrayTerms.push(newTerm);
+        this.addNegTerm(arrayTerms);
+      }
+      else{
+        this.addNegTermFromFile();
+      }
     }
 
     //Adding custom positive terms.
-    addPosTerm(){
-      var newTerm = this.state.newNameTerm;
-      var entries = [{'word': newTerm, 'posFreq': 0, 'negFreq': 0, 'tags': ["Positive", "Custom"]}];
-      this.addEntries(newTerm, entries);
-      this.setTermTag(newTerm,'Positive;Custom', true, this.props.session);
+    addPosTerm(newTerms){
+      var entries = [];
+      for (var i = 0; i < newTerms.length; i++) {
+        entries.push({'word': newTerms[i], 'posFreq': 0, 'negFreq': 0, 'tags': ["Positive", "Custom"]});
+      }
+      this.addEntries(newTerms, entries);
+      this.setTermTag(newTerms,'Positive;Custom', true, this.props.session);
     }
 
     //Adding custom negative terms.
-    addNegTerm(){
-      var newTerm = this.state.newNameTerm;
-      var entries = [{'word': newTerm, 'posFreq': 0, 'negFreq': 0, 'tags': ["Negative", "Custom"]}];
-      this.addEntries(newTerm, entries);
-      this.setTermTag(newTerm,'Negative;Custom', true, this.props.session);
+    addNegTerm(newTerms){
+      var entries = [];
+      for (var i = 0; i < newTerms.length; i++) {
+        entries.push({'word': newTerms[i], 'posFreq': 0, 'negFreq': 0, 'tags': ["Negative", "Custom"]});
+      }
+      this.addEntries(newTerms, entries);
+      this.setTermTag(newTerms,'Negative;Custom', true, this.props.session);
+    }
+
+    //Adding terms from file
+    addPosTermFromFile(){
+      for (var i = 0; i < this.termsFromFile.length; i++) {
+             this.addPosTerm(this.termsFromFile);
+      }
+      this.termsFromFile=[];
+    }
+
+    //Adding terms from file
+    addNegTermFromFile(){
+      for (var i = 0; i < this.termsFromFile.length; i++) {
+        if(this.termsFromFile[i] !== "")this.addNegTerm(this.termsFromFile[i]);
+      }
+      this.termsFromFile=[];
     }
 
     //Remove a custom term.
@@ -132,7 +194,7 @@ class TermsList extends Component {
     setTermTag(term, tag, applyTagFlag, session) {
         $.post(
           '/setTermsTag',
-          {'terms': term, 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)},
+          {'terms': term.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)},
           function() {
               console.log("tagterm-------------");
           }.bind(this)).fail(function() {
@@ -151,26 +213,47 @@ class TermsList extends Component {
       var color = ($(wordId).css("fill")).toString();
       var isPositive = color=="rgb(0, 0, 255)";//tags.indexOf('Positive') != -1;
       var isNegative = color=="rgb(255, 0, 0)";//tags.indexOf('Negative') != -1;
+      var arrayTerms = [];
+      arrayTerms.push(term['word']);
       if (isPositive) {
         // It was positive, so it turns negative.
-        this.setTermTag(term['word'], 'Positive', false, this.props.session);
-        this.setTermTag(term['word'], 'Negative', true, this.props.session);
+        this.setTermTag(arrayTerms, 'Positive', false, this.props.session);
+        this.setTermTag(arrayTerms, 'Negative', true, this.props.session);
         // Removes tag 'Positive' from tags array, adds 'Negative'.
         $(wordId).css('fill','red');
       }
       else if (isNegative) {
         // It was Negative, so it turns Neutral.
-        this.setTermTag(term['word'], 'Negative', false, this.props.session);
+        this.setTermTag(arrayTerms, 'Negative', false, this.props.session);
         // Removes tag 'Negative' from tags array.
         $(wordId).css('fill','black');
       }
       else {
         // It was Neutral, so it turns Positive.
-        this.setTermTag(term['word'], 'Positive', true, this.props.session);
+        this.setTermTag(arrayTerms, 'Positive', true, this.props.session);
         // Adds tag 'Positive' to tags array.
         $(wordId).css('fill','blue');
       }
 
+    }
+
+
+    // Store the uploaded terms from file
+    runLoadTermsFileQuery(txt) {
+        var allTextLines = txt.split(/\r\n|\n/);
+        //var urlsString = allTextLines.join(" ");
+        this.termsFromFile = allTextLines; //.push(urlsString);
+        //this.runLoadUrls(urlsString);
+    }
+
+    //Reading file's content.
+    handleFile(event) {
+      const reader = new FileReader();
+      const file = event.target.files[0];
+      reader.onload = (upload) => {
+        this.runLoadTermsFileQuery(upload.target.result);
+      };
+      reader.readAsText(file);
     }
 
 
@@ -238,8 +321,8 @@ class TermsList extends Component {
                            }.bind(this));
          const actionsAddTerm = [
            <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseAddTerm}/>,
-           <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addPosTerm.bind(this)}/>,
-           <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegTerm.bind(this)}/>,
+           <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addPosTerms.bind(this)}/>,
+           <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegTerms.bind(this)}/>,
          ];
 
         return (
@@ -260,6 +343,7 @@ class TermsList extends Component {
                                  open={this.state.openCreateTerm}
                                  onRequestClose={this.handleCloseAddTerm.bind(this)}
                                >
+                               <Row>
                                  <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
                                    ref={(input) => { this.textInput = input;}}
                                    value={this.state.newNameTerm}
@@ -269,6 +353,18 @@ class TermsList extends Component {
                                    inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
 
                                  />
+                                 </Row>
+                                 <br />
+                                 <Row>
+                                    <FlatButton style={{marginLeft:'15px'}}
+                                      label="Load terms from file"
+                                      labelPosition="before"
+                                      containerElement="label"
+                                    >
+                                    <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+                                    </FlatButton>
+                                    </Row>
+                                    <br />
                                </Dialog>
 
                       </div>
