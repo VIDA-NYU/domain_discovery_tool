@@ -156,7 +156,7 @@ class TermsList extends Component {
     //Adding terms from file
     addNegTermFromFile(){
       for (var i = 0; i < this.termsFromFile.length; i++) {
-        if(this.termsFromFile[i] !== "")this.addNegTerm(this.termsFromFile[i]);
+             this.addNegTerm(this.termsFromFile);
       }
       this.termsFromFile=[];
     }
