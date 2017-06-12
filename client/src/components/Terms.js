@@ -59,7 +59,6 @@ class Terms extends Component{
 
   componentWillMount = () => {
    this.setState({expanded: this.props.statedCard, });
-     this.loadTerms(this.props.session);
   };
 
 
@@ -101,6 +100,9 @@ class Terms extends Component{
       }.bind(this));
     };
 
+  updateListTermParent(updateListTerm){
+      this.setState({listTerms: updateListTerm});
+  }
 
   //Check if the component should be updated or not
   shouldComponentUpdate(){
@@ -116,7 +118,7 @@ class Terms extends Component{
         return <p>{w["word"]}</p>;
       });
     }
-    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session}></TermsList>:<CircularProgressSimple />;
+    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)}></TermsList>:<CircularProgressSimple />;
     return(
 
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
