@@ -96,7 +96,7 @@ class TermsList extends Component {
       }
       //if (duplicate === false) updateListTerm = entries.concat(updateListTerm);
       this.setState({listTerms:updateListTerm, openCreateTerm: false, newNameTerm:"",});
-      this.forceUpdate();
+      this.props.updateListTermParent(updateListTerm);
     }
 
     //Adding custom positive terms (just one term or more than one from file).
