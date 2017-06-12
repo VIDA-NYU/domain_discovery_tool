@@ -62,15 +62,15 @@ class Terms extends Component{
      this.loadTerms(this.props.session);
   };
 
+
   //Handling state's changes of search card. (expanded or reduced)
   componentWillReceiveProps  = (newProps) => {
-        if(this.props.statedCard){
-          this.loadTerms(this.props.session);
-        }
-       this.setState({expanded: this.props.statedCard}, function() {
-            this.setState({expanded: this.props.statedCard});
-       });
-
+     if(!this.props.statedCard){
+       this.loadTerms(this.props.session);
+     }
+     this.setState({expanded: this.props.statedCard}, function() {
+          this.setState({expanded: this.props.statedCard});
+     });
    };
 
   handleExpandChange = (expanded) => {
@@ -86,22 +86,19 @@ class Terms extends Component{
   };
 
 
-    loadTerms(session){
-      console.log("session");
-      console.log(session);
-      $.post(
-        '/extractTerms',
-  	{'numberOfTerms': 40, 'session': JSON.stringify(session)},
-          function(summary) {
-              console.log(summary);
-              var entries = [];
-              entries = summary.map(function(w) {
-                                      return {'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]}
-                                    });
-              this.setState({listTerms: entries});
-        }.bind(this)).fail(function() {
-              console.log("Something wrong happen. Try again.");
-        }.bind(this));
+  loadTerms(session){
+    $.post(
+      '/extractTerms',
+      {'numberOfTerms': 40, 'session': JSON.stringify(session)},
+      function(summary) {
+        var entries = [];
+        entries = summary.map(function(w) {
+          return {'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]}
+        });
+        this.setState({listTerms: entries});
+      }.bind(this)).fail(function() {
+        console.log("Something wrong happen. Try again.");
+      }.bind(this));
     };
 
 
