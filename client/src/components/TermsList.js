@@ -147,17 +147,13 @@ class TermsList extends Component {
 
     //Adding terms from file
     addPosTermFromFile(){
-      for (var i = 0; i < this.termsFromFile.length; i++) {
-             this.addPosTerm(this.termsFromFile);
-      }
+      this.addPosTerm(this.termsFromFile);
       this.termsFromFile=[];
     }
 
     //Adding terms from file
     addNegTermFromFile(){
-      for (var i = 0; i < this.termsFromFile.length; i++) {
-             this.addNegTerm(this.termsFromFile);
-      }
+      this.addNegTerm(this.termsFromFile);
       this.termsFromFile=[];
     }
 
