@@ -354,8 +354,10 @@ class TermsList extends Component {
 
                                  />
                                  </Row>
+
+                                 <Row style={{marginTop:30}}>
+                                 <p style={{fontSize:12, marginLeft:10}}> Uploading terms from file:</p>
                                  <br />
-                                 <Row>
                                     <FlatButton style={{marginLeft:'15px'}}
                                       label="Load terms from file"
                                       labelPosition="before"
