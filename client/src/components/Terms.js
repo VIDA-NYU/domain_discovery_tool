@@ -113,7 +113,6 @@ class Terms extends Component{
 
 
   render(){
-    console.log(this.state.listTerms.length);
     let terms = " ";
     if(this.state.listTerms.length>0){
       terms = this.state.listTerms.map(function(w) {
@@ -124,19 +123,19 @@ class Terms extends Component{
     return(
 
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
-      <CardHeader
-      title="Terms"
-      avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.state.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
-      style={styles.cardHeader}
-      actAsExpander={true}
-      showExpandableButton={true}
-      />
-      <CardMedia expandable={true} style={styles.cardMedia}>
-      <Divider/>
-      <div>
-      {isThereTerms}
-      </div>
-      </CardMedia>
+        <CardHeader
+            title="Terms"
+            avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
+            style={styles.cardHeader}
+            actAsExpander={true}
+            showExpandableButton={true}
+        />
+        <CardMedia expandable={true} style={styles.cardMedia}>
+          <Divider/>
+          <div>
+            {isThereTerms}
+          </div>
+        </CardMedia>
       </Card>
     )
   }
