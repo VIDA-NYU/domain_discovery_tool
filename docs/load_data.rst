@@ -32,4 +32,14 @@ You can also upload a file with a list of urls by clicking on the **LOAD URLS FR
 SeedFinder
 ~~~~~~~~~~
 
-Instead of making multiple queries to Google/Bing yourself you can trigger automated keyword search on Google/Bing and collects seed urls using the SeedFinder. This requires a domain model.
+Instead of making multiple queries to Google/Bing yourself you can trigger automated keyword search on Google/Bing and collect more web pages for the domain using the SeedFinder. This requires a domain model. So once you have annoated sufficient pages, indicated by a non-zero accuracy on the top right corner, you can use the SeedFinder functionality.
+
+To start a SeedFinder search click on the SEEDFINDER tab. 
+
+.. image:: seedfinder_search.png
+   :width: 800px
+   :align: center
+   :height: 400px
+   :alt: alternate text
+
+Enter the initial search query keywords, for example **ebola treatment**, as shown in the figure above. The SeedFinder issues this query to Google/Bing. It applies the domain model to the pages returned by Google/Bing. From the pages labeled relevant by the domain model the SeedFinder extracts keywords to form new queries which it again issues to Google/Bing. This iterative process terminates when no more relevant pages are retrieved or the max number of queries configured is exceeded. The results of the SeedFinder queries can be found under Filtering->Queries. These pages can now be analysed and annotated just like the other web pages.
