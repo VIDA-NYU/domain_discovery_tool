@@ -19,7 +19,7 @@ Crawled Data
 
 This lists the relevant and irrelevant crawled data. The relevant crawled data, **CD Relevant**, are those crawled pages that are labeled relevant by the domain model. The irrelevant crawled data, **CD Irrelevant**, are those crawled pages that are labeled irrelevant by the domain model.
 
-TAGS
+Tags
 ~~~~
 
 This lists the annotations made to data. Currently the annotations can be either **Relevant**, **Irrelevant** or **Neutral**.
@@ -27,16 +27,16 @@ This lists the annotations made to data. Currently the annotations can be either
 Domains
 ~~~~~~~
 
-This lists all the top level domains of all the pages in the domain.
+This lists all the top level domains of all the pages in the domain. For example, the top level domain for URL https://ebolaresponse.un.org/data is ebolaresponse.un.org.
 
 Model Tags
 ~~~~~~~~~~
 
-When you click to expand **Model Tags**, the domain model is applied to a random selection of 500 unlabeled pages. The predicted labels are:
+When you click to expand **Model Tags**, the domain model is applied to a random selection of 500 unlabeled pages. The predicted labels for these 500 pages could be:
 
 * **Maybe Relevant:** These are pages that have been labeled relevant by the model with a high confidence
-* **Maybe Irrelevant:** These are pages that have been labeled relevant by the model with a high confidence
-* **Unsure:** These are pages that were marked relevant or irrelevant by the domain model but with low confidence. Experiments have shown that labeling these pages helps the model classifier better label similar pages.
+* **Maybe Irrelevant:** These are pages that have been labeled irrelevant by the model with a high confidence
+* **Unsure:** These are pages that were marked relevant or irrelevant by the domain model but with low confidence. Experiments have shown that labeling these pages helps improve the domain model's ability to predict labels for similar pages with higher confidence.
 
 NOTE: This will take a few seconds to apply the model and show the results.
 
@@ -49,5 +49,5 @@ Search
    :height: 400px
    :alt: alternate text
 
-Search by keywords within the downloaded text. This search is available on the top right corner as shown in the figure above. It can be used along with the other filters. The keywords are searched not only in the content of the page but also the title and URL of the page.
+Search by keywords within the within the page content text. This search is available on the top right corner as shown in the figure above. It can be used along with the other filters. The keywords are searched not only in the content of the page but also the title and URL of the page.
 
