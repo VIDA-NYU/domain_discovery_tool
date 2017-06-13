@@ -4,30 +4,8 @@ Use Domain Discovery Tool
 Now you should be able to head to http://localhost:8084/ to interact with the tool.
 
 .. include:: add_domain.rst
-.. include:: load_data.rst	     
-
-Filtering
----------
-
-.. image:: filters.png
-   :width: 800px
-   :align: center
-   :height: 400px
-   :alt: alternate text
-
-Once some pages are loaded into the domain, they can be analyzed with various filters available in the Filters tab on the left panel such as:
-
-QUERIES: Filter by keyword web searches 
-
-CRAWLED DATA: Filter the relevant and irrelevant crawled data
-
-TAGS: Filter by annotation tags
-
-DOMAINS: Filter by the top level domains of all the pages in the domain
-
-MODEL TAGS: Filter by predicted model tags
-
-SEARCH: Search by keywords within the downloaded text. NOTE: This search is available on the top right corner.
+.. include:: load_data.rst
+.. include:: filter.rst	     	     
 
 Annotation
 ----------
