@@ -6,15 +6,19 @@ Now you should be able to head to http://localhost:8084/ to interact with the to
 Add Domain
 ----------
 
-Begin by adding a domain. Domain maintains context of domain discovery. 
-
 .. image:: add_domain.png
    :width: 800px
    :align: center
    :height: 400px
    :alt: alternate text
 
-Once domain is added click on it to collect and annotate data.
+Begin by adding a domain on the Domains page (initial page) by clicking on the |add_domain| button. Domain maintains context of domain discovery.   
+
+.. |add_domain| image:: add_domain_button.png
+
+Once domain is added click on domain name in the list of domains to collect, analyse and annotate web pages. Domains can be deleted by clicking on the |delete_domain| button.
+
+.. |delete_domain| image:: delete_domain_button.png
 
 Domain Discovery
 ----------------
@@ -32,9 +36,9 @@ Expand the Search tab on the left panel. You can add data to the domain in the f
 
 WEB: Keyword search on google or bing. For example, “ebola symptoms”
 
-LOAD: Upload a list of urls in the text box or upload a file with a list of urls
+LOAD: Upload a list of urls in the text box or upload a file with a list of urls. The list of URLs should be entered one per line both in the text input and in the file.
 
-SEEDFINDER: Triggers automated keyword search on google and bing and collects seed urls. This requires a domain model.
+SEEDFINDER: Triggers automated keyword search on Google/Bing and collects seed urls. This requires a domain model.
 
 Filtering
 ~~~~~~~~~
