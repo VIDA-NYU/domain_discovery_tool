@@ -10,6 +10,19 @@ This repository contains the Domain Discovery Tool (DDT) project. DDT is an inte
 
 You can install the system from source or using Docker.
 
+## Docker Version
+
+You must have docker installed (ADD link)
+
+To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
+
+```
+./run_docker_ddt
+```
+The above script will prompt to enter a directory where you would like to persist all the web pages for the domains you create. You can enter the path to a directory on the host you are running DDT or just press **Enter** to use the default directory which is $HOME/dd_data. The data is stored in the `elasticsearch <https://www.elastic.co/products/elasticsearch>`_ data format (You can later use this directory as the data directory to any elasticsearch).The script will start elasticsearch with the data directory provided.
+
+The script will then start DDT. You will see a message **"ENGINE Bus STARTED"** when DDT is running successfully. You can now use DDT.
+
 ### Local development
 
 Building and deploying the Domain Discovery Tool can be done using its Makefile to create a local development environment.  The conda build environment is currently only supported on 64-bit OS X and Linux.
@@ -71,21 +84,13 @@ or (from the top-level `domain_discovery_tool_react` directory) execute:
 ./bin/ddt-dev
 ```
 
-## Docker Version
-
-You must have docker installed (ADD link)
-
-To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
-
-```
-./run_docker_ddt
-```
-
-This will start elasticsearch and the domain discovery tool.
-
 ## Use Domain Discovery Tool
 
 Now you should be able to head to http://localhost:8084/ to interact with the tool.
+
+## Documentation
+
+More documentation is available [HERE!](http://domain-discovery-tool.readthedocs.io/en/latest/)
 
 ## Publication
 
