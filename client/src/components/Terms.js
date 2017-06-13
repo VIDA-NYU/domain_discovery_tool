@@ -117,6 +117,7 @@ class Terms extends Component{
 
   updateListTermParent(updateListTerm){
       this.setState({listTerms: updateListTerm});
+      this.forceUpdate();
   }
 
   //Check if the component should be updated or not
@@ -138,6 +139,7 @@ class Terms extends Component{
         return <p>{w["word"]}</p>;
       });
     }
+    console.log(this.state.listTerms);
     var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)}></TermsList>:<CircularProgressSimple />;
     return(
 
