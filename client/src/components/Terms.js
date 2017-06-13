@@ -74,11 +74,12 @@ class Terms extends Component{
     }
 
      if(JSON.stringify(nextProps.session) !== this.state.sessionString){
-         this.loadTerms(this.props.session);
        this.setState({
          session:nextProps.session,
          sessionString:JSON.stringify(this.props.session),
+         listTerms: [],
        });
+       this.loadTerms(this.props.session);
      }
      else{
        return;
