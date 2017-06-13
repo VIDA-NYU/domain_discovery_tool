@@ -203,6 +203,7 @@ class TermsList extends Component {
     // {'word': term, 'tags': [], ...}
     updateTermTag(term){
       // State machine: Neutral -> Positive -> Negative -> Neutral.
+      var updateListTerm = this.state.listTerms;
       var tags = term['tags'];
       var wordId = term['word'].replace(/ /g, "_");
       wordId = '#'+wordId;
@@ -211,26 +212,38 @@ class TermsList extends Component {
       var isNegative = color=="rgb(255, 0, 0)";//tags.indexOf('Negative') != -1;
       var arrayTerms = [];
       arrayTerms.push(term['word']);
+      var objIndex = updateListTerm.findIndex((obj => obj.word === term['word']));
+      var newTag = "";
       if (isPositive) {
         // It was positive, so it turns negative.
         this.setTermTag(arrayTerms, 'Positive', false, this.props.session);
         this.setTermTag(arrayTerms, 'Negative', true, this.props.session);
+        //Update object's name property.
+        newTag = 'Negative';
+
         // Removes tag 'Positive' from tags array, adds 'Negative'.
         $(wordId).css('fill','red');
       }
       else if (isNegative) {
         // It was Negative, so it turns Neutral.
         this.setTermTag(arrayTerms, 'Negative', false, this.props.session);
+        newTag = 'Neutral';
         // Removes tag 'Negative' from tags array.
         $(wordId).css('fill','black');
       }
       else {
         // It was Neutral, so it turns Positive.
         this.setTermTag(arrayTerms, 'Positive', true, this.props.session);
+        newTag = 'Positive';
         // Adds tag 'Positive' to tags array.
         $(wordId).css('fill','blue');
       }
-
+      if(updateListTerm[objIndex].tags.indexOf('Custom')!= -1){
+          updateListTerm[objIndex].tags = newTag;
+      }
+      else updateListTerm[objIndex].tags = "Custom;"+newTag;
+      this.setState({ListItem:updateListTerm});
+      this.props.updateListTermParent(updateListTerm);
     }
 
 
@@ -281,7 +294,6 @@ class TermsList extends Component {
                               var topPin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "-5":"-2";
                               var removeTermButton = (tags.indexOf('Custom')!= -1)?<foreignObject height="10" width="10" y="-2px" x="8px"><span className={"glyphicon glyphicon-trash"}></span></foreignObject>:<span/>;
                               var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
-
                               let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, fontSize:sizePin, color:colorPin}} onClick={this.focusTermContext.bind(this, currentTerm)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
                                             <foreignObject height="10" width="10" y={topPin} x="25px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
                                          </g>;
