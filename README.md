@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/ViDA-NYU/domain_discovery_tool_react.svg?branch=master)](https://travis-ci.org/ViDA-NYU/domain_discovery_tool_react)
-[![Documentation Status](https://readthedocs.org/projects/domain-discovery-tool-/badge/?version=latest)](http://domain-discovery-tool.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/domain-discovery-tool/badge/?version=latest)](http://domain-discovery-tool.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/ViDA-NYU/domain_discovery_tool_react/badge.svg?branch=master&service=github)](https://coveralls.io/github/ViDA-NYU/domain_discovery_tool_react?branch=master)
 
 # Domain Discovery Tool
