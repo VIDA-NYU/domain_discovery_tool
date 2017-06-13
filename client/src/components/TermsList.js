@@ -276,12 +276,14 @@ class TermsList extends Component {
                               var widthNeg = barScale(w['negFreq']);
                               var currentTerm =w["word"];
                               var tags = w['tags']; //var isPositive = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1); var isNegative = tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1;
-                              var colorPin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "black":"#E6E6E6";
+                              var colorPin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "black":"#9575CD";
+                              var sizePin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "15":"12";
+                              var topPin = (this.state.focusContext && this.state.focusTermContext==currentTerm)? "-5":"-2";
                               var removeTermButton = (tags.indexOf('Custom')!= -1)?<foreignObject height="10" width="10" y="-2px" x="8px"><span className={"glyphicon glyphicon-trash"}></span></foreignObject>:<span/>;
                               var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
 
-                              let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, color:colorPin}} onClick={this.focusTermContext.bind(this, currentTerm)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
-                                            <foreignObject height="10" width="10" y="-2px" x="25px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
+                              let pins = <g className={"pins"} style={{cursor:"pointer", letterSpacing:4, fontSize:sizePin, color:colorPin}} onClick={this.focusTermContext.bind(this, currentTerm)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
+                                            <foreignObject height="10" width="10" y={topPin} x="25px"><span className={"control glyphicon glyphicon-pushpin"}></span></foreignObject>
                                          </g>;
 
                               let words = <g transform={`translate(50, 10)`}  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
