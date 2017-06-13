@@ -3,7 +3,10 @@ Use Domain Discovery Tool
 
 Now you should be able to head to http://localhost:8084/ to interact with the tool.
 
-add_domain.rst
+.. toctree::
+   :maxdepth: 2
+
+   add_domain.rst
 
 Data Loading
 ------------
