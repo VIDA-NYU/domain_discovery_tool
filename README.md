@@ -1,6 +1,6 @@
 [![Documentation Status](https://readthedocs.org/projects/domain-discovery-tool/badge/?version=latest)](http://domain-discovery-tool.readthedocs.io/en/latest/?badge=latest)
 
-# Domain Discovery Tool
+# Domain Discovery Tool (DDT)
 
 This repository contains the Domain Discovery Tool (DDT) project. DDT is an interactive system that helps users explore and better understand a domain (or topic) as it is represented on the Web. It achieves this by integrating human insights with machine computation (data mining and machine learning) through visualization. DDT allows a domain expert to visualize and analyze pages returned by a search engine or a crawler, and easily provide feedback about relevance. DDT addresses important challenges:
 
