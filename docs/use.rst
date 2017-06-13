@@ -22,7 +22,7 @@ Begin by adding a domain on the Domains page (initial page), shown in the figure
    :height: 400px
    :alt: alternate text
 
-On the **Adding a domain** dialog shown in figure above, enter the name of the domain you would like to create, for example **Human Trafficking**, and click on **Submit** button. You should now see the new domain you added in the list of domains.
+On the **Adding a domain** dialog shown in figure above, enter the name of the domain you would like to create, for example **Microcap Fraud**, and click on **Submit** button. You should now see the new domain you added in the list of domains.
 
 Once domain is added click on domain name in the list of domains to collect, analyse and annotate web pages.
 
@@ -37,13 +37,11 @@ Domains can be deleted by clicking on the |delete_domain| button.
    :alt: alternate text
 
 On the **Deleting a domain** dialog select the domains to be deleted in the list of current domains and click on **Submit** button. They will no longer appear on the domains list.
+
 **NOTE: This will delete all the data collected for that domain.**
 			   
-Domain Discovery
-----------------
-
 Data Loading
-~~~~~~~~~~~~
+------------
 
 .. image:: query_web.png
    :width: 800px
@@ -60,7 +58,7 @@ LOAD: Upload a list of urls in the text box or upload a file with a list of urls
 SEEDFINDER: Triggers automated keyword search on Google/Bing and collects seed urls. This requires a domain model.
 
 Filtering
-~~~~~~~~~
+---------
 
 .. image:: filters.png
    :width: 800px
@@ -83,17 +81,17 @@ MODEL TAGS: Filter by predicted model tags
 SEARCH: Search by keywords within the downloaded text. NOTE: This search is available on the top right corner.
 
 Annotation
-~~~~~~~~~~
+----------
 
 Currently, pages can be annotated as Relevant, Irrelevant or Neutral. Annotations are used to build a domain model.
 
 Domain Model
-~~~~~~~~~~~~
+------------
 
 DDT incrementally builds a model as the user annotates the retrieved pages. The accuracy of the domain model is displayed on the top right corner. It provides an indication of the model coverage of the domain and how it is influenced by annotations.
 
 Run Crawler
-~~~~~~~~~~~
+-----------
 
 Once a sufficiently good model is available you can start the ACHE crawler by clicking on "Start Crawler" button. You can see the results of the crawled data in "Crawled Data" in the Filters Tab. When the crawler is running it can be monitored at http://localhost:8080/.
 
