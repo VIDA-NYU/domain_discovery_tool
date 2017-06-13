@@ -4,23 +4,7 @@ Use Domain Discovery Tool
 Now you should be able to head to http://localhost:8084/ to interact with the tool.
 
 .. include:: add_domain.rst
-
-Data Loading
-------------
-
-.. image:: query_web.png
-   :width: 800px
-   :align: center
-   :height: 400px
-   :alt: alternate text
-
-Expand the Search tab on the left panel. You can add data to the domain in the following ways:
-
-WEB: Keyword search on google or bing. For example, “ebola symptoms”
-
-LOAD: Upload a list of urls in the text box or upload a file with a list of urls. The list of URLs should be entered one per line both in the text input and in the file.
-
-SEEDFINDER: Triggers automated keyword search on Google/Bing and collects seed urls. This requires a domain model.
+.. include:: load_data.rst	     
 
 Filtering
 ---------
