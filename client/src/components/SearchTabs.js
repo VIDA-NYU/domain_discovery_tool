@@ -82,24 +82,21 @@ class SearchTabs extends React.Component {
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
     runSeedFinderQuery(){
-      var session =this.props.session;
-	    session['search_engine']=this.state.search_engine;
-      session = this.resetAllFilters(session);
-      this.props.getQueryPages("seedfinder:"+this.state.valueQuery);
-
-      $.post(
-        '/runSeedFinder',
-        {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
-        function(data) {
-            setTimeout(function(){
-              this.props.queryPagesDone();
-              this.props.updateStatusMessage(false, "process*concluded");
-            }.bind(this), 9000);
-          }.bind(this)).fail(function() {
-              console.log("Something is wrong. Try again.");
-              this.props.updateStatusMessage(false, "seedfinder:"+this.state.valueQuery);
+	var session =this.props.session;
+	session['search_engine']=this.state.search_engine;
+	$.post(
+            '/runSeedFinder',
+            {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
+            function(data) {
+		setTimeout(function(){
+		    this.props.queryPagesDone();
+		    this.props.updateStatusMessage(false, "process*concluded");
+		}.bind(this), 9000);
+            }.bind(this)).fail(function() {
+		console.log("Something is wrong. Try again.");
+		this.props.updateStatusMessage(false, "seedfinder:"+this.state.valueQuery);
             }.bind(this));
-      this.props.updateStatusMessage(true, "seedfinder:"+this.state.valueQuery);
+	this.props.updateStatusMessage(true, "seedfinder:"+this.state.valueQuery+". Check status in process monitor.");
     }
 
     // Download the pages of uploaded urls

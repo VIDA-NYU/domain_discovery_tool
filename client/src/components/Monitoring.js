@@ -10,14 +10,33 @@ import {
 
 class Monitoring extends Component {
 
-  constructor(props){
+    constructor(props){
     super(props);
     this.state={
-
+	processes:{},
     }
   }
+    componentWillMount(){
+	this.setState({processes: this.props.processes})
+    }
 
-  render(){
+    componentWillReceiveProps(nextProps){
+	this.setState({processes: nextProps.processes})
+    }
+    
+    render(){
+	var rows = Object.keys(this.state.processes).map((process, index)=>{
+	    return this.state.processes[process].map((process_row, index_row)=>{
+		if(process_row.status !== "Completed"){
+		    return <TableRow>
+			<TableRowColumn width={this.props.widthProcess}>{process}</TableRowColumn>
+			<TableRowColumn width={this.props.widthDomain}>{process_row.domain}</TableRowColumn>
+			<TableRowColumn width={this.props.widthStatus}>{process_row.status}</TableRowColumn>
+			<TableRowColumn width={this.props.widthDescription}>{process_row.description}</TableRowColumn>
+			</TableRow>;
+		}else return;
+	    });
+	});
     return ( <Table>
               <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
@@ -27,28 +46,22 @@ class Monitoring extends Component {
                   <TableHeaderColumn width={this.props.widthDescription}>Description</TableHeaderColumn>
                 </TableRow>
               </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                <TableRow>
-                  <TableRowColumn width={this.props.widthProcess}>Crawler</TableRowColumn>
-                  <TableRowColumn width={this.props.widthDomain}>{this.props.nameDifferentDomain}</TableRowColumn>
-                  <TableRowColumn width={this.props.widthStatus}>{this.props.messageCrawler}</TableRowColumn>
-                   <TableRowColumn width={this.props.widthDescription}>...</TableRowColumn>
-                </TableRow>
-              </TableBody>
+             <TableBody displayRowCheckbox={false}>
+	     {rows}
+             </TableBody>
             </Table>);
   }
 }
 
 Monitoring.propTypes = {
-    nameDifferentDomain: React.PropTypes.string.isRequired,
     messageCrawler: React.PropTypes.string.isRequired,
 };
 
 Monitoring.defaultProps = {
-    widthProcess:70,
-    widthDomain:130,
-    widthStatus:160,
-    widthDescription:100,
+    widthProcess:100,
+    widthDomain:160,
+    widthStatus:200,
+    widthDescription:200,
 };
 
 export default Monitoring;
