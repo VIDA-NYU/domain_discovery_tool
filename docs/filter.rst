@@ -27,7 +27,7 @@ This lists the annotations made to data. Currently the annotations can be either
 Domains
 ~~~~~~~
 
-This lists all the top level domains of all the pages in the domain. For example, the top level domain for URL https://ebolaresponse.un.org/data is ebolaresponse.un.org.
+This lists all the top level domains of all the pages in the domain. For example, the top level domain for URL https://ebolaresponse.un.org/data is **ebolaresponse.un.org**.
 
 Model Tags
 ~~~~~~~~~~
