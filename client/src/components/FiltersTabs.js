@@ -45,7 +45,12 @@ class LoadQueries extends React.Component {
           value: 'query',
           label: 'Queries',
           children: [],
-        }]
+      }],
+      sfqueryNodes:[{
+          value: 'seedfinder',
+          label: 'SeedFinder Queries',
+          children: [],
+      }]
     };
   }
 
@@ -92,37 +97,116 @@ class LoadQueries extends React.Component {
     return true;
   }
 
-  addQuery(object){
-    var checked = object["checked"];
-    this.setState({checked: checked });
-    this.props.addQuery(checked);
-  }
+    addQuery(name, object){
+	var prev_selected_queries = [];
+
+	if(this.state.session['selected_queries'] !== "")
+	    prev_selected_queries = this.state.session['selected_queries'].split(",");
+
+	var checked = [];
+	if(name === "seedfinder"){
+	    checked = object['checked'].map((query, index)=>{
+		return "seedfinder:"+query;
+	    });
+	    if(prev_selected_queries.length > 0){
+		//Removed previously selected seedfinder queries
+		var new_prev_selected = [];
+		for(var i = 0;i < prev_selected_queries.length;++i){
+		    if(!prev_selected_queries[i].includes("seedfinder"))
+			new_prev_selected.push(prev_selected_queries[i]);
+		}
+		checked = (new_prev_selected.length > 0)?new_prev_selected.concat(checked):checked;
+	    }
+	    
+	}else{
+	    checked = object["checked"];
+	    if(prev_selected_queries.length > 0){
+		//Removed previously selected queries
+		var new_prev_selected = [];
+		for(var i = 0;i < prev_selected_queries.length;++i){
+		    if(prev_selected_queries[i].includes("seedfinder"))
+			new_prev_selected.push(prev_selected_queries[i]);
+		}
+		checked = (new_prev_selected.length > 0)?new_prev_selected.concat(checked):checked;
+	    }
+
+	}
+	this.setState({checked: checked });
+	this.props.addQuery(checked);
+    }
 
   render(){
-    if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
-      var nodes = this.state.queryNodes;
-      var nodesTemp = [];
-      nodes.map((node,index)=>{
-        if(node.value === "query"){
-          node.children = [];
-          Object.keys(this.state.currentQueries).map((query, index)=>{
-            var labelQuery=  query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
-            node.children.push({value:query, label:labelQuery});
-          });
-        }
-        nodesTemp.push(node);
-      });
+      if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
+	  var nodes = this.state.queryNodes;
+	  var nodesTemp = [];
+	  nodes.map((node,index)=>{
+              if(node.value === "query"){
+		  node.children = [];
+		  Object.keys(this.state.currentQueries).map((query, index)=>{
+		      if(!query.includes("seedfinder")){
+			  var labelQuery=  query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
+			  node.children.push({value:query, label:labelQuery});
+		      }
+		  });
+              }
+              nodesTemp.push(node);
+	  });
 
+	  var checked_queries = [];
+	  for(var i = 0;i < this.state.checked.length;++i){
+	      var query = this.state.checked[i];
+	      if(!query.includes("seedfinder"))
+		  checked_queries.push(query);
+	  }
+
+	  var checked_sf_queries = [];
+	  for(var i = 0;i < this.state.checked.length;++i){
+	      var query = this.state.checked[i];
+	      if(query.includes("seedfinder"))
+		  checked_sf_queries.push(query.replace("seedfinder:",""));
+	  }
+
+	  var nodes = this.state.sfqueryNodes;
+	  var nodesSFTemp = [];
+	  var seedfinder_queries_found = false;
+	  nodes.map((node,index)=>{
+              if(node.value === "seedfinder"){
+		  node.children = [];
+		  Object.keys(this.state.currentQueries).map((query, index)=>{
+		      if(query.includes("seedfinder")){
+			  var trunc_query = query.replace("seedfinder:", "");
+			  var labelQuery=  trunc_query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
+			  node.children.push({value:trunc_query, label:labelQuery});
+			  seedfinder_queries_found = true;
+		      }
+		  });
+              }
+              nodesSFTemp.push(node);
+	  });
+	  var seedfinder_checkbox_tree = <div />;
+	  if(seedfinder_queries_found){
+	      seedfinder_checkbox_tree = <CheckboxTree
+					  name={"seedfinder"}
+					  nodes={nodesSFTemp}
+					  checked={checked_sf_queries}
+					  expanded={this.state.expanded}
+					  onCheck={checked => this.addQuery("seedfinder", {checked})}
+					  onExpand={expanded => this.setState({ expanded })}
+					  showNodeIcon={false}
+					  />;
+	  }
       return(
-        <div >
-        <CheckboxTree
+              <div >
+              <CheckboxTree
+	  name={"query"}
           nodes={nodesTemp}
-          checked={this.state.checked}
+          checked={checked_queries}
           expanded={this.state.expanded}
-          onCheck={checked => this.addQuery({checked})}
+          onCheck={checked => this.addQuery("query", {checked})}
           onExpand={expanded => this.setState({ expanded })}
           showNodeIcon={false}
-        />
+              />
+	      {seedfinder_checkbox_tree}
         </div>
       );
     }
