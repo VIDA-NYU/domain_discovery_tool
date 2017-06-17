@@ -6,13 +6,13 @@ docker stop elastic
 echo "Removing elastisearch container"
 docker rm elastic
 
-echo -n "Provide path to store domain data [Press ENTER for default path $HOME/dd_data]: "
+echo -n "Provide path to store domain data [Press ENTER for default path $(pwd)/data]: "
 read path
 
 echo $path
 
 if [[ $path == "" ]]; then
-    path=$HOME/dd_data
+    path=$(pwd)/data
 fi
 
 echo "Starting elastisearch container"
@@ -31,7 +31,7 @@ echo "Updating DDT Package"
 docker pull vidanyu/ddt:package
 
 echo "Starting DD Tool container"
-docker run -i  --name=dd_tool -p 8084:8084 -p 8080:8080 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -t vidanyu/ddt:package
+docker run -i  --name=dd_tool -p 8084:8084 -p 8080:8080 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -v $path:/ddt/domain_discovery_tool_react/server/data -t vidanyu/ddt:package
 
 echo "Stopping elastisearch container"
 docker stop elastic

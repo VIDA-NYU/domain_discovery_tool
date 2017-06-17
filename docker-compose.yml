@@ -10,6 +10,8 @@ services:
       - "8080:8080"
     links:
       - elasticsearch
+    volumes:
+      - ./data/:/ddt/domain_discovery_tool_react/server/data # ddt data storage
   elasticsearch:
     image: elasticsearch:1.6
     container_name: elastic
@@ -23,6 +25,6 @@ services:
         hard: -1
     mem_limit: 1g
     volumes:
-      - ./data/:/usr/share/elasticsearch/data # elasticsearch data will be stored at ./data-es/
+      - ./data/:/usr/share/elasticsearch/data # elasticsearch data storage
     ports:
       - 9200:9200
