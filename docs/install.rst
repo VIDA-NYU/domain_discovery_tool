@@ -11,6 +11,8 @@ You must have docker installed (`Docker Installation for Mac <https://docs.docke
 Background Mode
 ~~~~~~~~~~~~~~~
 
+You must have docker compose installed to run the background version. For Mac docker-compose is included in the docker installation. For Ubuntu follow instructions in step 3. in `docker compose install for linux <https://docs.docker.com/compose/install/>`_
+
 In order to run the docker version in background download :download:`docker-compose.yml <../docker-compose.yml>`. Use the following commands to run it:
 
 >>> cd {path-to-downloaded-docker-compose.yml}
@@ -34,7 +36,7 @@ To shutdown the processes run:
 Interactive Mode
 ~~~~~~~~~~~~~~~~
 
-To run using the interactive docker version download the script `run_docker_ddt <https://github.com/ViDA-NYU/domain_discovery_tool_react/raw/master/bin/run_docker_ddt.zip>`_ and run it:
+To run using the interactive docker version download the script :download:`run_docker_ddt ../bin/run_docker_ddt.zip>`_ and run it:
 
 >>> cd {path-to-downloaded-run_docker_ddt}
 >>> ./run_docker_ddt
