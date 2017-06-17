@@ -11,7 +11,7 @@ You must have docker installed (`Docker Installation for Mac <https://docs.docke
 Background Mode
 ~~~~~~~~~~~~~~~
 
-In order to run the docker version in background download `docker-compose.yml <https://github.com/ViDA-NYU/domain_discovery_tool_react/raw/master/docker-compose.yml>`_. Use the following commands to run it:
+In order to run the docker version in background download :download:`docker-compose.yml <../docker-compose.yml>`. Use the following commands to run it:
 
 >>> cd {path-to-downloaded-docker-compose.yml}
 >>> docker-compose up -d
