@@ -18,7 +18,7 @@ In order to run the docker version in background download :download:`docker-comp
 >>> cd {path-to-downloaded-docker-compose.yml}
 >>> docker-compose up -d
 
-The above commands will start elasticsearch and DDT processes. The elasticsearch data is stored in the directory {path-to-downloaded-docker-compose.yml}/data.
+The above commands will start elasticsearch and DDT processes. The elasticsearch and DDT data are stored in the directory {path-to-downloaded-docker-compose.yml}/data.
 
 You can check the output of the DDT tool using:
 
@@ -41,7 +41,7 @@ To run using the interactive docker version download the script :download:`run_d
 >>> cd {path-to-downloaded-run_docker_ddt}
 >>> ./run_docker_ddt
 
-The above script will prompt to enter a directory where you would like to persist all the web pages for the domains you create. You can enter the path to a directory on the host you are running DDT or just press **Enter** to use the default directory which is $HOME/dd_data. The data is stored in the `elasticsearch <https://www.elastic.co/products/elasticsearch>`_ data format (You can later use this directory as the data directory to any elasticsearch).The script will start elasticsearch with the data directory provided.
+The above script will prompt to enter a directory where you would like to persist all the web pages for the domains you create. You can enter the path to a directory on the host you are running DDT or just press **Enter** to use the default directory which is {path-to-downloaded-run_docker_ddt}/data. The data is stored in the `elasticsearch <https://www.elastic.co/products/elasticsearch>`_ data format (You can later use this directory as the data directory to any elasticsearch).The script will start elasticsearch with the data directory provided.
 
 The script will then start DDT. You will see a message **"ENGINE Bus STARTED"** when DDT is running successfully. You can now use DDT.
 
