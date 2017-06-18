@@ -252,7 +252,7 @@ class ViewTabSnippets extends React.Component{
 
   componentWillMount(){
     this.setState({
-        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:0, offset:0, lengthTotalPages:this.props.lengthTotalPages,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthTotalPages:this.props.lengthTotalPages,
     });
     this.updateOnlineClassifier(this.props.session);
   }
@@ -261,7 +261,7 @@ class ViewTabSnippets extends React.Component{
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) {
       if(!this.props.queryFromSearch) $("div").scrollTop(0);
       this.setState({
-      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:0, offset:0,
+      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:nextProps.currentPagination, offset:nextProps.offset
       });
     }
     return;
@@ -329,7 +329,8 @@ class ViewTabSnippets extends React.Component{
     $("div").scrollTop(0);
     let selected = data.selected; //current page (number)
     let offset = Math.ceil(selected * this.perPage);
-    this.setState({offset: offset, currentPagination:data.selected});
+    this.setState({offset: offset, currentPagination:data.selected, pages:[]});
+      this.props.handlePageClick(offset, data.selected);
     //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
     var tempSession = JSON.parse(JSON.stringify(this.props.session));
     tempSession["from"] = offset;
@@ -466,11 +467,19 @@ class ViewTabSnippets extends React.Component{
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
-    var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
-    var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-        if(this.state.pages[k]["tags"]){
+      var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
+      var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
+	  return [k, this.state.pages[k]]
+      });
+
+      sorted_urlsList.sort(function(first, second) {
+	  return Number(first[1]["order"]) - Number(second[1]["order"])
+      });
+
+      var urlsList = sorted_urlsList.map((url_info, index)=>{
+        if(url_info[1]["tags"]){
              let uniqueTag="";
-             uniqueTag = this.getTag(k);
+             uniqueTag = this.getTag(url_info[0]);
              if(uniqueTag==='Relevant')relev_total++;
              if(uniqueTag==='Irrelevant')irrelev_total++;
              if(uniqueTag==='Neutral')neut_total++;
@@ -482,8 +491,8 @@ class ViewTabSnippets extends React.Component{
         let colorTagIrrelev="";
         let colorTagNeutral="";
         let uniqueTag="";
-        if(this.state.pages[k]["tags"]){
-           uniqueTag = this.getTag(k);
+        if(url_info[1]["tags"]){
+           uniqueTag = this.getTag(url_info[0]);
            colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
            colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
            colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
@@ -493,11 +502,11 @@ class ViewTabSnippets extends React.Component{
         }
 
         id++;
-        let urlLink= (k.length<110)?k:k.substring(0,109);
-        let tittleUrl = (this.state.pages[k]["title"] === "" || this.state.pages[k]["title"] === undefined )?k.substring(k.indexOf("//")+2, k.indexOf("//")+15) + "..." : this.state.pages[k]["title"] ;
-        let imageUrl=(this.state.pages[k]["image_url"]==="")? NoFoundImg:this.state.pages[k]["image_url"];
+        let urlLink= (url_info[0].length<110)?url_info[0]:url_info[0].substring(0,109);
+        let tittleUrl = (url_info[1]["title"] === "" || url_info[1]["title"] === undefined )?url_info[0].substring(url_info[0].indexOf("//")+2, url_info[0].indexOf("//")+15) + "..." : url_info[1]["title"] ;
+        let imageUrl=(url_info[1]["image_url"]==="")? NoFoundImg:url_info[1]["image_url"];
 
-        this.currentUrls.push(k);
+        this.currentUrls.push(url_info[0]);
 
         return <ListItem key={index}  >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
@@ -507,25 +516,25 @@ class ViewTabSnippets extends React.Component{
             <ButtonGroup bsSize="small">
               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
                 <Button >
-                   <IconButton onClick={this.onTagActionClicked.bind(this,k,"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                   <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
                 <Button>
-                  <IconButton onClick={this.onTagActionClicked.bind(this,k,"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                  <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
                 <Button >
-                  <IconButton onClick={this.onTagActionClicked.bind(this,k,"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                  <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
             <p>
-              <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
+              <a target="_blank" href={url_info[0]} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
               <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
-              <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
+              <p style={{  fontSize:'13px', color:'#545454'}}>{url_info[1]["snippet"]}</p>
             </p>
           </div>
           <br/>
@@ -594,17 +603,19 @@ class Views extends React.Component {
       session:{},
       chipData: [],
       lengthPages: 1,
-      lengthTotalPages:0,
+	lengthTotalPages:0,
+	offset:0,
+	currentPagination:0,
     };
     this.newPages = true;
     this.queryFromSearch=true;
   }
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
-  getPages(session){
-    var tempSession = session;
-    tempSession["from"]=0;
-    $.post(
+    getPages(session){
+	var tempSession = session;
+	tempSession["from"]=this.state.offset;
+	$.post(
       '/getPages',
       {'session': JSON.stringify(tempSession)},
       function(pages) {
@@ -616,7 +627,7 @@ class Views extends React.Component {
 
   //Loads pages in the first time.
   componentWillMount(){
-      this.loadPages(this.props.session, this.queryFromSearch);
+      this.loadPages(this.props.session);
   }
 
   //Handling SwipeableViews.
@@ -627,8 +638,13 @@ class Views extends React.Component {
   };
 
   //Loads pages
-  loadPages(session, queryFromSearch){
+  loadPages(session){
       this.getPages(session);
+  }
+
+  // Update pagination  
+  handlePageClick(offset, currentPagination){
+	this.setState({offset: offset, currentPagination:currentPagination});
   }
 
   //If there are any change in the session like a new filter, then getPages() is called.
@@ -640,7 +656,7 @@ class Views extends React.Component {
   	}*/
   	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
       this.newPages = false;
-      this.loadPages(nextProps.session, this.queryFromSearch);
+      this.loadPages(nextProps.session);
   	}else{
         return;
     }
@@ -648,7 +664,7 @@ class Views extends React.Component {
 
   //Updates selected filters.
   deletedFilter(sessionTemp){
-    this.loadPages(sessionTemp, this.queryFromSearch);
+    this.loadPages(sessionTemp);
     this.props.deletedFilter(sessionTemp);
   }
 
@@ -681,7 +697,7 @@ class Views extends React.Component {
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
-    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+      handlePageClick={this.handlePageClick.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
 

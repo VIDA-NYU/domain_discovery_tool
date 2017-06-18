@@ -56,7 +56,9 @@ class Body extends Component{
         iconDomainInfo:null,
         stateDomainInfoCard:false,
         stateSearchCard:false,
-        stateFiltersCard:false,
+          stateFiltersCard:false,
+	  offset:0,
+	  currentPagination:0,
         sizeAvatar:25,
         currentDomain:'',
         sessionBody:{},
@@ -121,10 +123,6 @@ class Body extends Component{
 
   //Verify if it is necessary an update.
     shouldComponentUpdate(nextProps, nextState) {
-    /*  console.log(nextProps.reloadBody);
-    if(nextProps.reloadBody !==undefined && !nextProps.reloadBody){
-      return false;
-    }*/
     if (nextState.sessionString  === this.state.sessionString) {
        if(nextProps.updateCrawlerData==="updateCrawler" || nextProps.updateCrawlerData==="stopCrawler" || nextProps.filterKeyword !== null || nextProps.filterKeyword !== ""   || nextState.stateDomainInfoCard!==this.state.stateDomainInfoCard || nextState.stateSearchCard!==this.state.stateSearchCard || nextState.stateFiltersCard!==this.state.stateFiltersCard){
          return true;
@@ -175,7 +173,6 @@ class Body extends Component{
   }
 
   setActiveMenu (expanded, menu) {
-    //console.log("setActiveMenu " + expanded.toString() + " " + this.state.open.toString());
     if(!this.state.open){
       this.openMenu();
     }
@@ -214,7 +211,7 @@ class Body extends Component{
   getQueryPages(term){
     if(this.state.intervalFuncId !== undefined)
       this.queryPagesDone();
-    else this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 1000)});
+    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 1000)});
 
   }
 
@@ -246,6 +243,12 @@ class Body extends Component{
    availableCrawlerButton(isthereModel){
      this.props.availableCrawlerButton(isthereModel);
    }
+
+    // Update pagination  
+    handlePageClick(offset, currentPagination){
+	this.setState({offset: offset, currentPagination:currentPagination});
+  }
+
 
   render(){
     //console.log("------body----------");
@@ -288,7 +291,7 @@ class Body extends Component{
     <Sidebar {...sidebarProps}>
       <div>
         <Row style={styles.content}>
-          <Views queryFromSearch={this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+          <Views queryFromSearch={this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} handlePageClick={this.handlePageClick.bind(this)}/>
         </Row>
       </div>
       <Snackbar
