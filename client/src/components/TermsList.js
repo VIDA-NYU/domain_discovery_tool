@@ -251,7 +251,11 @@ class TermsList extends Component {
     runLoadTermsFileQuery(txt) {
         var allTextLines = txt.split(/\r\n|\n/);
         //var urlsString = allTextLines.join(" ");
-        this.termsFromFile = allTextLines; //.push(urlsString);
+	allTextLines.map((w)=>{
+	    if(w !== "")
+		this.termsFromFile.push(w);
+	});
+        ; //.push(urlsString);
         //this.runLoadUrls(urlsString);
     }
 
