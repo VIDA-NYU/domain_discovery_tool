@@ -84,7 +84,7 @@ class ChipViewTab extends React.Component{
       var queriesList =[], tagsList =[], tldsList=[],atermsList=[], modelTagsList =[], crawledTagsList=[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
-    atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;
+    //atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
     crawledTagsList=session['selected_crawled_tags']!=="" ? session['selected_crawled_tags'].split(",") : crawledTagsList;
@@ -254,6 +254,7 @@ class ViewTabSnippets extends React.Component{
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthTotalPages:this.props.lengthTotalPages,
     });
+      console.log("MOUNT VIEW TAB SNIPPETS");  
     this.updateOnlineClassifier(this.props.session);
   }
 
@@ -286,7 +287,8 @@ class ViewTabSnippets extends React.Component{
     return currentString;
   }
 
-  updateOnlineClassifier(sessionTemp){
+    updateOnlineClassifier(sessionTemp){
+	console.log("UPDATE ONLINE CLASSIFIER");
     $.post(
     	'/updateOnlineClassifier',
     	{'session':  JSON.stringify(sessionTemp)},

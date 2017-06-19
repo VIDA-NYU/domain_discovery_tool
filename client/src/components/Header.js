@@ -270,15 +270,15 @@ class Header extends Component {
    }
 
    handleOnRequestChange = (event, value)=> {
-     var session = this.createSession(this.props.idDomain);
-     if(value === 2){
-       this.getAvailableTags(session);
-       this.setState({ openCreateModel: true });
-     }
-     else{
-       this.createModel();
-     }
-  }
+       var session = this.createSession(this.props.idDomain);
+       if(value === "2"){
+	   this.getAvailableTags(session);
+	   this.setState({ openCreateModel: true });
+       }
+       else if(value === "1"){
+	   this.createModel();
+       }
+   }
 
    handleOpenCreateModel = () => {
      this.setState({openCreateModel: true});

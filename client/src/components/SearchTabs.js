@@ -35,7 +35,7 @@ class SearchTabs extends React.Component {
     this.state = {
       slideIndex: 0,
       dataSource: [],
-      "search_engine":"BING",
+      "search_engine":"GOOG",
       "valueQuery":"",
       "valueLoadUrls":"",
       flat:true,
@@ -175,20 +175,20 @@ class SearchTabs extends React.Component {
             <div style={styles.slide} >
               <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
                 <InputGroup >
-                  <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'189px'}}  />
+                  <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'177px'}}  />
                   <DropdownButton
                     componentClass={InputGroup.Button}
                     id="input-dropdown-addon"
                     pullRight="split-button-pull-right"
                     onSelect={this.handleDropdownButton.bind(this)}
                     title={this.state.search_engine}
-                    >
-                    <MenuItem key="0" eventKey='BING'>Bing</MenuItem>
-                    <MenuItem key="1" eventKey='GOOG' >Goog</MenuItem>
+              >
+	      <MenuItem key="0" eventKey='GOOG' >Goog</MenuItem>
+              <MenuItem key="1" eventKey='BING'>Bing</MenuItem>
                   </DropdownButton>
                 </InputGroup>
               </Col>
-              <Col xs={2} md={1} >
+              <Col xs={2} md={2} >
                 <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
                   backgroundColor="#26C6DA"
                   hoverColor="#80DEEA"
@@ -200,7 +200,7 @@ class SearchTabs extends React.Component {
             <div style={styles.slide}>
             <Row>
               <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-                <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+                <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
                   value={this.state.valueLoadUrls}
                   onChange={this.handleTextChangeLoadUrls.bind(this)}
                   hintText="Write urls."
