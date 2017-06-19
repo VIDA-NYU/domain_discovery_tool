@@ -19,6 +19,10 @@ import {Card, CardActions, CardHeader, CardText, CardMedia} from 'material-ui/Ca
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 
+import {Card, CardActions, CardHeader, CardText, CardMedia} from 'material-ui/Card';
+import {List, ListItem} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+
 const styles = {
   button:{
     marginTop:20,
@@ -307,7 +311,6 @@ class Body extends Component{
           <Row className="Menus-child">
             <Terms statedCard={this.state.stateTermsCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody}/>
           </Row>
-
           <Row className="Menus-child">
             <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
               <Plus />
