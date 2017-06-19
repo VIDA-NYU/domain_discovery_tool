@@ -5,17 +5,8 @@ Now you should be able to head to http://<hostname>:8084/ to interact with the t
 
 .. include:: add_domain.rst
 .. include:: load_data.rst
-.. include:: filter.rst	     	     
-
-Annotation
-----------
-
-Currently, pages can be annotated as Relevant, Irrelevant or Neutral. Annotations are used to build a domain model.
-
-Domain Model
-------------
-
-DDT incrementally builds a model as the user annotates the retrieved pages. The accuracy of the domain model is displayed on the top right corner. It provides an indication of the model coverage of the domain and how it is influenced by annotations.
+.. include:: filter.rst
+.. include:: create_model.rst	     	     	     
 
 Run Crawler
 -----------
