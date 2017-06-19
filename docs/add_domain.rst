@@ -11,7 +11,7 @@ Begin by adding a domain on the Domains page (initial page), shown in the figure
 
 .. |add_domain| image:: add_domain_button.png
 
-.. image:: add_domain.png
+.. image:: add_ebola_domain.png
    :width: 800px
    :align: center
    :height: 400px
