@@ -1,7 +1,7 @@
 Using the Domain Discovery Tool
 ===============================
 
-Now you should be able to head to http://localhost:8084/ to interact with the tool.
+Now you should be able to head to http://<hostname>:8084/ to interact with the tool.
 
 .. include:: add_domain.rst
 .. include:: load_data.rst
@@ -20,7 +20,7 @@ DDT incrementally builds a model as the user annotates the retrieved pages. The 
 Run Crawler
 -----------
 
-Once a sufficiently good model is available you can start the ACHE crawler by clicking on "Start Crawler" button. You can see the results of the crawled data in "Crawled Data" in the Filters Tab. When the crawler is running it can be monitored at http://localhost:8080/.
+Once a sufficiently good model is available you can start the ACHE crawler by clicking on "Start Crawler" button. You can see the results of the crawled data in "Crawled Data" in the Filters Tab. When the crawler is running it can be monitored at http://<hostname>:8080/.
 
 
 
