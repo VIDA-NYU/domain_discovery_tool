@@ -66,24 +66,24 @@ class Terms extends Component{
 
   //Handling state's changes of search card. (expanded or reduced)
   componentWillReceiveProps  = (nextProps) => {
-    // Calculate new state
+      // Calculate new state
     if(nextProps.statedCard !== this.state.statedCard){
       this.setState({expanded: nextProps.statedCard}, function() {
            this.setState({expanded: nextProps.statedCard});
       });
     }
-
-     if(JSON.stringify(nextProps.session) !== this.state.sessionString){
-       this.setState({
-         session:nextProps.session,
-         sessionString:JSON.stringify(this.props.session),
-         listTerms: [],
-       });
-       this.loadTerms(this.props.session);
-     }
-     else{
-       return;
-     }
+      
+      if(JSON.stringify(nextProps.session) !== this.state.sessionString && nextProps.statedCard){
+	  this.setState({
+              session:nextProps.session,
+              sessionString:JSON.stringify(this.props.session),
+              listTerms: [],
+	  });
+	  this.loadTerms(this.props.session);
+      }
+      else{
+	  return;
+      }
 
    };
 
@@ -101,7 +101,6 @@ class Terms extends Component{
 
 
   loadTerms(session){
-    console.log("loadTerms");
     $.post(
       '/extractTerms',
       {'numberOfTerms': 40, 'session': JSON.stringify(session)},
@@ -123,12 +122,9 @@ class Terms extends Component{
 
   //Check if the component should be updated or not
   shouldComponentUpdate(nextProps, nextState) {
-    //console.log("filter before shouldComponentUpdate");
-    //console.log(this.props.update);
     if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
           return true;
     }
-    //console.log("filter after shouldComponentUpdate");
     return false;
   }
 
@@ -140,7 +136,6 @@ class Terms extends Component{
         return <p>{w["word"]}</p>;
       });
     }
-    console.log(this.state.listTerms);
     var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)}></TermsList>:<CircularProgressSimple />;
     return(
 
