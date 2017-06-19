@@ -318,8 +318,6 @@ class TermsList extends Component {
                                                        <rect y={5} height={6} width={widthPos} x={0} style={{fill:"blue"}}/>
                                                 </g>;
                               let bars =   <g id="terms" transform={`translate(0, ${y})`}>
-                                              {custom}
-                                              {pins}
                                               {words}
                                               {barNegative}
                                               {barPositive}
@@ -338,7 +336,7 @@ class TermsList extends Component {
         return (
                     <div>
                       <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
-                          <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*20}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}}>
+                          <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*20}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}} xmlns="http://www.w3.org/2000/svg">
                             {terms_array}
                           </svg>
                       </div>
