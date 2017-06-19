@@ -84,7 +84,7 @@ class ChipViewTab extends React.Component{
       var queriesList =[], tagsList =[], tldsList=[],atermsList=[], modelTagsList =[], crawledTagsList=[];
     queriesList = session['selected_queries'] !=="" ? session['selected_queries'].split(",") : queriesList;
     tldsList = session['selected_tlds'] !=="" ? session['selected_tlds'].split(",") : tldsList;
-    atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;
+    //atermsList = session['selected_aterms'] !=="" ? session['selected_aterms'].split(",") : atermsList;
     tagsList=session['selected_tags']!=="" ? session['selected_tags'].split(",") : tagsList;
     modelTagsList=session['selected_model_tags']!=="" ? session['selected_model_tags'].split(",") : modelTagsList;
     crawledTagsList=session['selected_crawled_tags']!=="" ? session['selected_crawled_tags'].split(",") : crawledTagsList;
