@@ -7,6 +7,7 @@
 SHELL := /bin/bash
 CONDA_ROOT := $(shell conda info --root)
 CONDA_ENV := $(CONDA_ROOT)/envs/ddt
+HOSTNAME := $(shell hostname)
 
 CONDA_ENV_TARGET := $(CONDA_ENV)/conda-meta/history
 CHERRY_PY_CONFIG_TARGET := server/config.conf
@@ -54,7 +55,9 @@ $(CONDA_ENV_TARGET): environment.yml
 	conda env update
 
 $(CHERRY_PY_CONFIG_TARGET): server/config.conf-in
-	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf
+	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf-tmp; \
+	sed "s#server.socket_host = 0.0.0.0#server.socket_host = ${HOSTNAME}#g" server/config.conf-tmp > server/config.conf; \
+	rm server/config.conf-tmp
 
 $(GET_NLTK_DATA_TARGET): 
 	source activate ddt; \
