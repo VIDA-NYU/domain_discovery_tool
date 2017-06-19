@@ -55,9 +55,7 @@ $(CONDA_ENV_TARGET): environment.yml
 	conda env update
 
 $(CHERRY_PY_CONFIG_TARGET): server/config.conf-in
-	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf-tmp; \
-	sed "s#server.socket_host = 0.0.0.0#server.socket_host = ${HOSTNAME}#g" server/config.conf-tmp > server/config.conf; \
-	rm server/config.conf-tmp
+	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf
 
 $(GET_NLTK_DATA_TARGET): 
 	source activate ddt; \
