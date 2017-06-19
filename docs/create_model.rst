@@ -3,7 +3,7 @@ Create Model
 
 DDT incrementally builds a model as the user `annotates <http://domain-discovery-tool.readthedocs.io/en/latest/use.html#annotation>`_ the retrieved pages. The accuracy of the domain model is displayed on the top right corner. It provides an indication of the model coverage of the domain and how it is influenced by annotations.
 
-The domain model can be exported by clicking on the **Model** button on the top. This will show a drop down as shown in figure below:
+The domain model can be exported by clicking on the **Model** button on the top (this button will be dsiabled when there are no sufficient annotations to build the model and the model **Accuracy of onlineClassifier: 0 %**). This will show a drop down as shown in figure below:
 
 .. image:: model_dropdown.png
    :width: 800px
@@ -11,13 +11,22 @@ The domain model can be exported by clicking on the **Model** button on the top.
    :height: 400px
    :alt: alternate text
 
-Click on **Create Model** to export the model. This should bring up a file explorer pop-up (makes sure you enable pop-up on your browser) as shown below. Save the compressed model file. This contains the ACHE classifier model, the training data for the model and the initial seed list required for crawling.
+Click on **Create Model** to export the model. This should bring up a file explorer pop-up (makes sure you enable pop-up on your browser) as shown below. Save the compressed model file.
 
 .. image:: model_download.png
    :width: 800px
    :align: center
    :height: 400px
    :alt: alternate text
+
+This saved model file contains the ACHE classifier model, the training data for the model and the initial seed list required for focused crawling as shown in figure below:
+
+.. image:: saved_model.png
+   :width: 800px
+   :align: center
+   :height: 400px
+   :alt: alternate text
+
 
 Annotation
 ~~~~~~~~~~
