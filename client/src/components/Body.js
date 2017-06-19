@@ -19,10 +19,6 @@ import {Card, CardActions, CardHeader, CardText, CardMedia} from 'material-ui/Ca
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 
-import {Card, CardActions, CardHeader, CardText, CardMedia} from 'material-ui/Card';
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-
 const styles = {
   button:{
     marginTop:20,
@@ -217,7 +213,7 @@ class Body extends Component{
     //stateDomainInfoCard: menu=2
     //stateTermsCard: menu=3
     var item = menu===0 ? this.setState({stateSearchCard: expanded,  stateFiltersCard :!expanded, stateDomainInfoCard:!expanded, stateTermsCard:!expanded}) :
-               ( menu===1 ? this.setState({stateFiltersCard: expanded, stateSearchCard: !expanded, stateDomainInfoCard:!expanded, stateTermsCard:!expanded}) :
+               (menu===1 ? this.setState({stateFiltersCard: expanded, stateSearchCard: !expanded, stateDomainInfoCard:!expanded, stateTermsCard:!expanded}) :
                menu===2 ? this.setState({ stateDomainInfoCard:expanded, stateFiltersCard: !expanded, stateSearchCard: !expanded, stateTermsCard:!expanded}):
                this.setState({stateTermsCard:expanded, stateDomainInfoCard:!expanded, stateFiltersCard: !expanded, stateSearchCard: !expanded}));
   }
