@@ -36,7 +36,7 @@ Instead of making multiple queries to Google/Bing yourself you can trigger autom
 
 To start a SeedFinder search click on the SEEDFINDER tab. 
 
-.. image:: seedfinder_search.png
+.. image:: seedfinder_search_new.png
    :width: 800px
    :align: center
    :height: 600px
