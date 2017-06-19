@@ -1,5 +1,5 @@
-Filtering
----------
+Explore Data (Filters)
+----------------------
 
 .. image:: filters.png
    :width: 800px
@@ -14,6 +14,11 @@ Queries
 
 This lists all the web search queries, uploaded URLs and seedfinder queries made to date in the domain. You can select one or more of these queries to get pages for those specific queries.
 
+SeedFinder Queries
+~~~~~~~~~~~~~~~~~~
+
+This lists all the seedfinder queries made to date in the domain. You can select one or more of these queries to get pages for those specific queries.
+
 Crawled Data
 ~~~~~~~~~~~~
 
@@ -23,6 +28,11 @@ Tags
 ~~~~
 
 This lists the annotations made to data. Currently the annotations can be either **Relevant**, **Irrelevant** or **Neutral**.
+
+Annotated Terms
+~~~~~~~~~~~~~~~
+
+This lists all the terms that are either added, uploaded in the Terms Tab. It also lists the terms from the extracted terms in the Terms Tab that are annotated.
 
 Domains
 ~~~~~~~
