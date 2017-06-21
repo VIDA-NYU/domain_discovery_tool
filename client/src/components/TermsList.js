@@ -24,6 +24,7 @@ import IconButton from 'material-ui/IconButton';
 import SvgIcon from 'material-ui/SvgIcon';
 import AvStop from 'material-ui/svg-icons/av/stop';
 import { Col, Row} from 'react-bootstrap';
+import ActionAutorenew from 'material-ui/svg-icons/action/autorenew';
 //import {select} from 'd3-selection';
 //import cloud from 'd3-cloud';
 //import ReactFauxDom from 'react-faux-dom';
@@ -40,6 +41,7 @@ class TermsList extends Component {
           focusContextStyle:"#E6E6E6",//color withput focus
           openCreateTerm: false,
           newNameTerm:"",
+          session:{},
         };
         this.focusTextField = this.focusTextField.bind(this);
         this.textInput = null;
@@ -50,7 +52,7 @@ class TermsList extends Component {
     }
 
     componentWillMount(){
-      this.setState({listTerms:this.props.listTerms});
+      this.setState({listTerms:this.props.listTerms, session:this.props.session});
     }
 
     componentWillReceiveProps(nextProps){
@@ -74,7 +76,10 @@ class TermsList extends Component {
     focusTextField() {
       setTimeout(() => this.textInput.focus(), 100);
     }
-
+    handleAutorenewTerm = () =>{
+        this.props.updateListTermParent([]);
+        this.props.loadTerms();
+  }
     //Checking whether there is already the word.
     addEntries(newTerms, entries){
       var updateListTerm = this.state.listTerms;
@@ -207,7 +212,7 @@ class TermsList extends Component {
       // State machine: Neutral -> Positive -> Negative -> Neutral.
       var updateListTerm = this.state.listTerms;
       var tags = term['tags'];
-      if(tags.indexOf('Custom') < 0){	
+      if(tags.indexOf('Custom') < 0){
 	  var wordId = term['word'].replace(/ /g, "_");
 	  wordId = '#'+wordId;
 	  var color = ($(wordId).css("fill")).toString();
@@ -223,7 +228,7 @@ class TermsList extends Component {
               this.setTermTag(arrayTerms, 'Negative', true, this.props.session);
               //Update object's name property.
               newTag = 'Negative';
-	      
+
               // Removes tag 'Positive' from tags array, adds 'Negative'.
               $(wordId).css('fill','red');
 	  }
@@ -243,7 +248,7 @@ class TermsList extends Component {
 	  }
           updateListTerm[objIndex].tags = newTag;
 
-	  this.setState({ListItem:updateListTerm});
+	  this.setState({listTerms:updateListTerm});
 	  this.props.updateListTermParent(updateListTerm);
       }
     }
@@ -283,7 +288,7 @@ class TermsList extends Component {
 	  barScale.domain([0, maxFreq]);
 	  let y =0;
 	  let terms_array = [];
-	  
+
 	  const DeleteIcon = (props) => (
 		  <SvgIcon {...props}>
 		  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
@@ -292,7 +297,7 @@ class TermsList extends Component {
 	  terms_array.push(<g transform={`translate(0, 0)`}><g>
 			   <AvStop height="15" width="15" y="-2px" x="-10px"></AvStop>
 			   </g></g>);
-	  y=y+10; 
+	  y=y+10;
 	  let loopListTerms = this.state.listTerms.map(function(w) {
               // Aligns left bar to right.
               let widthPos = barScale(w['posFreq']);
@@ -317,13 +322,13 @@ class TermsList extends Component {
                            </g>;
 
               var colorWord = (tags.indexOf('Positive') != -1 || tags.indexOf('Relevant') != -1)?"blue": (tags.indexOf('Negative') != -1 || tags.indexOf('Irrelevant') != -1)?"red":"black";
-	      
+
               let words = <g transform={`translate(50, 10)`}
 	                  onClick={this.updateTermTag.bind(this, w)} onMouseOver={this.startSnippets.bind(this, currentTerm)}>
                           <text id={currentTerm.replace(/ /g, "_")} fontSize="12" fontFamily="sans-serif" textAnchor="start" style={{fill:colorWord}} >{currentTerm}</text>
                           </g>;
-	      
-	      
+
+
               // Adds right bars (aligned to left).
               let barNegative = <g transform={`translate(202, 0)`}>
                   <rect y={5} height={6} width={maxBarWidth}  fillOpacity="0.3" style={{fill:"#000000"}} />
@@ -350,7 +355,7 @@ class TermsList extends Component {
 		  <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addPosTerms.bind(this)}/>,
 		  <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegTerms.bind(this)}/>,
           ];
-	  
+
           return (
                   <div>
                   <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
@@ -359,8 +364,11 @@ class TermsList extends Component {
                   </svg>
                   </div>
                   <div style={{ textAlign:"right", margin:"-20px 0px -10px 0px",}}>
-                  <IconButton tooltip="Add term" onTouchTap={this.handleOpenAddTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}}>
+                  <IconButton tooltip="Add term" onTouchTap={this.handleOpenAddTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} >
                   <AddTermIcon color={fullWhite} />
+                  </IconButton>
+                  <IconButton tooltip="Reload terms" onTouchTap={this.handleAutorenewTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} style={{marginLeft: "-20px"}}>
+                  <ActionAutorenew color={fullWhite} />
                   </IconButton>
                   <Dialog title="Adding a term" actions={actionsAddTerm} modal={false} open={this.state.openCreateTerm} onRequestClose={this.handleCloseAddTerm.bind(this)}>
                   <Row>
@@ -383,13 +391,13 @@ class TermsList extends Component {
                        <TermsSnippetViewer term= {this.state.term} session={this.props.session} focusContext={this.state.focusContext} focusTermContext={this.state.focusTermContext}/>
                      </div>
                   </div>
-		  
+
           );
       }
 	else {
             return(<div/>);
 	}
-	
+
     }
 }
 

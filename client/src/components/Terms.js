@@ -72,14 +72,14 @@ class Terms extends Component{
            this.setState({expanded: nextProps.statedCard});
       });
     }
-      
+
       if(JSON.stringify(nextProps.session) !== this.state.sessionString && nextProps.statedCard){
 	  this.setState({
               session:nextProps.session,
               sessionString:JSON.stringify(this.props.session),
               listTerms: [],
 	  });
-	  this.loadTerms(this.props.session);
+	  this.loadTerms();
       }
       else{
 	  return;
@@ -100,7 +100,8 @@ class Terms extends Component{
   };
 
 
-  loadTerms(session){
+  loadTerms(){
+    var session = this.props.session;
     $.post(
       '/extractTerms',
       {'numberOfTerms': 40, 'session': JSON.stringify(session)},
@@ -136,7 +137,7 @@ class Terms extends Component{
         return <p>{w["word"]}</p>;
       });
     }
-    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)}></TermsList>:<CircularProgressSimple />;
+    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)} loadTerms={this.loadTerms.bind(this)}></TermsList>:<CircularProgressSimple />;
     return(
 
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
