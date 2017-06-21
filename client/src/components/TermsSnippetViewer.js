@@ -46,7 +46,6 @@ class TermsSnippetViewer extends Component {
         '/getTermSnippets',
         {'term': term, 'session': JSON.stringify(session)},
           function(data) {
-            console.log("TermsSippets-------------");
               this.onLoadedTermsSnippets(data);
         }.bind(this)).fail(function() {
               console.log("Something wrong happen. Try again.");
