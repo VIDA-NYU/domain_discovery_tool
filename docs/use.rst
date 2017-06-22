@@ -6,6 +6,7 @@ Now you should be able to head to http://<hostname>:8084/ to interact with the t
 .. include:: add_domain.rst
 .. include:: load_data.rst
 .. include:: filter.rst
+.. include:: terms_summary.rst	     
 .. include:: create_model.rst
 .. include:: run_crawler.rst	     	     	     
 
