@@ -363,12 +363,12 @@ class TermsList extends Component {
                   {terms_array}
                   </svg>
                   </div>
-                  <div style={{ textAlign:"right", margin:"-20px 0px -10px 0px",}}>
+                  <div style={{ textAlign:"right", margin:"-20px 0px -10px 0px"}}>
                   <IconButton tooltip="Add term" onTouchTap={this.handleOpenAddTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} >
-                  <AddTermIcon color={fullWhite} />
+                  <AddTermIcon color={"#9575CD"} />
                   </IconButton>
                   <IconButton tooltip="Reload terms" onTouchTap={this.handleAutorenewTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} style={{marginLeft: "-20px"}}>
-                  <ActionAutorenew color={fullWhite} />
+                  <ActionAutorenew color={"#9575CD"} />
                   </IconButton>
                   <Dialog title="Adding a term" actions={actionsAddTerm} modal={false} open={this.state.openCreateTerm} onRequestClose={this.handleCloseAddTerm.bind(this)}>
                   <Row>
