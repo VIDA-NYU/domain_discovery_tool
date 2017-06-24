@@ -38,11 +38,13 @@ class SearchTabs extends React.Component {
       dataSource: [],
       "search_engine":"GOOG",
       "valueQuery":"",
-      "valueLoadUrls":"",
+	"valueLoadUrls":"",
 	flat:true,
 	openLoadURLs: false,
+
     };
       uploadTag: "Neutral";
+      fromFile: false;
   }
 
     //Handling changes in SearchTabs
@@ -123,36 +125,34 @@ class SearchTabs extends React.Component {
         this.props.updateStatusMessage(true, "Uploading URLs");
       }
 
-    // Download the pages of uploaded urls from textfield
-    runLoadUrlsQuery(){
-      this.runLoadUrls(this.state.valueLoadUrls);
-    }
-    // Download the pages of uploaded urls from file
-    runLoadUrlsFileQuery(txt) {
-        this.allTextLines = txt.split(/\r\n|\n/);
-    }
-
     addPosURLs(){
 	this.handleCloseLoadURLs();
 	this.uploadTag = "Relevant";
-	var urlsString = this.allTextLines.join(" ");
-        this.runLoadUrls(urlsString);
+        this.runLoadUrls(this.state.valueLoadUrls);
     }
-
+    
     addNegURLs(){
 	this.handleCloseLoadURLs();
 	this.uploadTag = "Irrelevant";
-	var urlsString = this.allTextLines.join(" ");
-        this.runLoadUrls(urlsString);
+	this.runLoadUrls(this.state.valueLoadUrls);	
     }
 
     addNeutralURLs(){
 	this.handleCloseLoadURLs();
 	this.uploadTag = "Neutral";
-	var urlsString = this.allTextLines.join(" ");
-        this.runLoadUrls(urlsString);
+	this.runLoadUrls(this.state.valueLoadUrls);	
     }
 
+    loadFromFile = () => {
+	this.fromFile = true;
+	this.handleOpenLoadURLs();
+    }
+
+    loadFromTextInput = () => {
+	this.fromFile = false;
+	this.handleOpenLoadURLs();
+    }
+    
     // Handling search engine DropdownButton.
     handleDropdownButton(eventKey){
       this.setState({"search_engine":eventKey})
@@ -162,9 +162,15 @@ class SearchTabs extends React.Component {
       this.setState({ "valueQuery": e.target.value });
     }
 
-    //Hadling value into loadUrls textfield
+    //Handling value into loadUrls textfield
     handleTextChangeLoadUrls(e){
-      this.setState({ "valueLoadUrls": e.target.value});
+	this.setState({ "valueLoadUrls": e.target.value});
+    }
+
+    // Download the pages of uploaded urls from file
+    runLoadUrlsFileQuery(txt) {
+        var allTextLines = txt.split(/\r\n|\n/);
+	this.setState({ "valueLoadUrls": allTextLines.join(" ")});
     }
 
     //Reading file's content.
@@ -182,7 +188,7 @@ class SearchTabs extends React.Component {
       this.setState({openLoadURLs: true});
     };
     handleCloseLoadURLs = () => {
-      this.setState({openLoadURLs: false,});
+	this.setState({openLoadURLs: false,});
     };
 
     // Explicitly focus the text input using the raw DOM API
@@ -197,17 +203,26 @@ class SearchTabs extends React.Component {
 		<FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegURLs.bind(this)}/>,
 		<FlatButton label="Neutral" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addNeutralURLs.bind(this)}/>,
 	];
-
-      return (
-        <div>
-          <Tabs
+	let show_choose_file = (this.fromFile || this.fromFile === undefined)? <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}>"Upload URLs from file"</p> <br />
+	                                         <FlatButton style={{marginLeft:'15px'}}
+	                                         label="Choose URLs File"
+	                                         labelPosition="before"
+	                                         containerElement="label"> 
+	                                         <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+	                                         </FlatButton>
+	                                         </Row>
+                                    	         :<div/>;
+	
+	return (
+		<div>
+		<Tabs
             onChange={this.handleChange}
             value={this.state.slideIndex}
             inkBarStyle={{background: '#7940A0' ,height: '4px'}}
             tabItemContainerStyle={{background: '#9A7BB0' ,height: '30px'}}
-            >
-            <Tab label={'WEB'} value={0}  style={styles.tab} />
-            <Tab label={'LOAD'} value={1} style={styles.tab} />
+		>
+		<Tab label={'WEB'} value={0}  style={styles.tab} />
+		<Tab label={'LOAD'} value={1} style={styles.tab} />
             <Tab label={'SeedFinder'} value={2} style={styles.tab} />
           </Tabs>
           <SwipeableViews
@@ -243,7 +258,6 @@ class SearchTabs extends React.Component {
               <Row>
               <Col xs={10} md={10} style={{marginLeft:'0px'}}>
                 <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-                  value={this.state.valueLoadUrls}
                   onChange={this.handleTextChangeLoadUrls.bind(this)}
                   hintText="Write urls."
                   hintStyle={{ marginLeft:10}}
@@ -258,7 +272,7 @@ class SearchTabs extends React.Component {
                   backgroundColor="#26C6DA"
                   hoverColor="#80DEEA"
                   icon={<Search color={fullWhite} />}
-                  onTouchTap={this.runLoadUrlsQuery.bind(this)}
+                  onTouchTap={this.loadFromTextInput.bind(this)}
                  />
               </Col>
               </Row>
@@ -268,18 +282,11 @@ class SearchTabs extends React.Component {
                 <FlatButton style={{marginLeft:'15px'}}
                   label="Load urls from file"
                   labelPosition="before"
-                  containerElement="label" onTouchTap={this.handleOpenLoadURLs.bind(this)}/>
+                  containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
                 <br />
 
-	      <Dialog  title={"Upload URLs From File"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
-                <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}></p> <br />
-	          <FlatButton style={{marginLeft:'15px'}}
-	            label="Choose URLs File"
-                    labelPosition="before"
-                    containerElement="label"> 
-	            <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-	          </FlatButton>
-                </Row>
+	      <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
+	      {show_choose_file}               
                 <br />
                 </Dialog>
 	      
