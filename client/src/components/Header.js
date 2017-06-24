@@ -246,7 +246,7 @@ class Header extends Component {
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
-       function(message) {
+	 function(message) {
          this.props.updateFilterCrawlerData("stopCrawler");
            this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
          this.forceUpdate();
@@ -447,7 +447,7 @@ class Header extends Component {
                 {checkedTagsPosNeg}
              </Dialog>
              <Dialog title="Monitoring processes" actions={actionsShowInfo} modal={false} open={this.state.openInfo} onRequestClose={this.handleCloseInfo.bind(this)}>
-             <Monitoring processes={this.state.processes}/>
+             <Monitoring processes={this.state.processes} updateFilterCrawlerData={this.props.updateFilterCrawlerData.bind(this)} />
              </Dialog>
          </Toolbar>
        </AppBar>
