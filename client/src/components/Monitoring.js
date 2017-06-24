@@ -32,6 +32,8 @@ class Monitoring extends Component {
 	    '/stopProcess',
 	    {"process": process["process"], "process_info": JSON.stringify(process_info["process_row"])},
 	    function(message) {
+		if(message.includes("Crawler"))
+		    this.props.updateFilterCrawlerData("stopCrawler");
 		console.log(message);
 	    }.bind(this)
 	);
