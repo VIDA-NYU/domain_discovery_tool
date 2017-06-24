@@ -10,6 +10,7 @@ import FlatButton from 'material-ui/FlatButton';
 import {fullWhite} from 'material-ui/styles/colors';
 import Search from 'material-ui/svg-icons/action/search';
 import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 import $ from 'jquery';
 
 const styles = {
@@ -38,8 +39,10 @@ class SearchTabs extends React.Component {
       "search_engine":"GOOG",
       "valueQuery":"",
       "valueLoadUrls":"",
-      flat:true,
+	flat:true,
+	openLoadURLs: false,
     };
+      uploadTag: "Neutral";
   }
 
     //Handling changes in SearchTabs
@@ -104,14 +107,16 @@ class SearchTabs extends React.Component {
       var session =this.props.session;
       session['search_engine']=this.state.search_engine;
       session = this.resetAllFilters(session);
-      this.props.getQueryPages("uploaded");
+	this.props.getQueryPages("uploaded");
+	var tag = (this.uploadTag !== "Neutral")?this.uploadTag:"";
       $.post(
         '/uploadUrls',
-        {'urls': valueLoadUrls,  'session': JSON.stringify(session)},
-        function(data) {
-          this.props.queryPagesDone();
-          this.props.updateStatusMessage(false, "process*concluded" );
-        }.bind(this)).fail(function() {
+          {'urls': valueLoadUrls, 'tag':tag,  'session': JSON.stringify(session)},
+          function(data) {
+	      this.props.queryPagesDone();
+              this.props.updateStatusMessage(false, "process*concluded" );
+	      this.uploadTag = "Neutral";
+          }.bind(this)).fail(function() {
           console.log("Something is wrong. Try again.");
           this.props.updateStatusMessage(false, "uploaded");
         }.bind(this));
@@ -124,8 +129,27 @@ class SearchTabs extends React.Component {
     }
     // Download the pages of uploaded urls from file
     runLoadUrlsFileQuery(txt) {
-        var allTextLines = txt.split(/\r\n|\n/);
-        var urlsString = allTextLines.join(" ");
+        this.allTextLines = txt.split(/\r\n|\n/);
+    }
+
+    addPosURLs(){
+	this.handleCloseLoadURLs();
+	this.uploadTag = "Relevant";
+	var urlsString = this.allTextLines.join(" ");
+        this.runLoadUrls(urlsString);
+    }
+
+    addNegURLs(){
+	this.handleCloseLoadURLs();
+	this.uploadTag = "Irrelevant";
+	var urlsString = this.allTextLines.join(" ");
+        this.runLoadUrls(urlsString);
+    }
+
+    addNeutralURLs(){
+	this.handleCloseLoadURLs();
+	this.uploadTag = "Neutral";
+	var urlsString = this.allTextLines.join(" ");
         this.runLoadUrls(urlsString);
     }
 
@@ -140,7 +164,6 @@ class SearchTabs extends React.Component {
 
     //Hadling value into loadUrls textfield
     handleTextChangeLoadUrls(e){
-      //console.log("valueLoadUrls" + e.target.value);
       this.setState({ "valueLoadUrls": e.target.value});
     }
 
@@ -154,8 +177,27 @@ class SearchTabs extends React.Component {
       reader.readAsText(file);
     }
 
+    //Handling open/close create a new term Dialog
+    handleOpenLoadURLs = () => {
+      this.setState({openLoadURLs: true});
+    };
+    handleCloseLoadURLs = () => {
+      this.setState({openLoadURLs: false,});
+    };
 
+    // Explicitly focus the text input using the raw DOM API
+    focusTextField() {
+      setTimeout(() => this.textInput.focus(), 100);
+    }
+    
     render() {
+	const actionsLoadURLs = [
+		<FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseLoadURLs}/>,
+		<FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addPosURLs.bind(this)}/>,
+		<FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegURLs.bind(this)}/>,
+		<FlatButton label="Neutral" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addNeutralURLs.bind(this)}/>,
+	];
+
       return (
         <div>
           <Tabs
@@ -198,7 +240,7 @@ class SearchTabs extends React.Component {
               </Col>
             </div>
             <div style={styles.slide}>
-            <Row>
+              <Row>
               <Col xs={10} md={10} style={{marginLeft:'0px'}}>
                 <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
                   value={this.state.valueLoadUrls}
@@ -217,20 +259,31 @@ class SearchTabs extends React.Component {
                   hoverColor="#80DEEA"
                   icon={<Search color={fullWhite} />}
                   onTouchTap={this.runLoadUrlsQuery.bind(this)}
-                  />
+                 />
               </Col>
               </Row>
-              <Row>
-              <br />
-                     <FlatButton style={{marginLeft:'15px'}}
-                       label="Load urls from file"
-                       labelPosition="before"
-                       containerElement="label"
-                     >
-                     <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-                     </FlatButton>
-                     <br />
-              </Row>
+
+	      <Row>
+	        <br />
+                <FlatButton style={{marginLeft:'15px'}}
+                  label="Load urls from file"
+                  labelPosition="before"
+                  containerElement="label" onTouchTap={this.handleOpenLoadURLs.bind(this)}/>
+                <br />
+
+	      <Dialog  title={"Upload URLs From File"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
+                <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}></p> <br />
+	          <FlatButton style={{marginLeft:'15px'}}
+	            label="Choose URLs File"
+                    labelPosition="before"
+                    containerElement="label"> 
+	            <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+	          </FlatButton>
+                </Row>
+                <br />
+                </Dialog>
+	      
+	      </Row>
             </div>
             <div style={styles.slide}>
 
