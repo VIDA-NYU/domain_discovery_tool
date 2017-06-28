@@ -497,25 +497,26 @@ renderCustomTag(data){
 }
 
 
-onCustomTag(event){
-    var value = event.target.value;
-    var empty = "";
-    this.setState({custom_tag_val: value});
-    this.forceUpdate();
+    onCustomTag(event){
+	var value = event.target.value;
+	var empty = "";
+	this.setState({custom_tag_val: value});
+	this.forceUpdate();
+	
+    }
 
-}
-
-
-handleRequestDelete= ()=>{
-   this.chip_value="";
-   this.forceUpdate();
- }
- handleRequestDelete = (key) => {
-   const chipToDelete = this.state.chip_value.map((chip) => chip.key).indexOf(key);
-   this.state.chip_value.splice(chipToDelete, 1);
-   this.setState({chip_value: this.state.chip_value});
-   this.forceUpdate();
- }
+    handleRequestDelete= ()=>{
+	this.chip_value="";
+	this.forceUpdate();
+    }
+    handleRequestDelete = (key) => {
+	console.log("HANDLE REQUEST DELETE " + key);
+	this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, false);
+	const chipToDelete = this.state.chip_value.map((chip) => chip.key).indexOf(key);
+	this.state.chip_value.splice(chipToDelete, 1);
+	this.setState({chip_value: this.state.chip_value});
+	this.forceUpdate();
+    }
 
   render(){
     //console.log("SnippetsPAges------------");
