@@ -18,7 +18,6 @@ import IconButton from 'material-ui/IconButton';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import ChipInput from 'material-ui-chip-input'
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
 //const nearbyIcon = <NeutralFace />;
@@ -463,22 +462,23 @@ class ViewTabSnippets extends React.Component{
     return uniqueTag;
   }
   clicktext(urllink){
-  this.setState({custom_tag_val:""});
-  this.setState({chip_value:[]});
-  this.customTagPages=[];
-  this.customTagPages.push(urllink);
-  this.setState({click_custom_flag: true});
+      this.setState({custom_tag_val:""});
+      this.setState({chip_value:[]});
+      this.customTagPages=[];
+      this.customTagPages.push(urllink);
+      this.setState({click_custom_flag: true});
   }
 
 createChip(inputURL){
     console.log(inputURL);
     if(this.state.custom_tag_val !== ""){
-      console.log("in custom tag");
-    this.state.chip_value.push({key:inputURL,label: this.state.custom_tag_val});
-    //this.i = this.i+1;
-    this.forceUpdate();
-  }
-/*  else {
+	console.log("in custom tag");
+	this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
+	this.state.chip_value.push({key:inputURL,label: this.state.custom_tag_val});
+	//this.i = this.i+1;
+	this.forceUpdate();
+    }
+    /*  else {
     console.log("out chip")
     this.setState({chip_value:[]});
     this.forceUpdate();
@@ -528,16 +528,16 @@ handleRequestDelete= ()=>{
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
       var chip = (this.customTagPages.indexOf(k)===this.currentUrls.indexOf(k))?<p>{this.state.chip_value.map(this.renderCustomTag,this)}</p>:<p/>;
-        if(this.state.pages[k]["tags"]){
-             let uniqueTag="";
-             uniqueTag = this.getTag(k);
-             if(uniqueTag==='Relevant')relev_total++;
-             if(uniqueTag==='Irrelevant')irrelev_total++;
-             if(uniqueTag==='Neutral')neut_total++;
-        }
-        else{
-            neut_total++;
-        }
+      if(this.state.pages[k]["tags"]){
+          let uniqueTag="";
+          uniqueTag = this.getTag(k);
+          if(uniqueTag==='Relevant')relev_total++;
+          if(uniqueTag==='Irrelevant')irrelev_total++;
+          if(uniqueTag==='Neutral')neut_total++;
+      }
+      else{
+          neut_total++;
+      }
         let colorTagRelev = "";
         let colorTagIrrelev="";
         let colorTagNeutral="";
