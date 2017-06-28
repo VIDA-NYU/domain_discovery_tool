@@ -527,17 +527,17 @@ handleRequestDelete= ()=>{
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-      var chip = (this.customTagPages.indexOf(k)===this.currentUrls.indexOf(k))?<p>{this.state.chip_value.map(this.renderCustomTag,this)}</p>:<p/>;
-      if(this.state.pages[k]["tags"]){
-          let uniqueTag="";
-          uniqueTag = this.getTag(k);
-          if(uniqueTag==='Relevant')relev_total++;
-          if(uniqueTag==='Irrelevant')irrelev_total++;
-          if(uniqueTag==='Neutral')neut_total++;
-      }
-      else{
-          neut_total++;
-      }
+      var chip = (this.customTagPages.indexOf(k)>-1)?(this.customTagPages.indexOf(k)>this.currentUrls.indexOf(k))?<p>{this.state.chip_value.map(this.renderCustomTag,this)}</p>:<p/>:<p/> ;
+        if(this.state.pages[k]["tags"]){
+             let uniqueTag="";
+             uniqueTag = this.getTag(k);
+             if(uniqueTag==='Relevant')relev_total++;
+             if(uniqueTag==='Irrelevant')irrelev_total++;
+             if(uniqueTag==='Neutral')neut_total++;
+        }
+        else{
+            neut_total++;
+        }
         let colorTagRelev = "";
         let colorTagIrrelev="";
         let colorTagNeutral="";
