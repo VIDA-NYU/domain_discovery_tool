@@ -702,11 +702,13 @@ class LoadModel extends React.Component {
 
     getAvailableModelTags(){
 	this.callModelTags = true;
+	this.props.updateStatusMessage(true, "Applying model to unlabeled pages");
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
     	function(modelTagDomain) {
 	    this.callModelTags = false;
+	    this.props.updateStatusMessage(false, "Applying model completed");
     	    var selected_model_tags = [];
     	    if(this.props.session['selected_model_tags'] !== undefined && this.props.session['selected_model_tags'] !== "" ){
         		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
@@ -1046,7 +1048,7 @@ class FiltersTabs extends React.Component {
 	          <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)}  />
 	          <LoadAnnotatedTerms update={this.props.update} session={this.state.session} addATerm={this.addATerm.bind(this)}  />
 	          <LoadTLDs update={this.props.update} session={this.state.session} addTLD={this.addTLD.bind(this)}  />
-	          <LoadModel update={this.props.update} session={this.state.session} addModelTags={this.addModelTags.bind(this)} />
+	          <LoadModel updateStatusMessage={this.props.updateStatusMessage.bind(this)} update={this.props.update} session={this.state.session} addModelTags={this.addModelTags.bind(this)} />
         </div>
 	    </SwipeableViews>
     );

@@ -104,6 +104,11 @@ class Filters extends Component{
       this.setState({expanded: false});
     }
 
+    //Send information about a query that is running (from FiltersTabs.js to Body.js)
+    updateStatusMessage(value, term){
+	this.props.updateStatusMessage(value, term);
+    }
+
     updateSession(newSession){
       this.setState({
         session:newSession,
@@ -137,7 +142,7 @@ class Filters extends Component{
              showExpandableButton={true}
            />
            <CardMedia expandable={true} style={styles.cardMedia}>
-              <FiltersTabs updateCrawlerData={this.props.updateCrawlerData} queryFromSearch={this.queryFromSearch} update={this.props.update}  session={this.state.session} updateSession={this.updateSession.bind(this)} checkedQueries={this.state.checked_queries} deletedFilter={this.deletedFilter.bind(this)}/>
+              <FiltersTabs updateCrawlerData={this.props.updateCrawlerData} queryFromSearch={this.queryFromSearch} update={this.props.update}  session={this.state.session} updateStatusMessage={this.updateStatusMessage.bind(this)} updateSession={this.updateSession.bind(this)} checkedQueries={this.state.checked_queries} deletedFilter={this.deletedFilter.bind(this)}/>
            </CardMedia>
        </Card>
     )
