@@ -11,15 +11,14 @@ import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
 import NoFoundImg from '../images/images_not_available.png';
 import Searchicon from '../images/searchicon.png';
-
 import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
 import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
 import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
-
 import IconButton from 'material-ui/IconButton';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import TextField from 'material-ui/TextField';
+import ChipInput from 'material-ui-chip-input'
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
 //const nearbyIcon = <NeutralFace />;
@@ -244,10 +243,15 @@ class ViewTabSnippets extends React.Component{
       currentPagination:0,
       allRelevant:false,
       lengthTotalPages:0,
+      custom_tag_val:"",
+      chip_value:[],
+      chiptags:[],
+      click_custom_flag: false,
     };
     this.perPage=12; //default 12
     this.currentUrls=[];
     this.disableCrawlerButton=true;
+    this.customTagPages=[];
   }
 
   componentWillMount(){
@@ -458,16 +462,72 @@ class ViewTabSnippets extends React.Component{
     var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
     return uniqueTag;
   }
+  clicktext(urllink){
+  this.setState({custom_tag_val:""});
+  this.setState({chip_value:[]});
+  this.customTagPages=[];
+  this.customTagPages.push(urllink);
+  this.setState({click_custom_flag: true});
+  }
+
+createChip(inputURL){
+    console.log(inputURL);
+    if(this.state.custom_tag_val !== ""){
+      console.log("in custom tag");
+    this.state.chip_value.push({key:inputURL,label: this.state.custom_tag_val});
+    //this.i = this.i+1;
+    this.forceUpdate();
+  }
+/*  else {
+    console.log("out chip")
+    this.setState({chip_value:[]});
+    this.forceUpdate();
+  }*/
+  }
+
+
+renderCustomTag(data){
+    return ( <Chip style={{display: 'flex' , flexwrap: 'wrap'}}
+        key={data.key}
+        onRequestDelete={() => this.handleRequestDelete(data.key)}
+      >
+        {data.label}
+      </Chip>
+    );
+}
+
+
+onCustomTag(event){
+    var value = event.target.value;
+    var empty = "";
+    this.setState({custom_tag_val: value});
+    this.forceUpdate();
+
+}
+
+
+handleRequestDelete= ()=>{
+   this.chip_value="";
+   this.forceUpdate();
+ }
+ handleRequestDelete = (key) => {
+   const chipToDelete = this.state.chip_value.map((chip) => chip.key).indexOf(key);
+   this.state.chip_value.splice(chipToDelete, 1);
+   this.setState({chip_value: this.state.chip_value});
+   this.forceUpdate();
+ }
 
   render(){
     //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var id=0;
+    var c=0;
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
+      var chip = (this.customTagPages.indexOf(k)===this.currentUrls.indexOf(k))?<p>{this.state.chip_value.map(this.renderCustomTag,this)}</p>:<p/>;
         if(this.state.pages[k]["tags"]){
              let uniqueTag="";
              uniqueTag = this.getTag(k);
@@ -521,6 +581,10 @@ class ViewTabSnippets extends React.Component{
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
+            <p style={{float:'right'}}>
+            <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
+            </p>
+            {chip}
             <p>
               <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
