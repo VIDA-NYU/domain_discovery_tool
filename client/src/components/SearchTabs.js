@@ -75,14 +75,12 @@ class SearchTabs extends React.Component {
       '/queryWeb',
       {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
       function(data) {
-        //var num_pages = data["pages"];
         this.props.queryPagesDone();
-        this.props.updateStatusMessage(false, "process*concluded");
       }.bind(this)).fail(function() {
         console.log("Something is wrong. Try again.");
-        this.props.updateStatusMessage(false, this.state.valueQuery);
+        this.props.updateStatusMessage(false, 'Searching: Web query "' + this.state.valueQuery + '" has failed');
       }.bind(this));
-      this.props.updateStatusMessage(true, this.state.valueQuery);
+      this.props.updateStatusMessage(true, 'Searching: Web query "' + this.state.valueQuery + '"');
     }
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
@@ -95,13 +93,13 @@ class SearchTabs extends React.Component {
             function(data) {
 		setTimeout(function(){
 		    this.props.queryPagesDone();
-		    this.props.updateStatusMessage(false, "process*concluded");
+		    this.props.updateStatusMessage(false, 'Searching: SeedFinder query "' + this.state.valueQuery + '" has completed' );
 		}.bind(this), 9000);
             }.bind(this)).fail(function() {
 		console.log("Something is wrong. Try again.");
-		this.props.updateStatusMessage(false, "seedfinder:"+this.state.valueQuery);
+		this.props.updateStatusMessage(false, 'Searching: SeedFinder query "'+this.state.valueQuery+ '" has failed');
             }.bind(this));
-	this.props.updateStatusMessage(true, "seedfinder:"+this.state.valueQuery+". Check status in process monitor.");
+	this.props.updateStatusMessage(true, 'Searching: SeedFinder query "'+this.state.valueQuery+'". Check status in process monitor.');
     }
 
     // Download the pages of uploaded urls
@@ -116,11 +114,11 @@ class SearchTabs extends React.Component {
           {'urls': valueLoadUrls, 'tag':tag,  'session': JSON.stringify(session)},
           function(data) {
 	      this.props.queryPagesDone();
-              this.props.updateStatusMessage(false, "process*concluded" );
+              this.props.updateStatusMessage(false, 'Uploading URLs has completed' );
 	      this.uploadTag = "Neutral";
           }.bind(this)).fail(function() {
           console.log("Something is wrong. Try again.");
-          this.props.updateStatusMessage(false, "uploaded");
+          this.props.updateStatusMessage(false, "Uploading URLs failed");
         }.bind(this));
         this.props.updateStatusMessage(true, "Uploading URLs");
       }
@@ -281,7 +279,7 @@ class SearchTabs extends React.Component {
 	        <br />
                 <FlatButton style={{marginLeft:'15px'}}
                   label="Load urls from file"
-                  labelPosition="before"
+            labelPosition="before"
                   containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
                 <br />
 
