@@ -18,7 +18,6 @@ import IconButton from 'material-ui/IconButton';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import ChipInput from 'material-ui-chip-input'
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
 //const nearbyIcon = <NeutralFace />;
@@ -527,7 +526,7 @@ handleRequestDelete= ()=>{
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-      var chip = (this.customTagPages.indexOf(k)===this.currentUrls.indexOf(k))?<p>{this.state.chip_value.map(this.renderCustomTag,this)}</p>:<p/>;
+      var chip = (this.customTagPages.indexOf(k)>-1)?(this.customTagPages.indexOf(k)>this.currentUrls.indexOf(k))?<p>{this.state.chip_value.map(this.renderCustomTag,this)}</p>:<p/>:<p/> ;
         if(this.state.pages[k]["tags"]){
              let uniqueTag="";
              uniqueTag = this.getTag(k);
