@@ -234,16 +234,8 @@ class Body extends Component{
 
   // Update the status message
   updateStatusMessage(value, term){
-  	if(value){
-  	    this.setState({update:value, runCurrentQuery: term});
-  	    this.forceUpdate();
-  	}
-  	else{
-  	    this.setState({update:true, runCurrentQuery: term});
-  	    this.forceUpdate();
-  	    this.setState({update:value, runCurrentQuery: "*"});
-  	    this.forceUpdate();
-  	}
+      this.setState({update:value, runCurrentQuery: term});
+      this.forceUpdate();
   }
 
   // Start a timer and get the pages for the particular query as and when they become available on the server
@@ -302,7 +294,7 @@ class Body extends Component{
   		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
           </Row>
           <Row className="Menus-child">
-            <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
+            <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateStatusMessage={this.updateStatusMessage.bind(this)} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
           </Row>
           <Row className="Menus-child">
             <Terms statedCard={this.state.stateTermsCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody}/>
@@ -338,8 +330,8 @@ class Body extends Component{
         </Row>
         </div>
         <Snackbar
-        open={(this.state.runCurrentQuery === "*")? false: (this.state.runCurrentQuery === "process*concluded")?false:true}
-        message={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? "Searching: " + this.state.runCurrentQuery : (this.state.runCurrentQuery === "process*concluded")? "Search was completed.": ""}
+      open={this.state.update || this.state.intervalFuncId !== undefined}
+      message={this.state.runCurrentQuery}
         //autoHideDuration={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? 30000: (this.state.runCurrentQuery === "process*concluded")?2000: 0}
       />
       </Sidebar>
