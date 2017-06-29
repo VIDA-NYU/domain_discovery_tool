@@ -243,9 +243,6 @@ class ViewTabSnippets extends React.Component{
       allRelevant:false,
       lengthTotalPages:0,
       custom_tag_val:"",
-      chip_value:[],
-      chiptags:[],
-      click_custom_flag: false,
     };
     this.perPage=12; //default 12
     this.currentUrls=[];
@@ -341,13 +338,16 @@ class ViewTabSnippets extends React.Component{
 
   //Remove or Add tags from elasticSearch
   removeAddTagElasticSearch(urls, current_tag, applyTagFlag ){
+    console.log("el");
+    console.log(urls);
     $.post(
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
-      function(pages) {
+      function(message) {
         //updateing filters Tags
         this.props.reloadFilters();
         this.updateOnlineClassifier(this.props.session);
+        this.forceUpdate();
       }.bind(this)
     );
   }
@@ -463,33 +463,32 @@ class ViewTabSnippets extends React.Component{
   }
   clicktext(urllink){
       this.setState({custom_tag_val:""});
-      this.setState({chip_value:[]});
-      this.customTagPages=[];
       this.customTagPages.push(urllink);
-      this.setState({click_custom_flag: true});
   }
 
 createChip(inputURL){
-    console.log(inputURL);
     if(this.state.custom_tag_val !== ""){
-	console.log("in custom tag");
-	this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
-	this.state.chip_value.push({key:inputURL,label: this.state.custom_tag_val});
-	//this.i = this.i+1;
+	//this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
+  var currentPages = this.state.pages;
+  Object.keys(currentPages).filter(function(page){
+    return page === inputURL;
+  }).map((page)=>{
+      var k = page;
+      if(currentPages[k]["tags"] !== undefined)
+        currentPages[k]["tags"].push( this.state.custom_tag_val);
+      else currentPages[k]["tags"] = [this.state.custom_tag_val];
+  });
+  this.setState({pages:currentPages});
+  this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
 	this.forceUpdate();
     }
-    /*  else {
-    console.log("out chip")
-    this.setState({chip_value:[]});
-    this.forceUpdate();
-  }*/
   }
 
 
-renderCustomTag(data){
-    return ( <Chip style={{display: 'flex' , flexwrap: 'wrap'}}
+ renderCustomTag(data){
+    return ( <Chip style={{margin:4}}
         key={data.key}
-        onRequestDelete={() => this.handleRequestDelete(data.key)}
+        onRequestDelete={() => this.handleRequestDelete(data.url,data.label)}
       >
         {data.label}
       </Chip>
@@ -497,25 +496,22 @@ renderCustomTag(data){
 }
 
 
-    onCustomTag(event){
+ onCustomTag(event){
 	var value = event.target.value;
 	var empty = "";
 	this.setState({custom_tag_val: value});
 	this.forceUpdate();
-	
+
     }
 
-    handleRequestDelete= ()=>{
-	this.chip_value="";
-	this.forceUpdate();
-    }
-    handleRequestDelete = (key) => {
+ handleRequestDelete = (url,key) => {
 	console.log("HANDLE REQUEST DELETE " + key);
-	this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, false);
-	const chipToDelete = this.state.chip_value.map((chip) => chip.key).indexOf(key);
-	this.state.chip_value.splice(chipToDelete, 1);
-	this.setState({chip_value: this.state.chip_value});
-	this.forceUpdate();
+//  console.log(this.customTagPages);
+  var current = [];
+  current.push(url);
+	this.removeAddTagElasticSearch(current,key, false);
+  this.forceUpdate();
+  //this.removeTags(this.customTagPages, key);
     }
 
   render(){
@@ -528,13 +524,21 @@ renderCustomTag(data){
     this.currentUrls=[];
     var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
     var urlsList = Object.keys(this.state.pages).map((k, index)=>{
-      var chip = (this.customTagPages.indexOf(k)>-1)?(this.customTagPages.indexOf(k)>this.currentUrls.indexOf(k))?<p>{this.state.chip_value.map(this.renderCustomTag,this)}</p>:<p/>:<p/> ;
-        if(this.state.pages[k]["tags"]){
+      var chip = [];
+      if(this.state.pages[k]["tags"]){
              let uniqueTag="";
              uniqueTag = this.getTag(k);
              if(uniqueTag==='Relevant')relev_total++;
              if(uniqueTag==='Irrelevant')irrelev_total++;
              if(uniqueTag==='Neutral')neut_total++;
+             var data = this.state.pages[k]["tags"].filter(function(tag){
+               return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral" && tag !== undefined
+             }).map((tag, index)=>{
+                return {'key':index, 'label':tag, 'url':k}
+
+             });
+             chip =data.map(this.renderCustomTag.bind(this));
+
         }
         else{
             neut_total++;
@@ -582,16 +586,18 @@ renderCustomTag(data){
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
-            <p style={{float:'right'}}>
-            <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
-            </p>
-            {chip}
             <p>
               <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
               <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
               <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
             </p>
+            <p style={{float:'right', margin:4}}>
+            <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
+            </p>
+            <div style={{display: 'flex',flexWrap: 'wrap'}}>
+            {chip}
+            </div>
           </div>
           <br/>
           <Divider />
