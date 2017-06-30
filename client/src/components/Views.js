@@ -509,6 +509,9 @@ createChip(inputURL){
 //  console.log(this.customTagPages);
   var current = [];
   current.push(url);
+  var currentPages = this.state.pages;
+  this.state.pages[url]["tags"].pop(key);
+
 	this.removeAddTagElasticSearch(current,key, false);
   this.forceUpdate();
   //this.removeTags(this.customTagPages, key);
@@ -586,14 +589,14 @@ createChip(inputURL){
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
+            <p style={{float:'right', margin:4}}>
+            <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
+            </p>
             <p>
               <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
               <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
               <p style={{  fontSize:'13px', color:'#545454'}}>{this.state.pages[k]["snippet"]}</p>
-            </p>
-            <p style={{float:'right', margin:4}}>
-            <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
             </p>
             <div style={{display: 'flex',flexWrap: 'wrap'}}>
             {chip}
