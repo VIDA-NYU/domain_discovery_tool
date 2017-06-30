@@ -70,12 +70,13 @@ class SearchTabs extends React.Component {
     session['search_engine']=this.state.search_engine;
     session = this.resetAllFilters(session);
     this.props.getQueryPages(this.state.valueQuery);
-
+      
     $.post(
       '/queryWeb',
       {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
       function(data) {
-        this.props.queryPagesDone();
+          this.props.queryPagesDone();
+	  this.props.updateStatusMessage(false, 'Searching: Web query "' + this.state.valueQuery + '" is completed');
       }.bind(this)).fail(function() {
         console.log("Something is wrong. Try again.");
         this.props.updateStatusMessage(false, 'Searching: Web query "' + this.state.valueQuery + '" has failed');
