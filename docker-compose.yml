@@ -1,0 +1,30 @@
+version: '2'
+services:
+  ddt:
+    image: vidanyu/ddt:package
+    container_name: dd_tool
+    environment:
+      ELASTICSEARCH_SERVER: elasticsearch
+    ports:
+      - "8084:8084"
+      - "8080:8080"
+    links:
+      - elasticsearch
+    volumes:
+      - ./data/:/ddt/domain_discovery_tool_react/server/data # ddt data storage
+  elasticsearch:
+    image: elasticsearch:1.6
+    container_name: elastic
+    environment:
+      - xpack.security.enabled=false
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    volumes:
+      - ./data/:/usr/share/elasticsearch/data # elasticsearch data storage
+    ports:
+      - 9200:9200

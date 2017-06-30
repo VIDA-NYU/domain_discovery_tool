@@ -5,13 +5,13 @@ import logoNYU from '../images/nyu_logo_purple.png';
 import { } from 'material-ui/styles/colors';
 
 import IconButton from 'material-ui/IconButton';
-//import Body from './Body';
 import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import SwitchDomain from 'material-ui/svg-icons/maps/transfer-within-a-station';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 import Search from 'material-ui/svg-icons/action/search';
 import OpenInNewTab from 'material-ui/svg-icons/action/open-in-new';
+import InfoIcon from 'material-ui/svg-icons/action/info';
 import TextField from 'material-ui/TextField';
 
 import IconMenu from 'material-ui/IconMenu';
@@ -21,6 +21,15 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
+import Monitoring from './Monitoring.js';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
 import $ from 'jquery';
 
@@ -80,11 +89,12 @@ class Header extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       openCreateModel: false,
+      openInfo:false,
       currentTags:undefined,
       tagsPosCheckBox:["Relevant"],
       tagsNegCheckBox:["Irrelevant"],
       loadingModel:false,
-
+      processes:{},
       noModelAvailable:true, //the first time we dont have a model
     };
 
@@ -92,29 +102,26 @@ class Header extends Component {
   }
 
   componentWillMount(){
-    this.setState({currentDomain: this.props.currentDomain});
+      this.setState({currentDomain: this.props.currentDomain,});
+      this.setStatusInterval();
   };
 
   componentWillReceiveProps  = (nextProps) => {
     if(nextProps.deleteKeywordSignal){ this.setState({term:""});}
     if(nextProps.noModelAvailable !== this.state.noModelAvailable ){
         if(!nextProps.noModelAvailable){ //if there is a model
-            this.setStatusInterval();
+            this.setState({noModelAvailable:false, disabledStartCrawler:false,  disabledCreateModel:false,});
         }
         else this.setState({noModelAvailable:true, disableStopCrawlerSignal:true, disableAcheInterfaceSignal:true, disabledStartCrawler:true,  disabledCreateModel:true,});
-        }
+    }
     else {return;}
     }
 
     shouldComponentUpdate(nextProps, nextState) {
       if(nextProps.deleteKeywordSignal){ return true; }
       if(nextProps.noModelAvailable !== this.state.noModelAvailable){ return true; }
-      if(nextState.term !==this.state.term || nextState.openCreateModel ){ return true; }
+      if(nextState.term !==this.state.term || nextState.openCreateModel || nextState.openInfo){ return true; }
 
-      /*if (nextProps.currentDomain === this.state.currentDomain ) {
-        if(nextProps.disabledStartCrawler !== this.state.disabledStartCrawler) {return true;}
-        return false;
-      }*/
       return false;
     }
 
@@ -150,61 +157,65 @@ class Header extends Component {
    }
 
 
-   getStatus(){
-     //console.log("Get status");
-     var session = this.createSession(this.props.idDomain);
-     $.post(
-       '/getStatus',
-       {'session': JSON.stringify(session)},
-       function(result) {
-         var status = JSON.parse(JSON.stringify(result));
-         if(status !== undefined && Object.keys(status).length > 0) {
-           if(status.crawler !== undefined && status.crawler.length > 0){
-             var message = status.crawler[0].status;
-             if( message !== undefined){
-               var disableStopCrawlerFlag = true;
-               var disableAcheInterfaceFlag =true;
-               var disabledStartCrawlerFlag = false;
-               if(message === "Crawler is running"){
-                 disableStopCrawlerFlag = false;
-                 disableAcheInterfaceFlag =false;
-                 disabledStartCrawlerFlag = true;
-               }else if(message === "Crawler shutting down"){
-                 disabledStartCrawlerFlag = true;
-               }
-               if(this.props.currentDomain !== status.crawler[0].domain){
-                 disableStopCrawlerFlag = true;
-                 disableAcheInterfaceFlag =true;
-                 disabledStartCrawlerFlag = true;
-                 message = message +" in " +  status.crawler[0].domain;
-               }
-               this.setState({disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel:false, messageCrawler:message, noModelAvailable:false,});
-               this.forceUpdate();
-             }
-           }
-         }else {
-           if(this.intervalFuncId !== undefined){
-             window.clearInterval(this.intervalFuncId);
-             this.intervalFuncId = undefined;
-             this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:"", noModelAvailable:false,});
-             this.forceUpdate();
-           }
-           else {
-             this.setState({disabledStartCrawler:false, disabledCreateModel:false, noModelAvailable:false,});
-             this.forceUpdate();
-           }
-         }
-       }.bind(this)
-     );
-   }
-
+    getStatus(){
+	var session = this.createSession(this.props.idDomain);
+	$.post(
+	    '/getStatus',
+	    {'session': JSON.stringify(session)},
+	    function(result) {
+		var status = JSON.parse(JSON.stringify(result));
+		var disableStopCrawlerFlag = true;
+		var disableAcheInterfaceFlag =true;
+		var disabledStartCrawlerFlag = false;
+		var disabledCreateModelFlag = false;
+		if(this.state.noModelAvailable){
+		    disabledStartCrawlerFlag = true;
+		    disabledCreateModelFlag = true;
+		}
+		if(status !== undefined && Object.keys(status).length > 0) {
+		    // Background processes exist
+		    if(status.Crawler !== undefined && status.Crawler.length > 0){
+			// Crawler is executing
+			var message = status.Crawler[0].status;
+			if( message !== undefined){
+			    if(message.toLowerCase() === "running"){
+				disableStopCrawlerFlag = false;
+				disableAcheInterfaceFlag =false;
+				disabledStartCrawlerFlag = true;
+			    }else if(message.toLowerCase() === "terminating"){
+				disabledStartCrawlerFlag = true;
+			    }
+			    if(this.props.currentDomain !== status.Crawler[0].domain){
+				// Crawler is rumming in a different domain
+				disableStopCrawlerFlag = true;
+				disableAcheInterfaceFlag =true;
+				disabledStartCrawlerFlag = true;
+				message = message +" in domain: " +  status.Crawler[0].domain;
+			    }
+			    this.setState({processes: status, disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel: disabledCreateModelFlag, messageCrawler:message, });
+			    this.forceUpdate();
+			}
+		    } else {
+			// Not a crawler process. Could be seedfinder
+			this.setState({processes: status, disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: disabledStartCrawlerFlag, disabledCreateModel: disabledCreateModelFlag, messageCrawler:"", });
+			this.forceUpdate();
+		    }
+		}else {
+		    // No processes running
+		    this.setState({processes: status, disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: disabledStartCrawlerFlag, disabledCreateModel:disabledCreateModelFlag,  messageCrawler:"", });
+		    this.forceUpdate();
+		}
+	    }.bind(this)
+	);
+    }
+    
    setStatusInterval(){
        this.intervalFuncId = window.setInterval(function() {this.getStatus();}.bind(this), 1000);
    }
 
    startCrawler(){
      var session = this.createSession(this.props.idDomain);
-     var message = "Crawler is running";
+     var message = "Running";
      this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
      this.forceUpdate();
      $.post(
@@ -214,11 +225,12 @@ class Header extends Component {
            var disableStopCrawlerFlag = false;
            var disableAcheInterfaceFlag = false;
            var disabledStartCrawlerFlag = true;
-           if(message !== "Crawler is running"){
-             disableStopCrawlerFlag = true;
-             disableAcheInterfaceFlag =true;
-             disabledStartCrawlerFlag = true;
+           if(message.toLowerCase() !== "running"){
+	       disableStopCrawlerFlag = true;
+	       disableAcheInterfaceFlag =true;
+	       disabledStartCrawlerFlag = true;
            }
+	     
            this.props.updateFilterCrawlerData("updateCrawler");
            this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
            this.forceUpdate();
@@ -228,15 +240,15 @@ class Header extends Component {
 
    stopCrawler(flag){
      var session = this.createSession(this.props.idDomain);
-     var message = "Crawler shutting down";
+     var message = "Terminating";
      this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
      this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
-       function(message) {
+	 function(message) {
          this.props.updateFilterCrawlerData("stopCrawler");
-         this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
+           this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
          this.forceUpdate();
        }.bind(this)
      );
@@ -244,35 +256,29 @@ class Header extends Component {
 
    acheInterfaceCrawler(flag){
      var session = this.createSession(this.props.idDomain);
-     var message = "Crawler shutting down";
+     var message = "Terminating";
      this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
      this.forceUpdate();
      $.post(
        '/stopCrawler',
        {'session': JSON.stringify(session)},
        function(message) {
-         this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, disabledCreateModel:false, messageCrawler:""});
+         this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:""});
          this.forceUpdate();
-         // this.setState({messageCrawler:message, disabledStartCrawler:false,});
-         // this.forceUpdate();
-         // setTimeout(function(){
-         //   this.setState({messageCrawler:"",});
-         //   this.forceUpdate();
-         //}.bind(this), 700);
        }.bind(this)
      );
    }
 
    handleOnRequestChange = (event, value)=> {
-     var session = this.createSession(this.props.idDomain);
-     if(value === 2){
-       this.getAvailableTags(session);
-       this.setState({ openCreateModel: true });
-     }
-     else{
-       this.createModel();
-     }
-  }
+       var session = this.createSession(this.props.idDomain);
+       if(value === "2"){
+	   this.getAvailableTags(session);
+	   this.setState({ openCreateModel: true });
+       }
+       else if(value === "1"){
+	   this.createModel();
+       }
+   }
 
    handleOpenCreateModel = () => {
      this.setState({openCreateModel: true});
@@ -289,12 +295,22 @@ class Header extends Component {
      this.forceUpdate();
    };
 
+   handleOpenInfo = () => {
+      this.setState({openInfo: true});
+      this.forceUpdate();
+    };
+
+    handleCloseInfo = () => {
+      this.setState({openInfo: false});
+      this.forceUpdate();
+    };
+
+
    getAvailableTags(session){
      $.post(
         '/getAvailableTags',
         {'session': JSON.stringify(session), 'event': 'Tags'},
         function(tagsDomain) {
-          //tagString: JSON.stringify(this.props.session['selected_tags'])
           this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
           this.forceUpdate();
         }.bind(this)
@@ -351,6 +367,9 @@ class Header extends Component {
                                  <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />,
                                  <FlatButton label="Save"   primary={true} keyboardFocused={true} onTouchTap={this.handleCloseCreateModel} />,
                                 ];
+    const actionsShowInfo = [
+                                <FlatButton label="Ok" primary={true}   keyboardFocused={true} onTouchTap={this.handleCloseInfo} />,
+                               ];
 
      var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
                              <div>
@@ -377,18 +396,18 @@ class Header extends Component {
      var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      var crawlingProgress = (this.state.disableStopCrawlerSignal)?<div />: <CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />;
      var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
+     var infoCrawlerRunning = <IconButton tooltip="Process Monitor" onTouchTap={this.handleOpenInfo.bind(this)}
+                                  style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
+                              >
+                                <InfoIcon />
+                              </IconButton>;
      var crawlerStop = (this.state.disableStopCrawlerSignal)?<div/>:<RaisedButton  onClick={this.stopCrawler.bind(this, true)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                   label="Stop" labelPosition="before" containerElement="label"/>;
+                                                                                   label="Stop" labelPosition="before" containerElement="label"/>;
      var crawlerAcheInterface = (this.state.disableStopCrawlerSignal)?<div/>:<IconButton tooltip="Click to open ACHE Interface"
-      href="http://localhost:8080/"
-      target="_blank"
-      style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
-    >
-      <OpenInNewTab />
-    </IconButton>;
-     //var messageCrawler= <div style={{marginTop:15, fontFamily:"arial", fontSize:12 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>;
-
-
+                                  href="http://localhost:8080/" target="_blank" style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
+                                >
+                                  <OpenInNewTab />
+                                </IconButton>;
      return (
        <AppBar showMenuIconButton={true} style={styles.backgound} title={<span style={styles.titleText}> Domain Discovery Tool </span>}
         iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40'  />} >
@@ -403,7 +422,6 @@ class Header extends Component {
                            label="Start Crawler" labelPosition="before" containerElement="label" />
              {crawlerAcheInterface}
              {crawlerStop}
-
              {messageCrawlerRunning}
              {crawlingProgress}
 
@@ -413,7 +431,9 @@ class Header extends Component {
                  <MenuItem value="1" primaryText="Create Model" />
                  <MenuItem value="2" primaryText="Settings" />
              </IconMenu>
-             {loadingModel}
+	     {loadingModel}
+	     <ToolbarSeparator style={{ marginTop:"5px"}} />
+	     {infoCrawlerRunning}
              <ToolbarSeparator style={{ marginTop:"5px"}} />
              <TextField
              style={{width:'25%',marginRight:'-80px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
@@ -423,9 +443,11 @@ class Header extends Component {
              <IconButton style={{marginRight:'-25px'}} onClick={this.filterKeyword.bind(this, this.state.term)}>
                 <Search />
              </IconButton>
-
              <Dialog title=" Model Settings" actions={actionsCreateModel} modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
                 {checkedTagsPosNeg}
+             </Dialog>
+             <Dialog title="Monitoring processes" actions={actionsShowInfo} modal={false} open={this.state.openInfo} onRequestClose={this.handleCloseInfo.bind(this)}>
+             <Monitoring processes={this.state.processes} updateFilterCrawlerData={this.props.updateFilterCrawlerData.bind(this)} />
              </Dialog>
          </Toolbar>
        </AppBar>

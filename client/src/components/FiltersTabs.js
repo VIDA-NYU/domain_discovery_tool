@@ -3,6 +3,8 @@ import React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 //import {deepPurpleA400, orange300, blue400, indigoA400, blue900} from 'material-ui/styles/colors';
 import CheckboxTree from 'react-checkbox-tree';
+import IconButton from 'material-ui/IconButton';
+import ActionAutorenew from 'material-ui/svg-icons/action/autorenew';
 import $ from 'jquery';
 
 import CircularProgress from 'material-ui/CircularProgress';
@@ -45,7 +47,12 @@ class LoadQueries extends React.Component {
           value: 'query',
           label: 'Queries',
           children: [],
-        }]
+      }],
+      sfqueryNodes:[{
+          value: 'seedfinder',
+          label: 'SeedFinder Queries',
+          children: [],
+      }]
     };
   }
 
@@ -92,37 +99,116 @@ class LoadQueries extends React.Component {
     return true;
   }
 
-  addQuery(object){
-    var checked = object["checked"];
-    this.setState({checked: checked });
-    this.props.addQuery(checked);
-  }
+    addQuery(name, object){
+	var prev_selected_queries = [];
+
+	if(this.state.session['selected_queries'] !== "")
+	    prev_selected_queries = this.state.session['selected_queries'].split(",");
+
+	var checked = [];
+	if(name === "seedfinder"){
+	    checked = object['checked'].map((query, index)=>{
+		return "seedfinder:"+query;
+	    });
+	    if(prev_selected_queries.length > 0){
+		//Removed previously selected seedfinder queries
+		var new_prev_selected = [];
+		for(var i = 0;i < prev_selected_queries.length;++i){
+		    if(!prev_selected_queries[i].includes("seedfinder"))
+			new_prev_selected.push(prev_selected_queries[i]);
+		}
+		checked = (new_prev_selected.length > 0)?new_prev_selected.concat(checked):checked;
+	    }
+	    
+	}else{
+	    checked = object["checked"];
+	    if(prev_selected_queries.length > 0){
+		//Removed previously selected queries
+		var new_prev_selected = [];
+		for(var i = 0;i < prev_selected_queries.length;++i){
+		    if(prev_selected_queries[i].includes("seedfinder"))
+			new_prev_selected.push(prev_selected_queries[i]);
+		}
+		checked = (new_prev_selected.length > 0)?new_prev_selected.concat(checked):checked;
+	    }
+
+	}
+	this.setState({checked: checked });
+	this.props.addQuery(checked);
+    }
 
   render(){
-    if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
-      var nodes = this.state.queryNodes;
-      var nodesTemp = [];
-      nodes.map((node,index)=>{
-        if(node.value === "query"){
-          node.children = [];
-          Object.keys(this.state.currentQueries).map((query, index)=>{
-            var labelQuery=  query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
-            node.children.push({value:query, label:labelQuery});
-          });
-        }
-        nodesTemp.push(node);
-      });
+      if(this.state.currentQueries!==undefined && Object.keys(this.state.currentQueries).length > 0){
+	  var nodes = this.state.queryNodes;
+	  var nodesTemp = [];
+	  nodes.map((node,index)=>{
+              if(node.value === "query"){
+		  node.children = [];
+		  Object.keys(this.state.currentQueries).map((query, index)=>{
+		      if(!query.includes("seedfinder")){
+			  var labelQuery=  query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
+			  node.children.push({value:query, label:labelQuery});
+		      }
+		  });
+              }
+              nodesTemp.push(node);
+	  });
 
+	  var checked_queries = [];
+	  for(var i = 0;i < this.state.checked.length;++i){
+	      var query = this.state.checked[i];
+	      if(!query.includes("seedfinder"))
+		  checked_queries.push(query);
+	  }
+
+	  var checked_sf_queries = [];
+	  for(var i = 0;i < this.state.checked.length;++i){
+	      var query = this.state.checked[i];
+	      if(query.includes("seedfinder"))
+		  checked_sf_queries.push(query.replace("seedfinder:",""));
+	  }
+
+	  var nodes = this.state.sfqueryNodes;
+	  var nodesSFTemp = [];
+	  var seedfinder_queries_found = false;
+	  nodes.map((node,index)=>{
+              if(node.value === "seedfinder"){
+		  node.children = [];
+		  Object.keys(this.state.currentQueries).map((query, index)=>{
+		      if(query.includes("seedfinder")){
+			  var trunc_query = query.replace("seedfinder:", "");
+			  var labelQuery=  trunc_query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
+			  node.children.push({value:trunc_query, label:labelQuery});
+			  seedfinder_queries_found = true;
+		      }
+		  });
+              }
+              nodesSFTemp.push(node);
+	  });
+	  var seedfinder_checkbox_tree = <div />;
+	  if(seedfinder_queries_found){
+	      seedfinder_checkbox_tree = <CheckboxTree
+					  name={"seedfinder"}
+					  nodes={nodesSFTemp}
+					  checked={checked_sf_queries}
+					  expanded={this.state.expanded}
+					  onCheck={checked => this.addQuery("seedfinder", {checked})}
+					  onExpand={expanded => this.setState({ expanded })}
+					  showNodeIcon={false}
+					  />;
+	  }
       return(
-        <div >
-        <CheckboxTree
+              <div >
+              <CheckboxTree
+	  name={"query"}
           nodes={nodesTemp}
-          checked={this.state.checked}
+          checked={checked_queries}
           expanded={this.state.expanded}
-          onCheck={checked => this.addQuery({checked})}
+          onCheck={checked => this.addQuery("query", {checked})}
           onExpand={expanded => this.setState({ expanded })}
           showNodeIcon={false}
-        />
+              />
+	      {seedfinder_checkbox_tree}
         </div>
       );
     }
@@ -168,31 +254,33 @@ class LoadCrawledData extends React.Component {
     this.getAvailableCrawledData();
   }
 
-  setStatusInterval(){
-      this.intervalFuncId = window.setInterval(function() {this.getAvailableCrawledData();}.bind(this), 1000);
-  }
+    setStatusInterval(){
+	this.intervalFuncId = window.setInterval(function() {this.getAvailableCrawledData();}.bind(this), 1000);
+    }
   //Kill window.setInterval() for the current intervalFuncId. It happen when the Filter tab is closed
   //Stop to ask if there are new downloaded pages.
-  componentWillUnmount() {
+    componentWillUnmount() {
+	console.log("LOAD CRAWLER DATA CLEAR INTERVAL");
+	console.log(this.intervalFuncId);
     window.clearInterval(this.intervalFuncId);
   }
 
 
-  componentWillReceiveProps(nextProps){
-    var array_selected_crawled_tags =  (nextProps.session['selected_crawled_tags']!=="")?nextProps.session['selected_crawled_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
-    if(nextProps.updateCrawlerData==="updateCrawler" && this.intervalFuncId===undefined){
-      this.setStatusInterval();
-    }
-    if(nextProps.updateCrawlerData==="stopCrawler"){
-      window.clearInterval(this.intervalFuncId);
-      this.intervalFuncId = undefined;
-    }
-    if(JSON.stringify(array_selected_crawled_tags) === JSON.stringify(this.state.checked) ) {
-      if((this.props.update  && this.state.expanded.length > 0) ||  (this.state.expanded.length > 0 && nextProps.updateCrawlerData==="updateCrawler")){
-        this.getAvailableCrawledData();
-      }
-      return;
-    }
+    componentWillReceiveProps(nextProps){
+	var array_selected_crawled_tags =  (nextProps.session['selected_crawled_tags']!=="")?nextProps.session['selected_crawled_tags'].split(","):[]; //since this.state.checked is an array, we need that  nextProps.session['selected_tags'] be an array
+	if(nextProps.updateCrawlerData==="updateCrawler" && this.intervalFuncId===undefined){
+	    this.setStatusInterval();
+	}
+	if(nextProps.updateCrawlerData==="stopCrawler"){
+	    window.clearInterval(this.intervalFuncId);
+	    this.intervalFuncId = undefined;
+	}
+	if(JSON.stringify(array_selected_crawled_tags) === JSON.stringify(this.state.checked) ) {
+	    if((this.props.update  && this.state.expanded.length > 0) ||  (this.state.expanded.length > 0 && nextProps.updateCrawlerData==="updateCrawler")){
+		this.getAvailableCrawledData();
+	    }
+	    return;
+	}
     var selected_crawled_tags = [];
     if(nextProps.session['selected_crawled_tags'] !== undefined && nextProps.session['selected_crawled_tags'] !== "")
     selected_crawled_tags = this.props.session['selected_crawled_tags'].split(",");
@@ -314,22 +402,30 @@ class LoadTLDs extends React.Component {
     this.setState({checked: checked });
     this.props.addTLD(checked);
   }
-
-  render(){
-    if(this.state.currentTLDs!==undefined && Object.keys(this.state.currentTLDs).length > 0){
-      var nodes = this.state.tldNodes;
-      var nodesTemp = [];
-      nodes.map((node,index)=>{
-        if(node.value === "tld"){
-          node.children = [];
-          Object.keys(this.state.currentTLDs).map((tld, index)=>{
-            var labelTLD=  tld +" (" +this.state.currentTLDs[tld]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
-            node.children.push({value:tld, label:labelTLD});
-          });
-        }
-         nodesTemp.push(node);
-      });
-
+    
+    render(){
+	if(this.state.currentTLDs!==undefined && Object.keys(this.state.currentTLDs).length > 0){
+	    var nodes = this.state.tldNodes;
+	    var nodesTemp = [];
+	    nodes.map((node,index)=>{
+		if(node.value === "tld"){
+		    var items = Object.keys(this.state.currentTLDs).map((key)=>{
+			return [key, this.state.currentTLDs[key]];
+		    });
+		    items.sort(function(first, second) {
+			if(parseInt(first[1]) < parseInt(second[1]))
+			    return 1;
+			else return -1;
+		    });
+		    node.children = [];
+		    items.map((tld, index)=>{
+			var labelTLD=  tld[0] +" (" +tld[1]+")"; //query (ex. blue car) , index (ex. 0,1,2...)
+			node.children.push({value:tld[0], label:labelTLD});
+		    });
+		}
+		nodesTemp.push(node);
+	    });
+	    
       return(
         <div>
         <CheckboxTree
@@ -451,11 +547,11 @@ class LoadAnnotatedTerms extends React.Component {
           var negative = [];
           items.map((item, index)=>{
             var term = item[0];
-            var tag = item[1];
-            if(tag === "Positive")
-            positive.push({value:term, label:term});
-            else if(tag === "Negative")
-            negative.push({value:term, label:term});
+              var tag = item[1];
+            if(tag.includes("Positive"))
+		positive.push({value:term, label:term});
+            else if(tag.includes("Negative"))
+		negative.push({value:term, label:term});
           });
           if(positive.length > 0)
           node.children.push({value:"positive", label:"Positive", children:positive});
@@ -606,11 +702,13 @@ class LoadModel extends React.Component {
 
     getAvailableModelTags(){
 	this.callModelTags = true;
+	this.props.updateStatusMessage(true, "Applying model to unlabeled pages");
     $.post(
       '/getAvailableModelTags',
       {'session': JSON.stringify(this.props.session)},
     	function(modelTagDomain) {
 	    this.callModelTags = false;
+	    this.props.updateStatusMessage(false, "Applying model completed");
     	    var selected_model_tags = [];
     	    if(this.props.session['selected_model_tags'] !== undefined && this.props.session['selected_model_tags'] !== "" ){
         		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
@@ -623,16 +721,9 @@ class LoadModel extends React.Component {
     );
   }
 
-  componentWillMount(){
-    //this.getAvailableModelTags();
-  }
-
   componentWillReceiveProps(nextProps){
     var array_selected_model_tags =  (nextProps.session['selected_model_tags']!=="")?nextProps.session['selected_model_tags'].split(","):[];
     if(JSON.stringify(array_selected_model_tags) === JSON.stringify(this.state.checked) ) {
-      if(this.props.update && this.state.expanded.length > 0){
-        this.getAvailableModelTags();
-      }
       return;
     }
     var selected_model_tags = [];
@@ -651,9 +742,6 @@ class LoadModel extends React.Component {
       if(this.props.update){return true;}
       else {return false;}
     }
-    if(JSON.stringify(nextState.expanded) !== JSON.stringify(this.state.expanded) && nextState.expanded.length > 0) {
-      this.getAvailableModelTags();
-    }
     return true;
   }
 
@@ -663,8 +751,22 @@ class LoadModel extends React.Component {
     this.props.addModelTags(checked);
   }
 
+  handleAutorenewTerm = () =>{
+      this.getAvailableModelTags();
+      this.forceUpdate();
+  }
+
+
   render(){
-    var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>;
+      var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>;
+
+      var show_update_button = (this.state.expanded.length > 0)? <div style={{ textAlign:"right", margin:"-20px 20px -10px 0px"}}>
+	  <IconButton tooltip="Update Model Tags" onTouchTap={this.handleAutorenewTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} >
+	  <ActionAutorenew color="#9575CD" />
+	  </IconButton>
+	  </div>
+	  :<div/>;
+	  
     if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
       var nodes = this.state.modeltagNodes;
       var nodesTemp = [];
@@ -679,23 +781,25 @@ class LoadModel extends React.Component {
          nodesTemp.push(node);
       });
 
-      return(
-        <div >
-        <CheckboxTree
-        nodes={nodesTemp}
-        checked={this.state.checked}
-        expanded={this.state.expanded}
-        onCheck={checked => this.addModelTags({checked})}
-        onExpand={expanded => this.setState({ expanded })}
-        showNodeIcon={false}
-        />
-        {cursor_waiting}
-        </div>
-      );
+	return(
+		<div >
+		    <CheckboxTree
+                      nodes={nodesTemp}
+                      checked={this.state.checked}
+                      expanded={this.state.expanded}
+                      onCheck={checked => this.addModelTags({checked})}
+                      onExpand={expanded => this.setState({ expanded })}
+                      showNodeIcon={false}
+		    />
+		    {cursor_waiting}
+	            {show_update_button}
+                </div>
+
+	);
     }
-    return(
-      <CircularProgressSimple />
-    );
+      return(
+	      <CircularProgressSimple />
+      );
   }
 }
 
@@ -763,7 +867,7 @@ class FiltersTabs extends React.Component {
     }
 
     sessionTemp['selected_queries']=newQuery;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -796,7 +900,7 @@ class FiltersTabs extends React.Component {
     }
 
     sessionTemp['selected_tlds']=newTLDs;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
 
@@ -835,7 +939,7 @@ class FiltersTabs extends React.Component {
       } else sessionTemp['filter']=labelTerm;
     }
     sessionTemp['selected_aterms']=newTerms;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -865,7 +969,7 @@ class FiltersTabs extends React.Component {
       delete sessionTemp['pageRetrievalCriteria']['tag'];
     }
     sessionTemp['selected_tags']=newTags;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -896,7 +1000,7 @@ class FiltersTabs extends React.Component {
     }
 
     sessionTemp['selected_model_tags']=newTags;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === ""  && sessionTemp['selected_crawled_tags'] === "" && sessionTemp['selected_tlds'] === "" ){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -927,7 +1031,7 @@ class FiltersTabs extends React.Component {
     }
 
     sessionTemp['selected_crawled_tags']=newTags;
-    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_aterms'] === "" && sessionTemp['selected_crawled_tags'] === ""){
+    if(sessionTemp['selected_queries'] === "" && sessionTemp['selected_tags'] === "" && sessionTemp['selected_model_tags'] === "" && sessionTemp['selected_tlds'] === "" && sessionTemp['selected_crawled_tags'] === ""){
       sessionTemp['pageRetrievalCriteria'] = "Most Recent";
     }
     this.props.updateSession(sessionTemp);
@@ -944,7 +1048,7 @@ class FiltersTabs extends React.Component {
 	          <LoadTag update={this.props.update} session={this.state.session} addTags={this.addTags.bind(this)}  />
 	          <LoadAnnotatedTerms update={this.props.update} session={this.state.session} addATerm={this.addATerm.bind(this)}  />
 	          <LoadTLDs update={this.props.update} session={this.state.session} addTLD={this.addTLD.bind(this)}  />
-	          <LoadModel update={this.props.update} session={this.state.session} addModelTags={this.addModelTags.bind(this)} />
+	          <LoadModel updateStatusMessage={this.props.updateStatusMessage.bind(this)} update={this.props.update} session={this.state.session} addModelTags={this.addModelTags.bind(this)} />
         </div>
 	    </SwipeableViews>
     );

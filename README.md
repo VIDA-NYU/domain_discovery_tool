@@ -1,4 +1,6 @@
-# Domain Discovery Tool
+[![Documentation Status](https://readthedocs.org/projects/domain-discovery-tool/badge/?version=latest)](http://domain-discovery-tool.readthedocs.io/en/latest/?badge=latest)
+
+# Domain Discovery Tool (DDT)
 
 This repository contains the Domain Discovery Tool (DDT) project. DDT is an interactive system that helps users explore and better understand a domain (or topic) as it is represented on the Web. It achieves this by integrating human insights with machine computation (data mining and machine learning) through visualization. DDT allows a domain expert to visualize and analyze pages returned by a search engine or a crawler, and easily provide feedback about relevance. DDT addresses important challenges:
 
@@ -9,6 +11,19 @@ This repository contains the Domain Discovery Tool (DDT) project. DDT is an inte
 ## Installing DDT on your machine
 
 You can install the system from source or using Docker.
+
+## Docker Version
+
+You must have docker installed ((`Docker Installation for Mac <https://docs.docker.com/docker-for-mac/install/>`_ , `Docker Installation for Ubuntu <https://docs.docker.com/engine/installation/linux/ubuntu/>`_)
+
+To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
+
+```
+./run_docker_ddt
+```
+The above script will prompt to enter a directory where you would like to persist all the web pages for the domains you create. You can enter the path to a directory on the host you are running DDT or just press **Enter** to use the default directory which is $HOME/dd_data. The data is stored in the <a href="https://www.elastic.co/products/elasticsearch">elasticsearch</a> data format (You can later use this directory as the data directory to any elasticsearch).The script will start elasticsearch with the data directory provided.
+
+The script will then start DDT. You will see a message **"ENGINE Bus STARTED"** when DDT is running successfully. You can now use DDT.
 
 ### Local development
 
@@ -71,21 +86,13 @@ or (from the top-level `domain_discovery_tool_react` directory) execute:
 ./bin/ddt-dev
 ```
 
-## Docker Version
-
-You must have docker installed (ADD link)
-
-To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
-
-```
-./run_docker_ddt
-```
-
-This will start elasticsearch and the domain discovery tool.
-
 ## Use Domain Discovery Tool
 
 Now you should be able to head to http://localhost:8084/ to interact with the tool.
+
+## Documentation
+
+More documentation is available [HERE!](http://domain-discovery-tool.readthedocs.io/en/latest/)
 
 ## Publication
 
