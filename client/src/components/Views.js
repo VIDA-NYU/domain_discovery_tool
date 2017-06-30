@@ -246,6 +246,7 @@ class ViewTabSnippets extends React.Component{
     };
     this.perPage=12; //default 12
     this.currentUrls=[];
+    this.customTagValue="";
     this.disableCrawlerButton=true;
     this.customTagPages=[];
   }
@@ -458,9 +459,10 @@ class ViewTabSnippets extends React.Component{
 
     }
   getTag(k){
+    if((this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]) !== undefined)
     var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
     return uniqueTag;
-  }
+}
   clicktext(urllink){
       this.setState({custom_tag_val:""});
       this.customTagPages.push(urllink);
@@ -480,6 +482,7 @@ createChip(inputURL){
   });
   this.setState({pages:currentPages});
   this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
+  this.setState({custom_tag_val : ""});
 	this.forceUpdate();
     }
   }
@@ -510,8 +513,12 @@ createChip(inputURL){
   var current = [];
   current.push(url);
   var currentPages = this.state.pages;
-  this.state.pages[url]["tags"].pop(key);
-
+  console.log(url);
+  var currentPages = this.state.pages;
+  if(currentPages[url]["tags"] !== undefined){
+    currentPages[url]["tags"].pop(key);
+  }
+  this.setState({pages:currentPages});
 	this.removeAddTagElasticSearch(current,key, false);
   this.forceUpdate();
   //this.removeTags(this.customTagPages, key);
@@ -535,13 +542,11 @@ createChip(inputURL){
              if(uniqueTag==='Irrelevant')irrelev_total++;
              if(uniqueTag==='Neutral')neut_total++;
              var data = this.state.pages[k]["tags"].filter(function(tag){
-               return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral" && tag !== undefined
+               return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral"
              }).map((tag, index)=>{
                 return {'key':index, 'label':tag, 'url':k}
-
              });
              chip =data.map(this.renderCustomTag.bind(this));
-
         }
         else{
             neut_total++;
@@ -590,8 +595,8 @@ createChip(inputURL){
               </OverlayTrigger>
             </ButtonGroup></p>
             <p style={{float:'right', margin:4}}>
-            <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
-            </p>
+            <TextField style={{width:'100px'}} hintText="Add Tag" value={this.state.custom_tag_val} onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
+          </p>
             <p>
               <a target="_blank" href={k} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
