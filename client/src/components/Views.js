@@ -483,6 +483,7 @@ createChip(inputURL){
         currentPages[k]["tags"].push( this.state.custom_tag_val);
       else currentPages[k]["tags"] = [this.state.custom_tag_val];
   });
+
   this.setState({pages:currentPages});
   this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
   this.setState({custom_tag_val : ""});
@@ -515,8 +516,8 @@ createChip(inputURL){
 //  console.log(this.customTagPages);
   var current = [];
   current.push(url);
-  var currentPages = this.state.pages;
-  console.log(url);
+//  console.log(url);
+//  console.log(this.state.pages[url]["tags"]);
   var currentPages = this.state.pages;
   if(currentPages[url]["tags"] !== undefined){
     currentPages[url]["tags"].pop(key);
@@ -535,7 +536,6 @@ createChip(inputURL){
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
-
       var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
       var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
 	  return [k, this.state.pages[k]]
@@ -547,16 +547,21 @@ createChip(inputURL){
 
       var urlsList = sorted_urlsList.map((url_info, index)=>{
         var chip=[];
+        var value="";
+        if(this.customTagPages.indexOf(url_info[0])>-1){
+           value = this.state.custom_tag_val;
+        }
+
         if(url_info[1]["tags"]){
              let uniqueTag="";
              uniqueTag = this.getTag(url_info[0]);
              if(uniqueTag==='Relevant')relev_total++;
              if(uniqueTag==='Irrelevant')irrelev_total++;
              if(uniqueTag==='Neutral')neut_total++;
-             var data = this.state.pages[k]["tags"].filter(function(tag){
+             var data = url_info[1]["tags"].filter(function(tag){
                return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral"
              }).map((tag, index)=>{
-                return {'key':index, 'label':tag, 'url':k}
+                return {'key':index, 'label':tag, 'url':url_info[0]}
              });
              chip =data.map(this.renderCustomTag.bind(this));
         }
@@ -607,7 +612,7 @@ createChip(inputURL){
               </OverlayTrigger>
             </ButtonGroup></p>
             <p style={{float:'right', margin:4}}>
-            <TextField style={{width:'100px'}} hintText="Add Tag" value={this.state.custom_tag_val} onClick={this.clicktext.bind(this,k)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(k,this) : null}}></TextField>
+            <TextField style={{width:'100px'}} hintText="Add Tag" value={value} onClick={this.clicktext.bind(this,url_info[0])} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(url_info[0],this) : null}}></TextField>
           </p>
             <p>
               <a target="_blank" href={url_info[0]} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
