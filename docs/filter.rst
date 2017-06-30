@@ -42,13 +42,13 @@ This lists all the top level domains of all the pages in the domain. For example
 Model Tags
 ~~~~~~~~~~
 
-When you click to expand **Model Tags**, the domain model is applied to a random selection of 500 unlabeled pages. The predicted labels for these 500 pages could be:
+You can expand the **Model Tags** and click the **Upate Model Tags** button that appears below, to apply the domain model to a random selection of 500 unlabeled pages. The predicted labels for these 500 pages could be:
 
 * **Maybe Relevant:** These are pages that have been labeled relevant by the model with a high confidence
 * **Maybe Irrelevant:** These are pages that have been labeled irrelevant by the model with a high confidence
 * **Unsure:** These are pages that were marked relevant or irrelevant by the domain model but with low confidence. Experiments have shown that labeling these pages helps improve the domain model's ability to predict labels for similar pages with higher confidence.
 
-NOTE: This will take a few seconds to apply the model and show the results.
+**NOTE:** This will take a few seconds to apply the model and show the results.
 
 Search
 ~~~~~~
