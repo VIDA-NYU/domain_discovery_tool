@@ -1,9 +1,20 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
+import Checkbox from 'material-ui/Checkbox';
+
+import Scatterplot from './Scatterplot'
+import {csv} from 'd3-request'
+
+
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
+import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
+import FileFolder from 'material-ui/svg-icons/file/folder';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+import {blue500} from 'material-ui/styles/colors';
+import Toggle from 'material-ui/Toggle';
 import CircularProgress from 'material-ui/CircularProgress';
 import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
@@ -11,18 +22,41 @@ import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
 import NoFoundImg from '../images/images_not_available.png';
 import Searchicon from '../images/searchicon.png';
+<<<<<<< HEAD
 import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
 import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
 import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
+=======
+import FlatButton from 'material-ui/FlatButton';
+import AddBox from 'material-ui/svg-icons/content/add-box';
+import Settings from 'material-ui/svg-icons/action/settings';
+import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
+import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
+import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
+import {fullWhite} from 'material-ui/styles/colors';
+
+import FontIcon from 'material-ui/FontIcon';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+>>>>>>> origin/master
 import IconButton from 'material-ui/IconButton';
+import ActionHome from 'material-ui/svg-icons/action/home';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
+<<<<<<< HEAD
 import TextField from 'material-ui/TextField';
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
 //const nearbyIcon = <NeutralFace />;
 
 import { ButtonGroup, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+=======
+import Dialog from 'material-ui/Dialog';
+const recentsIcon = <RelevantFace />;
+const favoritesIcon = <IrrelevantFace />;
+const nearbyIcon = <NeutralFace />;
+import { ButtonGroup, Button, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap';
+>>>>>>> origin/master
 
 
 import $ from 'jquery';
@@ -117,7 +151,7 @@ class ChipViewTab extends React.Component{
 
 removeString(currentType, currentKey){
   var currentString = "";
-  //var anyFilter = false;
+  var anyFilter = false;
   this.state.chipData.map((chip) => {
     if(chip.type === currentType && chip.key !== currentKey)
     currentString = currentString + chip.label + ",";
@@ -242,13 +276,27 @@ class ViewTabSnippets extends React.Component{
       currentPagination:0,
       allRelevant:false,
       lengthTotalPages:0,
+<<<<<<< HEAD
       custom_tag_val:"",
+=======
+      flatKeyBoard:false,
+      openMultipleSelection: false,
+      click_flag: false,
+      change_color_urls:[],
+
+>>>>>>> origin/master
     };
+
     this.perPage=12; //default 12
     this.currentUrls=[];
     this.customTagValue="";
     this.disableCrawlerButton=true;
+<<<<<<< HEAD
     this.customTagPages=[];
+=======
+    this.multipleSelectionPages = [];
+    this.check_click_down=false;
+>>>>>>> origin/master
   }
 
   componentWillMount(){
@@ -257,6 +305,24 @@ class ViewTabSnippets extends React.Component{
     });
       console.log("MOUNT VIEW TAB SNIPPETS");
     this.updateOnlineClassifier(this.props.session);
+    this.keyboardListener();
+  }
+
+  keyboardListener(){
+    window.addEventListener('keydown', function(event) {
+      if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {
+        this.check_click_down=true;
+      }
+    }.bind(this), true);
+    window.addEventListener('keyup', function(event) {
+      if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
+        this.currentUrls = [];
+        this.handleOpenMultipleSelection();
+        this.forceUpdate();
+        this.currentUrls = this.multipleSelectionPages;
+        this.multipleSelectionPages=[];
+      }
+    }.bind(this), true);
   }
 
   componentWillReceiveProps(nextProps, nextState){
@@ -279,7 +345,7 @@ class ViewTabSnippets extends React.Component{
 
   removeString(currentTag){
     var currentString = "";
-    //var anyFilter = false;
+    var anyFilter = false;
     this.state.session['selected_tags'].split(",").forEach(function(tag) {
       if(tag !== currentTag && tag !== "")
       currentString = currentString + tag + ",";
@@ -396,72 +462,76 @@ class ViewTabSnippets extends React.Component{
     var arrayInputURL =this.currentUrls;
     var tag = inputTag;
     if(tag==="Relevant"  || tag==="Irrelevant"){
-      this.removeTags(arrayInputURL, tag);
+      var updatedPages = this.removeTags(arrayInputURL, tag);
       this.removeAddTagElasticSearch(arrayInputURL, tag, true ); //Applying the new tag
     }
     else{
-      this.removeTags(arrayInputURL, tag);
+      var updatedPages = this.removeTags(arrayInputURL, tag);
+    }
+  }
+  onTagSelectedPages(inputTag){
+    this.onTagAllPages(inputTag);
+    this.currentUrls = [];
+    this.handleCloseMultipleSelection();
+  }
+
+  //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
+  onTagActionClicked(inputURL, inputTag){
+    var idButton = (inputTag).split("-"); // (ev.target.id).split("-")
+    var tag = idButton[0];
+    var url = inputURL; // ev.target.value;
+    var action = 'Apply';
+    var isTagPresent = false;
+    var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
+    if(tag ==="Neutral"){
+      let arrayInputURL = [];
+      arrayInputURL.push(url);
+      this.removeTags(arrayInputURL,  tag);
+    }
+    else{
+      if(updatedPages[url]["tags"]){
+         isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+                                    return itemTag === tag;});
+         if(isTagPresent) action = 'Remove';
+      }
+      // Apply or remove tag from urls.
+      var applyTagFlag = action === 'Apply';
+      var urls = [];
+      urls.push(url);
+      if (applyTagFlag && !isTagPresent) {
+        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
+        var auxKey = "0";
+        if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant")){ // || tag==="Neutral")){
+            var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                        var itemTag = updatedPages[url]["tags"][key].toString();
+                        if(itemTag==="Relevant" || itemTag==="Irrelevant"){// || itemTag==="Neutral"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTagElasticSearch(urls, itemTag, false );
+                        }
+                      });
+            delete updatedPages[url]["tags"];
+        }
+        updatedPages[url]["tags"]=[];
+        updatedPages[url]["tags"][auxKey] = tag;
+        //checking if the new tag belong to the filter
+        if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+          this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
+          delete updatedPages[url];
+        }
+        //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
+        this.setState({ pages:updatedPages});
+        this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
+
+      }
+      else{
+        delete updatedPages[url]["tags"];
+        this.setState({ pages:updatedPages});
+        this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
+      }
     }
 
   }
 
-    //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
-    onTagActionClicked(inputURL, inputTag){
-      var idButton = (inputTag).split("-"); // (ev.target.id).split("-")
-      var tag = idButton[0];
-      var url = inputURL; // ev.target.value;
-      var action = 'Apply';
-      var isTagPresent = false;
-      var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-      console.log(updatedPages[url]["tags"]);
-      if(tag !=="Neutral"){
-        let arrayInputURL = [];
-        arrayInputURL.push(url);
-        this.removeTags(arrayInputURL,  tag);
-      }
-      else{
-        if(updatedPages[url]["tags"]){
-           isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
-                                      return itemTag === tag;});
-           if(isTagPresent) action = 'Remove';
-        }
-        // Apply or remove tag from urls.
-        var applyTagFlag = action === 'Apply';
-        var urls = [];
-        urls.push(url);
-        if (applyTagFlag && !isTagPresent) {
-          // Removes tag when the tag is present for item, and applies only when tag is not present for item.
-          var auxKey = "0";
-          if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant")){ // || tag==="Neutral")){
-              var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
-                          var itemTag = updatedPages[url]["tags"][key].toString();
-                          if(itemTag==="Relevant" || itemTag==="Irrelevant"){// || itemTag==="Neutral"){
-                            delete updatedPages[url]["tags"][key];
-                            this.removeAddTagElasticSearch(urls, itemTag, false );
-                          }
-                        });
-              delete updatedPages[url]["tags"];
-          }
-          updatedPages[url]["tags"]=[];
-          updatedPages[url]["tags"][auxKey] = tag;
-          //checking if the new tag belong to the filter
-          if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
-            this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
-            delete updatedPages[url];
-          }
-          //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
-          this.setState({ pages:updatedPages});
-          this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
-
-        }
-        else{
-          delete updatedPages[url]["tags"];
-          this.setState({ pages:updatedPages});
-          this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
-        }
-      }
-
-    }
   getTag(k){
     if((this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]) !== undefined)
     var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
@@ -531,9 +601,35 @@ createChip(inputURL){
   //this.removeTags(this.customTagPages, key);
     }
 
+  clickEvent(urlLink){
+    if(this.check_click_down){
+        var tempArray = this.state.change_color_urls;
+        tempArray.push(urlLink);
+        this.setState({click_flag: true, change_color_urls:tempArray});
+        this.multipleSelectionPages.push(urlLink);
+        this.forceUpdate();
+      }
+  }
+
+  handleClick(){
+    this.setState({
+
+    });
+  }
+  handleOpenMultipleSelection = () => {
+    this.setState({openMultipleSelection: true});
+  };
+
+  handleCloseMultipleSelection = () => {
+    this.setState({openMultipleSelection: false, change_color_urls:[], click_flag:false});
+    this.check_click_down=false;
+    this.forceUpdate();
+  };
+
   render(){
     //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
+    const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
     var id=0;
     var c=0;
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
@@ -592,10 +688,12 @@ createChip(inputURL){
 
         this.currentUrls.push(url_info[0]);
 
-        return <ListItem key={index}  >
+
+        return <ListItem key={index} onClick={this.clickEvent.bind(this, k)} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
-            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px'}}/></p>
+            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px',}}/>
+            </p>
             <p style={{float:'right'}}>
             <ButtonGroup bsSize="small">
               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
@@ -632,7 +730,13 @@ createChip(inputURL){
         </div>
       </ListItem>;
     });
-
+    const popUpButton = [
+      <p>
+        <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
+          <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
+          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
+      </p>
+    ];
 
     return (
       <div  style={{maxWidth:1000}}>
@@ -643,9 +747,9 @@ createChip(inputURL){
         </div>
         <div style={{marginBottom:"50px", marginTop:"-10px"}}>
           <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>
-            <RaisedButton label="Tag All" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-            <RaisedButton label="Tag All" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-            <RaisedButton label="Tag All" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+          <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+            <RaisedButton label="Tag All " labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+            <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
           </p>
         </div>
         <div style={{marginTop:"80px"}} >
@@ -669,11 +773,14 @@ createChip(inputURL){
                            activeClassName={"active"} />
           </div>
         </div>
+        <Dialog title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
+        {popUpButton}
+        </Dialog>
      </div>
   );
   }
-}
 
+}
 class CircularProgressSimple extends React.Component{
   render(){
     return(
@@ -739,7 +846,7 @@ class Views extends React.Component {
 
   //If there are any change in the session like a new filter, then getPages() is called.
   componentWillReceiveProps(nextProps, nextState){
-    this.queryFromSearch = (nextProps.queryFromSearch ===undefined)?false:true;
+    this.queryFromSearch = (nextProps.queryFromSearch === undefined)?false:true;
   	/*if (nextProps.pages !== this.state.pages) {
   	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
   	    this.forceUpdate();
@@ -761,11 +868,11 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    this.queryFromSearch = (nextProps.queryFromSearch ===undefined)?false:true;
+    this.queryFromSearch = (nextProps.queryFromSearch === undefined)?false:true;
     if ((JSON.stringify(nextProps.session) !== this.state.sessionString && this.newPages) || nextState.slideIndex !== this.state.slideIndex ||this.queryFromSearch ) { //'""' if there is some selected tag.   || JSON.stringify(this.props.session['selected_tags'])!='""'
           return true;
     }
-    if(!this.queryFromSearch && this.state.lengthTotalPages===0) return true;
+    if(!this.queryFromSearch && this.state.lengthTotalPages === 0) return true;
 
     return false;
   }
@@ -781,8 +888,8 @@ class Views extends React.Component {
 
   render() {
     var searchOtherEngine = "No Pages Found.";
-    if(this.state.session['newPageRetrievalCriteria'] === "one" &&  this.state.session['pageRetrievalCriteria'] === "Queries"){
-      searchOtherEngine = (this.state.session['search_engine']==='BING')?"Query failed. Try Google.":(this.state.session['search_engine'] === 'GOOG')?"Query failed. Try Bing.":"";
+    if(this.state.session['newPageRetrievalCriteria'] === "one" &&  this.state.session['pageRetrievalCriteria'] == "Queries"){
+      searchOtherEngine = (this.state.session['search_engine'] === 'BING')?"Query failed. Try Google.":(this.state.session['search_engine'] === 'GOOG')?"Query failed. Try Bing.":"";
     }
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
