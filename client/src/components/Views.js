@@ -22,41 +22,31 @@ import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
 import NoFoundImg from '../images/images_not_available.png';
 import Searchicon from '../images/searchicon.png';
-<<<<<<< HEAD
 import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
 import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
 import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
-=======
 import FlatButton from 'material-ui/FlatButton';
 import AddBox from 'material-ui/svg-icons/content/add-box';
 import Settings from 'material-ui/svg-icons/action/settings';
-import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
-import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
-import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
 import {fullWhite} from 'material-ui/styles/colors';
 
 import FontIcon from 'material-ui/FontIcon';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
->>>>>>> origin/master
 import IconButton from 'material-ui/IconButton';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
-<<<<<<< HEAD
 import TextField from 'material-ui/TextField';
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
 //const nearbyIcon = <NeutralFace />;
 
 import { ButtonGroup, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
-=======
 import Dialog from 'material-ui/Dialog';
 const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
-import { ButtonGroup, Button, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap';
->>>>>>> origin/master
 
 
 import $ from 'jquery';
@@ -276,27 +266,21 @@ class ViewTabSnippets extends React.Component{
       currentPagination:0,
       allRelevant:false,
       lengthTotalPages:0,
-<<<<<<< HEAD
       custom_tag_val:"",
-=======
       flatKeyBoard:false,
       openMultipleSelection: false,
       click_flag: false,
       change_color_urls:[],
 
->>>>>>> origin/master
     };
 
     this.perPage=12; //default 12
     this.currentUrls=[];
     this.customTagValue="";
     this.disableCrawlerButton=true;
-<<<<<<< HEAD
     this.customTagPages=[];
-=======
     this.multipleSelectionPages = [];
     this.check_click_down=false;
->>>>>>> origin/master
   }
 
   componentWillMount(){
@@ -689,7 +673,7 @@ createChip(inputURL){
         this.currentUrls.push(url_info[0]);
 
 
-        return <ListItem key={index} onClick={this.clickEvent.bind(this, k)} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
+        return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
             <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px',}}/>
