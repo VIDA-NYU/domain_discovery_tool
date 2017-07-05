@@ -553,6 +553,8 @@ class ViewTabSnippets extends React.Component{
       });
 
       var urlsList = sorted_urlsList.map((url_info, index)=>{
+        var bgColor = "";
+        bgColor = (this.state.change_color_urls.indexOf(url_info[0])> -1)?"silver":"white";
         if(url_info[1]["tags"]){
              let uniqueTag="";
              uniqueTag = this.getTag(url_info[0]);
@@ -585,7 +587,7 @@ class ViewTabSnippets extends React.Component{
         this.currentUrls.push(url_info[0]);
 
 
-        return <ListItem key={index} onClick={this.clickEvent.bind(this, k)} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
+        return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
             <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px',}}/>
@@ -784,15 +786,13 @@ class Views extends React.Component {
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
-<<<<<<< HEAD
       handlePageClick={this.handlePageClick.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
-=======
-    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+/*    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
-    : (this.state.lengthPages === 0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
->>>>>>> 03c73dfa955f21d229c639ada733baf3a8b2cfc9
+    : (this.state.lengthPages === 0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;*/
+
 
       return (
         <div>
