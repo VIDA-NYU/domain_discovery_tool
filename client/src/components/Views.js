@@ -432,7 +432,8 @@ class ViewTabSnippets extends React.Component{
       var action = 'Apply';
       var isTagPresent = false;
       var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-      if(tag ==="Neutral"){
+      console.log(updatedPages[url]["tags"]);
+      if(tag !=="Neutral"){
         let arrayInputURL = [];
         arrayInputURL.push(url);
         this.removeTags(arrayInputURL,  tag);
@@ -487,6 +488,7 @@ class ViewTabSnippets extends React.Component{
 }
 
 createChip(inputURL){
+
     if(this.state.custom_tag_val !== ""){
 	//this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
   var currentPages = this.state.pages;
@@ -548,7 +550,7 @@ createChip(inputURL){
       if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
         this.availableTags.splice(0, 1);
         return;
-      }      
+      }
 
       this.state.pages[inputURL]["tags"] = this.state.pages[inputURL]["tags"] || [];
       this.state.pages[inputURL]["tags"].push(val[0].value);
@@ -602,10 +604,10 @@ createChip(inputURL){
         let colorTagNeutral="";
         let uniqueTag="";
         if(url_info[1]["tags"]){
-           uniqueTag = this.getTag(url_info[0]);
-           colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
-           colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
-           colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
+           uniqueTag = this.getTag(url_info[0]).split(',');
+           colorTagRelev=(uniqueTag[0]==='Relevant' || uniqueTag[1]==='Relevant')?"#4682B4":"silver";
+           colorTagIrrelev=(uniqueTag[0]==='Irrelevant' || uniqueTag[1]==='Irrelevant')?"#CD5C5C":"silver";
+           colorTagNeutral=(uniqueTag[0]==='Neutral' || uniqueTag[1]==='Neutral')?'silver':"silver";
         }
         else{
            colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
