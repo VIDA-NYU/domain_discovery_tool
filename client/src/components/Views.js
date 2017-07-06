@@ -469,6 +469,7 @@ class ViewTabSnippets extends React.Component{
     }
     else{
       var updatedPages = this.removeTags(arrayInputURL, tag);
+      this.removeAddTagElasticSearch(arrayInputURL, tag, true );
     }
   }
   onTagSelectedPages(inputTag){
