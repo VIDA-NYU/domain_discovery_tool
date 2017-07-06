@@ -304,6 +304,7 @@ class ViewTabSnippets extends React.Component{
         this.handleOpenMultipleSelection();
         this.forceUpdate();
         this.currentUrls = this.multipleSelectionPages;
+        this.customTagPages = this.multipleSelectionPages;
         this.multipleSelectionPages=[];
       }
     }.bind(this), true);
@@ -522,13 +523,16 @@ class ViewTabSnippets extends React.Component{
     return uniqueTag;
 }
   clicktext(urllink){
+    console.log("in clicktext");
+    console.log(urllink);
       this.customTagPages = [];
       this.setState({custom_tag_val:""});
       this.customTagPages.push(urllink);
   }
 
 createChip(inputURL){
-
+    console.log("in createChip");
+    console.log(inputURL);
     if(this.state.custom_tag_val !== ""){
 	//this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
   var currentPages = this.state.pages;
@@ -561,7 +565,9 @@ createChip(inputURL){
 
 
  onCustomTag(event){
+   console.log("in customTag");
 	var value = event.target.value;
+  console.log(value);
 	var empty = "";
 	this.setState({custom_tag_val: value});
 	this.forceUpdate();
@@ -616,6 +622,7 @@ createChip(inputURL){
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
     var id=0;
     var c=0;
+    var value="";
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
@@ -631,7 +638,7 @@ createChip(inputURL){
       var urlsList = sorted_urlsList.map((url_info, index)=>{
 
         var chip=[];
-        var value="";
+
         if(this.customTagPages.indexOf(url_info[0])>-1){
            value = this.state.custom_tag_val;
         }
@@ -656,13 +663,28 @@ createChip(inputURL){
         }
         let colorTagRelev = "";
         let colorTagIrrelev="";
-        let colorTagNeutral="";
+        let colorTagNeutral="silver";
         let uniqueTag="";
+        var checkTagRelev=false;
+        var checkTagIrrelev=false;
+        var checkTagNeutral=false;
         if(url_info[1]["tags"]){
-           uniqueTag = this.getTag(url_info[0]).split(',');
-           colorTagRelev=(uniqueTag[0]==='Relevant' || uniqueTag[1]==='Relevant')?"#4682B4":"silver";
-           colorTagIrrelev=(uniqueTag[0]==='Irrelevant' || uniqueTag[1]==='Irrelevant')?"#CD5C5C":"silver";
-           colorTagNeutral=(uniqueTag[0]==='Neutral' || uniqueTag[1]==='Neutral')?'silver':"silver";
+           uniqueTag = url_info[1]["tags"];
+           console.log(uniqueTag);
+           for(var i=0;i<uniqueTag.length;i++){
+             if(uniqueTag[i] === 'Relevant' ){
+               checkTagRelev=true;
+             }
+             if(uniqueTag[i]==='Irrelevant'){
+               checkTagIrrelev=true;
+             }
+             if(uniqueTag[i]==='Neutral'){
+               checkTagNeutral=true;
+             }
+           }
+           colorTagRelev=(checkTagRelev)?"#4682B4":"silver";
+           colorTagIrrelev=(checkTagIrrelev)?"#CD5C5C":"silver";
+           colorTagNeutral=(checkTagNeutral )?'silver':"silver";
         }
         else{
            colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
@@ -722,6 +744,7 @@ createChip(inputURL){
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
+          <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,this.multipleSelectionPages)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(this.customTagPages,this) : null}}></TextField>
       </p>
     ];
 
