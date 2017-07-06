@@ -548,24 +548,7 @@ createChip(inputURL){
       if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
         this.availableTags.splice(0, 1);
         return;
-      }
-
-      // FIXME: Now, there is a dilemma, below commented code is from createChip method
-      //        this.state.pages here is a hash with URL as key, upon wondering,
-      //        there cannot be multiple keys with the same URL so there is no need
-      //        to use filter and them map?(forEach should be used)
-      //        Since I don't fully understand the context as of now, I am leaving
-      //        this FIXME and adding the two lines below that ideally should
-      //        serve the purpose. Well, that's quite a story ain't it.
-      // var currentPages = this.state.pages;
-      // Object.keys(currentPages).filter(function(page){
-      //   return page === inputURL;
-      // }).map((page)=>{
-      //     var k = page;
-      //     if(currentPages[k]["tags"] !== undefined)
-      //       currentPages[k]["tags"].push(val[0].value);
-      //     else currentPages[k]["tags"] = [val[0].value];
-      // });
+      }      
 
       this.state.pages[inputURL]["tags"] = this.state.pages[inputURL]["tags"] || [];
       this.state.pages[inputURL]["tags"].push(val[0].value);
