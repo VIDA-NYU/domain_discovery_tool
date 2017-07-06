@@ -549,6 +549,7 @@ class ViewTabSnippets extends React.Component{
       this.customTagPages.push(urllink);
   }
 
+
 createChip(inputURL){
     console.log("in createChip");
     console.log(inputURL);
@@ -610,7 +611,6 @@ createChip(inputURL){
   //this.removeTags(this.customTagPages, key);
     }
 
-
   clickEvent(urlLink){
     if(this.check_click_down){
         var tempArray = this.state.change_color_urls;
@@ -636,11 +636,6 @@ createChip(inputURL){
     this.forceUpdate();
   };
 
-  render(){
-    //console.log("SnippetsPAges------------");
-    //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
-    const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
-
   addCustomTag(inputURL, val) {
     if((val[0] || {}).value) {
       if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
@@ -658,7 +653,7 @@ createChip(inputURL){
   }
 
   render(){
-
+    const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
     var id=0;
     var c=0;
     var value="";
