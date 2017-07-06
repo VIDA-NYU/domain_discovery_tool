@@ -434,7 +434,7 @@ class ViewTabSnippets extends React.Component{
         var urls =[];
         urls.push(url);
         var auxKey = "0";
-        if(updatedPages[url]["tags"]){
+  /*      if(updatedPages[url]["tags"]){
             var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
                         var itemTag = updatedPages[url]["tags"][key].toString();
                         if(itemTag==="Relevant" || itemTag==="Irrelevant"){
@@ -442,12 +442,12 @@ class ViewTabSnippets extends React.Component{
                           this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
                         }
                       });
-            delete updatedPages[url]["tags"]; //Removing tag on the interface
-        }
-        if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
-          updatedPages[url]["tags"]=[];
-          updatedPages[url]["tags"][auxKey] = tag;
-        }
+          //  delete updatedPages[url]["tags"]; //Removing tag on the interface
+        }*/
+    //    if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
+          updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
+          updatedPages[url]["tags"].push(tag);
+    //    }
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           totalTagRemoved++;
           delete updatedPages[url];
@@ -513,7 +513,7 @@ class ViewTabSnippets extends React.Component{
 
     }
     else{
-      if(updatedPages[url]["tags"].indexOf(tag) !== -1)      
+      if(updatedPages[url]["tags"].indexOf(tag) !== -1)
         updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(tag), 1);
       this.setState({ pages:updatedPages});
       this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
@@ -581,6 +581,7 @@ class ViewTabSnippets extends React.Component{
 
   addCustomTag(inputURL, val) {
     this.state.value = val;
+    var check = false;
     if(((val || [])[0] || {}).value) {
       if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
         this.availableTags.splice(0, 1);
@@ -590,10 +591,12 @@ class ViewTabSnippets extends React.Component{
         for(var i=0;i<inputURL.length;i++){
           this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
           this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+
       }
 
         this.setState({pages:this.state.pages});
         this.removeAddTagElasticSearch([inputURL], val[0].value, true);
+        this.handleCloseMultipleSelection();
       	this.forceUpdate();
       }
     }
