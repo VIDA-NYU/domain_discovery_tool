@@ -485,57 +485,39 @@ class ViewTabSnippets extends React.Component{
     var action = 'Apply';
     var isTagPresent = false;
     var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-    if(tag ==="Neutral"){
-      let arrayInputURL = [];
-      arrayInputURL.push(url);
-      this.removeTags(arrayInputURL,  tag);
+
+    if(updatedPages[url]["tags"]){
+       isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+                                  return itemTag === tag;});
+       if(isTagPresent) action = 'Remove';
+    }
+    // Apply or remove tag from urls.
+    var applyTagFlag = action === 'Apply';
+    var urls = [];
+    urls.push(url);
+    if (applyTagFlag && !isTagPresent) {
+      // Removes tag when the tag is present for item, and applies only when tag is not present for item.
+      var auxKey = "0";
+
+      updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
+      updatedPages[url]["tags"].push(tag);
+      //checking if the new tag belong to the filter
+      if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+        this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
+        delete updatedPages[url];
+      }
+      //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
+      this.setState({ pages:updatedPages});
+      this.addCustomTag([inputURL],this.state)
+      this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
+
     }
     else{
-      if(updatedPages[url]["tags"]){
-         isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
-                                    return itemTag === tag;});
-         if(isTagPresent) action = 'Remove';
-      }
-      // Apply or remove tag from urls.
-      var applyTagFlag = action === 'Apply';
-      var urls = [];
-      urls.push(url);
-      if (applyTagFlag && !isTagPresent) {
-        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
-        var auxKey = "0";
-        if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant")){ // || tag==="Neutral")){
-            var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
-                        var itemTag = updatedPages[url]["tags"][key].toString();
-                        if(itemTag==="Relevant" || itemTag==="Irrelevant"){// || itemTag==="Neutral"){
-                          delete updatedPages[url]["tags"][key];
-                          this.removeAddTagElasticSearch(urls, itemTag, false );
-                        }
-                      });
-            delete updatedPages[url]["tags"];
-        }
-        var currenttags = this.state.pages[inputURL]["tags"];
-      //  console.log(currenttags);
-        updatedPages[url]["tags"]=[];
-        updatedPages[url]["tags"][auxKey] = tag;
-        updatedPages[url]["tags"].push(...currenttags);
-        //checking if the new tag belong to the filter
-        if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
-          this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
-          delete updatedPages[url];
-        }
-        //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
-        this.setState({ pages:updatedPages});
-        this.addCustomTag([inputURL],this.state)
-        this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
-
-      }
-      else{
-        delete updatedPages[url]["tags"];
-        this.setState({ pages:updatedPages});
-        this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
-      }
+      if(updatedPages[url]["tags"].indexOf(tag) !== -1)      
+        updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(tag), 1);
+      this.setState({ pages:updatedPages});
+      this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
     }
-
   }
 
   getTag(k){
@@ -598,7 +580,8 @@ class ViewTabSnippets extends React.Component{
   };
 
   addCustomTag(inputURL, val) {
-    if((val[0] || {}).value) {
+    this.state.value = val;
+    if(((val || [])[0] || {}).value) {
       if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
         this.availableTags.splice(0, 1);
         return;
@@ -608,12 +591,11 @@ class ViewTabSnippets extends React.Component{
           this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
           this.state.pages[inputURL[i]]["tags"].push(val[0].value);
       }
-  //    this.state.pages[inputURL]["tags"] = this.state.pages[inputURL]["tags"] || [];
-  //    this.state.pages[inputURL]["tags"].push(val[0].value);
-    }
-      this.setState({pages:this.state.pages});
-      this.removeAddTagElasticSearch([inputURL], val[0].value, true);
-    	this.forceUpdate();
+
+        this.setState({pages:this.state.pages});
+        this.removeAddTagElasticSearch([inputURL], val[0].value, true);
+      	this.forceUpdate();
+      }
     }
 
 
