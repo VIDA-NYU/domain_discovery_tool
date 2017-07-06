@@ -412,8 +412,6 @@ class ViewTabSnippets extends React.Component{
 
   //Remove or Add tags from elasticSearch
   removeAddTagElasticSearch(urls, current_tag, applyTagFlag ){
-    console.log("el");
-    console.log(urls);
     $.post(
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
@@ -515,8 +513,11 @@ class ViewTabSnippets extends React.Component{
                       });
             delete updatedPages[url]["tags"];
         }
+        var currenttags = this.state.pages[inputURL]["tags"];
+      //  console.log(currenttags);
         updatedPages[url]["tags"]=[];
         updatedPages[url]["tags"][auxKey] = tag;
+        updatedPages[url]["tags"].push(...currenttags);
         //checking if the new tag belong to the filter
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
@@ -524,6 +525,7 @@ class ViewTabSnippets extends React.Component{
         }
         //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
         this.setState({ pages:updatedPages});
+        this.addCustomTag([inputURL],this.state)
         this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
 
       }
@@ -541,38 +543,6 @@ class ViewTabSnippets extends React.Component{
     var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
     return uniqueTag;
 }
-  clicktext(urllink){
-    console.log("in clicktext");
-    console.log(urllink);
-      this.customTagPages = [];
-      this.setState({custom_tag_val:""});
-      this.customTagPages.push(urllink);
-  }
-
-
-createChip(inputURL){
-    console.log("in createChip");
-    console.log(inputURL);
-    if(this.state.custom_tag_val !== ""){
-	//this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
-  var currentPages = this.state.pages;
-  Object.keys(currentPages).filter(function(page){
-    return page === inputURL;
-  }).map((page)=>{
-      var k = page;
-      if(currentPages[k]["tags"] !== undefined)
-        currentPages[k]["tags"].push( this.state.custom_tag_val);
-      else currentPages[k]["tags"] = [this.state.custom_tag_val];
-  });
-
-  this.setState({pages:currentPages});
-  this.removeAddTagElasticSearch(this.customTagPages, this.state.custom_tag_val, true);
-  this.setState({custom_tag_val : ""});
-	this.forceUpdate();
-    }
-  }
-
-
  renderCustomTag(data){
     return ( <Chip style={{margin:4}}
         key={data.key}
@@ -584,16 +554,6 @@ createChip(inputURL){
 }
 
 
- onCustomTag(event){
-   console.log("in customTag");
-	var value = event.target.value;
-  console.log(value);
-	var empty = "";
-	this.setState({custom_tag_val: value});
-	this.forceUpdate();
-
-    }
-
  handleRequestDelete = (url,key) => {
 	console.log("HANDLE REQUEST DELETE " + key);
 //  console.log(this.customTagPages);
@@ -603,8 +563,9 @@ createChip(inputURL){
 //  console.log(this.state.pages[url]["tags"]);
   var currentPages = this.state.pages;
   if(currentPages[url]["tags"] !== undefined){
-    currentPages[url]["tags"].pop(key);
+    currentPages[url]["tags"].splice(currentPages[url]["tags"].indexOf(key),1);
   }
+//  console.log(delete currentPages[url]["tags"][key])
   this.setState({pages:currentPages});
 	this.removeAddTagElasticSearch(current,key, false);
   this.forceUpdate();
@@ -643,14 +604,18 @@ createChip(inputURL){
         return;
       }
 
-      this.state.pages[inputURL]["tags"] = this.state.pages[inputURL]["tags"] || [];
-      this.state.pages[inputURL]["tags"].push(val[0].value);
-
+        for(var i=0;i<inputURL.length;i++){
+          this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
+          this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+      }
+  //    this.state.pages[inputURL]["tags"] = this.state.pages[inputURL]["tags"] || [];
+  //    this.state.pages[inputURL]["tags"].push(val[0].value);
+    }
       this.setState({pages:this.state.pages});
       this.removeAddTagElasticSearch([inputURL], val[0].value, true);
     	this.forceUpdate();
     }
-  }
+
 
   render(){
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
@@ -704,7 +669,6 @@ createChip(inputURL){
         var checkTagNeutral=false;
         if(url_info[1]["tags"]){
            uniqueTag = url_info[1]["tags"];
-           console.log(uniqueTag);
            for(var i=0;i<uniqueTag.length;i++){
              if(uniqueTag[i] === 'Relevant' ){
                checkTagRelev=true;
@@ -761,7 +725,7 @@ createChip(inputURL){
               multi={true}
               options={this.availableTags}
               value={[]}
-              onChange={this.addCustomTag.bind(this, url_info[0])}
+              onChange={this.addCustomTag.bind(this, [url_info[0]])}
               ignoreCase={true}
             />
           </div>
@@ -785,7 +749,16 @@ createChip(inputURL){
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <TextField style={{width:'100px'}} hintText="Add Tag"  onClick={this.clicktext.bind(this,this.multipleSelectionPages)} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(this.customTagPages,this) : null}}></TextField>
+          <div style={{width: '18%'}}>
+            <Select.Creatable
+              placeholder="Add Tag"
+              multi={true}
+              options={this.availableTags}
+              value={[]}
+              onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
+              ignoreCase={true}
+            />
+          </div>
       </p>
     ];
 
