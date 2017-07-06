@@ -28,7 +28,8 @@
     "react-swipeable-views": "^0.8.0",
     "react-tap-event-plugin": "^2.0.1",
     "react-vis": "^0.6.4",
-    "spawn-sync": "^1.0.15"
+    "spawn-sync": "^1.0.15",
+    "react-select": "^1.0.0-rc.5"
   },
   "scripts": {
     "start": "react-scripts start && react-scripts build",

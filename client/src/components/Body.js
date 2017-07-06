@@ -10,6 +10,7 @@ import Terms from './Terms';
 import Views from './Views';
 import '../css/Components.css';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
+import 'react-select/dist/react-select.css';
 import Sidebar from 'react-sidebar';
 import Plus from 'material-ui/svg-icons/action/swap-horiz';
 import FloatingActionButton from 'material-ui/FloatingActionButton';

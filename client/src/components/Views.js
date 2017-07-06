@@ -18,6 +18,7 @@ import IconButton from 'material-ui/IconButton';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import Select from 'react-select';
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
 //const nearbyIcon = <NeutralFace />;
@@ -249,9 +250,27 @@ class ViewTabSnippets extends React.Component{
     this.customTagValue="";
     this.disableCrawlerButton=true;
     this.customTagPages=[];
+    this.availableTags = [];
+  }
+
+  getAvailableTags(){
+    $.post(
+  	  '/getAvailableTags',
+  	  {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+  	  function(tagsDomain) {
+  	      var selected_tags = [];
+  	      if(this.props.session['selected_tags'] !== undefined && this.props.session['selected_tags'] !== ""){
+  		        selected_tags = this.props.session['selected_tags'].split(",");
+  	      }
+          this.availableTags = Object.keys(tagsDomain['tags'] || {})
+                               .filter(tag => ["Neutral", "Irrelevant", "Relevant"].indexOf(tag) === -1)
+                               .map(tag => { return {value: tag, label: tag}; });
+  	  }.bind(this)
+    );
   }
 
   componentWillMount(){
+    this.getAvailableTags();
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthTotalPages:this.props.lengthTotalPages,
     });
@@ -467,11 +486,6 @@ class ViewTabSnippets extends React.Component{
     var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
     return uniqueTag;
 }
-  clicktext(urllink){
-      this.customTagPages = [];
-      this.setState({custom_tag_val:""});
-      this.customTagPages.push(urllink);
-  }
 
 createChip(inputURL){
 
@@ -531,9 +545,23 @@ createChip(inputURL){
   //this.removeTags(this.customTagPages, key);
     }
 
+  addCustomTag(inputURL, val) {
+    if((val[0] || {}).value) {
+      if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
+        this.availableTags.splice(0, 1);
+        return;
+      }
+
+      this.state.pages[inputURL]["tags"] = this.state.pages[inputURL]["tags"] || [];
+      this.state.pages[inputURL]["tags"].push(val[0].value);
+
+      this.setState({pages:this.state.pages});
+      this.removeAddTagElasticSearch([inputURL], val[0].value, true);
+    	this.forceUpdate();
+    }
+  }
+
   render(){
-    //console.log("SnippetsPAges------------");
-    //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     var id=0;
     var c=0;
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
@@ -614,9 +642,16 @@ createChip(inputURL){
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
-            <p style={{float:'right', margin:4}}>
-            <TextField style={{width:'100px'}} hintText="Add Tag" value={value} onClick={this.clicktext.bind(this,url_info[0])} onChange={this.onCustomTag.bind(this)} onKeyPress={(e) => {(e.key === 'Enter') ? this.createChip(url_info[0],this) : null}}></TextField>
-          </p>
+          <div style={{float: 'right', width: '18%'}}>
+            <Select.Creatable
+              placeholder="Add Tag"
+              multi={true}
+              options={this.availableTags}
+              value={[]}
+              onChange={this.addCustomTag.bind(this, url_info[0])}
+              ignoreCase={true}
+            />
+          </div>
             <p>
               <a target="_blank" href={url_info[0]} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
