@@ -119,7 +119,7 @@ class LoadQueries extends React.Component {
 		}
 		checked = (new_prev_selected.length > 0)?new_prev_selected.concat(checked):checked;
 	    }
-	    
+
 	}else{
 	    checked = object["checked"];
 	    if(prev_selected_queries.length > 0){
@@ -402,7 +402,7 @@ class LoadTLDs extends React.Component {
     this.setState({checked: checked });
     this.props.addTLD(checked);
   }
-    
+
     render(){
 	if(this.state.currentTLDs!==undefined && Object.keys(this.state.currentTLDs).length > 0){
 	    var nodes = this.state.tldNodes;
@@ -425,7 +425,7 @@ class LoadTLDs extends React.Component {
 		}
 		nodesTemp.push(node);
 	    });
-	    
+
       return(
         <div>
         <CheckboxTree
@@ -766,7 +766,7 @@ class LoadModel extends React.Component {
 	  </IconButton>
 	  </div>
 	  :<div/>;
-	  
+
     if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
       var nodes = this.state.modeltagNodes;
       var nodesTemp = [];
@@ -1010,6 +1010,7 @@ class FiltersTabs extends React.Component {
     var sessionTemp = this.props.session;
     var newTags = checked.toString();
     if(newTags !== ""){
+      console.log("add crawled tags first if");
       if(sessionTemp['selected_queries']!=="" || sessionTemp['selected_tlds']!=="" || sessionTemp['selected_tags'] !== "" || sessionTemp['selected_model_tags']!== "" ){
         sessionTemp['newPageRetrievalCriteria'] = "Multi";
         sessionTemp['pageRetrievalCriteria'] = {'crawled_tag':newTags};
@@ -1023,10 +1024,12 @@ class FiltersTabs extends React.Component {
         sessionTemp['pageRetrievalCriteria']['model_tag'] = sessionTemp['selected_model_tags'];
 
       } else{
+        console.log("add crawled tags first else");
         sessionTemp['newPageRetrievalCriteria'] = "one";
         sessionTemp['pageRetrievalCriteria'] = "Crawled Tags";
       }
     } else if(sessionTemp['newPageRetrievalCriteria'] === "Multi"){
+      console.log("add crawled tags second else");
       delete sessionTemp['pageRetrievalCriteria']['crawled_tag'];
     }
 

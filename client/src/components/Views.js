@@ -317,9 +317,11 @@ class ViewTabSnippets extends React.Component{
         this.check_click_down=true;
       }
     }.bind(this), true);
+  
     window.addEventListener('keyup', function(event) {
       if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
         this.currentUrls = [];
+        if(this.state.click_flag)
         this.handleOpenMultipleSelection();
         this.forceUpdate();
         this.currentUrls = this.multipleSelectionPages;
@@ -486,6 +488,16 @@ class ViewTabSnippets extends React.Component{
     var action = 'Apply';
     var isTagPresent = false;
     var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
+/*    if(updatedPages[url]["tags"]){
+      var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                    var itemTag = updatedPages[url]["tags"][key].toString();
+                    if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+                      delete updatedPages[url]["tags"][key];
+                      this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                    }
+                  });
+      //  delete updatedPages[url]["tags"]; //Removing tag on the interface
+    }*/
 
     if(updatedPages[url]["tags"]){
        isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
