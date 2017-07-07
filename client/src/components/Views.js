@@ -317,7 +317,7 @@ class ViewTabSnippets extends React.Component{
         this.check_click_down=true;
       }
     }.bind(this), true);
-  
+
     window.addEventListener('keyup', function(event) {
       if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
         this.currentUrls = [];
@@ -436,7 +436,7 @@ class ViewTabSnippets extends React.Component{
         var urls =[];
         urls.push(url);
         var auxKey = "0";
-    /*    if(updatedPages[url]["tags"]){
+        if(updatedPages[url]["tags"]){
             var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
                         var itemTag = updatedPages[url]["tags"][key].toString();
                         if(itemTag==="Relevant" || itemTag==="Irrelevant"){
@@ -445,7 +445,7 @@ class ViewTabSnippets extends React.Component{
                         }
                       });
           //  delete updatedPages[url]["tags"]; //Removing tag on the interface
-        }*/
+        }
         if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
           updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
           updatedPages[url]["tags"].push(tag);
@@ -488,30 +488,40 @@ class ViewTabSnippets extends React.Component{
     var action = 'Apply';
     var isTagPresent = false;
     var updatedPages = JSON.parse(JSON.stringify(this.state.pages));
-/*    if(updatedPages[url]["tags"]){
-      var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
-                    var itemTag = updatedPages[url]["tags"][key].toString();
-                    if(itemTag==="Relevant" || itemTag==="Irrelevant"){
-                      delete updatedPages[url]["tags"][key];
-                      this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
-                    }
-                  });
-      //  delete updatedPages[url]["tags"]; //Removing tag on the interface
-    }*/
-
+    if(tag ==="Neutral"){
+      let arrayInputURL = [];
+      arrayInputURL.push(url);
+      this.removeTags(arrayInputURL,  tag);
+    }
+    else{
+  /*    if(updatedPages[url]["tags"]){
+         isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+                                    return itemTag === tag;});
+         if(isTagPresent) action = 'Remove';
+      }*/
     if(updatedPages[url]["tags"]){
        isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
                                   return itemTag === tag;});
        if(isTagPresent) action = 'Remove';
-    }
+    }}
     // Apply or remove tag from urls.
     var applyTagFlag = action === 'Apply';
     var urls = [];
     urls.push(url);
+
     if (applyTagFlag && !isTagPresent) {
       // Removes tag when the tag is present for item, and applies only when tag is not present for item.
       var auxKey = "0";
-
+      if(updatedPages[url]["tags"]){
+        var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                      var itemTag = updatedPages[url]["tags"][key].toString();
+                      if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+                        delete updatedPages[url]["tags"][key];
+                        this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                      }
+                    });
+        //  delete updatedPages[url]["tags"]; //Removing tag on the interface
+      }
       updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
       updatedPages[url]["tags"].push(tag);
       //checking if the new tag belong to the filter
@@ -550,21 +560,15 @@ class ViewTabSnippets extends React.Component{
 
 
  handleRequestDelete = (url,key) => {
-	console.log("HANDLE REQUEST DELETE " + key);
-//  console.log(this.customTagPages);
   var current = [];
   current.push(url);
-//  console.log(url);
-//  console.log(this.state.pages[url]["tags"]);
   var currentPages = this.state.pages;
   if(currentPages[url]["tags"] !== undefined){
     currentPages[url]["tags"].splice(currentPages[url]["tags"].indexOf(key),1);
   }
-//  console.log(delete currentPages[url]["tags"][key])
   this.setState({pages:currentPages});
 	this.removeAddTagElasticSearch(current,key, false);
   this.forceUpdate();
-  //this.removeTags(this.customTagPages, key);
     }
 
   clickEvent(urlLink){
@@ -593,8 +597,6 @@ class ViewTabSnippets extends React.Component{
   };
 
   addCustomTag(inputURL, val) {
-    console.log("in addCustomTag");
-    console.log(val);
     this.state.value = val;
     var check = false;
     if(((val || [])[0] || {}).value) {
@@ -749,7 +751,7 @@ class ViewTabSnippets extends React.Component{
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <div style={{width: '18%'}}>
+          <div style={{float: 'right', width: '18%'}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={true}
@@ -758,7 +760,7 @@ class ViewTabSnippets extends React.Component{
               onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
               ignoreCase={true}
             />
-          </div>
+            </div>
       </p>
     ];
 
