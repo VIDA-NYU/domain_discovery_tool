@@ -434,7 +434,7 @@ class ViewTabSnippets extends React.Component{
         var urls =[];
         urls.push(url);
         var auxKey = "0";
-  /*      if(updatedPages[url]["tags"]){
+    /*    if(updatedPages[url]["tags"]){
             var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
                         var itemTag = updatedPages[url]["tags"][key].toString();
                         if(itemTag==="Relevant" || itemTag==="Irrelevant"){
@@ -444,10 +444,10 @@ class ViewTabSnippets extends React.Component{
                       });
           //  delete updatedPages[url]["tags"]; //Removing tag on the interface
         }*/
-    //    if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
+        if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
           updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
           updatedPages[url]["tags"].push(tag);
-    //    }
+        }
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           totalTagRemoved++;
           delete updatedPages[url];
@@ -469,8 +469,8 @@ class ViewTabSnippets extends React.Component{
     }
     else{
       var updatedPages = this.removeTags(arrayInputURL, tag);
-      this.removeAddTagElasticSearch(arrayInputURL, tag, true );
     }
+    this.addCustomTag(arrayInputURL,this.state);
   }
   onTagSelectedPages(inputTag){
     this.onTagAllPages(inputTag);
@@ -581,6 +581,8 @@ class ViewTabSnippets extends React.Component{
   };
 
   addCustomTag(inputURL, val) {
+    console.log("in addCustomTag");
+    console.log(val);
     this.state.value = val;
     var check = false;
     if(((val || [])[0] || {}).value) {
@@ -588,15 +590,15 @@ class ViewTabSnippets extends React.Component{
         this.availableTags.splice(0, 1);
         return;
       }
-
         for(var i=0;i<inputURL.length;i++){
           this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
           this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+        }
 
-      }
+
 
         this.setState({pages:this.state.pages});
-        this.removeAddTagElasticSearch([inputURL], val[0].value, true);
+        this.removeAddTagElasticSearch(inputURL, val[0].value, true);
         this.handleCloseMultipleSelection();
       	this.forceUpdate();
       }
