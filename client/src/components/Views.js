@@ -306,7 +306,6 @@ class ViewTabSnippets extends React.Component{
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthTotalPages:this.props.lengthTotalPages,
     });
-      console.log("MOUNT VIEW TAB SNIPPETS");
     this.updateOnlineClassifier(this.props.session);
     this.keyboardListener();
   }
@@ -381,6 +380,7 @@ class ViewTabSnippets extends React.Component{
           this.setState({
               accuracyOnlineLearning:accuracy,
           });
+	    this.updateOnlineAccuracy(accuracy);
         }
 
     	}.bind(this)
@@ -400,6 +400,10 @@ class ViewTabSnippets extends React.Component{
     );
   }
 
+    updateOnlineAccuracy(accuracy){
+	this.props.updateOnlineAccuracy(accuracy);
+    }
+    
   handlePageClick(data){
     $("div").scrollTop(0);
     let selected = data.selected; //current page (number)
@@ -745,14 +749,14 @@ class ViewTabSnippets extends React.Component{
       </ListItem>;
     });
     const popUpButton = [
-      <p>
-        <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
-          <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
-          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <div style={{width: '18%'}}>
+	    <p>
+            <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
+            <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
+            <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
+            <div style={{width: '18%'}}>
             <Select.Creatable
-              placeholder="Add Tag"
-              multi={true}
+             placeholder="Add Tag"
+             multi={true}
               options={this.availableTags}
               value={[]}
               onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
@@ -762,41 +766,37 @@ class ViewTabSnippets extends React.Component{
       </p>
     ];
 
-    return (
-      <div  style={{maxWidth:1000}}>
-        <p style={{color: "#FFFFFF",}}>-</p>
-        <div style={{marginBottom:"50px"}}>
-          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
-          <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
-        </div>
-        <div style={{marginBottom:"50px", marginTop:"-10px"}}>
-          <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>
-          <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-            <RaisedButton label="Tag All " labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-            <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
-          </p>
-        </div>
-        <div style={{marginTop:"80px"}} >
-          <List>
-          {urlsList}
-          <Divider inset={true} />
-          </List>
-          <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
-            <ReactPaginate previousLabel={"previous"}
-                           nextLabel={"next"}
-                           initialPage={0}
-                           forcePage={this.state.currentPagination}
-                           breakLabel={<a >...</a>}
-                           breakClassName={"break-me"}
-                           pageCount={currentPageCount}
-                           marginPagesDisplayed={3}
-                           pageRangeDisplayed={8}
-                           onPageChange={this.handlePageClick.bind(this)}
-                           containerClassName={"pagination"}
-                           subContainerClassName={"pages pagination"}
-                           activeClassName={"active"} />
-          </div>
-        </div>
+      return (
+	      <div  style={{maxWidth:1000}}>
+              <p style={{color: "#FFFFFF",}}>-</p>
+              <div style={{marginBottom:"30px", marginTop:"-10px"}}>
+              <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>
+              <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+              <RaisedButton label="Tag All " labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+              <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+              </p>
+              </div>
+              <div style={{marginTop:"80px"}} >
+              <List>
+              {urlsList}
+              <Divider inset={true} />
+              </List>
+              <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
+              <ReactPaginate previousLabel={"previous"}
+          nextLabel={"next"}
+          initialPage={0}
+          forcePage={this.state.currentPagination}
+          breakLabel={<a >...</a>}
+          breakClassName={"break-me"}
+          pageCount={currentPageCount}
+          marginPagesDisplayed={3}
+          pageRangeDisplayed={8}
+          onPageChange={this.handlePageClick.bind(this)}
+          containerClassName={"pagination"}
+          subContainerClassName={"pages pagination"}
+          activeClassName={"active"} />
+              </div>
+              </div>
         <Dialog title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
         {popUpButton}
         </Dialog>
@@ -827,6 +827,7 @@ class Views extends React.Component {
 	lengthTotalPages:0,
 	offset:0,
 	currentPagination:0,
+	accuracyOnlineLearning:0,
     };
     this.newPages = true;
     this.queryFromSearch=true;
@@ -866,6 +867,11 @@ class Views extends React.Component {
   // Update pagination
   handlePageClick(offset, currentPagination){
 	this.setState({offset: offset, currentPagination:currentPagination});
+  }
+  //Update the online accuracy
+    updateOnlineAccuracy(accuracy){
+	this.setState({accuracyOnlineLearning: accuracy});
+	this.forceUpdate();
   }
 
   //If there are any change in the session like a new filter, then getPages() is called.
@@ -918,7 +924,7 @@ class Views extends React.Component {
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
-      handlePageClick={this.handlePageClick.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+      handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
 
@@ -926,19 +932,18 @@ class Views extends React.Component {
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages === 0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;*/
 
+      var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
 
-
+      // REMOVE ACCURACY HARDCODING
       return (
-        <div>
-          <Tabs
-            onChange={this.handleChange}
-            value={this.state.slideIndex}
-            inkBarStyle={{background: '#7940A0' ,height: '4px'}}
-            tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
-              <Tab label="Snippets" value={0} style={styles.tab} />
-          </Tabs>
-          <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
-            <div style={styles.headline}>
+	      <div style={{maxWidth: 1000,}}>
+              <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
+              <div style={styles.headline}>
+	      <div style={{marginBottom:"30px"}}>
+              <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
+              <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
+              </div>
+
               <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
               {showPages}
             </div>
