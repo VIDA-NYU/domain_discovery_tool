@@ -604,15 +604,20 @@ class ViewTabSnippets extends React.Component{
         this.availableTags.splice(0, 1);
         return;
       }
-      console.log(this.state.pages[inputURL]["tags"]);
-      console.log(val[0].value);
-      console.log(this.state.pages[inputURL]["tags"].indexOf(val[0].value));
-      if(this.state.pages[inputURL]["tags"].indexOf(val[0].value)<0){
+    //  console.log(this.state.pages[inputURL]["tags"]);
+    //  console.log(val[0].value);
+    //  console.log(this.state.pages[inputURL]["tags"].indexOf(val[0].value));
         for(var i=0;i<inputURL.length;i++){
-          this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
-          this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+          if(this.state.pages[inputURL[i]]["tags"]!== undefined)
+          {
+            if(this.state.pages[inputURL[i]]["tags"].indexOf(val[0].value)<0){
+              this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
+              this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+            }
+          }
+
         }
-      }
+
 
 
         this.setState({pages:this.state.pages});
