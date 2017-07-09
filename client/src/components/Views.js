@@ -502,7 +502,6 @@ class ViewTabSnippets extends React.Component{
         this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
       }
     }
-
   }
 
   getTag(k){
@@ -534,6 +533,17 @@ class ViewTabSnippets extends React.Component{
     this.check_click_down=false;
     this.forceUpdate();
   };
+
+  buildQueryString() {
+    var queries = [];
+    if(this.state.session.filter)
+      queries.push(this.state.session.filter);
+
+    if(this.state.session.selected_queries !== "")
+      queries.push(this.state.session.selected_queries);
+
+    return queries.join(",");
+  }
 
   render(){
     //console.log("SnippetsPAges------------");
@@ -611,9 +621,9 @@ class ViewTabSnippets extends React.Component{
               </OverlayTrigger>
             </ButtonGroup></p>
             <p>
-              <a target="_blank" href={url_info[0]} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
+              <a target="_blank" href={url_info[0] + (url_info[0].indexOf("?") === -1 ? "?highlighter=" + this.buildQueryString() : "&highlighter=" + this.buildQueryString() )} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
-              <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
+              <a target="_blank" href={urlLink} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
               <p style={{  fontSize:'13px', color:'#545454'}}>{url_info[1]["snippet"]}</p>
             </p>
           </div>
