@@ -39,6 +39,9 @@ import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Select from 'react-select';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
 //const nearbyIcon = <NeutralFace />;
@@ -403,7 +406,7 @@ class ViewTabSnippets extends React.Component{
     updateOnlineAccuracy(accuracy){
 	this.props.updateOnlineAccuracy(accuracy);
     }
-    
+
   handlePageClick(data){
     $("div").scrollTop(0);
     let selected = data.selected; //current page (number)
@@ -780,14 +783,28 @@ class ViewTabSnippets extends React.Component{
       return (
 	      <div  style={{maxWidth:1000}}>
               <p style={{color: "#FFFFFF",}}>-</p>
-              <div style={{marginBottom:"30px", marginTop:"-10px"}}>
-              <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>
+              <div style={{ marginTop:"-10px", marginLeft:"20px"}} >
+              <ReactPaginate
+                previousLabel={"previous"}
+                nextLabel={"next"}
+                initialPage={0}
+                forcePage={this.state.currentPagination}
+                breakLabel={<a >...</a>}
+                breakClassName={"break-me"}
+                pageCount={currentPageCount}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={1}
+                onPageChange={this.handlePageClick.bind(this)}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"} />
+              <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px", marginTop:"20px"}}>
               <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
               <RaisedButton label="Tag All " labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
               <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
               </p>
               </div>
-              <div style={{marginTop:"80px"}} >
+              <div  >
               <List>
               {urlsList}
               <Divider inset={true} />
