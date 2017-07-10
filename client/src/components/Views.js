@@ -264,10 +264,10 @@ class ViewTabSnippets extends React.Component{
       flatKeyBoard:false,
       openMultipleSelection: false,
       click_flag: false,
-      change_color_urls:[],
-
+      change_color_urls:[]
     };
 
+    this.state.allSearchQueries = this.buildQueryString(this.state.session);
     this.perPage=12; //default 12
     this.currentUrls=[];
     this.disableCrawlerButton=true;
@@ -305,7 +305,13 @@ class ViewTabSnippets extends React.Component{
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) {
       if(!this.props.queryFromSearch) $("div").scrollTop(0);
       this.setState({
-      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:nextProps.currentPagination, offset:nextProps.offset
+        session: nextProps.session,
+        sessionString: JSON.stringify(nextProps.session),
+        pages: nextProps.pages,
+        lengthTotalPages: nextProps.lengthTotalPages,
+        currentPagination: nextProps.currentPagination,
+        offset: nextProps.offset,
+        allSearchQueries: this.buildQueryString(nextProps.session)
       });
     }
     return;
@@ -534,16 +540,11 @@ class ViewTabSnippets extends React.Component{
     this.forceUpdate();
   };
 
-  buildQueryString() {
-    var queries = [];
-    if(this.state.session.filter)
-      queries.push(this.state.session.filter);
-
-    if(this.state.session.selected_queries !== "")
-      queries.push(this.state.session.selected_queries);
-
-    return queries.join(",");
-  }
+  buildQueryString = (session) =>
+    [
+      session.filter || "",
+      session.selected_queries
+    ].filter(string => string !== "").join(",")
 
   render(){
     //console.log("SnippetsPAges------------");
@@ -621,7 +622,7 @@ class ViewTabSnippets extends React.Component{
               </OverlayTrigger>
             </ButtonGroup></p>
             <p>
-              <a target="_blank" href={url_info[0] + (url_info[0].indexOf("?") === -1 ? "?highlighter=" + this.buildQueryString() : "&highlighter=" + this.buildQueryString() )} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
+              <a target="_blank" href={url_info[0] + (url_info[0].indexOf("?") === -1 ? "?" : "&") + "highlighter=" + this.state.allSearchQueries} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
               <br/>
               <a target="_blank" href={urlLink} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
               <p style={{  fontSize:'13px', color:'#545454'}}>{url_info[1]["snippet"]}</p>
