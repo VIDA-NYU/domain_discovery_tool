@@ -655,7 +655,6 @@ class ViewTabSnippets extends React.Component{
         }
         var bgColor = "";
         bgColor = (this.state.change_color_urls.indexOf(url_info[0])> -1)?"silver":"white";
-
         if(url_info[1]["tags"]){
              let uniqueTag="";
              uniqueTag = this.getTag(url_info[0]);
