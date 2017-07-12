@@ -605,7 +605,10 @@ class ViewTabSnippets extends React.Component{
     this.check_click_down=false;
     this.forceUpdate();
   };
-
+  startmulti(){
+    this.setState({multi:true});
+    this.forceUpdate();
+  }
   addCustomTag(inputURL, val) {
     this.state.value = val;
     var check = false;
@@ -628,7 +631,7 @@ class ViewTabSnippets extends React.Component{
 
         }
 
-        this.setState({pages:this.state.pages});
+        this.setState({multi:false,pages:this.state.pages});
         this.removeAddTagElasticSearch(inputURL, val[0].value, true);
         this.handleCloseMultipleSelection();
       	this.forceUpdate();
@@ -743,10 +746,11 @@ class ViewTabSnippets extends React.Component{
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
-          <div style={{float: 'right', width: '18%'}}>
+          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '18%',height:'70%'}}>
             <Select.Creatable
+              onOpen={this.startmulti.bind(this)}
               placeholder="Add Tag"
-              multi={true}
+              multi={this.state.multi}
               options={this.availableTags}
               value={[]}
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
@@ -770,11 +774,11 @@ class ViewTabSnippets extends React.Component{
       </ListItem>;
     });
     const popUpButton = [
-      <p>
+      <p style={{height:"200px" ,marginTop:"50px"}}>
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <div style={{float: 'right', width: '18%'}}>
+          <div style={{float:"right", fontSize: "14px", fontWeight: "500",width: '18%', height:'88%',marginLeft:"-100px"}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={true}
@@ -832,7 +836,7 @@ class ViewTabSnippets extends React.Component{
           activeClassName={"active"} />
               </div>
               </div>
-        <Dialog autoScrollBodyContent={true} title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
+        <Dialog  title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
         {popUpButton}
         </Dialog>
      </div>
