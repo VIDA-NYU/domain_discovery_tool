@@ -6,6 +6,7 @@ import Checkbox from 'material-ui/Checkbox';
 import Scatterplot from './Scatterplot'
 import {csv} from 'd3-request'
 
+import Highlighter from 'react-highlight-words';
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -42,6 +43,8 @@ const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
 import { ButtonGroup, Button, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap';
+
+import { stopWordFilter } from '../utils/stopword-filter.js';
 
 
 import $ from 'jquery';
@@ -264,10 +267,10 @@ class ViewTabSnippets extends React.Component{
       flatKeyBoard:false,
       openMultipleSelection: false,
       click_flag: false,
-      change_color_urls:[],
-
+      change_color_urls:[]
     };
 
+    this.state.allSearchQueries = this.buildQueryString(this.state.session);
     this.perPage=12; //default 12
     this.currentUrls=[];
     this.disableCrawlerButton=true;
@@ -305,7 +308,13 @@ class ViewTabSnippets extends React.Component{
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) {
       if(!this.props.queryFromSearch) $("div").scrollTop(0);
       this.setState({
-      session:nextProps.session, sessionString: JSON.stringify(nextProps.session), pages:nextProps.pages, lengthTotalPages:nextProps.lengthTotalPages, currentPagination:nextProps.currentPagination, offset:nextProps.offset
+        session: nextProps.session,
+        sessionString: JSON.stringify(nextProps.session),
+        pages: nextProps.pages,
+        lengthTotalPages: nextProps.lengthTotalPages,
+        currentPagination: nextProps.currentPagination,
+        offset: nextProps.offset,
+        allSearchQueries: this.buildQueryString(nextProps.session)
       });
     }
     return;
@@ -502,7 +511,6 @@ class ViewTabSnippets extends React.Component{
         this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
       }
     }
-
   }
 
   getTag(k){
@@ -534,6 +542,22 @@ class ViewTabSnippets extends React.Component{
     this.check_click_down=false;
     this.forceUpdate();
   };
+
+  buildQueryString = (session) =>
+    [
+      stopWordFilter(session.filter || ""),
+      (session.selected_queries || "").split(",").map(string => stopWordFilter(string)).join(",")
+    ].filter(string => string !== "").join(",")
+
+  augmentURL = (url) =>
+    url +
+    (
+      this.state.allSearchQueries !== ""
+      ?
+      (url.indexOf("?") === -1 ? "?" : "&") + "highlighter=" + this.state.allSearchQueries
+      :
+      ""
+    )
 
   render(){
     //console.log("SnippetsPAges------------");
@@ -611,10 +635,25 @@ class ViewTabSnippets extends React.Component{
               </OverlayTrigger>
             </ButtonGroup></p>
             <p>
-              <a target="_blank" href={url_info[0]} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
+              <a
+                target="_blank"
+                href={this.augmentURL(url_info[0])}
+                style={{ fontSize:'18px',color:'#1a0dab'}}
+              >
+                <Highlighter
+                  searchWords={this.state.allSearchQueries.split(",")}
+                  textToHighlight={tittleUrl}
+                />
+              </a>
               <br/>
-              <p style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}>{urlLink}</p>
-              <p style={{  fontSize:'13px', color:'#545454'}}>{url_info[1]["snippet"]}</p>
+              <a target="_blank" href={this.augmentURL(url_info[0])} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
+              <p style={{fontSize:'13px', color:'#545454'}}>
+                <Highlighter
+                  highlightStyle={{fontWeight: 'bold'}}
+                  searchWords={this.state.allSearchQueries.split(",")}
+                  textToHighlight={url_info[1]["snippet"]}
+                />
+              </p>
             </p>
           </div>
           <br/>
