@@ -482,6 +482,7 @@ class ViewTabSnippets extends React.Component{
     else{
       var updatedPages = this.removeTags(arrayInputURL, tag);
     }
+    console.log(this.state);
     this.addCustomTag(arrayInputURL,this.state);
   }
   onTagSelectedPages(inputTag){
@@ -606,10 +607,15 @@ class ViewTabSnippets extends React.Component{
     this.forceUpdate();
   };
   startmulti(){
+    console.log("instart");
     this.setState({multi:true});
-    this.forceUpdate();
+  }
+  stopmulti(){
+    console.log("in stop")
+    this.setState({multi:false});
   }
   addCustomTag(inputURL, val) {
+    console.log(val);
     this.state.value = val;
     var check = false;
     if(((val || [])[0] || {}).value) {
@@ -750,10 +756,11 @@ class ViewTabSnippets extends React.Component{
             <Select.Creatable
               onOpen={this.startmulti.bind(this)}
               placeholder="Add Tag"
-              multi={this.state.multi}
+              multi={true}
               options={this.availableTags}
               value={[]}
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
+              onValueClick={this.stopmulti.bind(this)}
               ignoreCase={true}
             />
 
