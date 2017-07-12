@@ -43,6 +43,8 @@ const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
 import { ButtonGroup, Button, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap';
 
+import { stopWordFilter } from '../utils/stopword-filter.js';
+
 
 import $ from 'jquery';
 
@@ -542,9 +544,20 @@ class ViewTabSnippets extends React.Component{
 
   buildQueryString = (session) =>
     [
-      session.filter || "",
-      session.selected_queries
+      stopWordFilter(session.filter || ""),
+      (session.selected_queries || "").split(",").map(string => stopWordFilter(string)).join(",")
     ].filter(string => string !== "").join(",")
+
+  augmentURL = (url) =>
+    url +
+    (
+      this.state.allSearchQueries !== ""
+      ?
+      (url.indexOf("?") === -1 ? "?" : "&") + "highlighter=" + this.state.allSearchQueries
+      :
+      ""
+    )
+
 
   render(){
     //console.log("SnippetsPAges------------");
@@ -622,7 +635,13 @@ class ViewTabSnippets extends React.Component{
               </OverlayTrigger>
             </ButtonGroup></p>
             <p>
-              <a target="_blank" href={url_info[0] + (url_info[0].indexOf("?") === -1 ? "?" : "&") + "highlighter=" + this.state.allSearchQueries} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
+              <a
+                target="_blank"
+                href={this.augmentURL(url_info[0])}
+                style={{ fontSize:'18px',color:'#1a0dab'}}
+              >
+                {tittleUrl}
+              </a>
               <br/>
               <a target="_blank" href={urlLink} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
               <p style={{  fontSize:'13px', color:'#545454'}}>{url_info[1]["snippet"]}</p>
