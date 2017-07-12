@@ -275,6 +275,7 @@ class ViewTabSnippets extends React.Component{
       openMultipleSelection: false,
       click_flag: false,
       change_color_urls:[],
+      multi:true,
 
     };
 
@@ -286,6 +287,7 @@ class ViewTabSnippets extends React.Component{
     this.multipleSelectionPages = [];
     this.check_click_down=false;
     this.availableTags = [];
+    this.items= [];
   }
 
   getAvailableTags(){
@@ -300,6 +302,7 @@ class ViewTabSnippets extends React.Component{
           this.availableTags = Object.keys(tagsDomain['tags'] || {})
                                .filter(tag => ["Neutral", "Irrelevant", "Relevant"].indexOf(tag) === -1)
                                .map(tag => { return {value: tag, label: tag}; });
+
   	  }.bind(this)
     );
   }
@@ -625,8 +628,6 @@ class ViewTabSnippets extends React.Component{
 
         }
 
-
-
         this.setState({pages:this.state.pages});
         this.removeAddTagElasticSearch(inputURL, val[0].value, true);
         this.handleCloseMultipleSelection();
@@ -638,6 +639,12 @@ class ViewTabSnippets extends React.Component{
 
   render(){
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
+
+    const items=[
+      (this.availableTags!== undefined)?this.availableTags.map((k,l)=>{
+      <MenuItem value={k.value} primaryText={k.value} />
+    }):console.log(this.availableTags)
+  ];
     var id=0;
     var c=0;
     var value="";
@@ -647,8 +654,7 @@ class ViewTabSnippets extends React.Component{
       var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
       var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
 	  return [k, this.state.pages[k]]
-      });
-
+  });
       sorted_urlsList.sort(function(first, second) {
 	  return Number(first[1]["order"]) - Number(second[1]["order"])
       });
@@ -746,6 +752,7 @@ class ViewTabSnippets extends React.Component{
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
               ignoreCase={true}
             />
+
           </div>
             <p>
               <a target="_blank" href={url_info[0]} style={{ fontSize:'18px',color:'#1a0dab'}} >{tittleUrl}</a>
@@ -769,8 +776,8 @@ class ViewTabSnippets extends React.Component{
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
           <div style={{float: 'right', width: '18%'}}>
             <Select.Creatable
-             placeholder="Add Tag"
-             multi={true}
+              placeholder="Add Tag"
+              multi={true}
               options={this.availableTags}
               value={[]}
               onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
@@ -825,7 +832,7 @@ class ViewTabSnippets extends React.Component{
           activeClassName={"active"} />
               </div>
               </div>
-        <Dialog title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
+        <Dialog autoScrollBodyContent={true} title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
         {popUpButton}
         </Dialog>
      </div>
