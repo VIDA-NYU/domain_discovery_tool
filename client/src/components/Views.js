@@ -482,8 +482,6 @@ class ViewTabSnippets extends React.Component{
     else{
       var updatedPages = this.removeTags(arrayInputURL, tag);
     }
-    console.log(this.state);
-    this.addCustomTag(arrayInputURL,this.state);
   }
   onTagSelectedPages(inputTag){
     this.onTagAllPages(inputTag);
@@ -542,7 +540,6 @@ class ViewTabSnippets extends React.Component{
       }
       //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
       this.setState({ pages:updatedPages});
-      this.addCustomTag([inputURL],this.state)
       this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
 
     }
@@ -617,16 +614,12 @@ class ViewTabSnippets extends React.Component{
   addCustomTag(inputURL, val) {
     if(val.constructor !== Array)
       val = [val];
-    this.state.value = val;
     var check = false;
     if(((val || [])[0] || {}).value) {
       if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
         this.availableTags.splice(0, 1);
         return;
       }
-    //  console.log(this.state.pages[inputURL]["tags"]);
-    //  console.log(val[0].value);
-    //  console.log(this.state.pages[inputURL]["tags"].indexOf(val[0].value));
         for(var i=0;i<inputURL.length;i++){
           if(this.state.pages[inputURL[i]]["tags"]!== undefined)
           {
@@ -649,12 +642,6 @@ class ViewTabSnippets extends React.Component{
 
   render(){
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
-
-    const items=[
-      (this.availableTags!== undefined)?this.availableTags.map((k,l)=>{
-      <MenuItem value={k.value} primaryText={k.value} />
-    }):console.log(this.availableTags)
-  ];
     var id=0;
     var c=0;
     var value="";
@@ -758,7 +745,6 @@ class ViewTabSnippets extends React.Component{
               placeholder="Add Tag"
               multi={false}
               options={this.availableTags}
-              value={[]}
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
               onValueClick={this.stopmulti.bind(this)}
               ignoreCase={true}
@@ -787,9 +773,9 @@ class ViewTabSnippets extends React.Component{
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
           <div style={{float:"right",marginRight:"310px",fontSize: "14px", fontWeight: "500",width: '18%', height:'88%'}}>
             <Select.Creatable
+              placeholder="Add Tag"
               multi={false}
               options={this.availableTags}
-              value={[]}
               onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
               ignoreCase={true}
             />
