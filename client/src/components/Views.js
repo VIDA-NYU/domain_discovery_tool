@@ -607,6 +607,8 @@ class ViewTabSnippets extends React.Component{
   };
 
   addCustomTag(inputURL, val) {
+    if(val.constructor !== Array)
+      val = [val];
     this.state.value = val;
     var check = false;
     if(((val || [])[0] || {}).value) {
@@ -745,8 +747,7 @@ class ViewTabSnippets extends React.Component{
             </ButtonGroup></p>
           <div style={{float: 'right', width: '18%'}}>
             <Select.Creatable
-              placeholder="Add Tag"
-              multi={true}
+              multi={false}
               options={this.availableTags}
               value={[]}
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
@@ -776,8 +777,7 @@ class ViewTabSnippets extends React.Component{
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
           <div style={{float: 'right', width: '18%'}}>
             <Select.Creatable
-              placeholder="Add Tag"
-              multi={true}
+              multi={false}
               options={this.availableTags}
               value={[]}
               onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
