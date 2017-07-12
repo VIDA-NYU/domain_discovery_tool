@@ -326,7 +326,7 @@ class ViewTabSnippets extends React.Component{
     window.addEventListener('keyup', function(event) {
       if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
         this.currentUrls = [];
-        if(this.state.click_flag)
+        if(this.state.click_flag && this.multipleSelectionPages.length>0)
         this.handleOpenMultipleSelection();
         this.forceUpdate();
         this.currentUrls = this.multipleSelectionPages;
@@ -729,7 +729,7 @@ class ViewTabSnippets extends React.Component{
             <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px',}}/>
             </p>
             <p style={{float:'right'}}>
-            <ButtonGroup bsSize="small">
+            <ButtonGroup>
               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
                 <Button >
                    <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
@@ -746,7 +746,7 @@ class ViewTabSnippets extends React.Component{
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
-          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '18%',height:'70%'}}>
+          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '18%' , height:"20"}}>
             <Select.Creatable
               onOpen={this.startmulti.bind(this)}
               placeholder="Add Tag"
@@ -778,7 +778,7 @@ class ViewTabSnippets extends React.Component{
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <div style={{float:"right", fontSize: "14px", fontWeight: "500",width: '18%', height:'88%',marginLeft:"-100px"}}>
+          <div style={{float:"right",marginRight:"310px",fontSize: "14px", fontWeight: "500",width: '18%', height:'88%'}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={true}
