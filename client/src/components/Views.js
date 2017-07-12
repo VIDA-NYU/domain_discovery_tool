@@ -275,7 +275,6 @@ class ViewTabSnippets extends React.Component{
       openMultipleSelection: false,
       click_flag: false,
       change_color_urls:[],
-      multi:true,
 
     };
 
@@ -603,14 +602,7 @@ class ViewTabSnippets extends React.Component{
     this.check_click_down=false;
     this.forceUpdate();
   };
-  startmulti(){
-    console.log("instart");
-    this.setState({multi:true});
-  }
-  stopmulti(){
-    console.log("in stop")
-    this.setState({multi:false});
-  }
+
   addCustomTag(inputURL, val) {
     if(val.constructor !== Array)
       val = [val];
@@ -746,7 +738,6 @@ class ViewTabSnippets extends React.Component{
               multi={false}
               options={this.availableTags}
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
-              onValueClick={this.stopmulti.bind(this)}
               ignoreCase={true}
             />
 
