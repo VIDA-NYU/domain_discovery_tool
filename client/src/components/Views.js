@@ -6,6 +6,7 @@ import Checkbox from 'material-ui/Checkbox';
 import Scatterplot from './Scatterplot'
 import {csv} from 'd3-request'
 
+import Highlighter from 'react-highlight-words';
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -558,7 +559,6 @@ class ViewTabSnippets extends React.Component{
       ""
     )
 
-
   render(){
     //console.log("SnippetsPAges------------");
     //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
@@ -640,11 +640,20 @@ class ViewTabSnippets extends React.Component{
                 href={this.augmentURL(url_info[0])}
                 style={{ fontSize:'18px',color:'#1a0dab'}}
               >
-                {tittleUrl}
+                <Highlighter
+                  searchWords={this.state.allSearchQueries.split(",")}
+                  textToHighlight={tittleUrl}
+                />
               </a>
               <br/>
-              <a target="_blank" href={urlLink} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
-              <p style={{  fontSize:'13px', color:'#545454'}}>{url_info[1]["snippet"]}</p>
+              <a target="_blank" href={this.augmentURL(url_info[0])} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
+              <p style={{fontSize:'13px', color:'#545454'}}>
+                <Highlighter
+                  highlightStyle={{fontWeight: 'bold'}}
+                  searchWords={this.state.allSearchQueries.split(",")}
+                  textToHighlight={url_info[1]["snippet"]}
+                />
+              </p>
             </p>
           </div>
           <br/>
