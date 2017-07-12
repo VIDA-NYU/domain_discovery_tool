@@ -608,23 +608,26 @@ class ViewTabSnippets extends React.Component{
       val = [val];
     var check = false;
     if(((val || [])[0] || {}).value) {
-      if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1) {
+      if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1 ) {
         this.availableTags.splice(0, 1);
         return;
       }
         for(var i=0;i<inputURL.length;i++){
           if(this.state.pages[inputURL[i]]["tags"]!== undefined)
           {
-            if(this.state.pages[inputURL[i]]["tags"].indexOf(val[0].value)<0){
+            if(this.state.pages[inputURL[i]]["tags"].map(k=>k.toLowerCase()).indexOf(val[0].value.toLowerCase())<0){
               this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
               this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+              this.removeAddTagElasticSearch(inputURL, val[0].value, true);
+            }
+            else {
+              this.availableTags.splice(0,1);
             }
           }
 
         }
 
         this.setState({multi:false,pages:this.state.pages});
-        this.removeAddTagElasticSearch(inputURL, val[0].value, true);
         this.handleCloseMultipleSelection();
       	this.forceUpdate();
 
