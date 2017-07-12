@@ -7,6 +7,7 @@ import os
 from threading import Lock
 import urlparse
 from domain_discovery_API.models.domain_discovery_model import DomainModel
+from domain_discovery_API.models.crawler_model import CrawlerModel
 
 class DDTServer(Page):
   @staticmethod
@@ -32,7 +33,10 @@ class DDTServer(Page):
   def __init__(self):
     path = os.path.dirname(os.path.realpath(__file__))
     self._ddtModel = DomainModel(path)
-    super(DDTServer, self).__init__(self._ddtModel, path)
+    self._crawlerModel = CrawlerModel(path)
+    self._ddtModel.setCrawlerModel(self._crawlerModel)
+    models = {"domain": self._ddtModel, "crawler": self._crawlerModel}
+    super(DDTServer, self).__init__(models, path)
     
   # Access to seed crawler vis.
   @cherrypy.expose
