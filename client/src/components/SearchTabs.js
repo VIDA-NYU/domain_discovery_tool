@@ -11,6 +11,7 @@ import {fullWhite} from 'material-ui/styles/colors';
 import Search from 'material-ui/svg-icons/action/search';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
+import Select from 'react-select';
 import $ from 'jquery';
 
 const styles = {
@@ -45,6 +46,8 @@ class SearchTabs extends React.Component {
     };
       uploadTag: "Neutral";
       fromFile: false;
+      this.availableTags=[];
+
   }
 
     //Handling changes in SearchTabs
@@ -52,6 +55,25 @@ class SearchTabs extends React.Component {
       this.setState({  slideIndex: value,  });
     };
 
+    getAvailableTags(){
+      $.post(
+    	  '/getAvailableTags',
+    	  {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+    	  function(tagsDomain) {
+    	      var selected_tags = [];
+    	      if(this.props.session['selected_tags'] !== undefined && this.props.session['selected_tags'] !== ""){
+    		        selected_tags = this.props.session['selected_tags'].split(",");
+    	      }
+            this.availableTags = Object.keys(tagsDomain['tags'] || {})
+                                 .filter(tag => ["Neutral", "Irrelevant", "Relevant"].indexOf(tag) === -1)
+                                 .map(tag => { return {value: tag, label: tag}; });
+
+    	  }.bind(this)
+      );
+    }
+    componentWillMount(){
+      this.getAvailableTags();
+    }
   resetAllFilters(session){
     session['newPageRetrievalCriteria'] = "one";
     session['pageRetrievalCriteria'] = "Queries";
@@ -70,7 +92,7 @@ class SearchTabs extends React.Component {
     session['search_engine']=this.state.search_engine;
     session = this.resetAllFilters(session);
     this.props.getQueryPages(this.state.valueQuery);
-      
+
     $.post(
       '/queryWeb',
       {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
@@ -129,18 +151,24 @@ class SearchTabs extends React.Component {
 	this.uploadTag = "Relevant";
         this.runLoadUrls(this.state.valueLoadUrls);
     }
-    
+
     addNegURLs(){
 	this.handleCloseLoadURLs();
 	this.uploadTag = "Irrelevant";
-	this.runLoadUrls(this.state.valueLoadUrls);	
+	this.runLoadUrls(this.state.valueLoadUrls);
     }
 
     addNeutralURLs(){
 	this.handleCloseLoadURLs();
 	this.uploadTag = "Neutral";
-	this.runLoadUrls(this.state.valueLoadUrls);	
+	this.runLoadUrls(this.state.valueLoadUrls);
     }
+    addCustomTagURLs(event){
+      this.handleCloseLoadURLs();
+      this.uploadTag = event.value;
+      this.runLoadUrls(this.state.valueLoadUrls);
+    }
+
 
     loadFromFile = () => {
 	this.fromFile = true;
@@ -151,7 +179,7 @@ class SearchTabs extends React.Component {
 	this.fromFile = false;
 	this.handleOpenLoadURLs();
     }
-    
+
     // Handling search engine DropdownButton.
     handleDropdownButton(eventKey){
       this.setState({"search_engine":eventKey})
@@ -194,24 +222,33 @@ class SearchTabs extends React.Component {
     focusTextField() {
       setTimeout(() => this.textInput.focus(), 100);
     }
-    
+
     render() {
 	const actionsLoadURLs = [
 		<FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseLoadURLs}/>,
 		<FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addPosURLs.bind(this)}/>,
 		<FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegURLs.bind(this)}/>,
 		<FlatButton label="Neutral" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addNeutralURLs.bind(this)}/>,
-	];
+    <div style={{float:"left",fontSize: "14px", fontWeight: "500",width: '18%'}}>
+      <Select.Creatable
+        placeholder="Add Tag"
+        multi={false}
+        options={this.availableTags}
+        onChange={this.addCustomTagURLs.bind(this)}
+        ignoreCase={true}
+      />
+      </div>
+  ];
 	let show_choose_file = (this.fromFile || this.fromFile === undefined)? <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}>"Upload URLs from file"</p> <br />
 	                                         <FlatButton style={{marginLeft:'15px'}}
 	                                         label="Choose URLs File"
 	                                         labelPosition="before"
-	                                         containerElement="label"> 
+	                                         containerElement="label">
 	                                         <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
 	                                         </FlatButton>
 	                                         </Row>
                                     	         :<div/>;
-	
+
 	return (
 		<div>
 		<Tabs
@@ -285,10 +322,10 @@ class SearchTabs extends React.Component {
                 <br />
 
 	      <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
-	      {show_choose_file}               
+	      {show_choose_file}
                 <br />
                 </Dialog>
-	      
+
 	      </Row>
             </div>
             <div style={styles.slide}>

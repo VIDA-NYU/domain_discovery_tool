@@ -39,8 +39,7 @@ import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Select from 'react-select';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+
 
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
@@ -620,9 +619,7 @@ class ViewTabSnippets extends React.Component{
               this.state.pages[inputURL[i]]["tags"].push(val[0].value);
               this.removeAddTagElasticSearch(inputURL, val[0].value, true);
             }
-            else {
-              this.availableTags.splice(0,1);
-            }
+
           }
 
         }
@@ -761,7 +758,7 @@ class ViewTabSnippets extends React.Component{
       </ListItem>;
     });
     const popUpButton = [
-      <p style={{height:"200px" ,marginTop:"50px"}}>
+      <p style={{height:"175px", marginTop:"50px" }}>
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>

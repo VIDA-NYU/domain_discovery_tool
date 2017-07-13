@@ -276,7 +276,7 @@ class Body extends Component{
      this.props.availableCrawlerButton(isthereModel);
    }
 
-    // Update pagination  
+    // Update pagination
     handlePageClick(offset, currentPagination){
 	this.setState({offset: offset, currentPagination:currentPagination});
   }

@@ -598,6 +598,7 @@ class LoadTag extends React.Component {
   }
 
   getAvailableTags(){
+
       $.post(
     	  '/getAvailableTags',
     	  {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
