@@ -966,7 +966,7 @@ class Views extends React.Component {
               <div style={styles.headline}>
 	      <div style={{marginBottom:"30px"}}>
               <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
-              <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
+              <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Domain Model Accuracy: {this.state.accuracyOnlineLearning} % </p>
               </div>
 
               <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
