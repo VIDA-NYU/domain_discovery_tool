@@ -794,12 +794,12 @@ class ViewTabSnippets extends React.Component{
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
               <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px", marginTop:"20px"}}>
-                <div style={{display: "inline", fontSize: "16px", fontWeight: "bold"}}>
+                <div style={{display: "inline", fontSize: "16px", fontWeight: "bold", marginRight: "10px"}}>
                   Tag all
                 </div>
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-                <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4, minWidth: "70px"}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+                <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4, minWidth: "70px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{minWidth: "70px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
               </p>
               </div>
               <div  >
