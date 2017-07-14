@@ -90,6 +90,7 @@ class ChipViewTab extends React.Component{
       wrapper: {
         display: 'flex',
         flexWrap: 'wrap',
+        maxWidth:'1000px',
       },
     };
   }
@@ -733,7 +734,7 @@ class ViewTabSnippets extends React.Component{
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
-          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '18%' , height:"20"}}>
+          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '100px' , height:"20"}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={false}
@@ -763,7 +764,7 @@ class ViewTabSnippets extends React.Component{
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <div style={{float:"right",marginRight:"310px",fontSize: "14px", fontWeight: "500",width: '18%', height:'88%'}}>
+          <div style={{float:"right",marginRight:"325px",fontSize: "14px", fontWeight: "500",width: '100px', height:'88%'}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={false}
@@ -795,7 +796,7 @@ class ViewTabSnippets extends React.Component{
                 activeClassName={"active"} />
             <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px",marginRight:"20px", marginTop: "20px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
-                Tag all
+                <RaisedButton label="Tag all" disabled={true}  />
               </div>
               <div style={{float:'right',width:'100px', marginRight: "5px"}}>
                 <Select.Creatable
