@@ -162,11 +162,14 @@ class SearchTabs extends React.Component {
 	this.handleCloseLoadURLs();
 	this.uploadTag = "Neutral";
 	this.runLoadUrls(this.state.valueLoadUrls);
+<<<<<<< 84f1c1c33152c9d4ed0b99fdfc4f750fac51b60e
     }
     addCustomTagURLs(event){
       this.handleCloseLoadURLs();
       this.uploadTag = event.value;
       this.runLoadUrls(this.state.valueLoadUrls);
+=======
+>>>>>>> Improving the indentation.
     }
 
 
@@ -250,104 +253,104 @@ class SearchTabs extends React.Component {
                                     	         :<div/>;
 
 	return (
-		<div>
-		<Tabs
-            onChange={this.handleChange}
-            value={this.state.slideIndex}
-            inkBarStyle={{background: '#7940A0' ,height: '4px'}}
-            tabItemContainerStyle={{background: '#9A7BB0' ,height: '30px'}}
-		>
-		<Tab label={'WEB'} value={0}  style={styles.tab} />
-		<Tab label={'LOAD'} value={1} style={styles.tab} />
-            <Tab label={'SeedFinder'} value={2} style={styles.tab} />
-          </Tabs>
-          <SwipeableViews
-            index={this.state.slideIndex}
-            onChangeIndex={this.handleChange}
-            >
-            <div style={styles.slide} >
-              <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
-                <InputGroup >
-                  <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'177px'}}  />
-                  <DropdownButton
-                    componentClass={InputGroup.Button}
-                    id="input-dropdown-addon"
-                    pullRight="split-button-pull-right"
-                    onSelect={this.handleDropdownButton.bind(this)}
-                    title={this.state.search_engine}
-              >
-	      <MenuItem key="0" eventKey='GOOG' >Goog</MenuItem>
-              <MenuItem key="1" eventKey='BING'>Bing</MenuItem>
-                  </DropdownButton>
-                </InputGroup>
-              </Col>
-              <Col xs={2} md={2} >
-                <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
-                  backgroundColor="#26C6DA"
-                  hoverColor="#80DEEA"
-                  icon={<Search color={fullWhite} />}
-                  onTouchTap={this.RunQuery.bind(this)}
-                  />
-              </Col>
-            </div>
-            <div style={styles.slide}>
-              <Row>
-              <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-                <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-                  onChange={this.handleTextChangeLoadUrls.bind(this)}
-                  hintText="Write urls."
-                  hintStyle={{ marginLeft:10}}
-                  inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
-                  multiLine={true}
-                  rows={2}
-                  rowsMax={2}
-                />
-              </Col>
-              <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
-                <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
-                  backgroundColor="#26C6DA"
-                  hoverColor="#80DEEA"
-                  icon={<Search color={fullWhite} />}
-                  onTouchTap={this.loadFromTextInput.bind(this)}
-                 />
-              </Col>
-              </Row>
+    <div>
+      <Tabs
+      onChange={this.handleChange}
+      value={this.state.slideIndex}
+      inkBarStyle={{background: '#7940A0' ,height: '4px'}}
+      tabItemContainerStyle={{background: '#9A7BB0' ,height: '30px'}}
+      >
+        <Tab label={'WEB'} value={0}  style={styles.tab} />
+        <Tab label={'LOAD'} value={1} style={styles.tab} />
+        <Tab label={'SeedFinder'} value={2} style={styles.tab} />
+      </Tabs>
+      <SwipeableViews
+      index={this.state.slideIndex}
+      onChangeIndex={this.handleChange}
+      >
+      <div style={styles.slide} >
+        <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
+        <InputGroup >
+        <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'177px'}}  />
+        <DropdownButton
+        componentClass={InputGroup.Button}
+        id="input-dropdown-addon"
+        pullRight="split-button-pull-right"
+        onSelect={this.handleDropdownButton.bind(this)}
+        title={this.state.search_engine}
+        >
+        <MenuItem key="0" eventKey='GOOG' >Goog</MenuItem>
+        <MenuItem key="1" eventKey='BING'>Bing</MenuItem>
+        </DropdownButton>
+        </InputGroup>
+        </Col>
+        <Col xs={2} md={2} >
+        <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
+        backgroundColor="#26C6DA"
+        hoverColor="#80DEEA"
+        icon={<Search color={fullWhite} />}
+        onTouchTap={this.RunQuery.bind(this)}
+        />
+        </Col>
+      </div>
+      <div style={styles.slide}>
+        <Row>
+        <Col xs={10} md={10} style={{marginLeft:'0px'}}>
+        <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+        onChange={this.handleTextChangeLoadUrls.bind(this)}
+        hintText="Write urls."
+        hintStyle={{ marginLeft:10}}
+        inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+        multiLine={true}
+        rows={2}
+        rowsMax={2}
+        />
+        </Col>
+        <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
+        <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
+        backgroundColor="#26C6DA"
+        hoverColor="#80DEEA"
+        icon={<Search color={fullWhite} />}
+        onTouchTap={this.loadFromTextInput.bind(this)}
+        />
+        </Col>
+        </Row>
 
-	      <Row>
-	        <br />
-                <FlatButton style={{marginLeft:'15px'}}
-                  label="Load urls from file"
-            labelPosition="before"
-                  containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
-                <br />
+        <Row>
+        <br />
+        <FlatButton style={{marginLeft:'15px'}}
+        label="Load urls from file"
+        labelPosition="before"
+        containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
+        <br />
 
-	      <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
-	      {show_choose_file}
-                <br />
-                </Dialog>
+        <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
+        {show_choose_file}
+        <br />
+        </Dialog>
 
-	      </Row>
-            </div>
-            <div style={styles.slide}>
+        </Row>
+      </div>
+      <div style={styles.slide}>
 
-              <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
-                <InputGroup >
-                  <FormControl style={{width: '268px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
-                </InputGroup>
-              </Col>
-              <Col xs={2} md={1} >
-                <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
-                  backgroundColor="#26C6DA"
-                  hoverColor="#80DEEA"
-                  icon={<Search color={fullWhite} />}
-                  onTouchTap={this.runSeedFinderQuery.bind(this)}
-                  />
-              </Col>
+        <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
+        <InputGroup >
+        <FormControl style={{width: '268px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
+        </InputGroup>
+        </Col>
+        <Col xs={2} md={1} >
+        <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
+        backgroundColor="#26C6DA"
+        hoverColor="#80DEEA"
+        icon={<Search color={fullWhite} />}
+        onTouchTap={this.runSeedFinderQuery.bind(this)}
+        />
+        </Col>
 
 
-            </div>
-          </SwipeableViews>
-        </div>
+      </div>
+      </SwipeableViews>
+    </div>
       );
     }
   }
