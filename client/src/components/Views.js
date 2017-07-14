@@ -23,12 +23,12 @@ import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
 import NoFoundImg from '../images/images_not_available.png';
 import Searchicon from '../images/searchicon.png';
-import FlatButton from 'material-ui/FlatButton';
-import AddBox from 'material-ui/svg-icons/content/add-box';
-import Settings from 'material-ui/svg-icons/action/settings';
 import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
 import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
 import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
+import FlatButton from 'material-ui/FlatButton';
+import AddBox from 'material-ui/svg-icons/content/add-box';
+import Settings from 'material-ui/svg-icons/action/settings';
 import {fullWhite} from 'material-ui/styles/colors';
 
 import FontIcon from 'material-ui/FontIcon';
@@ -38,11 +38,19 @@ import IconButton from 'material-ui/IconButton';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import Select from 'react-select';
+
+
+//const recentsIcon = <RelevantFace />;
+//const favoritesIcon = <IrrelevantFace />;
+//const nearbyIcon = <NeutralFace />;
+
+import { ButtonGroup, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Dialog from 'material-ui/Dialog';
 const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
-import { ButtonGroup, Button, OverlayTrigger, Tooltip, Glyphicon} from 'react-bootstrap';
 
 import { stopWordFilter } from '../utils/stopword-filter.js';
 
@@ -85,6 +93,7 @@ class ChipViewTab extends React.Component{
       wrapper: {
         display: 'flex',
         flexWrap: 'wrap',
+        maxWidth:'1000px',
       },
     };
   }
@@ -264,6 +273,7 @@ class ViewTabSnippets extends React.Component{
       currentPagination:0,
       allRelevant:false,
       lengthTotalPages:0,
+      custom_tag_val:"",
       flatKeyBoard:false,
       openMultipleSelection: false,
       click_flag: false,
@@ -273,16 +283,37 @@ class ViewTabSnippets extends React.Component{
     this.state.allSearchQueries = this.buildQueryString(this.state.session);
     this.perPage=12; //default 12
     this.currentUrls=[];
+    this.customTagValue="";
     this.disableCrawlerButton=true;
+    this.customTagPages=[];
     this.multipleSelectionPages = [];
     this.check_click_down=false;
+    this.availableTags = [];
+    this.items= [];
+  }
+
+  getAvailableTags(){
+    $.post(
+  	  '/getAvailableTags',
+  	  {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+  	  function(tagsDomain) {
+  	      var selected_tags = [];
+  	      if(this.props.session['selected_tags'] !== undefined && this.props.session['selected_tags'] !== ""){
+  		        selected_tags = this.props.session['selected_tags'].split(",");
+  	      }
+          this.availableTags = Object.keys(tagsDomain['tags'] || {})
+                               .filter(tag => ["Neutral", "Irrelevant", "Relevant"].indexOf(tag) === -1)
+                               .map(tag => { return {value: tag, label: tag}; });
+
+  	  }.bind(this)
+    );
   }
 
   componentWillMount(){
+    this.getAvailableTags();
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthTotalPages:this.props.lengthTotalPages,
     });
-      console.log("MOUNT VIEW TAB SNIPPETS");
     this.updateOnlineClassifier(this.props.session);
     this.keyboardListener();
   }
@@ -293,12 +324,16 @@ class ViewTabSnippets extends React.Component{
         this.check_click_down=true;
       }
     }.bind(this), true);
+
     window.addEventListener('keyup', function(event) {
       if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
         this.currentUrls = [];
-        this.handleOpenMultipleSelection();
+        this.check_click_down=false;
+        if(this.state.click_flag && this.multipleSelectionPages.length>0)
+          this.handleOpenMultipleSelection();
         this.forceUpdate();
         this.currentUrls = this.multipleSelectionPages;
+        this.customTagPages = this.multipleSelectionPages;
         this.multipleSelectionPages=[];
       }
     }.bind(this), true);
@@ -360,6 +395,7 @@ class ViewTabSnippets extends React.Component{
           this.setState({
               accuracyOnlineLearning:accuracy,
           });
+	    this.updateOnlineAccuracy(accuracy);
         }
 
     	}.bind(this)
@@ -379,6 +415,10 @@ class ViewTabSnippets extends React.Component{
     );
   }
 
+    updateOnlineAccuracy(accuracy){
+	this.props.updateOnlineAccuracy(accuracy);
+    }
+
   handlePageClick(data){
     $("div").scrollTop(0);
     let selected = data.selected; //current page (number)
@@ -396,10 +436,11 @@ class ViewTabSnippets extends React.Component{
     $.post(
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
-      function(pages) {
+      function(message) {
         //updateing filters Tags
         this.props.reloadFilters();
         this.updateOnlineClassifier(this.props.session);
+        this.forceUpdate();
       }.bind(this)
     );
   }
@@ -422,11 +463,11 @@ class ViewTabSnippets extends React.Component{
                           this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
                         }
                       });
-            delete updatedPages[url]["tags"]; //Removing tag on the interface
+          //  delete updatedPages[url]["tags"]; //Removing tag on the interface
         }
         if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
-          updatedPages[url]["tags"]=[];
-          updatedPages[url]["tags"][auxKey] = tag;
+          updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
+          updatedPages[url]["tags"].push(tag);
         }
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           totalTagRemoved++;
@@ -471,52 +512,83 @@ class ViewTabSnippets extends React.Component{
       this.removeTags(arrayInputURL,  tag);
     }
     else{
-      if(updatedPages[url]["tags"]){
+  /*    if(updatedPages[url]["tags"]){
          isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
                                     return itemTag === tag;});
          if(isTagPresent) action = 'Remove';
-      }
-      // Apply or remove tag from urls.
-      var applyTagFlag = action === 'Apply';
-      var urls = [];
-      urls.push(url);
-      if (applyTagFlag && !isTagPresent) {
-        // Removes tag when the tag is present for item, and applies only when tag is not present for item.
-        var auxKey = "0";
-        if(updatedPages[url]["tags"] && (tag==="Relevant"  || tag==="Irrelevant")){ // || tag==="Neutral")){
-            var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
-                        var itemTag = updatedPages[url]["tags"][key].toString();
-                        if(itemTag==="Relevant" || itemTag==="Irrelevant"){// || itemTag==="Neutral"){
-                          delete updatedPages[url]["tags"][key];
-                          this.removeAddTagElasticSearch(urls, itemTag, false );
-                        }
-                      });
-            delete updatedPages[url]["tags"];
-        }
-        updatedPages[url]["tags"]=[];
-        updatedPages[url]["tags"][auxKey] = tag;
-        //checking if the new tag belong to the filter
-        if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
-          this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
-          delete updatedPages[url];
-        }
-        //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
-        this.setState({ pages:updatedPages});
-        this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
+      }*/
+    if(updatedPages[url]["tags"]){
+       isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
+                                  return itemTag === tag;});
+       if(isTagPresent) action = 'Remove';
+    }}
+    // Apply or remove tag from urls.
+    var applyTagFlag = action === 'Apply';
+    var urls = [];
+    urls.push(url);
 
+    if (applyTagFlag && !isTagPresent) {
+      // Removes tag when the tag is present for item, and applies only when tag is not present for item.
+      var auxKey = "0";
+      if(updatedPages[url]["tags"]){
+        var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                      var itemTag = updatedPages[url]["tags"][key].toString();
+                      if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+                        delete updatedPages[url]["tags"][key];
+                        this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                      }
+                    });
+        //  delete updatedPages[url]["tags"]; //Removing tag on the interface
       }
-      else{
-        delete updatedPages[url]["tags"];
-        this.setState({ pages:updatedPages});
-        this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
+      updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
+      updatedPages[url]["tags"].push(tag);
+      //checking if the new tag belong to the filter
+      if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
+        this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
+        delete updatedPages[url];
       }
+
+      //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
+      this.setState({ pages:updatedPages});
+      this.removeAddTagElasticSearch(urls, tag, applyTagFlag ); //Add tag
+
+    }
+    else{
+      if(updatedPages[url]["tags"].indexOf(tag) !== -1)
+        updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(tag), 1);
+      this.setState({ pages:updatedPages});
+      this.removeAddTagElasticSearch(urls, tag, applyTagFlag );//Remove tag
+
     }
   }
 
   getTag(k){
+    if((this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]) !== undefined)
     var uniqueTag = (Object.keys(this.state.pages[k]["tags"]).length > 0) ? (this.state.pages[k]["tags"]).toString():(this.state.pages[k]["tags"][Object.keys(this.state.pages[k]["tags"]).length-1]).toString();
     return uniqueTag;
+}
+ renderCustomTag(data){
+    return ( <Chip style={{margin:4}}
+        key={data.key}
+        onRequestDelete={() => this.handleRequestDelete(data.url,data.label)}
+      >
+        {data.label}
+      </Chip>
+    );
+}
+
+
+ handleRequestDelete = (url,key) => {
+  var current = [];
+  current.push(url);
+  var currentPages = this.state.pages;
+  if(currentPages[url]["tags"] !== undefined){
+    currentPages[url]["tags"].splice(currentPages[url]["tags"].indexOf(key),1);
   }
+  this.setState({pages:currentPages});
+	this.removeAddTagElasticSearch(current,key, false);
+  this.forceUpdate();
+    }
 
   clickEvent(urlLink){
     if(this.check_click_down){
@@ -543,6 +615,37 @@ class ViewTabSnippets extends React.Component{
     this.forceUpdate();
   };
 
+
+  addCustomTag(inputURL, val) {
+    if(val.constructor !== Array)
+      val = [val];
+    var check = false;
+    if(((val || [])[0] || {}).value) {
+      if(["Neutral", "Irrelevant", "Relevant"].indexOf(val[0].value) !== -1 ) {
+        this.availableTags.splice(0, 1);
+        return;
+      }
+        for(var i=0;i<inputURL.length;i++){
+          if(this.state.pages[inputURL[i]]["tags"]!== undefined)
+          {
+            if(this.state.pages[inputURL[i]]["tags"].map(k=>k.toLowerCase()).indexOf(val[0].value.toLowerCase())<0){
+              this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
+              this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+              this.removeAddTagElasticSearch(inputURL, val[0].value, true);
+            }
+
+          }
+
+        }
+
+        this.setState({multi:false,pages:this.state.pages});
+        this.handleCloseMultipleSelection();
+      	this.forceUpdate();
+
+      }
+    }
+
+
   buildQueryString = (session) =>
     [
       stopWordFilter(session.filter || ""),
@@ -559,24 +662,30 @@ class ViewTabSnippets extends React.Component{
       ""
     )
 
+
   render(){
-    //console.log("SnippetsPAges------------");
-    //'/setPagesTag', {'pages': pages.join('|'), 'tag': tag, 'applyTagFlag': applyTagFlag, 'session': JSON.stringify(session)}, onSetPagesTagCompleted);
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
     var id=0;
+    var c=0;
+    var value="";
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
       var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
       var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
 	  return [k, this.state.pages[k]]
-      });
-
+  });
       sorted_urlsList.sort(function(first, second) {
 	  return Number(first[1]["order"]) - Number(second[1]["order"])
       });
 
       var urlsList = sorted_urlsList.map((url_info, index)=>{
+
+        var chip=[];
+
+        if(this.customTagPages.indexOf(url_info[0])>-1){
+           value = this.state.custom_tag_val;
+        }
         var bgColor = "";
         bgColor = (this.state.change_color_urls.indexOf(url_info[0])> -1)?"silver":"white";
         if(url_info[1]["tags"]){
@@ -585,19 +694,39 @@ class ViewTabSnippets extends React.Component{
              if(uniqueTag==='Relevant')relev_total++;
              if(uniqueTag==='Irrelevant')irrelev_total++;
              if(uniqueTag==='Neutral')neut_total++;
+             var data = url_info[1]["tags"].filter(function(tag){
+               return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral"
+             }).map((tag, index)=>{
+                return {'key':index, 'label':tag, 'url':url_info[0]}
+             });
+             chip =data.map(this.renderCustomTag.bind(this));
         }
         else{
             neut_total++;
         }
         let colorTagRelev = "";
         let colorTagIrrelev="";
-        let colorTagNeutral="";
+        let colorTagNeutral="silver";
         let uniqueTag="";
+        var checkTagRelev=false;
+        var checkTagIrrelev=false;
+        var checkTagNeutral=false;
         if(url_info[1]["tags"]){
-           uniqueTag = this.getTag(url_info[0]);
-           colorTagRelev=(uniqueTag==='Relevant')?"#4682B4":"silver";
-           colorTagIrrelev=(uniqueTag==='Irrelevant')?"#CD5C5C":"silver";
-           colorTagNeutral=(uniqueTag==='Neutral')?'silver':"silver";
+           uniqueTag = url_info[1]["tags"];
+           for(var i=0;i<uniqueTag.length;i++){
+             if(uniqueTag[i] === 'Relevant' ){
+               checkTagRelev=true;
+             }
+             if(uniqueTag[i]==='Irrelevant'){
+               checkTagIrrelev=true;
+             }
+             if(uniqueTag[i]==='Neutral'){
+               checkTagNeutral=true;
+             }
+           }
+           colorTagRelev=(checkTagRelev)?"#4682B4":"silver";
+           colorTagIrrelev=(checkTagIrrelev)?"#CD5C5C":"silver";
+           colorTagNeutral=(checkTagNeutral )?'silver':"silver";
         }
         else{
            colorTagRelev=colorTagIrrelev=colorTagNeutral="silver";
@@ -614,10 +743,10 @@ class ViewTabSnippets extends React.Component{
         return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
-            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'60px',height:'60px', marginRight:'3px',}}/>
+            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'50px',height:'50px', marginRight:'3px',}}/>
             </p>
             <p style={{float:'right'}}>
-            <ButtonGroup bsSize="small">
+            <ButtonGroup>
               <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
                 <Button >
                    <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
@@ -634,6 +763,16 @@ class ViewTabSnippets extends React.Component{
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
+          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '100px' , height:"20"}}>
+            <Select.Creatable
+              placeholder="Add Tag"
+              multi={false}
+              options={this.availableTags}
+              onChange={this.addCustomTag.bind(this, [url_info[0]])}
+              ignoreCase={true}
+            />
+
+          </div>
             <p>
               <a
                 target="_blank"
@@ -655,6 +794,9 @@ class ViewTabSnippets extends React.Component{
                 />
               </p>
             </p>
+            <div style={{display: 'flex',flexWrap: 'wrap'}}>
+            {chip}
+            </div>
           </div>
           <br/>
           <Divider />
@@ -662,49 +804,80 @@ class ViewTabSnippets extends React.Component{
       </ListItem>;
     });
     const popUpButton = [
-      <p>
+      <p style={{height:"175px", marginTop:"50px" }}>
         <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
+          <div style={{float:"right",marginRight:"325px",fontSize: "14px", fontWeight: "500",width: '100px', height:'88%'}}>
+            <Select.Creatable
+              placeholder="Add Tag"
+              multi={false}
+              options={this.availableTags}
+              onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
+              ignoreCase={true}
+            />
+            </div>
       </p>
     ];
 
-    return (
-      <div  style={{maxWidth:1000}}>
-        <p style={{color: "#FFFFFF",}}>-</p>
-        <div style={{marginBottom:"50px"}}>
-          <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
-          <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Accuracy of onlineClassifier: {this.state.accuracyOnlineLearning} % </p>
-        </div>
-        <div style={{marginBottom:"50px", marginTop:"-10px"}}>
-          <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>
-          <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-            <RaisedButton label="Tag All " labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-            <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
-          </p>
-        </div>
-        <div style={{marginTop:"80px"}} >
-          <List>
-          {urlsList}
-          <Divider inset={true} />
-          </List>
-          <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
-            <ReactPaginate previousLabel={"previous"}
-                           nextLabel={"next"}
-                           initialPage={0}
-                           forcePage={this.state.currentPagination}
-                           breakLabel={<a >...</a>}
-                           breakClassName={"break-me"}
-                           pageCount={currentPageCount}
-                           marginPagesDisplayed={3}
-                           pageRangeDisplayed={8}
-                           onPageChange={this.handlePageClick.bind(this)}
-                           containerClassName={"pagination"}
-                           subContainerClassName={"pages pagination"}
-                           activeClassName={"active"} />
-          </div>
-        </div>
-        <Dialog title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
+      return (
+	      <div  style={{maxWidth:1000}}>
+              <p style={{color: "#FFFFFF",}}>-</p>
+              <div style={{  marginLeft:"20px"}} >
+              <ReactPaginate
+                previousLabel={"previous"}
+                nextLabel={"next"}
+                initialPage={0}
+                forcePage={this.state.currentPagination}
+                breakLabel={<a >...</a>}
+                breakClassName={"break-me"}
+                pageCount={currentPageCount}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={1}
+                onPageChange={this.handlePageClick.bind(this)}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"} />
+            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px",marginRight:"20px", marginTop: "20px"}}>
+              <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
+              <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
+              </div>
+              <div style={{float:'right',width:'100px', marginRight: "5px"}}>
+                <Select.Creatable
+                  placeholder="Add Tag"
+                  multi={false}
+                  options={this.availableTags}
+                  onChange={this.addCustomTag.bind(this, this.currentUrls)}
+                  ignoreCase={true}
+                  />
+              </div>
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+                <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+              </div>
+              </div>
+              <div >
+              <List>
+              {urlsList}
+              <Divider inset={true} />
+              </List>
+              <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
+              <ReactPaginate previousLabel={"previous"}
+          nextLabel={"next"}
+          initialPage={0}
+          forcePage={this.state.currentPagination}
+          breakLabel={<a >...</a>}
+          breakClassName={"break-me"}
+          pageCount={currentPageCount}
+          marginPagesDisplayed={3}
+          pageRangeDisplayed={8}
+          onPageChange={this.handlePageClick.bind(this)}
+          containerClassName={"pagination"}
+          subContainerClassName={"pages pagination"}
+          activeClassName={"active"} />
+              </div>
+              </div>
+        <Dialog  title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
         {popUpButton}
         </Dialog>
      </div>
@@ -734,6 +907,7 @@ class Views extends React.Component {
 	lengthTotalPages:0,
 	offset:0,
 	currentPagination:0,
+	accuracyOnlineLearning:0,
     };
     this.newPages = true;
     this.queryFromSearch=true;
@@ -773,6 +947,11 @@ class Views extends React.Component {
   // Update pagination
   handlePageClick(offset, currentPagination){
 	this.setState({offset: offset, currentPagination:currentPagination});
+  }
+  //Update the online accuracy
+    updateOnlineAccuracy(accuracy){
+	this.setState({accuracyOnlineLearning: accuracy});
+	this.forceUpdate();
   }
 
   //If there are any change in the session like a new filter, then getPages() is called.
@@ -825,25 +1004,26 @@ class Views extends React.Component {
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
-      handlePageClick={this.handlePageClick.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+      handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
+
 /*    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages === 0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;*/
 
+      var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
 
+      // REMOVE ACCURACY HARDCODING
       return (
-        <div>
-          <Tabs
-            onChange={this.handleChange}
-            value={this.state.slideIndex}
-            inkBarStyle={{background: '#7940A0' ,height: '4px'}}
-            tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
-              <Tab label="Snippets" value={0} style={styles.tab} />
-          </Tabs>
-          <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
-            <div style={styles.headline}>
+	      <div style={{maxWidth: 1000,}}>
+              <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
+              <div style={styles.headline}>
+	      <div style={{marginBottom:"30px"}}>
+              <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
+              <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Domain Model Accuracy: {this.state.accuracyOnlineLearning} % </p>
+              </div>
+
               <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
               {showPages}
             </div>
