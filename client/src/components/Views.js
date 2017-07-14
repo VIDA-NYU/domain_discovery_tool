@@ -326,7 +326,7 @@ class ViewTabSnippets extends React.Component{
         this.currentUrls = [];
         this.check_click_down=false;
         if(this.state.click_flag && this.multipleSelectionPages.length>0)
-        this.handleOpenMultipleSelection();
+          this.handleOpenMultipleSelection();
         this.forceUpdate();
         this.currentUrls = this.multipleSelectionPages;
         this.customTagPages = this.multipleSelectionPages;
@@ -794,9 +794,12 @@ class ViewTabSnippets extends React.Component{
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
               <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px", marginTop:"20px"}}>
-              <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-              <RaisedButton label="Tag All " labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-              <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+                <div style={{display: "inline", fontSize: "16px", fontWeight: "bold"}}>
+                  Tag all
+                </div>
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+                <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
               </p>
               </div>
               <div  >
