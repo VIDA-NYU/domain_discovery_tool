@@ -793,7 +793,7 @@ class ViewTabSnippets extends React.Component{
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
-            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px",marginRight:"20px"}}>
+            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px",marginRight:"20px", marginTop: "20px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
                 Tag all
               </div>
