@@ -90,6 +90,7 @@ class ChipViewTab extends React.Component{
       wrapper: {
         display: 'flex',
         flexWrap: 'wrap',
+        maxWidth:'1000px',
       },
     };
   }
