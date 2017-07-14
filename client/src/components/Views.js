@@ -324,6 +324,7 @@ class ViewTabSnippets extends React.Component{
     window.addEventListener('keyup', function(event) {
       if (event.keyCode === 91 || event.keyCode === 93 || event.keyCode ===17) {//91 and 93 are command keys.
         this.currentUrls = [];
+        this.check_click_down=false;
         if(this.state.click_flag && this.multipleSelectionPages.length>0)
         this.handleOpenMultipleSelection();
         this.forceUpdate();
