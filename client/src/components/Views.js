@@ -794,12 +794,21 @@ class ViewTabSnippets extends React.Component{
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
               <p style={{float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px", marginTop:"20px"}}>
+                <div style={{float:"left", width:'18%'}}>
+                <Select.Creatable
+                  placeholder="Add Tag"
+                  multi={false}
+                  options={this.availableTags}
+                  onChange={this.addCustomTag.bind(this, this.currentUrls)}
+                  ignoreCase={true}
+                />
+                </div>
               <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
               <RaisedButton label="Tag All " labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
               <RaisedButton label="Tag All " labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
               </p>
               </div>
-              <div  >
+              <div >
               <List>
               {urlsList}
               <Divider inset={true} />
