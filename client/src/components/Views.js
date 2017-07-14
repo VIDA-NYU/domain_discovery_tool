@@ -796,7 +796,7 @@ class ViewTabSnippets extends React.Component{
                 activeClassName={"active"} />
             <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px",marginRight:"20px", marginTop: "20px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
-                <RaisedButton label="Tag all" disabled={true}  />
+              <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
               </div>
               <div style={{float:'right',width:'100px', marginRight: "5px"}}>
                 <Select.Creatable
