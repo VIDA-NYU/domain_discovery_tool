@@ -50,10 +50,82 @@ class CrawlingView extends Component {
     super(props);
     this.state = {
       slideIndex: 0,
-      recommendations: this.getRecommendationResults()
+      recommendations: this.getRecommendationResults(),
+      pages:{},
     };
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
+  }
+
+  /**
+  * Get the current tlds in deep crawler tag.
+  * @method getCurrentTLDSfromDeepCrawlTag
+  * @param
+  */
+  getCurrentUrlsfromDeepCrawlTag(pages){
+    var urlsList = {};
+    var urlsList2 =  (Object.keys(pages).length>0)? Object.keys(pages)
+                        .map((k, index)=>{ urlsList[k]="1"; }) : {};
+    return Object.keys(urlsList)
+              .map(reco => [reco, urlsList[reco]])
+              .sort((a, b) => ((a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0)));
+  }
+
+  /**
+  * Creating session to get the urls with deep crawl tag.
+  * @method createSession
+  * @param {string} domainId
+  */
+  /*consultaQueries: {"search_engine":"GOOG","activeProjectionAlg":"Group by Correlation"
+  ,"domainId":"AVWjx7ciIf40cqEj1ACn","pagesCap":"100","fromDate":null,"toDate":null,
+  "filter":null,"pageRetrievalCriteria":"Most Recent","selected_morelike":"",
+  "model":{"positive":"Relevant","nagative":"Irrelevant"}}*/
+  createSession(domainId){
+    var session = {};
+    session['search_engine'] = "GOOG";
+    session['activeProjectionAlg'] = "Group by Correlation";
+    session['domainId'] = domainId;
+    session['pagesCap'] = "100";
+    session['fromDate'] = null;
+    session['toDate'] = null;
+    session['filter'] = null; //null
+    session['newPageRetrievalCriteria'] = "one";
+    session['pageRetrievalCriteria'] = "Tags";
+    session['selected_morelike'] = "";
+    session['selected_queries']="";
+    session['selected_tlds']="";
+    session['selected_aterms']="";
+    session['selected_tags']="Deep Crawl";
+    session['selected_model_tags']="";
+    session['selected_crawled_tags']="";
+    session['model'] = {};
+    session['model']['positive'] = "Relevant";
+    session['model']['nagative'] = "Irrelevant";
+    session["from"]=0;
+    return session;
+  }
+
+  //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
+  getPages(session){
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(session)},
+      function(pages) {
+        var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
+        this.setState({deepCrawlableDomains: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+        this.forceUpdate();
+      }.bind(this)
+    );
+  }
+
+  /**
+  * Set the deepCrawlableDomains state for displaying the current tlds in deep crawler tag.
+  * @method componentWillMount
+  * @param
+  */
+  componentWillMount(){
+    var session = this.createSession(this.props.domainId);
+    this.getPages(session);
   }
 
   handleChange = (value) => {
@@ -104,10 +176,10 @@ class CrawlingView extends Component {
   }
 
   /**
-   * Set the state for displaying the selected list of deep crawlable urls
-   * @method addDomainsOnSelection (onClick event)
-   * @param {Object} event
-   */
+  * Set the state for displaying the selected list of deep crawlable urls
+  * @method addDomainsOnSelection (onClick event)
+  * @param {Object} event
+  */
   addDomainsForDeepCrawl(event) {
     this.setState({
       deepCrawlableDomains: this.state.deepCrawlableDomains
@@ -115,220 +187,221 @@ class CrawlingView extends Component {
   }
 
   /**
-   * Assigns the selected rows of the table to deepCrawlableDomains key in state
-   * NOTE: MULTI SELECTION BUG PREVENTS USERS FROM DESELECTING ONE ROW WHEN
-   *       SELECT ALL IS INVOKED
-   *       https://github.com/callemall/material-ui/issues/5964
-   * @method addDomainsOnSelection (onRowSelection event)
-   * @param {number[]} id
-   */
+  * Assigns the selected rows of the table to deepCrawlableDomains key in state
+  * NOTE: MULTI SELECTION BUG PREVENTS USERS FROM DESELECTING ONE ROW WHEN
+  *       SELECT ALL IS INVOKED
+  *       https://github.com/callemall/material-ui/issues/5964
+  * @method addDomainsOnSelection (onRowSelection event)
+  * @param {number[]} id
+  */
   addDomainsOnSelection(selectedRows) {
     this.state.deepCrawlableDomains = selectedRows === "all" ?
-                                      this.state.recommendations
-                                      :
-                                      this.state.recommendations
-                                      .filter((reco, index) => selectedRows.indexOf(index) !== -1);
+    this.state.recommendations
+    :
+    this.state.recommendations
+    .filter((reco, index) => selectedRows.indexOf(index) !== -1);
   }
 
   // Download the pages of uploaded urls from file
   runLoadUrlsFileQuery(txt) {
-      var allTextLines = txt.split(/\r\n|\n/);
-this.setState({ "valueLoadUrls": allTextLines.join(" ")});
+    var allTextLines = txt.split(/\r\n|\n/);
+    this.setState({ "valueLoadUrls": allTextLines.join(" ")});
   }
-      //Reading file's content.
-      handleFile(event) {
-        const reader = new FileReader();
-        const file = event.target.files[0];
-        reader.onload = (upload) => {
-          this.runLoadUrlsFileQuery(upload.target.result);
-        };
-        reader.readAsText(file);
-      }
+  //Reading file's content.
+  handleFile(event) {
+    const reader = new FileReader();
+    const file = event.target.files[0];
+    reader.onload = (upload) => {
+      this.runLoadUrlsFileQuery(upload.target.result);
+    };
+    reader.readAsText(file);
+  }
 
-      loadFromFile = () => {
+  loadFromFile = () => {
     this.fromFile = true;
     //this.handleOpenLoadURLs();
-      }
-      handleCloseLoadURLs = () => {
-        console.log("");
+  }
+  handleCloseLoadURLs = () => {
+    console.log("");
     //this.setState({openLoadURLs: false,});
-      };
+  };
 
-randomFunction(){
-  console.log("");
-}
+  randomFunction(){
+    console.log("");
+  }
+
   render() {
     const actionsLoadURLs = [
-  		<FlatButton label="Cancel" primary={true} onTouchTap={this.randomFunction}/>,
-  		<FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
-  		<FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
-  		<FlatButton label="Neutral" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
-  	];
+                              <FlatButton label="Cancel" primary={true} onTouchTap={this.randomFunction}/>,
+                              <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
+                              <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
+                              <FlatButton label="Neutral" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
+                            ];
 
     let show_choose_file = (this.fromFile || this.fromFile === undefined)? <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}>"Upload URLs from file"</p> <br />
-  	                                         <FlatButton style={{marginLeft:'15px'}}
-  	                                         label="Choose URLs File"
-  	                                         labelPosition="before"
-  	                                         containerElement="label">
-  	                                         <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-  	                                         </FlatButton>
-  	                                         </Row>
-                                      	         :<div/>;
+                            <FlatButton style={{marginLeft:'15px'}}
+                            label="Choose URLs File"
+                            labelPosition="before"
+                            containerElement="label">
+                            <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+                            </FlatButton>
+                            </Row>
+                            :<div/>;
 
     return (
       <div style={styles.content}>
         <Tabs
-          onChange={this.handleChange}
-          value={this.state.slideIndex}
-          inkBarStyle={{background: '#7940A0' ,height: '4px'}}
-          tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
+        onChange={this.handleChange}
+        value={this.state.slideIndex}
+        inkBarStyle={{background: '#7940A0' ,height: '4px'}}
+        tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
         >
-          <Tab label="Deep crawling" value={0} />
-          <Tab label="Focused crawling " value={1} />
+        <Tab label="Deep crawling" value={0} />
+        <Tab label="Focused crawling " value={1} />
         </Tabs>
         <SwipeableViews
-          index={this.state.slideIndex}
-          onChangeIndex={this.handleChange}
+        index={this.state.slideIndex}
+        onChangeIndex={this.handleChange}
         >
-          <div id={"deep-crawling"} style={styles.slide}>
+        <div id={"deep-crawling"} style={styles.slide}>
           <Row>
-            <Col xs={4} md={3} style={{marginLeft:'0px', borderRightStyle:"ridge", borderRightColor:"white", borderWidth: 1,}}>
+          <Col xs={4} md={3} style={{marginLeft:'0px', borderRightStyle:"ridge", borderRightColor:"white", borderWidth: 1,}}>
 
-            <Row>
-              <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-                <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-                onChange={this.randomFunction.bind(this)}
-                hintText="Write urls."
-                hintStyle={{ marginLeft:10}}
-                inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
-                multiLine={true}
-                rows={2}
-                rowsMax={2}
-                />
-                </Col>
-                <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
-                <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
-                backgroundColor="#26C6DA"
-                hoverColor="#80DEEA"
-                icon={<Search color={fullWhite} />}
-                onTouchTap={this.randomFunction.bind(this)}
-                />
-              </Col>
-
-            </Row>
-
-            <Row>
-            <br />
-            <FlatButton style={{marginLeft:'15px'}}
-            label="Load urls from file"
-            labelPosition="before"
-            containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
-            <br />
-
-            <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
-            {show_choose_file}
-            <br />
-            </Dialog>
-
-            </Row>
-
-            </Col>
-            <ToolbarSeparator style={{ marginTop:"5px"}} />
-            <Col xs={4} md={5} style={{marginLeft:'0px'}}>
-              <Paper
-                zDepth={1}
-                style={{height: 510, width: 500, margin: 20, textAlign: 'center',
-                        display: 'inline-block'}}
-              >
-                <Table
-                  height={"510px"}
-                  selectable={false}
-                  multiSelectable={false}
-                >
-                  <TableBody
-                    displayRowCheckbox={false}
-                    deselectOnClickaway={false}
-                    showRowHover={true}
-                    stripedRows={false}
-                  >
-                    {
-                      (this.state.deepCrawlableDomains || []).map((row, index) => (
-                        <TableRow key={index}>
-                          <TableRowColumn>{row[0]}</TableRowColumn>
-                          <TableRowColumn>{row[1]}</TableRowColumn>
-                        </TableRow>
-                      ))
-                    }
-                  </TableBody>
-                </Table>
-              </Paper>
-
-              <RaisedButton label="Start Crawler" style={{margin: 12,}} />
-            </Col>
-            <Col xs={4} md={4} style={{marginLeft:'0px'}}>
-              <p>
-              Recommendations:
-              </p>
-              <Table
-                height={"300px"}
-                fixedHeader={true}
-                fixedFooter={true}
-                selectable={true}
-                multiSelectable={true}
-                onRowSelection={this.addDomainsOnSelection}
-              >
-                <TableHeader
-                  displaySelectAll={true}
-                  adjustForCheckbox={true}
-                  enableSelectAll={true}
-                >
-                  <TableRow>
-                    <TableHeaderColumn>DOMAIN</TableHeaderColumn>
-                    <TableHeaderColumn>COUNT?</TableHeaderColumn>
-                  </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={true}
-                  deselectOnClickaway={false}
-                  showRowHover={true}
-                  stripedRows={false}
-                >
-                  {this.state.recommendations.map((row) => (
-                    <TableRow key={row[0]}>
-                      <TableRowColumn>{row[0]}</TableRowColumn>
-                      <TableRowColumn>{row[1]}</TableRowColumn>
-                    </TableRow>
-                    ))}
-                </TableBody>
-                <TableFooter adjustForCheckbox={true} />
-              </Table>
-
-              <RaisedButton
-                disabled={false}
-                style={{ height:20, marginTop: 15}}
-                labelStyle={{textTransform: "capitalize"}}
-                buttonStyle={{height:19}}
-                label="CRAWLING IN THE DEEP"
-                onClick={this.addDomainsForDeepCrawl}
-              />
+          <Row>
+          <Col xs={10} md={10} style={{marginLeft:'0px'}}>
+          <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+          onChange={this.randomFunction.bind(this)}
+          hintText="Write urls."
+          hintStyle={{ marginLeft:10}}
+          inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+          multiLine={true}
+          rows={2}
+          rowsMax={2}
+          />
           </Col>
+          <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
+          <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
+          backgroundColor="#26C6DA"
+          hoverColor="#80DEEA"
+          icon={<Search color={fullWhite} />}
+          onTouchTap={this.randomFunction.bind(this)}
+          />
+          </Col>
+
           </Row>
 
-          </div>
+          <Row>
+          <br />
+          <FlatButton style={{marginLeft:'15px'}}
+          label="Load urls from file"
+          labelPosition="before"
+          containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
+          <br />
 
-          <div id="focused-crawling" style={styles.slide}>
-            focused crawling
-            <br />
-            <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                          label="Start Crawler" labelPosition="before" containerElement="label" />
-                          <br />
-            <IconMenu
-            iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-            label="Model" labelPosition="before" containerElement="label" />} >
-                <MenuItem value="1" primaryText="Create Model" />
-                <MenuItem value="2" primaryText="Settings" />
-            </IconMenu>
-          </div>
+          <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
+          {show_choose_file}
+          <br />
+          </Dialog>
+
+          </Row>
+
+          </Col>
+          <ToolbarSeparator style={{ marginTop:"5px"}} />
+          <Col xs={4} md={5} style={{marginLeft:'0px'}}>
+          <Paper
+          zDepth={1}
+          style={{height: 510, width: 500, margin: 20, textAlign: 'center',
+          display: 'inline-block'}}
+          >
+          <Table
+          height={"510px"}
+          selectable={false}
+          multiSelectable={false}
+          >
+          <TableBody
+          displayRowCheckbox={false}
+          deselectOnClickaway={false}
+          showRowHover={true}
+          stripedRows={false}
+          >
+          {
+            (this.state.deepCrawlableDomains || []).map((row, index) => (
+              <TableRow key={index}>
+              <TableRowColumn>{row[0]}</TableRowColumn>
+              <TableRowColumn>{row[1]}</TableRowColumn>
+              </TableRow>
+            ))
+          }
+          </TableBody>
+          </Table>
+          </Paper>
+
+          <RaisedButton label="Start Crawler" style={{margin: 12,}} />
+          </Col>
+          <Col xs={4} md={4} style={{marginLeft:'0px'}}>
+          <p>
+          Recommendations:
+          </p>
+          <Table
+          height={"300px"}
+          fixedHeader={true}
+          fixedFooter={true}
+          selectable={true}
+          multiSelectable={true}
+          onRowSelection={this.addDomainsOnSelection}
+          >
+          <TableHeader
+          displaySelectAll={true}
+          adjustForCheckbox={true}
+          enableSelectAll={true}
+          >
+          <TableRow>
+          <TableHeaderColumn>DOMAIN</TableHeaderColumn>
+          <TableHeaderColumn>COUNT?</TableHeaderColumn>
+          </TableRow>
+          </TableHeader>
+          <TableBody
+          displayRowCheckbox={true}
+          deselectOnClickaway={false}
+          showRowHover={true}
+          stripedRows={false}
+          >
+          {this.state.recommendations.map((row) => (
+            <TableRow key={row[0]}>
+            <TableRowColumn>{row[0]}</TableRowColumn>
+            <TableRowColumn>{row[1]}</TableRowColumn>
+            </TableRow>
+          ))}
+          </TableBody>
+          <TableFooter adjustForCheckbox={true} />
+          </Table>
+
+          <RaisedButton
+          disabled={false}
+          style={{ height:20, marginTop: 15}}
+          labelStyle={{textTransform: "capitalize"}}
+          buttonStyle={{height:19}}
+          label="CRAWLING IN THE DEEP"
+          onClick={this.addDomainsForDeepCrawl}
+          />
+          </Col>
+          </Row>
+        </div>
+
+        <div id="focused-crawling" style={styles.slide}>
+          focused crawling
+          <br />
+          <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+          label="Start Crawler" labelPosition="before" containerElement="label" />
+          <br />
+          <IconMenu
+          iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+          label="Model" labelPosition="before" containerElement="label" />} >
+          <MenuItem value="1" primaryText="Create Model" />
+          <MenuItem value="2" primaryText="Settings" />
+          </IconMenu>
+        </div>
+        
         </SwipeableViews>
       </div>
     );
