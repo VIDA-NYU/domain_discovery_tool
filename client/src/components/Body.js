@@ -345,7 +345,7 @@ class Body extends Component{
     {
       return(
         <div>
-        <CrawlingView />
+        <CrawlingView domainId={this.state.currentDomain} />
         </div>
       )
     }
