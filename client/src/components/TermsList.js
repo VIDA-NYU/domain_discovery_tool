@@ -212,44 +212,46 @@ class TermsList extends Component {
       // State machine: Neutral -> Positive -> Negative -> Neutral.
       var updateListTerm = this.state.listTerms;
       var tags = term['tags'];
-      if(tags.indexOf('Custom') < 0){
-	  var wordId = term['word'].replace(/ /g, "_");
-	  wordId = '#'+wordId;
-	  var color = ($(wordId).css("fill")).toString();
-	  var isPositive = color=="rgb(0, 0, 255)";//tags.indexOf('Positive') != -1;
-	  var isNegative = color=="rgb(255, 0, 0)";//tags.indexOf('Negative') != -1;
-	  var arrayTerms = [];
-	  arrayTerms.push(term['word']);
-	  var objIndex = updateListTerm.findIndex((obj => obj.word === term['word']));
-	  var newTag = "";
-	  if (isPositive) {
-              // It was positive, so it turns negative.
-              this.setTermTag(arrayTerms, 'Positive', false, this.props.session);
-              this.setTermTag(arrayTerms, 'Negative', true, this.props.session);
-              //Update object's name property.
-              newTag = 'Negative';
+      if(tags.indexOf('Custom') < 0){ //if 'Custom' is not present.
+    	  var wordId = term['word'].replace(/ /g, "_");
+    	  wordId = '#'+wordId;
+    	  var color = ($(wordId).css("fill")).toString();
+    	  var isPositive = color=="rgb(0, 0, 255)";//tags.indexOf('Positive') != -1;
+    	  var isNegative = color=="rgb(255, 0, 0)";//tags.indexOf('Negative') != -1;
+    	  var arrayTerms = [];
+    	  arrayTerms.push(term['word']);
+    	  var objIndex = updateListTerm.findIndex((obj => obj.word === term['word']));
+    	  var newTag = "";
+    	  if (isPositive) {
+                  // It was positive, so it turns negative.
+                  this.setTermTag(arrayTerms, 'Positive', false, this.props.session);
+                  this.setTermTag(arrayTerms, 'Negative', true, this.props.session);
+                  //Update object's name property.
+                  newTag = 'Negative';
 
-              // Removes tag 'Positive' from tags array, adds 'Negative'.
-              $(wordId).css('fill','red');
-	  }
-	  else if (isNegative) {
-              // It was Negative, so it turns Neutral.
-              this.setTermTag(arrayTerms, 'Negative', false, this.props.session);
-              newTag = 'Neutral';
-              // Removes tag 'Negative' from tags array.
-              $(wordId).css('fill','black');
-	  }
-	  else {
-              // It was Neutral, so it turns Positive.
-              this.setTermTag(arrayTerms, 'Positive', true, this.props.session);
-              newTag = 'Positive';
-              // Adds tag 'Positive' to tags array.
-              $(wordId).css('fill','blue');
-	  }
-          updateListTerm[objIndex].tags = newTag;
-
-	  this.setState({listTerms:updateListTerm});
-	  this.props.updateListTermParent(updateListTerm);
+                  // Removes tag 'Positive' from tags array, adds 'Negative'.
+                  $(wordId).css('fill','red');
+                  updateListTerm[objIndex].tags = newTag;
+    	  }
+    	  else if (isNegative) {
+                  // It was Negative, so it turns Neutral.
+                  this.setTermTag(arrayTerms, 'Negative', false, this.props.session);
+                  newTag = 'Neutral';
+                  // Removes tag 'Negative' from tags array.
+                  $(wordId).css('fill','black');
+                  updateListTerm[objIndex].tags.splice(0,1);
+    	  }
+    	  else {
+                  // It was Neutral, so it turns Positive.
+                  this.setTermTag(arrayTerms, 'Positive', true, this.props.session);
+                  newTag = 'Positive';
+                  // Adds tag 'Positive' to tags array.
+                  $(wordId).css('fill','blue');
+                  updateListTerm[objIndex].tags = newTag;
+    	  }
+              //updateListTerm[objIndex].tags = newTag;
+    	  this.setState({listTerms:updateListTerm});
+    	  this.props.updateListTermParent(updateListTerm);
       }
     }
 
