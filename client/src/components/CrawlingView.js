@@ -16,6 +16,7 @@ import IconMenu from 'material-ui/IconMenu';
 import {
   Table,
   TableBody,
+  TableFooter,
   TableHeader,
   TableHeaderColumn,
   TableRow,
@@ -49,7 +50,10 @@ class CrawlingView extends Component {
     super(props);
     this.state = {
       slideIndex: 0,
+      recommendations: this.getRecommendationResults()
     };
+    this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
+    this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
   }
 
   handleChange = (value) => {
@@ -58,6 +62,73 @@ class CrawlingView extends Component {
       "valueLoadUrls":"",
     });
   };
+
+  getRecommendationResults() {
+    var recommendations = {
+      'pajiba.com': 1,
+      'pamageller.com': 6,
+      'pandemic.internationalsos.com': 1,
+      'papmiket.com': 1,
+      'paper.wenweipo.com': 1,
+      'papers.ssrn.com': 1,
+      'parabarbarian.blogspot.com': 25,
+      'parade.com': 15,
+      'paraitesinblackandwhite.blogspot.com': 6,
+      'parusfamilia.com': 10,
+      'papers.ssrn.com': 1,
+      'parabarbarian.blogspot.com': 25,
+      'parade.com': 15,
+      'parasitesinblackandwhite.blogspot.com': 6,
+      'paratusfamilia.com': 10,
+      'papers.ssrn.com': 1,
+      'parabarbarian.blogspot.com': 25,
+      'parade.com': 15,
+      'parasitesinblackandwhite.com': 6,
+      'paratufia.com': 10,
+      'papes.ssrn.com': 1,
+      'parabarbarian.blogspot.com': 25,
+      'parade.com': 15,
+      'parasitenblackandwhite.blogspot.com': 6,
+      'paratusamilia.com': 10,
+      'paratufia.': 10,
+      'papes.ssrcom': 1,
+      'parabarbariancom': 25,
+      'com': 15,
+      '.blogspot.com': 6,
+      '.com': 10
+    };
+
+    return Object.keys(recommendations)
+            .map(reco => [reco, recommendations[reco]])
+            .sort((a, b) => ((a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0)));
+  }
+
+  /**
+   * Set the state for displaying the selected list of deep crawlable urls
+   * @method addDomainsOnSelection (onClick event)
+   * @param {Object} event
+   */
+  addDomainsForDeepCrawl(event) {
+    this.setState({
+      deepCrawlableDomains: this.state.deepCrawlableDomains
+    });
+  }
+
+  /**
+   * Assigns the selected rows of the table to deepCrawlableDomains key in state
+   * NOTE: MULTI SELECTION BUG PREVENTS USERS FROM DESELECTING ONE ROW WHEN
+   *       SELECT ALL IS INVOKED
+   *       https://github.com/callemall/material-ui/issues/5964
+   * @method addDomainsOnSelection (onRowSelection event)
+   * @param {number[]} id
+   */
+  addDomainsOnSelection(selectedRows) {
+    this.state.deepCrawlableDomains = selectedRows === "all" ?
+                                      this.state.recommendations
+                                      :
+                                      this.state.recommendations
+                                      .filter((reco, index) => selectedRows.indexOf(index) !== -1);
+  }
 
   // Download the pages of uploaded urls from file
   runLoadUrlsFileQuery(txt) {
@@ -121,7 +192,7 @@ randomFunction(){
         >
           <div id={"deep-crawling"} style={styles.slide}>
           <Row>
-            <Col xs={4} md={4} style={{marginLeft:'0px', borderRightStyle:"ridge", borderRightColor:"white", borderWidth: 1,}}>
+            <Col xs={4} md={3} style={{marginLeft:'0px', borderRightStyle:"ridge", borderRightColor:"white", borderWidth: 1,}}>
 
             <Row>
               <Col xs={10} md={10} style={{marginLeft:'0px'}}>
@@ -163,40 +234,83 @@ randomFunction(){
 
             </Col>
             <ToolbarSeparator style={{ marginTop:"5px"}} />
-            <Col xs={4} md={4} style={{marginLeft:'0px'}}>
-            <Paper zDepth={1} style={{  height: 510,
-  width: 400, margin: 20,
-  textAlign: 'center',
-  display: 'inline-block',}} />
-  <RaisedButton label="Start Crawler" style={{margin: 12,}} />
+            <Col xs={4} md={5} style={{marginLeft:'0px'}}>
+              <Paper
+                zDepth={1}
+                style={{height: 510, width: 500, margin: 20, textAlign: 'center',
+                        display: 'inline-block'}}
+              >
+                <Table
+                  height={"510px"}
+                  selectable={false}
+                  multiSelectable={false}
+                >
+                  <TableBody
+                    displayRowCheckbox={false}
+                    deselectOnClickaway={false}
+                    showRowHover={true}
+                    stripedRows={false}
+                  >
+                    {
+                      (this.state.deepCrawlableDomains || []).map((row, index) => (
+                        <TableRow key={index}>
+                          <TableRowColumn>{row[0]}</TableRowColumn>
+                          <TableRowColumn>{row[1]}</TableRowColumn>
+                        </TableRow>
+                      ))
+                    }
+                  </TableBody>
+                </Table>
+              </Paper>
 
+              <RaisedButton label="Start Crawler" style={{margin: 12,}} />
             </Col>
             <Col xs={4} md={4} style={{marginLeft:'0px'}}>
               <p>
               Recommendations:
               </p>
-              <Table>
-                 <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                   <TableRow>
-                     <TableHeaderColumn>Domain</TableHeaderColumn>
-                     <TableHeaderColumn>Total</TableHeaderColumn>
-                   </TableRow>
-                 </TableHeader>
-                 <TableBody displayRowCheckbox={false}>
-                   <TableRow>
-                     <TableRowColumn>www.domain1.com</TableRowColumn>
-                     <TableRowColumn>12</TableRowColumn>
-                   </TableRow>
-                   <TableRow>
-                     <TableRowColumn>www.domain2.com</TableRowColumn>
-                     <TableRowColumn>13</TableRowColumn>
-                   </TableRow>
-                   <TableRow>
-                     <TableRowColumn>www.domain3.com</TableRowColumn>
-                     <TableRowColumn>14</TableRowColumn>
-                   </TableRow>
-                 </TableBody>
-               </Table>
+              <Table
+                height={"300px"}
+                fixedHeader={true}
+                fixedFooter={true}
+                selectable={true}
+                multiSelectable={true}
+                onRowSelection={this.addDomainsOnSelection}
+              >
+                <TableHeader
+                  displaySelectAll={true}
+                  adjustForCheckbox={true}
+                  enableSelectAll={true}
+                >
+                  <TableRow>
+                    <TableHeaderColumn>DOMAIN</TableHeaderColumn>
+                    <TableHeaderColumn>COUNT?</TableHeaderColumn>
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  displayRowCheckbox={true}
+                  deselectOnClickaway={false}
+                  showRowHover={true}
+                  stripedRows={false}
+                >
+                  {this.state.recommendations.map((row) => (
+                    <TableRow key={row[0]}>
+                      <TableRowColumn>{row[0]}</TableRowColumn>
+                      <TableRowColumn>{row[1]}</TableRowColumn>
+                    </TableRow>
+                    ))}
+                </TableBody>
+                <TableFooter adjustForCheckbox={true} />
+              </Table>
+
+              <RaisedButton
+                disabled={false}
+                style={{ height:20, marginTop: 15}}
+                labelStyle={{textTransform: "capitalize"}}
+                buttonStyle={{height:19}}
+                label="CRAWLING IN THE DEEP"
+                onClick={this.addDomainsForDeepCrawl}
+              />
           </Col>
           </Row>
 
