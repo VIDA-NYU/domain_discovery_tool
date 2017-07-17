@@ -401,8 +401,8 @@ class CrawlingView extends Component {
          hintStyle={{ marginLeft:10}}
          inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
          multiLine={true}
-         rows={2}
-         rowsMax={2}
+         rows={6}
+         rowsMax={6}
          />
          </Col>
          </Row>
