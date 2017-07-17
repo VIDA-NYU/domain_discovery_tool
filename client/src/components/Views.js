@@ -460,11 +460,6 @@ class ViewTabSnippets extends React.Component{
                       if(updatedPages[url]["tags"][key] !== null){
                         console.log(updatedPages[url]["tags"][key]);
                         var itemTag = updatedPages[url]["tags"][key].toString();
-              /*          if(itemTag==="Relevant" || itemTag==="Irrelevant"){
-                          delete updatedPages[url]["tags"][key];
-                      //    this.handleRequestDelete(url,itemTag);
-                          this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
-                        }*/
                         if(tag==="Neutral"){
                           if(itemTag!=="Neutral"){
                         //      updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(key),1);
@@ -480,10 +475,10 @@ class ViewTabSnippets extends React.Component{
           //  delete updatedPages[url]["tags"]; //Removing tag on the interface
         }
 
-  //      if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
+    //    if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
           updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral",null].indexOf(tag) === -1);
           updatedPages[url]["tags"].push(tag);
-//      }
+  //   }
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           totalTagRemoved++;
           delete updatedPages[url];
@@ -527,11 +522,11 @@ class ViewTabSnippets extends React.Component{
       this.removeTags(arrayInputURL,  tag);
     }
     else{
-  /*    if(updatedPages[url]["tags"]){
+      if(updatedPages[url]["tags"]){
          isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
                                     return itemTag === tag;});
          if(isTagPresent) action = 'Remove';
-      }*/
+      }
     if(updatedPages[url]["tags"]){
        isTagPresent = Object.keys(updatedPages[url]["tags"]).map(key => updatedPages[url]["tags"][key]).some(function(itemTag) {
                                   return itemTag === tag;});
@@ -549,11 +544,9 @@ class ViewTabSnippets extends React.Component{
         var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
                       if(updatedPages[url]["tags"][key] !== null){
                       var itemTag = updatedPages[url]["tags"][key].toString();
-            
+
                       if(tag==="Neutral"){
                         if(itemTag!=="Neutral"){
-                    //      updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(key),1);
-
                       delete updatedPages[url]["tags"][key];
                       this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
 
@@ -768,7 +761,7 @@ class ViewTabSnippets extends React.Component{
         return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
-            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'50px',height:'50px', marginRight:'3px',}}/>
+            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'45px',height:'45px', marginRight:'3px',}}/>
             </p>
             <p style={{float:'right'}}>
             <ButtonGroup>
