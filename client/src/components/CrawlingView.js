@@ -15,6 +15,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconMenu from 'material-ui/IconMenu';
 import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
 import IconButton from 'material-ui/IconButton';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import {
   Table,
   TableBody,
@@ -369,12 +370,21 @@ class CrawlingView extends Component {
           }
           </TableBody>
           </Table>
-
           </Paper>
 
           <RaisedButton label="Start Crawler" style={{margin: 12,}} />
           </Col>
           <Col xs={4} md={4} style={{marginLeft:'0px'}}>
+
+        <Card>
+         <CardHeader
+           title="Recommendations:"
+           subtitle="Subtitle"
+           actAsExpander={false}
+           showExpandableButton={false}
+         />
+
+         <CardText expandable={true}>
           <p>
           Recommendations:
           </p>
@@ -420,6 +430,9 @@ class CrawlingView extends Component {
           label="Add selected urls"
           onClick={this.addDomainsForDeepCrawl}
           />
+          </CardText>
+        </Card>
+
           </Col>
           </Row>
         </div>
