@@ -281,50 +281,15 @@ class CrawlingView extends Component {
           <Row>
           <Col xs={4} md={3} style={{marginLeft:'0px', borderRightStyle:"ridge", borderRightColor:"white", borderWidth: 1,}}>
 
-          <Row>
-          <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-          <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-          onChange={this.randomFunction.bind(this)}
-          hintText="Write urls."
-          hintStyle={{ marginLeft:10}}
-          inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
-          multiLine={true}
-          rows={2}
-          rowsMax={2}
-          />
-          </Col>
-          <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
-          <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
-          backgroundColor="#26C6DA"
-          hoverColor="#80DEEA"
-          icon={<Search color={fullWhite} />}
-          onTouchTap={this.randomFunction.bind(this)}
-          />
-          </Col>
 
-          </Row>
-
-          <Row>
-          <br />
-          <FlatButton style={{marginLeft:'15px'}}
-          label="Load urls from file"
-          labelPosition="before"
-          containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
-          <br />
-
-          <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
-          {show_choose_file}
-          <br />
-          </Dialog>
-
-          </Row>
 
           </Col>
+
           <ToolbarSeparator style={{ marginTop:"5px"}} />
           <Col xs={4} md={5} style={{marginLeft:'0px'}}>
           <Paper
           zDepth={1}
-          style={{height: 600, width: 500, margin: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
+          style={{height: 600, width: 500, marginBottom: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
           >
           <Table height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
@@ -376,20 +341,17 @@ class CrawlingView extends Component {
           </Col>
           <Col xs={4} md={4} style={{marginLeft:'0px'}}>
 
-        <Card>
+        <Card initiallyExpanded={true}>
          <CardHeader
            title="Recommendations:"
-           subtitle="Subtitle"
-           actAsExpander={false}
+           actAsExpander={true}
            showExpandableButton={false}
+           style={{fontWeight:'bold',}}
          />
 
-         <CardText expandable={true}>
-          <p>
-          Recommendations:
-          </p>
+         <CardText expandable={true} >
           <Table
-          height={"300px"}
+          height={"250px"}
           fixedHeader={true}
           fixedFooter={true}
           selectable={true}
@@ -432,6 +394,51 @@ class CrawlingView extends Component {
           />
           </CardText>
         </Card>
+
+        <Card initiallyExpanded={true}>
+         <CardHeader
+           title="Load urls:"
+           actAsExpander={true}
+           showExpandableButton={false}
+           style={{fontWeight:'bold',}}
+         />
+         <CardText expandable={true} >
+         <Row>
+         <Col xs={10} md={10} style={{marginLeft:'0px'}}>
+         <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+         onChange={this.randomFunction.bind(this)}
+         hintText="Write urls."
+         hintStyle={{ marginLeft:10}}
+         inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+         multiLine={true}
+         rows={2}
+         rowsMax={2}
+         />
+         </Col>
+         <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
+         <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
+         backgroundColor="#26C6DA"
+         hoverColor="#80DEEA"
+         icon={<Search color={fullWhite} />}
+         onTouchTap={this.randomFunction.bind(this)}
+         />
+         </Col>
+         </Row>
+
+         <Row>
+         <br />
+         <FlatButton style={{marginLeft:'15px'}}
+         label="Load urls from file"
+         labelPosition="before"
+         containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
+         <br />
+         <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
+         {show_choose_file}
+         <br />
+         </Dialog>
+         </Row>
+         </CardText>
+         </Card>
 
           </Col>
           </Row>
