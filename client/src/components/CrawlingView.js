@@ -13,6 +13,8 @@ import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconMenu from 'material-ui/IconMenu';
+import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
+import IconButton from 'material-ui/IconButton';
 import {
   Table,
   TableBody,
@@ -229,6 +231,10 @@ class CrawlingView extends Component {
   randomFunction(){
     console.log("");
   }
+  handleRemodeUrlFromList(url, index){
+    console.log("remove rul");
+    console.log(url +", "+index);
+  }
 
   render() {
     const actionsLoadURLs = [
@@ -329,6 +335,13 @@ class CrawlingView extends Component {
               <TableRow key={index}>
               <TableRowColumn>{row[0]}</TableRowColumn>
               <TableRowColumn>{row[1]}</TableRowColumn>
+              <TableRowColumn style={{textAlign: 'right'}}>
+                <div>
+                  <IconButton onClick={this.handleRemodeUrlFromList.bind(this,row[0], index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
+                    <RemoveURL />
+                  </IconButton>
+                </div>
+              </TableRowColumn>
               </TableRow>
             ))
           }
@@ -401,7 +414,7 @@ class CrawlingView extends Component {
           <MenuItem value="2" primaryText="Settings" />
           </IconMenu>
         </div>
-        
+
         </SwipeableViews>
       </div>
     );
