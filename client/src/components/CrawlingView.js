@@ -299,9 +299,9 @@ class CrawlingView extends Component {
           <Col xs={4} md={5} style={{marginLeft:'0px'}}>
           <Paper
           zDepth={1}
-          style={{height: 600, width: 500, marginBottom: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
+          style={{height: 600, width: 650, marginBottom: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
           >
-          <Table height={"210px"} selectable={false} multiSelectable={false} >
+          <Table height={"210px"} style={{width:600}}selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
@@ -351,18 +351,18 @@ class CrawlingView extends Component {
           </Col>
           <Col xs={4} md={4} style={{marginLeft:'0px'}}>
 
-        <Card initiallyExpanded={true}>
+        <Card initiallyExpanded={true} style={{width:800}}>
          <CardHeader
-           title="Adding Urls:"
+           title="Recommendations"
            actAsExpander={false}
            showExpandableButton={false}
-           style={{fontWeight:'bold', marginBottom:"-40px",}}
+           style={{fontWeight:'bold', marginBottom:"-70px",}}
          />
 
          <CardText expandable={false} >
            <MultiselectTable
              rows={this.state.recommendations}
-             columnHeadings={["DOMAIN", "COUNT?"]}
+             columnHeadings={["DOMAIN", "COUNT"]}
              onRowSelection={this.addDomainsOnSelection}
            />
 
@@ -371,18 +371,18 @@ class CrawlingView extends Component {
           style={{ height:20, marginTop: 15}}
           labelStyle={{textTransform: "capitalize"}}
           buttonStyle={{height:19}}
-          label="Add selected urls"
+          label="Add to deep crawl"
           onClick={this.addDomainsForDeepCrawl}
           />
           </CardText>
         </Card>
 
-        <Card initiallyExpanded={true}>
+        <Card initiallyExpanded={true} style={{width:800}}>
          <CardHeader
            title={<RaisedButton
            disabled={false}
            style={{ height:20, marginTop: 15}}
-           labelStyle={{textTransform: "capitalize"}}
+           labelStyle={{textTransform: "capitalize", fontWeight:"bold", fontSize:14,}}
            buttonStyle={{height:19}}
            label="Loading external urls"
            onClick={this.handleOpenDialogLoadUrl.bind(this)}
@@ -399,20 +399,26 @@ class CrawlingView extends Component {
          onChange={this.handleTextChangeLoadUrls.bind(this)}
          floatingLabelText="Write urls (one by line)."
          hintStyle={{ marginLeft:10}}
+         textareaStyle={{margin:10, padding:10,}}
          inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
          multiLine={true}
          rows={6}
          rowsMax={6}
+         floatingLabelStylex={{marginLeft:10, marginRight:10,}}
          />
          </Col>
          </Row>
 
          <Row>
          <br />
-         <FlatButton style={{marginLeft:'15px'}}
+         <RaisedButton
+         disabled={false}
+         style={{ height:20, marginTop: 15}}
+         labelStyle={{textTransform: "capitalize"}}
+         buttonStyle={{height:19}}
          label="Load urls from file"
-         labelPosition="before"
-         containerElement="label" onTouchTap={this.loadFromFile.bind(this)}/>
+         onClick={this.loadFromFile.bind(this)}
+         />
          <br />
          <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
          {show_choose_file}
