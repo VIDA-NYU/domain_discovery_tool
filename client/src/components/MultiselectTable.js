@@ -65,14 +65,20 @@ class MultiselectTable extends Component {
         >
           <TableHeader
             displaySelectAll={false}
-            adjustForCheckbox={true}
+            adjustForCheckbox={false}
             enableSelectAll={false}
           >
             <TableRow>
-            <TableHeaderColumn colSpan="2">
+            <TableHeaderColumn colSpan="3">
             </TableHeaderColumn>
             </TableRow>
             <TableRow>
+            <TableHeaderColumn>
+              <Checkbox
+                checked={this.state.selectAll}
+                onCheck={this.toggleSelectOrDeselectAll}
+              />
+            </TableHeaderColumn>
               {
                 this.props.columnHeadings.
                   map(column =>
