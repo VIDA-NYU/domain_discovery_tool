@@ -54,13 +54,6 @@ class MultiselectTable extends Component {
   render() {
     return (
       <div>
-        {
-          this.state.selectAll
-          ?
-          <RaisedButton label="DESELECT ALL" onClick={this.toggleSelectOrDeselectAll}/>
-          :
-          <RaisedButton label="SELECT ALL" onClick={this.toggleSelectOrDeselectAll}/>
-        }
         <Table
           height={"300px"}
           fixedHeader={true}
