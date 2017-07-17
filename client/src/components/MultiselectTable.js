@@ -92,7 +92,19 @@ class MultiselectTable extends Component {
                       {column}
                     </TableHeaderColumn>
                   )
-                }
+              }
+          </TableRow>
+        </TableHeader>
+        <TableBody
+          displayRowCheckbox={true}
+          deselectOnClickaway={false}
+          showRowHover={true}
+          stripedRows={false}
+        >
+          {this.props.rows.map((row, index) => (
+            <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
+              <TableRowColumn>{row[0]}</TableRowColumn>
+              <TableRowColumn>{row[1]}</TableRowColumn>
             </TableRow>
         </TableHeader>
         <TableBody
