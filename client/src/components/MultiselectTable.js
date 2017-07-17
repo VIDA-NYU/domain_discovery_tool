@@ -67,13 +67,14 @@ class MultiselectTable extends Component {
             displaySelectAll={false}
             adjustForCheckbox={false}
             enableSelectAll={false}
+            headerStyle={{textAlign:'left',}}
           >
             <TableRow>
             <TableHeaderColumn colSpan="3">
             </TableHeaderColumn>
             </TableRow>
             <TableRow>
-            <TableHeaderColumn>
+            <TableHeaderColumn style={{width:10,}}>
               <Checkbox
                 checked={this.state.selectAll}
                 onCheck={this.toggleSelectOrDeselectAll}
