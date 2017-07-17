@@ -20,6 +20,12 @@ class MultiselectTable extends Component {
     this.onRowSelection = this.onRowSelection.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.resetSelection) {
+      this.setState({selectedRows: [], selectAll: false});
+    }
+  }
+
   /**
    * Manipulate this.state.selectedRows to mimick SelectAll / DeselectAll
    * @method toggleSelectOrDeselectAll (onClick event)
@@ -46,47 +52,48 @@ class MultiselectTable extends Component {
    */
   onRowSelection(selectedRows) {
     selectedRows = (selectedRows === 'none' ? [] : selectedRows);
-    this.setState({selectedRows});
+    this.setState({selectedRows, selectAll: false});
     this.props.onRowSelection && this.props.onRowSelection(selectedRows);
   }
 
 
   render() {
     return (
-      <Table
-        height={"300px"}
-        fixedHeader={true}
-        fixedFooter={true}
-        selectable={true}
-        multiSelectable={true}
-        onRowSelection={this.onRowSelection}
-      >
-        <TableHeader
-          displaySelectAll={false}
-          adjustForCheckbox={false}
-          enableSelectAll={false}
+      <div>
+        <Table
+          height={"390px"}
+          fixedHeader={true}
+          fixedFooter={true}
+          selectable={true}
+          multiSelectable={true}
+          onRowSelection={this.onRowSelection}
+          style={{width:700}}
         >
-          <TableRow>
-            <TableHeaderColumn colSpan="7" style={{textAlign: 'center'}}>
-              Recommendations
-            </TableHeaderColumn>
-          </TableRow>
-          <TableRow>
-            <TableHeaderColumn>
-              <Checkbox
-                checked={this.state.selectAll}
-                onCheck={this.toggleSelectOrDeselectAll}
-              />
-            </TableHeaderColumn>
-            {
-              this.props.columnHeadings.
-                map(column =>
-                  <TableHeaderColumn colSpan="3">
-                    {column}
-                  </TableHeaderColumn>
-                )
-            }
-          </TableRow>
+          <TableHeader
+            displaySelectAll={false}
+            adjustForCheckbox={false}
+            enableSelectAll={false}
+            headerStyle={{textAlign:'left',}}
+          >
+            <TableRow>
+              <TableHeaderColumn colSpan="10">
+              </TableHeaderColumn>
+            </TableRow>
+            <TableRow>
+              <TableHeaderColumn colSpan="1">
+                <Checkbox
+                  checked={this.state.selectAll}
+                  onCheck={this.toggleSelectOrDeselectAll}
+                />
+              </TableHeaderColumn>
+                {
+                  this.props.columnHeadings.map(column =>
+                    <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30}}>
+                      {column}
+                    </TableHeaderColumn>
+                  )
+                }
+            </TableRow>
         </TableHeader>
         <TableBody
           displayRowCheckbox={true}
@@ -94,15 +101,18 @@ class MultiselectTable extends Component {
           showRowHover={true}
           stripedRows={false}
         >
-          {this.props.rows.map((row, index) => (
-            <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
-              <TableRowColumn>{row[0]}</TableRowColumn>
-              <TableRowColumn>{row[1]}</TableRowColumn>
-            </TableRow>
-            ))}
+          {
+            this.props.rows.map((row, index) =>
+              <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
+                <TableRowColumn>{row[0]}</TableRowColumn>
+                <TableRowColumn>{row[1]}</TableRowColumn>
+              </TableRow>
+            )
+          }
         </TableBody>
         <TableFooter adjustForCheckbox={true} />
       </Table>
+      </div>
     )
   }
 }
@@ -110,7 +120,8 @@ class MultiselectTable extends Component {
 MultiselectTable.propTypes = {
   rows: PropTypes.array,
   columnHeadings: PropTypes.array,
-  onRowSelection: PropTypes.func
+  onRowSelection: PropTypes.func,
+  resetSelection: PropTypes.bool
 }
 
 export default MultiselectTable;
