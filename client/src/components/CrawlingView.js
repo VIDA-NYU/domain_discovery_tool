@@ -27,6 +27,8 @@ import {
 } from 'material-ui/Table';
 import $ from 'jquery';
 
+import MultiselectTable from './MultiselectTable';
+
 const styles = {
   headline: {
     fontSize: 24,
@@ -191,18 +193,12 @@ class CrawlingView extends Component {
 
   /**
   * Assigns the selected rows of the table to deepCrawlableDomains key in state
-  * NOTE: MULTI SELECTION BUG PREVENTS USERS FROM DESELECTING ONE ROW WHEN
-  *       SELECT ALL IS INVOKED
-  *       https://github.com/callemall/material-ui/issues/5964
   * @method addDomainsOnSelection (onRowSelection event)
-  * @param {number[]} id
+  * @param {number[]} selectedRows
   */
   addDomainsOnSelection(selectedRows) {
-    this.state.deepCrawlableDomains = selectedRows === "all" ?
-    this.state.recommendations
-    :
-    this.state.recommendations
-    .filter((reco, index) => selectedRows.indexOf(index) !== -1);
+    this.state.deepCrawlableDomains = this.state.recommendations
+                                        .filter((reco, index) => selectedRows.indexOf(index) !== -1);
   }
 
   // Download the pages of uploaded urls from file
@@ -350,39 +346,11 @@ class CrawlingView extends Component {
          />
 
          <CardText expandable={true} >
-          <Table
-          height={"250px"}
-          fixedHeader={true}
-          fixedFooter={true}
-          selectable={true}
-          multiSelectable={true}
-          onRowSelection={this.addDomainsOnSelection}
-          >
-          <TableHeader
-          displaySelectAll={true}
-          adjustForCheckbox={true}
-          enableSelectAll={true}
-          >
-          <TableRow>
-          <TableHeaderColumn>DOMAIN</TableHeaderColumn>
-          <TableHeaderColumn>COUNT?</TableHeaderColumn>
-          </TableRow>
-          </TableHeader>
-          <TableBody
-          displayRowCheckbox={true}
-          deselectOnClickaway={false}
-          showRowHover={true}
-          stripedRows={false}
-          >
-          {this.state.recommendations.map((row) => (
-            <TableRow key={row[0]}>
-            <TableRowColumn>{row[0]}</TableRowColumn>
-            <TableRowColumn>{row[1]}</TableRowColumn>
-            </TableRow>
-          ))}
-          </TableBody>
-          <TableFooter adjustForCheckbox={true} />
-          </Table>
+           <MultiselectTable
+             rows={this.state.recommendations}
+             columnHeadings={["DOMAIN", "COUNT?"]}
+             onRowSelection={this.addDomainsOnSelection}
+           />
 
           <RaisedButton
           disabled={false}
