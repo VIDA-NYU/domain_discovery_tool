@@ -328,7 +328,7 @@ class CrawlingView extends Component {
           <Table height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
-              <TableHeaderColumn colSpan="1" tooltip="Deep crawl" style={{textAlign: 'center'}}>
+              <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
                 Deep crawl
               </TableHeaderColumn>
             </TableRow>
@@ -347,7 +347,7 @@ class CrawlingView extends Component {
           <Table height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
-              <TableHeaderColumn colSpan="2" tooltip="Recommendations to deep crawl" style={{textAlign: 'center'}}>
+              <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
                 Recommendations to deep crawl
               </TableHeaderColumn>
             </TableRow>
@@ -417,7 +417,7 @@ class CrawlingView extends Component {
           style={{ height:20, marginTop: 15}}
           labelStyle={{textTransform: "capitalize"}}
           buttonStyle={{height:19}}
-          label="CRAWLING IN THE DEEP"
+          label="Add selected urls"
           onClick={this.addDomainsForDeepCrawl}
           />
           </Col>
