@@ -55,13 +55,13 @@ class MultiselectTable extends Component {
     return (
       <div>
         <Table
-          height={"300px"}
+          height={"390px"}
           fixedHeader={true}
           fixedFooter={true}
           selectable={true}
           multiSelectable={true}
           onRowSelection={this.onRowSelection}
-          style={{width:900}}
+          style={{width:700}}
         >
           <TableHeader
             displaySelectAll={false}

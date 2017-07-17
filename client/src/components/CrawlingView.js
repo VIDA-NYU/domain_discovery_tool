@@ -277,6 +277,7 @@ class CrawlingView extends Component {
                         <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseDialogLoadUrl.bind(this)}/>,
                         <FlatButton label="Add" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
                             ];
+    const heightTableStyle = { height: "10px", padding: "0px"};
 
     return (
       <div style={styles.content}>
@@ -297,23 +298,35 @@ class CrawlingView extends Component {
           <Row>
 
           <Col xs={6} md={6} style={{marginLeft:'0px'}}>
-          <Paper
-          zDepth={1}
-          style={{height: 600,  marginBottom: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
+
+          <Card
           >
+         <CardHeader
+           title="Domains for crawling"
+           actAsExpander={false}
+           showExpandableButton={false}
+           style={{fontWeight:'bold', marginBottom:"-70px"}}
+         />
+
+          <CardText expandable={false} >
+
           <Table height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
+              <TableHeaderColumn >
+              </TableHeaderColumn>
+            </TableRow>
+            <TableRow style={heightTableStyle}>
               <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
-                Deep crawl
+                Annotated urls
               </TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
+          <TableBody  showRowHover={false} displayRowCheckbox={false} deselectOnClickaway={false} stripedRows={false}>
           {
             (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
-              <TableRow key={index}>
-              <TableRowColumn>{row[0]}</TableRowColumn>
+              <TableRow displayBorder={false} key={index} style={heightTableStyle}>
+              <TableRowColumn style={heightTableStyle}>{row[0]}</TableRowColumn>
               </TableRow>
             ))
           }
@@ -322,6 +335,10 @@ class CrawlingView extends Component {
 
           <Table height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
+            <TableRow>
+              <TableHeaderColumn >
+              </TableHeaderColumn>
+            </TableRow>
             <TableRow>
               <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
                 Added urls to deep crawl
@@ -345,7 +362,8 @@ class CrawlingView extends Component {
           }
           </TableBody>
           </Table>
-          </Paper>
+          </CardText>
+          </Card>
 
           <RaisedButton label="Start Crawler" style={{margin: 12,}} />
           </Col>
@@ -399,12 +417,13 @@ class CrawlingView extends Component {
          onChange={this.handleTextChangeLoadUrls.bind(this)}
          floatingLabelText="Write urls (one by line)."
          hintStyle={{ marginLeft:10}}
-         textareaStyle={{margin:10, padding:10,}}
+         textareaStyle={{margin:0,}}
          inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
          multiLine={true}
          rows={6}
          rowsMax={6}
-         floatingLabelStylex={{marginLeft:10, marginRight:10,}}
+         floatingLabelStylex={{marginLeft:30, marginRight:30,}}
+         underlineStyle={{marginLeft:30, marginRight:30,}}
          />
          </Col>
          </Row>
