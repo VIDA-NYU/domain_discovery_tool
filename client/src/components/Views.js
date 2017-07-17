@@ -457,18 +457,33 @@ class ViewTabSnippets extends React.Component{
         var auxKey = "0";
         if(updatedPages[url]["tags"]){
             var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
+                      if(updatedPages[url]["tags"][key] !== null){
+                        console.log(updatedPages[url]["tags"][key]);
                         var itemTag = updatedPages[url]["tags"][key].toString();
-                        if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+              /*          if(itemTag==="Relevant" || itemTag==="Irrelevant"){
                           delete updatedPages[url]["tags"][key];
+                      //    this.handleRequestDelete(url,itemTag);
                           this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                        }*/
+                        if(tag==="Neutral"){
+                          if(itemTag!=="Neutral"){
+                        //      updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(key),1);
+                            delete updatedPages[url]["tags"][key];
+                            this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+
+                          }
                         }
+                      }
+
                       });
+
           //  delete updatedPages[url]["tags"]; //Removing tag on the interface
         }
-        if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
-          updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
+
+  //      if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
+          updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral",null].indexOf(tag) === -1);
           updatedPages[url]["tags"].push(tag);
-        }
+//      }
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           totalTagRemoved++;
           delete updatedPages[url];
