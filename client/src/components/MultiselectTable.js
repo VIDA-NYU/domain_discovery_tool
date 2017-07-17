@@ -61,6 +61,7 @@ class MultiselectTable extends Component {
           selectable={true}
           multiSelectable={true}
           onRowSelection={this.onRowSelection}
+          style={{width:900}}
         >
           <TableHeader
             displaySelectAll={false}
@@ -68,15 +69,14 @@ class MultiselectTable extends Component {
             enableSelectAll={false}
           >
             <TableRow>
-              <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
-                Recommendations
-              </TableHeaderColumn>
+            <TableHeaderColumn colSpan="2">
+            </TableHeaderColumn>
             </TableRow>
             <TableRow>
               {
                 this.props.columnHeadings.
                   map(column =>
-                    <TableHeaderColumn>
+                    <TableHeaderColumn  style={{textAlign:'left', margin:"-10px", height:30,}}>
                       {column}
                     </TableHeaderColumn>
                   )
