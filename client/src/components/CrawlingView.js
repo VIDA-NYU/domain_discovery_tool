@@ -231,9 +231,13 @@ class CrawlingView extends Component {
   randomFunction(){
     console.log("");
   }
+
+  //Removing selected url from the table to deepCrawlableDomains
   handleRemodeUrlFromList(url, index){
-    console.log("remove rul");
-    console.log(url +", "+index);
+    var urlsList = this.state.deepCrawlableDomains;
+    var deepCrawlableDomains_aux =  urlsList.splice(index,1);
+    this.setState({deepCrawlableDomains:urlsList});
+    this.forceUpdate();
   }
 
   render() {
