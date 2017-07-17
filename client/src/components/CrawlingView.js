@@ -58,7 +58,10 @@ class CrawlingView extends Component {
       recommendations: this.getRecommendationResults(),
       pages:{},
       openDialogLoadUrl: false,
+      deepCrawlableDomains: [],
+      resetSelection: false
     };
+    this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
   }
@@ -187,8 +190,17 @@ class CrawlingView extends Component {
   * @param {Object} event
   */
   addDomainsForDeepCrawl(event) {
+    let deepCrawlableIndex = this.state.deepCrawlableDomains.map(domain => domain[2]);
+    this.selectedRows.forEach((rowIndex) => {
+      if(deepCrawlableIndex.indexOf(rowIndex) === -1) {
+        let recommendation = this.state.recommendations.find((reco, index) => index === rowIndex);
+        this.state.deepCrawlableDomains.push([recommendation[0], recommendation[1], rowIndex]);
+      }
+    })
+
     this.setState({
-      deepCrawlableDomains: this.state.deepCrawlableDomains
+      deepCrawlableDomains: this.state.deepCrawlableDomains,
+      resetSelection: true
     });
   }
 
@@ -198,8 +210,7 @@ class CrawlingView extends Component {
   * @param {number[]} selectedRows
   */
   addDomainsOnSelection(selectedRows) {
-    this.state.deepCrawlableDomains = this.state.recommendations
-                                        .filter((reco, index) => selectedRows.indexOf(index) !== -1);
+    this.selectedRows = selectedRows;
   }
 
   // Download the pages of uploaded urls from file
@@ -382,6 +393,7 @@ class CrawlingView extends Component {
              rows={this.state.recommendations}
              columnHeadings={["DOMAIN", "COUNT"]}
              onRowSelection={this.addDomainsOnSelection}
+             resetSelection={this.state.resetSelection}
            />
 
           <RaisedButton
