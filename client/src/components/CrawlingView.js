@@ -114,14 +114,14 @@ class CrawlingView extends Component {
       {'session': JSON.stringify(session)},
       function(pages) {
         var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
-        this.setState({deepCrawlableDomains: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+        this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
         this.forceUpdate();
       }.bind(this)
     );
   }
 
   /**
-  * Set the deepCrawlableDomains state for displaying the current tlds in deep crawler tag.
+  * Set the deepCrawlableDomainsFromTag state for displaying the current tlds in deep crawler tag.
   * @method componentWillMount
   * @param
   */
@@ -234,8 +234,11 @@ class CrawlingView extends Component {
 
   //Removing selected url from the table to deepCrawlableDomains
   handleRemodeUrlFromList(url, index){
+    //var total_deepCrawlableDomains = this.state.deepCrawlableDomainsFromTag.length;
     var urlsList = this.state.deepCrawlableDomains;
+    console.log(urlsList);
     var deepCrawlableDomains_aux =  urlsList.splice(index,1);
+    console.log(urlsList);
     this.setState({deepCrawlableDomains:urlsList});
     this.forceUpdate();
   }
@@ -320,19 +323,36 @@ class CrawlingView extends Component {
           <Col xs={4} md={5} style={{marginLeft:'0px'}}>
           <Paper
           zDepth={1}
-          style={{height: 510, width: 500, margin: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
+          style={{height: 600, width: 500, margin: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
           >
-          <Table
-          height={"510px"}
-          selectable={false}
-          multiSelectable={false}
-          >
-          <TableBody
-          displayRowCheckbox={false}
-          deselectOnClickaway={false}
-          showRowHover={true}
-          stripedRows={false}
-          >
+          <Table height={"210px"} selectable={false} multiSelectable={false} >
+          <TableHeader displaySelectAll={false} enableSelectAll={false} >
+            <TableRow>
+              <TableHeaderColumn colSpan="1" tooltip="Deep crawl" style={{textAlign: 'center'}}>
+                Deep crawl
+              </TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
+          {
+            (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
+              <TableRow key={index}>
+              <TableRowColumn>{row[0]}</TableRowColumn>
+              </TableRow>
+            ))
+          }
+          </TableBody>
+          </Table>
+
+          <Table height={"210px"} selectable={false} multiSelectable={false} >
+          <TableHeader displaySelectAll={false} enableSelectAll={false} >
+            <TableRow>
+              <TableHeaderColumn colSpan="2" tooltip="Recommendations to deep crawl" style={{textAlign: 'center'}}>
+                Recommendations to deep crawl
+              </TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
           {
             (this.state.deepCrawlableDomains || []).map((row, index) => (
               <TableRow key={index}>
@@ -349,6 +369,7 @@ class CrawlingView extends Component {
           }
           </TableBody>
           </Table>
+
           </Paper>
 
           <RaisedButton label="Start Crawler" style={{margin: 12,}} />
