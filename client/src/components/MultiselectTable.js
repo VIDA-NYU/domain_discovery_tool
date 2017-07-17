@@ -68,6 +68,11 @@ class MultiselectTable extends Component {
             enableSelectAll={false}
           >
             <TableRow>
+              <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
+                Recommendations
+              </TableHeaderColumn>
+            </TableRow>
+            <TableRow>
               {
                 this.props.columnHeadings.
                   map(column =>
