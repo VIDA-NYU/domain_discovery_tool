@@ -296,12 +296,12 @@ class CrawlingView extends Component {
         <div id={"deep-crawling"} style={styles.slide}>
           <Row>
 
-          <Col xs={4} md={5} style={{marginLeft:'0px'}}>
+          <Col xs={6} md={6} style={{marginLeft:'0px'}}>
           <Paper
           zDepth={1}
-          style={{height: 600, width: 650, marginBottom: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
+          style={{height: 600,  marginBottom: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
           >
-          <Table height={"210px"} style={{width:600}}selectable={false} multiSelectable={false} >
+          <Table height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
@@ -349,9 +349,9 @@ class CrawlingView extends Component {
 
           <RaisedButton label="Start Crawler" style={{margin: 12,}} />
           </Col>
-          <Col xs={4} md={4} style={{marginLeft:'0px'}}>
+          <Col xs={6} md={6} style={{marginLeft:'0px'}}>
 
-        <Card initiallyExpanded={true} style={{width:800}}>
+        <Card initiallyExpanded={true} >
          <CardHeader
            title="Recommendations"
            actAsExpander={false}
@@ -377,7 +377,7 @@ class CrawlingView extends Component {
           </CardText>
         </Card>
 
-        <Card initiallyExpanded={true} style={{width:800}}>
+        <Card initiallyExpanded={true} >
          <CardHeader
            title={<RaisedButton
            disabled={false}
