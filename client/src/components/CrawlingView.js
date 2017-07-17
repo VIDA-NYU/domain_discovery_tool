@@ -57,6 +57,7 @@ class CrawlingView extends Component {
       slideIndex: 0,
       recommendations: this.getRecommendationResults(),
       pages:{},
+      openDialogLoadUrl: false,
     };
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
@@ -225,6 +226,16 @@ class CrawlingView extends Component {
     //this.setState({openLoadURLs: false,});
   };
 
+  //Handling open/close load url Dialog
+  handleOpenDialogLoadUrl = () => {
+    this.setState({openDialogLoadUrl: true});
+    this.focusTextField();
+  };
+  handleCloseDialogLoadUrl  = () => {
+    this.setState({openDialogLoadUrl: false, newNameTerm:"",});
+    this.termsFromFile=[]; // Empting the terms from file.
+  };
+
   randomFunction(){
     console.log("");
   }
@@ -238,6 +249,11 @@ class CrawlingView extends Component {
     console.log(urlsList);
     this.setState({deepCrawlableDomains:urlsList});
     this.forceUpdate();
+  }
+
+  //Handling value into loadUrls textfield
+  handleTextChangeLoadUrls(e){
+    this.setState({ "valueLoadUrls": e.target.value});
   }
 
   render() {
@@ -257,6 +273,10 @@ class CrawlingView extends Component {
                             </FlatButton>
                             </Row>
                             :<div/>;
+    const actionsLoadUrls = [
+                        <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseDialogLoadUrl.bind(this)}/>,
+                        <FlatButton label="Add" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
+                            ];
 
     return (
       <div style={styles.content}>
@@ -275,13 +295,7 @@ class CrawlingView extends Component {
         >
         <div id={"deep-crawling"} style={styles.slide}>
           <Row>
-          <Col xs={4} md={3} style={{marginLeft:'0px', borderRightStyle:"ridge", borderRightColor:"white", borderWidth: 1,}}>
 
-
-
-          </Col>
-
-          <ToolbarSeparator style={{ marginTop:"5px"}} />
           <Col xs={4} md={5} style={{marginLeft:'0px'}}>
           <Paper
           zDepth={1}
@@ -310,7 +324,7 @@ class CrawlingView extends Component {
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
-                Recommendations to deep crawl
+                Added urls to deep crawl
               </TableHeaderColumn>
             </TableRow>
           </TableHeader>
@@ -340,12 +354,12 @@ class CrawlingView extends Component {
         <Card initiallyExpanded={true}>
          <CardHeader
            title="Recommendations:"
-           actAsExpander={true}
+           actAsExpander={false}
            showExpandableButton={false}
            style={{fontWeight:'bold',}}
          />
 
-         <CardText expandable={true} >
+         <CardText expandable={false} >
            <MultiselectTable
              rows={this.state.recommendations}
              columnHeadings={["DOMAIN", "COUNT?"]}
@@ -365,30 +379,31 @@ class CrawlingView extends Component {
 
         <Card initiallyExpanded={true}>
          <CardHeader
-           title="Load urls:"
-           actAsExpander={true}
+           title="Loading external urls:"
+           actAsExpander={false}
            showExpandableButton={false}
            style={{fontWeight:'bold',}}
          />
          <CardText expandable={true} >
+         <RaisedButton
+         disabled={false}
+         style={{ height:20, marginTop: 15}}
+         labelStyle={{textTransform: "capitalize"}}
+         buttonStyle={{height:19}}
+         label="Load urls"
+         onClick={this.handleOpenDialogLoadUrl.bind(this)}
+         />
+         <Dialog title="Adding urls" actions={actionsLoadUrls} modal={false} open={this.state.openDialogLoadUrl} onRequestClose={this.handleCloseDialogLoadUrl.bind(this)}>
          <Row>
          <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-         <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-         onChange={this.randomFunction.bind(this)}
-         hintText="Write urls."
+         <TextField style={{height:200, width:'260px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+         onChange={this.handleTextChangeLoadUrls.bind(this)}
+         floatingLabelText="Write urls (one by line)."
          hintStyle={{ marginLeft:10}}
-         inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+         inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
          multiLine={true}
          rows={2}
          rowsMax={2}
-         />
-         </Col>
-         <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
-         <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
-         backgroundColor="#26C6DA"
-         hoverColor="#80DEEA"
-         icon={<Search color={fullWhite} />}
-         onTouchTap={this.randomFunction.bind(this)}
          />
          </Col>
          </Row>
@@ -405,6 +420,8 @@ class CrawlingView extends Component {
          <br />
          </Dialog>
          </Row>
+         </Dialog>
+
          </CardText>
          </Card>
 
