@@ -320,8 +320,7 @@ class CrawlingView extends Component {
           <Col xs={4} md={5} style={{marginLeft:'0px'}}>
           <Paper
           zDepth={1}
-          style={{height: 510, width: 500, margin: 20, textAlign: 'center',
-          display: 'inline-block'}}
+          style={{height: 510, width: 500, margin: 20, textAlign: 'center', padding:10,display: 'inline-block',}}
           >
           <Table
           height={"510px"}
@@ -338,7 +337,6 @@ class CrawlingView extends Component {
             (this.state.deepCrawlableDomains || []).map((row, index) => (
               <TableRow key={index}>
               <TableRowColumn>{row[0]}</TableRowColumn>
-              <TableRowColumn>{row[1]}</TableRowColumn>
               <TableRowColumn style={{textAlign: 'right'}}>
                 <div>
                   <IconButton onClick={this.handleRemodeUrlFromList.bind(this,row[0], index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
