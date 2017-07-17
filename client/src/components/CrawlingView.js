@@ -353,10 +353,10 @@ class CrawlingView extends Component {
 
         <Card initiallyExpanded={true}>
          <CardHeader
-           title="Recommendations:"
+           title="Adding Urls:"
            actAsExpander={false}
            showExpandableButton={false}
-           style={{fontWeight:'bold',}}
+           style={{fontWeight:'bold', marginBottom:"-40px",}}
          />
 
          <CardText expandable={false} >
@@ -379,20 +379,19 @@ class CrawlingView extends Component {
 
         <Card initiallyExpanded={true}>
          <CardHeader
-           title="Loading external urls:"
+           title={<RaisedButton
+           disabled={false}
+           style={{ height:20, marginTop: 15}}
+           labelStyle={{textTransform: "capitalize"}}
+           buttonStyle={{height:19}}
+           label="Loading external urls"
+           onClick={this.handleOpenDialogLoadUrl.bind(this)}
+           />}
            actAsExpander={false}
            showExpandableButton={false}
            style={{fontWeight:'bold',}}
          />
          <CardText expandable={true} >
-         <RaisedButton
-         disabled={false}
-         style={{ height:20, marginTop: 15}}
-         labelStyle={{textTransform: "capitalize"}}
-         buttonStyle={{height:19}}
-         label="Load urls"
-         onClick={this.handleOpenDialogLoadUrl.bind(this)}
-         />
          <Dialog title="Adding urls" actions={actionsLoadUrls} modal={false} open={this.state.openDialogLoadUrl} onRequestClose={this.handleCloseDialogLoadUrl.bind(this)}>
          <Row>
          <Col xs={10} md={10} style={{marginLeft:'0px'}}>
