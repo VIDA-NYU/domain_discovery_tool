@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import RaisedButton from 'material-ui/RaisedButton';
+import Checkbox from 'material-ui/Checkbox';
 import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
          TableRow, TableRowColumn } from 'material-ui/Table';
 
@@ -53,52 +53,56 @@ class MultiselectTable extends Component {
 
   render() {
     return (
-      <div>
-        <Table
-          height={"300px"}
-          fixedHeader={true}
-          fixedFooter={true}
-          selectable={true}
-          multiSelectable={true}
-          onRowSelection={this.onRowSelection}
+      <Table
+        height={"300px"}
+        fixedHeader={true}
+        fixedFooter={true}
+        selectable={true}
+        multiSelectable={true}
+        onRowSelection={this.onRowSelection}
+      >
+        <TableHeader
+          displaySelectAll={false}
+          adjustForCheckbox={false}
+          enableSelectAll={false}
         >
-          <TableHeader
-            displaySelectAll={false}
-            adjustForCheckbox={true}
-            enableSelectAll={false}
-          >
-            <TableRow>
-              <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
-                Recommendations
-              </TableHeaderColumn>
+          <TableRow>
+            <TableHeaderColumn colSpan="7" style={{textAlign: 'center'}}>
+              Recommendations
+            </TableHeaderColumn>
+          </TableRow>
+          <TableRow>
+            <TableHeaderColumn>
+              <Checkbox
+                checked={this.state.selectAll}
+                onCheck={this.toggleSelectOrDeselectAll}
+              />
+            </TableHeaderColumn>
+            {
+              this.props.columnHeadings.
+                map(column =>
+                  <TableHeaderColumn colSpan="3">
+                    {column}
+                  </TableHeaderColumn>
+                )
+            }
+          </TableRow>
+        </TableHeader>
+        <TableBody
+          displayRowCheckbox={true}
+          deselectOnClickaway={false}
+          showRowHover={true}
+          stripedRows={false}
+        >
+          {this.props.rows.map((row, index) => (
+            <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
+              <TableRowColumn>{row[0]}</TableRowColumn>
+              <TableRowColumn>{row[1]}</TableRowColumn>
             </TableRow>
-            <TableRow>
-              {
-                this.props.columnHeadings.
-                  map(column =>
-                    <TableHeaderColumn>
-                      {column}
-                    </TableHeaderColumn>
-                  )
-              }
-            </TableRow>
-          </TableHeader>
-          <TableBody
-            displayRowCheckbox={true}
-            deselectOnClickaway={false}
-            showRowHover={true}
-            stripedRows={false}
-          >
-            {this.props.rows.map((row, index) => (
-              <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
-                <TableRowColumn>{row[0]}</TableRowColumn>
-                <TableRowColumn>{row[1]}</TableRowColumn>
-              </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter adjustForCheckbox={true} />
-        </Table>
-      </div>
+            ))}
+        </TableBody>
+        <TableFooter adjustForCheckbox={true} />
+      </Table>
     )
   }
 }
