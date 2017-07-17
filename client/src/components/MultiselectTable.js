@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import RaisedButton from 'material-ui/RaisedButton';
+import Checkbox from 'material-ui/Checkbox';
 import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
          TableRow, TableRowColumn } from 'material-ui/Table';
 
@@ -81,24 +81,12 @@ class MultiselectTable extends Component {
                     </TableHeaderColumn>
                   )
               }
+
             </TableRow>
-          </TableHeader>
-          <TableBody
-            displayRowCheckbox={true}
-            deselectOnClickaway={false}
-            showRowHover={true}
-            stripedRows={false}
-          >
-            {this.props.rows.map((row, index) => (
-              <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
-                <TableRowColumn>{row[0]}</TableRowColumn>
-                <TableRowColumn>{row[1]}</TableRowColumn>
-              </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter adjustForCheckbox={true} />
-        </Table>
-      </div>
+            ))}
+        </TableBody>
+        <TableFooter adjustForCheckbox={true} />
+      </Table>
     )
   }
 }
