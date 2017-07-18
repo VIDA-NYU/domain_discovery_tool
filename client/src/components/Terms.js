@@ -112,7 +112,7 @@ class Terms extends Component{
         borderColor: '#C09ED7',
         background: 'white',
         borderRadius: '0px 0px 0px 0px',
-        borderWidth: '0px 0px 1px 0px'
+        borderWidth: '0px 0px 0px 0px'
       },
       avatar:{
         margin:'-4px 8px 0px 0px',
