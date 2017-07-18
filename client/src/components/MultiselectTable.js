@@ -76,25 +76,25 @@ class MultiselectTable extends Component {
             headerStyle={{textAlign:'left',}}
           >
             <TableRow>
-            <TableHeaderColumn colSpan="3">
-            </TableHeaderColumn>
+              <TableHeaderColumn colSpan="10">
+              </TableHeaderColumn>
             </TableRow>
             <TableRow>
-            <TableHeaderColumn colSpan="1">
-              <Checkbox
-                checked={this.state.selectAll}
-                onCheck={this.toggleSelectOrDeselectAll}
-              />
-            </TableHeaderColumn>
-              {
-                this.props.columnHeadings.
-                  map(column =>
-                    <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30,}}>
-                      {column}
-                    </TableHeaderColumn>
-                  )
-              }
-          </TableRow>
+              <TableHeaderColumn colSpan="1">
+                <Checkbox
+                  checked={this.state.selectAll}
+                  onCheck={this.toggleSelectOrDeselectAll}
+                />
+              </TableHeaderColumn>
+                {
+                  this.props.columnHeadings.
+                    map(column =>
+                      <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30,}}>
+                        {column}
+                      </TableHeaderColumn>
+                    )
+                }
+            </TableRow>
         </TableHeader>
         <TableBody
           displayRowCheckbox={true}
