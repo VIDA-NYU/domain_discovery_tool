@@ -216,7 +216,7 @@ class CrawlingView extends Component {
   }
 
   /**
-  * Add domain from file to deep crawl.
+  * Add domain from file or textField (or both) to deep crawl.
   * @method addDomainsFromFileForDeepCrawl
   * @param {}
   */
@@ -256,25 +256,7 @@ class CrawlingView extends Component {
     reader.readAsText(file);
   }
 
-  loadFromFile = () => {
-    this.fromFile = true;
-    this.handleOpenLoadURLs();
-  }
-
-  //Handling open/close create a new term Dialog
-  handleOpenLoadURLs = () => {
-    this.setState({openLoadURLs: true});
-  };
-  handleCloseLoadURLs = () => {
-this.setState({openLoadURLs: false,});
-  };
-
-  handleCloseLoadURLs = () => {
-    console.log("");
-    //this.setState({openLoadURLs: false,});
-  };
-
-  //Handling open/close load url Dialog
+  //Handling open/close 'load url' Dialog
   handleOpenDialogLoadUrl = () => {
     this.setState({openDialogLoadUrl: true});
     //this.focusTextField();
@@ -283,6 +265,11 @@ this.setState({openLoadURLs: false,});
     this.setState({openDialogLoadUrl: false, newNameTerm:"",});
     this.termsFromFile=[]; // Empting the terms from file.
   };
+
+  //Handling value into 'load urls' textfield
+  handleTextChangeLoadUrls(e){
+    this.setState({ valueLoadUrlsFromTextField: e.target.value});
+  }
 
   //Adding urls from file and the textField.
   addURLfromFileAndTextField(){
@@ -300,10 +287,7 @@ this.setState({openLoadURLs: false,});
     this.forceUpdate();
   }
 
-  //Handling value into loadUrls textfield
-  handleTextChangeLoadUrls(e){
-    this.setState({ valueLoadUrlsFromTextField: e.target.value});
-  }
+
 
   render() {
 
@@ -321,164 +305,149 @@ this.setState({openLoadURLs: false,});
         inkBarStyle={{background: '#7940A0' ,height: '4px'}}
         tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
         >
-        <Tab label="Deep crawling" value={0} />
-        <Tab label="Focused crawling " value={1} />
+          <Tab label="Deep crawling" value={0} />
+          <Tab label="Focused crawling " value={1} />
         </Tabs>
-        <SwipeableViews
-        index={this.state.slideIndex}
-        onChangeIndex={this.handleChange}
-        >
+        <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
         <div id={"deep-crawling"} style={styles.slide}>
           <Row>
-
           <Col xs={6} md={6} style={{marginLeft:'0px'}}>
+          <Card>
+           <CardHeader
+             title="Domains for crawling"
+             actAsExpander={false}
+             showExpandableButton={false}
+             style={{fontWeight:'bold', marginBottom:"-70px"}}
+           />
+           <CardText expandable={false} >
+              <Table id={"Annotated urls"} height={"210px"} selectable={false} multiSelectable={false} >
+              <TableHeader displaySelectAll={false} enableSelectAll={false} >
+                <TableRow>
+                  <TableHeaderColumn >
+                  </TableHeaderColumn>
+                </TableRow>
+                <TableRow style={heightTableStyle}>
+                  <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
+                    Annotated urls
+                  </TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody  showRowHover={false} displayRowCheckbox={false} deselectOnClickaway={false} stripedRows={false}>
+              {
+                (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
+                  <TableRow displayBorder={false} key={index} style={heightTableStyle}>
+                  <TableRowColumn style={heightTableStyle}>{row[0]}</TableRowColumn>
+                  </TableRow>
+                ))
+              }
+              </TableBody>
+              </Table>
 
-          <Card
-          >
-         <CardHeader
-           title="Domains for crawling"
-           actAsExpander={false}
-           showExpandableButton={false}
-           style={{fontWeight:'bold', marginBottom:"-70px"}}
-         />
-
-          <CardText expandable={false} >
-
-          <Table height={"210px"} selectable={false} multiSelectable={false} >
-          <TableHeader displaySelectAll={false} enableSelectAll={false} >
-            <TableRow>
-              <TableHeaderColumn >
-              </TableHeaderColumn>
-            </TableRow>
-            <TableRow style={heightTableStyle}>
-              <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
-                Annotated urls
-              </TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody  showRowHover={false} displayRowCheckbox={false} deselectOnClickaway={false} stripedRows={false}>
-          {
-            (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
-              <TableRow displayBorder={false} key={index} style={heightTableStyle}>
-              <TableRowColumn style={heightTableStyle}>{row[0]}</TableRowColumn>
-              </TableRow>
-            ))
-          }
-          </TableBody>
-          </Table>
-
-          <Table height={"210px"} selectable={false} multiSelectable={false} >
-          <TableHeader displaySelectAll={false} enableSelectAll={false} >
-            <TableRow>
-              <TableHeaderColumn >
-              </TableHeaderColumn>
-            </TableRow>
-            <TableRow>
-              <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
-                Added urls to deep crawl
-              </TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
-          {
-            (this.state.deepCrawlableDomains || []).map((row, index) => (
-              <TableRow key={index}>
-              <TableRowColumn>{row[0]}</TableRowColumn>
-              <TableRowColumn style={{textAlign: 'right'}}>
-                <div>
-                  <IconButton onClick={this.handleRemodeUrlFromList.bind(this,row[0], index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
-                    <RemoveURL />
-                  </IconButton>
-                </div>
-              </TableRowColumn>
-              </TableRow>
-            ))
-          }
-          </TableBody>
-          </Table>
-          </CardText>
+              <Table id={"Added urls to deep crawl"} height={"210px"} selectable={false} multiSelectable={false} >
+              <TableHeader displaySelectAll={false} enableSelectAll={false} >
+                <TableRow>
+                  <TableHeaderColumn >
+                  </TableHeaderColumn>
+                </TableRow>
+                <TableRow>
+                  <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
+                    Added urls to deep crawl
+                  </TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
+              {
+                (this.state.deepCrawlableDomains || []).map((row, index) => (
+                  <TableRow key={index}>
+                  <TableRowColumn>{row[0]}</TableRowColumn>
+                  <TableRowColumn style={{textAlign: 'right'}}>
+                    <div>
+                      <IconButton onClick={this.handleRemodeUrlFromList.bind(this,row[0], index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
+                        <RemoveURL />
+                      </IconButton>
+                    </div>
+                  </TableRowColumn>
+                  </TableRow>
+                ))
+              }
+              </TableBody>
+              </Table>
+            </CardText>
           </Card>
-
           <RaisedButton label="Start Crawler" style={{margin: 12,}} />
           </Col>
+
           <Col xs={6} md={6} style={{marginLeft:'0px'}}>
+            <Card id={"Recommendations"} initiallyExpanded={true} >
+             <CardHeader
+               title="Recommendations"
+               actAsExpander={false}
+               showExpandableButton={false}
+               style={{fontWeight:'bold', marginBottom:"-70px",}}
+             />
+             <CardText expandable={false} >
+                <MultiselectTable
+                  rows={this.state.recommendations}
+                  columnHeadings={["DOMAIN", "COUNT"]}
+                  onRowSelection={this.addDomainsOnSelection}
+                  resetSelection={this.state.resetSelection}
+                />
+                <RaisedButton
+                  disabled={false}
+                  style={{ height:20, marginTop: 15}}
+                  labelStyle={{textTransform: "capitalize"}}
+                  buttonStyle={{height:19}}
+                  label="Add to deep crawl"
+                  onClick={this.addDomainsForDeepCrawl}
+                />
+              </CardText>
+             </Card>
 
-        <Card initiallyExpanded={true} >
-         <CardHeader
-           title="Recommendations"
-           actAsExpander={false}
-           showExpandableButton={false}
-           style={{fontWeight:'bold', marginBottom:"-70px",}}
-         />
-
-         <CardText expandable={false} >
-           <MultiselectTable
-             rows={this.state.recommendations}
-             columnHeadings={["DOMAIN", "COUNT"]}
-             onRowSelection={this.addDomainsOnSelection}
-             resetSelection={this.state.resetSelection}
-           />
-
-          <RaisedButton
-          disabled={false}
-          style={{ height:20, marginTop: 15}}
-          labelStyle={{textTransform: "capitalize"}}
-          buttonStyle={{height:19}}
-          label="Add to deep crawl"
-          onClick={this.addDomainsForDeepCrawl}
-          />
-          </CardText>
-        </Card>
-
-        <Card initiallyExpanded={true} >
-         <CardHeader
-           title={<RaisedButton
-           disabled={false}
-           style={{ height:20, marginTop: 15}}
-           labelStyle={{textTransform: "capitalize", fontWeight:"bold", fontSize:14,}}
-           buttonStyle={{height:19}}
-           label="Loading external urls"
-           onClick={this.handleOpenDialogLoadUrl.bind(this)}
-           />}
-           actAsExpander={false}
-           showExpandableButton={false}
-           style={{fontWeight:'bold',}}
-         />
-         <CardText expandable={true} >
-         <Dialog title="Adding urls" actions={actionsLoadUrls} modal={false} open={this.state.openDialogLoadUrl} onRequestClose={this.handleCloseDialogLoadUrl.bind(this)}>
-         <Row>
-         <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-         <TextField style={{height:200, width:'260px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
-         onChange={this.handleTextChangeLoadUrls.bind(this)}
-         floatingLabelText="Write urls (one by line)."
-         hintStyle={{ marginLeft:30}}
-         textareaStyle={{marginTop:30,}}
-         inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
-         multiLine={true}
-         rows={6}
-         rowsMax={6}
-         floatingLabelStyle={{marginLeft:10, marginRight:30,}}
-         underlineStyle={{width:210, marginLeft:30, marginRight:30,}}
-         />
-         </Col>
-         </Row>
-
-         <Row>
-         <br />
-
-         <FlatButton style={{marginLeft:'15px'}}
-         label="Choose URLs File"
-         labelPosition="before"
-         containerElement="label"
-         labelStyle={{textTransform: "capitalize"}}>
-         <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-         </FlatButton>
-         </Row>
-         </Dialog>
-
-         </CardText>
-         </Card>
-
+            <Card id={"Load external urls"} initiallyExpanded={true} >
+             <CardHeader
+               title={<RaisedButton
+                 disabled={false}
+                 style={{ height:20, marginTop: 15}}
+                 labelStyle={{textTransform: "capitalize", fontWeight:"bold", fontSize:14,}}
+                 buttonStyle={{height:19}}
+                 label="Loading external urls"
+                 onClick={this.handleOpenDialogLoadUrl.bind(this)}
+                 />}
+               actAsExpander={false}
+               showExpandableButton={false}
+               style={{fontWeight:'bold',}}
+             />
+             <CardText expandable={true} >
+             <Dialog title="Adding urls" actions={actionsLoadUrls} modal={false} open={this.state.openDialogLoadUrl} onRequestClose={this.handleCloseDialogLoadUrl.bind(this)}>
+               <Row>
+               <Col xs={10} md={10} style={{marginLeft:'0px'}}>
+                 <TextField style={{height:200, width:'260px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+                   onChange={this.handleTextChangeLoadUrls.bind(this)}
+                   floatingLabelText="Write urls (one by line)."
+                   hintStyle={{ marginLeft:30}}
+                   textareaStyle={{marginTop:30,}}
+                   inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
+                   multiLine={true}
+                   rows={6}
+                   rowsMax={6}
+                   floatingLabelStyle={{marginLeft:10, marginRight:30,}}
+                   underlineStyle={{width:210, marginLeft:30, marginRight:30,}}
+                 />
+               </Col>
+               </Row>
+               <Row>
+                 <br />
+                 <FlatButton style={{marginLeft:'15px'}}
+                   label="Choose URLs File"
+                   labelPosition="before"
+                   containerElement="label"
+                   labelStyle={{textTransform: "capitalize"}}>
+                   <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+                 </FlatButton>
+               </Row>
+             </Dialog>
+             </CardText>
+            </Card>
           </Col>
           </Row>
         </div>
