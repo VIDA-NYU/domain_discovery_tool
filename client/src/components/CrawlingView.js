@@ -566,6 +566,10 @@ class CrawlingView extends Component {
                   style={styles.cardHeader}
                 />
                 <CardText expandable={true} style={styles.cardMedia}>
+                <div style={{marginLeft:"20px"}} title="Model Settings">
+                {checkedTagsPosNeg}
+                <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />
+                </div>
                 <Divider/>
                 </CardText>
                 </Card>
@@ -575,11 +579,6 @@ class CrawlingView extends Component {
              </Col>
            </Row>
          </CardText>
-           <div title="Model Settings">
-           {checkedTagsPosNeg}
-           </div>
-           <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />
-
          </Card>
          </Col>
          </Row>
