@@ -16,6 +16,7 @@ import IconMenu from 'material-ui/IconMenu';
 import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
 import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import Checkbox from 'material-ui/Checkbox';
 import {
   Table,
   TableBody,
@@ -58,6 +59,9 @@ class CrawlingView extends Component {
       recommendations: this.getRecommendationResults(),
       pages:{},
       openDialogLoadUrl: false,
+      currentTags:undefined,
+      tagsPosCheckBox:["Relevant"],
+      tagsNegCheckBox:["Irrelevant"],
     };
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
@@ -132,8 +136,18 @@ class CrawlingView extends Component {
   componentWillMount(){
     var session = this.createSession(this.props.domainId);
     this.getPages(session);
+    this.getAvailableTags(session);
   }
-
+  getAvailableTags(session){
+     $.post(
+        '/getAvailableTags',
+        {'session': JSON.stringify(session), 'event': 'Tags'},
+        function(tagsDomain) {
+          this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
+          this.forceUpdate();
+        }.bind(this)
+      );
+   }
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
@@ -256,6 +270,31 @@ class CrawlingView extends Component {
     this.setState({ "valueLoadUrls": e.target.value});
   }
 
+  addPosTags(tag){
+        var tags = this.state.tagsPosCheckBox;
+        if(tags.includes(tag)){
+          var index = tags.indexOf(tag);
+          tags.splice(index, 1);
+        }
+        else{
+          tags.push(tag);
+        }
+        this.setState({tagsPosCheckBox:tags})
+        this.forceUpdate();
+     }
+
+     addNegTags(tag){
+        var tags = this.state.tagsNegCheckBox;
+        if(tags.includes(tag)){
+          var index = tags.indexOf(tag);
+          tags.splice(index, 1);
+        }
+        else{
+          tags.push(tag);
+        }
+        this.setState({tagsNegCheckBox:tags})
+        this.forceUpdate();
+     }
   render() {
     const actionsLoadURLs = [
                               <FlatButton label="Cancel" primary={true} onTouchTap={this.randomFunction}/>,
@@ -277,6 +316,28 @@ class CrawlingView extends Component {
                         <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseDialogLoadUrl.bind(this)}/>,
                         <FlatButton label="Add" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
                             ];
+
+    var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
+                          <div>
+                          <p>Positive</p>
+                          {Object.keys(this.state.currentTags).map((tag, index)=>{
+                          var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
+                          var checkedTag=false;
+                          var tags = this.state.tagsPosCheckBox;
+                          if(tags.includes(tag))
+                            checkedTag=true;
+                          return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
+                          })}
+                          <p>Negative</p>
+                            {Object.keys(this.state.currentTags).map((tag, index)=>{
+                              var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
+                              var checkedTag=false;
+                              var tags = this.state.tagsNegCheckBox;
+                              if(tags.includes(tag))
+                              checkedTag=true;
+                                return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
+                              })}
+                        </div>:<div />;
 
     return (
       <div style={styles.content}>
@@ -437,6 +498,9 @@ class CrawlingView extends Component {
         <div id="focused-crawling" style={styles.slide}>
           focused crawling
           <br />
+          <div title="Model Settings">
+          {checkedTagsPosNeg}
+          </div>
           <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
           label="Start Crawler" labelPosition="before" containerElement="label" />
           <br />
