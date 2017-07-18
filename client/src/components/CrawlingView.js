@@ -453,17 +453,57 @@ class CrawlingView extends Component {
         </div>
 
         <div id="focused-crawling" style={styles.slide}>
-          focused crawling
-          <br />
-          <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-          label="Start Crawler" labelPosition="before" containerElement="label" />
-          <br />
-          <IconMenu
-          iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-          label="Model" labelPosition="before" containerElement="label" />} >
-          <MenuItem value="1" primaryText="Create Model" />
-          <MenuItem value="2" primaryText="Settings" />
-          </IconMenu>
+        <Row>
+        <Col xs={11} md={11} style={{margin:'10px'}}>
+        <Card id={"Settings"} initiallyExpanded={true} >
+         <CardHeader
+           title="Settings"
+           actAsExpander={false}
+           showExpandableButton={false}
+           style={{fontWeight:'bold',}}
+         />
+         <CardText expandable={true} >
+         </CardText>
+         </Card>
+         </Col>
+         </Row>
+
+         <Row>
+         <Col xs={5} md={5} style={{margin:'10px'}}>
+         <Card id={"Crawling"} initiallyExpanded={true} >
+          <CardHeader
+            title="Crawling"
+            actAsExpander={false}
+            showExpandableButton={false}
+            style={{fontWeight:'bold',}}
+          />
+          <CardText expandable={true} >
+            <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            label="Start Crawler" labelPosition="before" containerElement="label" />
+          </CardText>
+          </Card>
+          </Col>
+
+          <Col xs={6} md={6} style={{margin:'10px'}}>
+          <Card id={"Model"} initiallyExpanded={true} >
+           <CardHeader
+             title="Model"
+             actAsExpander={false}
+             showExpandableButton={false}
+             style={{fontWeight:'bold',}}
+           />
+           <CardText expandable={true} >
+             <IconMenu
+             iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+             label="Model" labelPosition="before" containerElement="label" />} >
+             <MenuItem value="1" primaryText="Create Model" />
+             <MenuItem value="2" primaryText="Settings" />
+             </IconMenu>
+           </CardText>
+           </Card>
+          </Col>
+         </Row>
+
         </div>
 
         </SwipeableViews>
