@@ -59,7 +59,8 @@ class CrawlingView extends Component {
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
-      resetSelection: false
+      resetSelection: false,
+      openLoadURLs: false,
     };
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
@@ -230,8 +231,17 @@ class CrawlingView extends Component {
 
   loadFromFile = () => {
     this.fromFile = true;
-    //this.handleOpenLoadURLs();
+    this.handleOpenLoadURLs();
   }
+
+  //Handling open/close create a new term Dialog
+  handleOpenLoadURLs = () => {
+    this.setState({openLoadURLs: true});
+  };
+  handleCloseLoadURLs = () => {
+this.setState({openLoadURLs: false,});
+  };
+
   handleCloseLoadURLs = () => {
     console.log("");
     //this.setState({openLoadURLs: false,});
@@ -442,19 +452,14 @@ class CrawlingView extends Component {
 
          <Row>
          <br />
-         <RaisedButton
-         disabled={false}
-         style={{ height:20, marginTop: 15, marginLeft:17,}}
-         labelStyle={{textTransform: "capitalize"}}
-         buttonStyle={{height:19}}
-         label="Load urls from file"
-         onClick={this.loadFromFile.bind(this)}
-         />
-         <br />
-         <Dialog  title={"Upload URLs"} actions={actionsLoadURLs} modal={false} open={this.state.openLoadURLs} onRequestClose={this.handleCloseLoadURLs.bind(this)}>
-         {show_choose_file}
-         <br />
-         </Dialog>
+
+         <FlatButton style={{marginLeft:'15px'}}
+         label="Choose URLs File"
+         labelPosition="before"
+         containerElement="label"
+         labelStyle={{textTransform: "capitalize"}}>
+         <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+         </FlatButton>
          </Row>
          </Dialog>
 
