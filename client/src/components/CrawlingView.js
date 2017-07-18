@@ -55,7 +55,7 @@ const styles = {
     borderColor: '#C09ED7',
     background: 'white',
     borderRadius: '0px 0px 0px 0px',
-    borderWidth: '0px 0px 1px 0px'
+    borderWidth: '0px 0px 0px 0px'
   },
   avatar:{
     margin:'-4px 8px 0px 0px',
@@ -69,7 +69,7 @@ const styles = {
     background: "white",
     padding:'2px 4px 2px 4px',
     borderRadius: '0px 0px 0px 0px',
-    height: "390px",
+    height: "382px",
   },
 };
 
@@ -547,43 +547,50 @@ class CrawlingView extends Component {
 
         <div id="focused-crawling" style={styles.slide}>
         <Row>
-        <Col xs={11} md={11} style={{margin:'10px'}}>
-        <Card id={"Settings"} initiallyExpanded={true} >
-         <CardHeader
-           title="Settings"
-           actAsExpander={false}
-           showExpandableButton={false}
-           style={{fontWeight:'bold',}}
-         />
-         <CardText expandable={true} >
-           <Row>
-             <Col xs={6} md={6}>
-               <Card id={"Tags"} initiallyExpanded={true} style={styles.card}>
-                <CardHeader
-                  title="Tags"
-                  actAsExpander={false}
-                  showExpandableButton={false}
-                  style={styles.cardHeader}
-                />
-                <CardText expandable={true} style={styles.cardMedia}>
-                <div style={{marginLeft:"20px"}} title="Model Settings">
-                {checkedTagsPosNeg}
-                <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />
-                </div>
-                <Divider/>
-                </CardText>
-                </Card>
-             </Col>
-             <Col xs={4} md={4}>
-               <Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}/>
-             </Col>
-           </Row>
-         </CardText>
-         </Card>
-         </Col>
-         </Row>
+          <Col xs={11} md={11} style={{margin:'10px'}}>
+          <Card id={"Settings"} initiallyExpanded={true} >
+           <CardHeader
+             title="Settings"
+             actAsExpander={false}
+             showExpandableButton={false}
+             style={{fontWeight:'bold', padding:'10px 1px 10px 6px', borderRadius: '0px 0px 0px 0px',}}
+           />
+           <CardText expandable={true} style={{padding:'1px 16px 10px 16px',}}>
+             <Row>
+               <Col xs={7} md={7} style={{margin:0, padding:0,}}>
+                 <Card id={"Tags"} initiallyExpanded={true} style={styles.card}>
+                  <CardHeader
+                    title="Tags"
+                    actAsExpander={false}
+                    showExpandableButton={false}
+                    style={styles.cardHeader}
+                  />
+                  <CardText expandable={true} style={styles.cardMedia}>
+                  <div style={{marginLeft:"20px"}} title="Model Settings">
+                  {checkedTagsPosNeg}
+                  
+                  </div>
+                  <Divider/>
+                  </CardText>
+                  </Card>
+               </Col>
+               <Col xs={5} md={5} style={{margin:0, padding:0,}}>
+                 <Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}/>
+               </Col>
+             </Row>
+             <Row style={{textAlign:'center',}}>
+               <RaisedButton disabled={false} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+               label="Save" labelPosition="before" containerElement="label" />
+               <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+               label="Cancel" labelPosition="before" containerElement="label" />
+             </Row>
 
-         <Row>
+           </CardText>
+          </Card>
+          </Col>
+        </Row>
+
+        <Row>
          <Col xs={5} md={5} style={{margin:'10px'}}>
          <Card id={"Crawling"} initiallyExpanded={true} >
           <CardHeader
@@ -610,7 +617,7 @@ class CrawlingView extends Component {
            <CardText expandable={true} >
              <IconMenu
              iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-             label="Model" labelPosition="before" containerElement="label" />} >
+             label="Export" labelPosition="before" containerElement="label" />} >
              <MenuItem value="1" primaryText="Create Model" />
              <MenuItem value="2" primaryText="Settings" />
              </IconMenu>
