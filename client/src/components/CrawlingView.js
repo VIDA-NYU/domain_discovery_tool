@@ -141,7 +141,7 @@ class CrawlingView extends Component {
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
-      "valueLoadUrls":"",
+      "valueLoadUrls":[],
     });
   };
 
@@ -214,10 +214,30 @@ class CrawlingView extends Component {
     this.selectedRows = selectedRows;
   }
 
+  /**
+  * Add domain from file to deep crawl.
+  * @method addDomainsFromFileForDeepCrawl
+  * @param {}
+  */
+  addDomainsFromFileForDeepCrawl() {
+    let aux_deepCrawlableDomains = this.state.deepCrawlableDomains;
+    this.state.valueLoadUrls.forEach((value) => {
+      aux_deepCrawlableDomains.push([value, 1]);
+    })
+    this.setState({
+      deepCrawlableDomains: aux_deepCrawlableDomains,
+      resetSelection: true
+    });
+  }
+
   // Download the pages of uploaded urls from file
   runLoadUrlsFileQuery(txt) {
     var allTextLines = txt.split(/\r\n|\n/);
-    this.setState({ "valueLoadUrls": allTextLines.join(" ")});
+    console.log("Load URLS:");
+    console.log(allTextLines);
+    console.log(allTextLines.join(" "));
+    console.log(this.state.deepCrawlableDomainsFromTag);
+    this.setState({ "valueLoadUrls": allTextLines, });//allTextLines.join(" ")});
   }
   //Reading file's content.
   handleFile(event) {
@@ -250,15 +270,18 @@ this.setState({openLoadURLs: false,});
   //Handling open/close load url Dialog
   handleOpenDialogLoadUrl = () => {
     this.setState({openDialogLoadUrl: true});
-    this.focusTextField();
+    //this.focusTextField();
   };
   handleCloseDialogLoadUrl  = () => {
     this.setState({openDialogLoadUrl: false, newNameTerm:"",});
     this.termsFromFile=[]; // Empting the terms from file.
   };
 
-  randomFunction(){
-    console.log("");
+  //Adding urls from file and the textField.
+  addURLfromFileAndTextField(){
+    this.addDomainsFromFileForDeepCrawl();
+    this.handleCloseDialogLoadUrl();
+
   }
 
   //Removing selected url from the table to deepCrawlableDomains
@@ -278,25 +301,9 @@ this.setState({openLoadURLs: false,});
   }
 
   render() {
-    const actionsLoadURLs = [
-                              <FlatButton label="Cancel" primary={true} onTouchTap={this.randomFunction}/>,
-                              <FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
-                              <FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
-                              <FlatButton label="Neutral" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
-                            ];
-
-    let show_choose_file = (this.fromFile || this.fromFile === undefined)? <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}>"Upload URLs from file"</p> <br />
-                            <FlatButton style={{marginLeft:'15px'}}
-                            label="Choose URLs File"
-                            labelPosition="before"
-                            containerElement="label">
-                            <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-                            </FlatButton>
-                            </Row>
-                            :<div/>;
     const actionsLoadUrls = [
                         <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseDialogLoadUrl.bind(this)}/>,
-                        <FlatButton label="Add" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.randomFunction.bind(this)}/>,
+                        <FlatButton label="Add" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addURLfromFileAndTextField.bind(this)}/>,
                             ];
     const heightTableStyle = { height: "10px", padding: "0px"};
 
