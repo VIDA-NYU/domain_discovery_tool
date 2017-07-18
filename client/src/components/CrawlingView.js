@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Col, Row} from 'react-bootstrap';
 // From https://github.com/oliviertassinari/react-swipeable-views
+import Terms from './Terms';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
@@ -17,6 +18,7 @@ import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
 import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
+import Divider from 'material-ui/Divider';
 import {
   Table,
   TableBody,
@@ -48,7 +50,29 @@ const styles = {
     backgroundColor: '#FFFFFF',
     borderRadius: '10px 10px 10px 10px',
   },
+  card: {
+    borderStyle: 'solid',
+    borderColor: '#C09ED7',
+    background: 'white',
+    borderRadius: '0px 0px 0px 0px',
+    borderWidth: '0px 0px 1px 0px'
+  },
+  avatar:{
+    margin:'-4px 8px 0px 0px',
+  },
+  cardHeader:{
+    background: "white", //'#DCCCE7',
+    padding:'10px 1px 10px 6px',
+    borderRadius: '0px 0px 0px 0px',
+  },
+  cardMedia:{
+    background: "white",
+    padding:'2px 4px 2px 4px',
+    borderRadius: '0px 0px 0px 0px',
+    height: "390px",
+  },
 };
+
 
 class CrawlingView extends Component {
 
@@ -65,6 +89,7 @@ class CrawlingView extends Component {
       deepCrawlableDomains: [],
       resetSelection: false,
       openLoadURLs: false,
+      session:"",
     };
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
@@ -531,12 +556,30 @@ class CrawlingView extends Component {
            style={{fontWeight:'bold',}}
          />
          <CardText expandable={true} >
+           <Row>
+             <Col xs={6} md={6}>
+               <Card id={"Tags"} initiallyExpanded={true} style={styles.card}>
+                <CardHeader
+                  title="Tags"
+                  actAsExpander={false}
+                  showExpandableButton={false}
+                  style={styles.cardHeader}
+                />
+                <CardText expandable={true} style={styles.cardMedia}>
+                <Divider/>
+                </CardText>
+                </Card>
+             </Col>
+             <Col xs={4} md={4}>
+               <Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}/>
+             </Col>
+           </Row>
          </CardText>
            <div title="Model Settings">
            {checkedTagsPosNeg}
            </div>
            <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />
-          
+
          </Card>
          </Col>
          </Row>

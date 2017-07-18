@@ -10,31 +10,6 @@ import Divider from 'material-ui/Divider';
 import $ from 'jquery';
 import CircularProgress from 'material-ui/CircularProgress';
 
-const styles = {
-  card: {
-
-    borderStyle: 'solid',
-    borderColor: '#C09ED7',
-    background: 'white',
-    borderRadius: '0px 0px 0px 0px',
-    borderWidth: '0px 0px 1px 0px'
-  },
-  avatar:{
-    margin:'-4px 8px 0px 0px',
-  },
-  cardHeader:{
-    background: '#DCCCE7',
-    padding:'10px 1px 10px 6px',
-    borderRadius: '0px 0px 0px 0px',
-  },
-  cardMedia:{
-    background: '#DCCCE7',
-    padding:'2px 4px 2px 4px',
-    borderRadius: '0px 0px 0px 0px',
-    height: "390px",
-  },
-
-};
 
 class CircularProgressSimple extends React.Component{
   render(){
@@ -131,6 +106,31 @@ class Terms extends Component{
 
 
   render(){
+    const styles = {
+      card: {
+        borderStyle: 'solid',
+        borderColor: '#C09ED7',
+        background: 'white',
+        borderRadius: '0px 0px 0px 0px',
+        borderWidth: '0px 0px 1px 0px'
+      },
+      avatar:{
+        margin:'-4px 8px 0px 0px',
+      },
+      cardHeader:{
+        background: this.props.BackgroundColorTerm, //'#DCCCE7',
+        padding:'10px 1px 10px 6px',
+        borderRadius: '0px 0px 0px 0px',
+      },
+      cardMedia:{
+        background: this.props.BackgroundColorTerm,
+        padding:'2px 4px 2px 4px',
+        borderRadius: '0px 0px 0px 0px',
+        height: "390px",
+      },
+
+    };
+
     let terms = " ";
     if(this.state.listTerms.length>0){
       terms = this.state.listTerms.map(function(w) {
@@ -138,15 +138,17 @@ class Terms extends Component{
       });
     }
     var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)} loadTerms={this.loadTerms.bind(this)}></TermsList>:<CircularProgressSimple />;
+    var avatarElement = (this.props.renderAvatar)?<Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />
+    :null;
     return(
 
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
         <CardHeader
             title="Terms"
-            avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
+            avatar={avatarElement}
             style={styles.cardHeader}
-            actAsExpander={true}
-            showExpandableButton={true}
+            actAsExpander={this.props.actAsExpander}
+            showExpandableButton={this.props.showExpandableButton}
         />
         <CardMedia expandable={true} style={styles.cardMedia}>
           <Divider/>
