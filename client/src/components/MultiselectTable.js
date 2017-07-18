@@ -20,6 +20,12 @@ class MultiselectTable extends Component {
     this.onRowSelection = this.onRowSelection.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.resetSelection) {
+      this.setState({selectedRows: [], selectAll: false});
+    }
+  }
+
   /**
    * Manipulate this.state.selectedRows to mimick SelectAll / DeselectAll
    * @method toggleSelectOrDeselectAll (onClick event)
@@ -46,7 +52,7 @@ class MultiselectTable extends Component {
    */
   onRowSelection(selectedRows) {
     selectedRows = (selectedRows === 'none' ? [] : selectedRows);
-    this.setState({selectedRows});
+    this.setState({selectedRows, selectAll: false});
     this.props.onRowSelection && this.props.onRowSelection(selectedRows);
   }
 
@@ -55,13 +61,13 @@ class MultiselectTable extends Component {
     return (
       <div>
         <Table
-          height={"300px"}
+          height={"390px"}
           fixedHeader={true}
           fixedFooter={true}
           selectable={true}
           multiSelectable={true}
           onRowSelection={this.onRowSelection}
-          style={{width:900}}
+          style={{width:700}}
         >
           <TableHeader
             displaySelectAll={false}
@@ -70,25 +76,25 @@ class MultiselectTable extends Component {
             headerStyle={{textAlign:'left',}}
           >
             <TableRow>
-            <TableHeaderColumn colSpan="3">
-            </TableHeaderColumn>
+              <TableHeaderColumn colSpan="10">
+              </TableHeaderColumn>
             </TableRow>
             <TableRow>
-            <TableHeaderColumn style={{width:10,}}>
-              <Checkbox
-                checked={this.state.selectAll}
-                onCheck={this.toggleSelectOrDeselectAll}
-              />
-            </TableHeaderColumn>
-              {
-                this.props.columnHeadings.
-                  map(column =>
-                    <TableHeaderColumn  style={{textAlign:'left', margin:"-10px", height:30,}}>
-                      {column}
-                    </TableHeaderColumn>
-                  )
-              }
-          </TableRow>
+              <TableHeaderColumn colSpan="1">
+                <Checkbox
+                  checked={this.state.selectAll}
+                  onCheck={this.toggleSelectOrDeselectAll}
+                />
+              </TableHeaderColumn>
+                {
+                  this.props.columnHeadings.
+                    map(column =>
+                      <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30}}>
+                        {column}
+                      </TableHeaderColumn>
+                    )
+                }
+            </TableRow>
         </TableHeader>
         <TableBody
           displayRowCheckbox={true}
