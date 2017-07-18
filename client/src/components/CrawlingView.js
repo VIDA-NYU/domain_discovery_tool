@@ -142,6 +142,7 @@ class CrawlingView extends Component {
     this.setState({
       slideIndex: value,
       "valueLoadUrls":[],
+      "valueLoadUrlsFromTextField":[],
     });
   };
 
@@ -221,7 +222,14 @@ class CrawlingView extends Component {
   */
   addDomainsFromFileForDeepCrawl() {
     let aux_deepCrawlableDomains = this.state.deepCrawlableDomains;
-    this.state.valueLoadUrls.forEach((value) => {
+    //Append valueLoadUrlsFromTextField
+    let aux_valueLoadUrls = this.state.valueLoadUrls;
+
+    this.state.valueLoadUrlsFromTextField.forEach((value) => {
+      aux_valueLoadUrls.push([value, 1]);
+    });
+
+    aux_valueLoadUrls.forEach((value) => {
       aux_deepCrawlableDomains.push([value, 1]);
     })
     this.setState({
@@ -279,6 +287,8 @@ this.setState({openLoadURLs: false,});
 
   //Adding urls from file and the textField.
   addURLfromFileAndTextField(){
+    console.log(this.state.valueLoadUrlsFromTextField);
+    var valueFromTextField = this.state.valueLoadUrlsFromTextField.split(/\r\n|\n/);
     this.addDomainsFromFileForDeepCrawl();
     this.handleCloseDialogLoadUrl();
 
@@ -297,10 +307,12 @@ this.setState({openLoadURLs: false,});
 
   //Handling value into loadUrls textfield
   handleTextChangeLoadUrls(e){
-    this.setState({ "valueLoadUrls": e.target.value});
+    console.log(e.target.value);
+    this.setState({ "valueLoadUrlsFromTextField": e.target.value});
   }
 
   render() {
+
     const actionsLoadUrls = [
                         <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseDialogLoadUrl.bind(this)}/>,
                         <FlatButton label="Add" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addURLfromFileAndTextField.bind(this)}/>,
