@@ -328,6 +328,13 @@ class CrawlingView extends Component {
         this.setState({tagsNegCheckBox:tags})
         this.forceUpdate();
      }
+
+
+   handleCloseCancelCreateModel = () => {
+     this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
+     this.forceUpdate();
+   };
+
   render() {
 
     const actionsLoadUrls = [
@@ -338,7 +345,7 @@ class CrawlingView extends Component {
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
                           <div>
-                          <p>Positive</p>
+                          Positive
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
                           var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                           var checkedTag=false;
@@ -347,7 +354,7 @@ class CrawlingView extends Component {
                             checkedTag=true;
                           return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
                           })}
-                          <p>Negative</p>
+                          Negative
                             {Object.keys(this.state.currentTags).map((tag, index)=>{
                               var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                               var checkedTag=false;
@@ -525,6 +532,11 @@ class CrawlingView extends Component {
          />
          <CardText expandable={true} >
          </CardText>
+           <div title="Model Settings">
+           {checkedTagsPosNeg}
+           </div>
+           <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />
+          
          </Card>
          </Col>
          </Row>
@@ -565,24 +577,6 @@ class CrawlingView extends Component {
           </Col>
          </Row>
 
-<<<<<<< HEAD
-        <div id="focused-crawling" style={styles.slide}>
-          focused crawling
-          <br />
-          <div title="Model Settings">
-          {checkedTagsPosNeg}
-          </div>
-          <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-          label="Start Crawler" labelPosition="before" containerElement="label" />
-          <br />
-          <IconMenu
-          iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-          label="Model" labelPosition="before" containerElement="label" />} >
-          <MenuItem value="1" primaryText="Create Model" />
-          <MenuItem value="2" primaryText="Settings" />
-          </IconMenu>
-=======
->>>>>>> a0361a20d8b593672b661e675758c03d836287f7
         </div>
 
         </SwipeableViews>
