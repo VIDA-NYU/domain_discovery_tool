@@ -141,8 +141,8 @@ class CrawlingView extends Component {
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
-      "valueLoadUrls":[],
-      "valueLoadUrlsFromTextField":[],
+      valueLoadUrls:[],
+      valueLoadUrlsFromTextField:[],
     });
   };
 
@@ -222,30 +222,29 @@ class CrawlingView extends Component {
   */
   addDomainsFromFileForDeepCrawl() {
     let aux_deepCrawlableDomains = this.state.deepCrawlableDomains;
-    //Append valueLoadUrlsFromTextField
-    let aux_valueLoadUrls = this.state.valueLoadUrls;
+    var aux_valueLoadUrls = (this.state.valueLoadUrls!==undefined)?this.state.valueLoadUrls:[];
+    //Append urls from textField to this.state.valueLoadUrls
+    var valueLoadUrlsFromTextField = (this.state.valueLoadUrlsFromTextField!==undefined)?((this.state.valueLoadUrlsFromTextField!=="")?this.state.valueLoadUrlsFromTextField.split(/\r\n|\n/):[]):[];
 
-    this.state.valueLoadUrlsFromTextField.forEach((value) => {
-      aux_valueLoadUrls.push([value, 1]);
+    valueLoadUrlsFromTextField.forEach((value) => {
+      aux_valueLoadUrls.push(value);
     });
-
+    //Append new urls to deepCrawlableDomains
     aux_valueLoadUrls.forEach((value) => {
       aux_deepCrawlableDomains.push([value, 1]);
     })
     this.setState({
       deepCrawlableDomains: aux_deepCrawlableDomains,
-      resetSelection: true
+      resetSelection: true,
+      valueLoadUrls:[],
+      valueLoadUrlsFromTextField:"",
     });
   }
 
   // Download the pages of uploaded urls from file
   runLoadUrlsFileQuery(txt) {
     var allTextLines = txt.split(/\r\n|\n/);
-    console.log("Load URLS:");
-    console.log(allTextLines);
-    console.log(allTextLines.join(" "));
-    console.log(this.state.deepCrawlableDomainsFromTag);
-    this.setState({ "valueLoadUrls": allTextLines, });//allTextLines.join(" ")});
+    this.setState({ valueLoadUrls: allTextLines, });//allTextLines.join(" ")});
   }
   //Reading file's content.
   handleFile(event) {
@@ -287,8 +286,6 @@ this.setState({openLoadURLs: false,});
 
   //Adding urls from file and the textField.
   addURLfromFileAndTextField(){
-    console.log(this.state.valueLoadUrlsFromTextField);
-    var valueFromTextField = this.state.valueLoadUrlsFromTextField.split(/\r\n|\n/);
     this.addDomainsFromFileForDeepCrawl();
     this.handleCloseDialogLoadUrl();
 
@@ -298,17 +295,14 @@ this.setState({openLoadURLs: false,});
   handleRemodeUrlFromList(url, index){
     //var total_deepCrawlableDomains = this.state.deepCrawlableDomainsFromTag.length;
     var urlsList = this.state.deepCrawlableDomains;
-    console.log(urlsList);
     var deepCrawlableDomains_aux =  urlsList.splice(index,1);
-    console.log(urlsList);
     this.setState({deepCrawlableDomains:urlsList});
     this.forceUpdate();
   }
 
   //Handling value into loadUrls textfield
   handleTextChangeLoadUrls(e){
-    console.log(e.target.value);
-    this.setState({ "valueLoadUrlsFromTextField": e.target.value});
+    this.setState({ valueLoadUrlsFromTextField: e.target.value});
   }
 
   render() {
