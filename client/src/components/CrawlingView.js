@@ -428,14 +428,14 @@ class CrawlingView extends Component {
          <TextField style={{height:200, width:'260px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
          onChange={this.handleTextChangeLoadUrls.bind(this)}
          floatingLabelText="Write urls (one by line)."
-         hintStyle={{ marginLeft:10}}
-         textareaStyle={{margin:0,}}
+         hintStyle={{ marginLeft:30}}
+         textareaStyle={{marginTop:30,}}
          inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
          multiLine={true}
          rows={6}
          rowsMax={6}
-         floatingLabelStylex={{marginLeft:30, marginRight:30,}}
-         underlineStyle={{marginLeft:30, marginRight:30,}}
+         floatingLabelStyle={{marginLeft:10, marginRight:30,}}
+         underlineStyle={{width:210, marginLeft:30, marginRight:30,}}
          />
          </Col>
          </Row>
@@ -444,7 +444,7 @@ class CrawlingView extends Component {
          <br />
          <RaisedButton
          disabled={false}
-         style={{ height:20, marginTop: 15}}
+         style={{ height:20, marginTop: 15, marginLeft:17,}}
          labelStyle={{textTransform: "capitalize"}}
          buttonStyle={{height:19}}
          label="Load urls from file"

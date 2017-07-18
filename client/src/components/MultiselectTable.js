@@ -89,7 +89,7 @@ class MultiselectTable extends Component {
                 {
                   this.props.columnHeadings.
                     map(column =>
-                      <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30,}}>
+                      <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30}}>
                         {column}
                       </TableHeaderColumn>
                     )
