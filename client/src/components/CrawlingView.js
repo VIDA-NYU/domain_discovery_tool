@@ -6,6 +6,7 @@ import DeepCrawling from './DeepCrawling';
 import FocusedCrawling from './FocusedCrawling';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
+
 import $ from 'jquery';
 
 import MultiselectTable from './MultiselectTable';
@@ -92,7 +93,16 @@ class CrawlingView extends Component {
       var temp_session = this.createSession(this.props.domainId);
       this.setState({session: temp_session});
   }
-
+  getAvailableTags(session){
+     $.post(
+        '/getAvailableTags',
+        {'session': JSON.stringify(session), 'event': 'Tags'},
+        function(tagsDomain) {
+          this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
+          this.forceUpdate();
+        }.bind(this)
+      );
+   }
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
