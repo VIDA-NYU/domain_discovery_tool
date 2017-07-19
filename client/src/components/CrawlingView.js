@@ -98,14 +98,15 @@ class CrawlingView extends Component {
       pages:{},
       openDialogLoadUrl: false,
       currentTags:undefined,
-      tagsPosCheckBox:["Relevant"],
-      tagsNegCheckBox:["Irrelevant"],
       deepCrawlableDomains: [],
       deepCrawlableDomainsFromTag: [],
       resetSelection: false,
       openLoadURLs: false,
       session:"",
       crawlerStart:false,
+      selectedPosTags: ["Relevant"],
+      selectedNegTags: ["Irrelevant"],
+	  
     };
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
@@ -136,7 +137,7 @@ class CrawlingView extends Component {
   /*consultaQueries: {"search_engine":"GOOG","activeProjectionAlg":"Group by Correlation"
   ,"domainId":"AVWjx7ciIf40cqEj1ACn","pagesCap":"100","fromDate":null,"toDate":null,
   "filter":null,"pageRetrievalCriteria":"Most Recent","selected_morelike":"",
-  "model":{"positive":"Relevant","nagative":"Irrelevant"}}*/
+  "model":{"positive":"Relevant","negative":"Irrelevant"}}*/
   createSession(domainId){
     var session = {};
     session['search_engine'] = "GOOG";
@@ -156,8 +157,8 @@ class CrawlingView extends Component {
     session['selected_model_tags']="";
     session['selected_crawled_tags']="";
     session['model'] = {};
-    session['model']['positive'] = "Relevant";
-    session['model']['nagative'] = "Irrelevant";
+    session['model']['positive'] = ["Relevant"];
+    session['model']['negative'] = ["Irrelevant"];
     session["from"]=0;
     return session;
   }
@@ -182,6 +183,7 @@ class CrawlingView extends Component {
   */
   componentWillMount(){
       var session = this.createSession(this.props.domainId);
+      this.setState({session: session});
       session['newPageRetrievalCriteria'] = "one";
       session['pageRetrievalCriteria'] = "Tags";
       session['selected_tags']="Deep Crawl";
@@ -202,31 +204,44 @@ class CrawlingView extends Component {
    }
 
    getModelTags(domainId){
-     console.log("in get");
      $.post(
        '/getModelTags',
        {'domainId': domainId},
-       function(tags){
-         this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
-         this.forceUpdate();
+	 function(tags){
+	     var session = this.state.session;
+	     session['model']['positive'] = tags['positive'].slice();
+	     session['model']['negative'] = tags['negative'].slice();
+	     this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
+	     this.forceUpdate();
+	     
        }.bind(this)
      );
    }
 
-  handleSave() {
-    var session = this.createSession(this.props.domainId);
-  //  this.setState({session['model']['positive']=this.state.tagsPosCheckBox,session['model']['negative']=this.state.tagsNegCheckBox})
-    session['model']['positive'] = this.state.tagsPosCheckBox;
-    session['model']['negative'] = this.state.tagsNegCheckBox;
-    $.post(
-      '/saveModelTags',
-      {'session': JSON.stringify(session)},
-      function(update){
-        this.forceUpdate();
-      }.bind(this)
-
-    );
+    handleSaveTags() {
+	var session = this.state.session;
+        session['model']['positive'] = this.state.selectedPosTags.slice();
+	session['model']['negative'] = this.state.selectedNegTags.slice();
+	
+	this.setState({session: session})
+	this.forceUpdate();
+	
+	$.post(
+	    '/saveModelTags',
+	    {'session': JSON.stringify(session)},
+	    function(update){
+		this.forceUpdate();
+	    }.bind(this)
+	  
+	);
   }
+
+    handleCancelTags(){
+	this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
+      this.forceUpdate();
+      
+  }
+    
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
@@ -490,41 +505,39 @@ class CrawlingView extends Component {
 
 
 
-  addPosTags(tag){
-        var tags = this.state.tagsPosCheckBox;
-        if(tags.includes(tag)){
-          var index = tags.indexOf(tag);
-          tags.splice(index, 1);
+   addPosTags(tag){
+       var tags = this.state.selectedPosTags;
+       if(tags.includes(tag)){
+           var index = tags.indexOf(tag);
+           tags.splice(index, 1);
+       }
+       else{
+           tags.push(tag);
+       }
+       this.setState({selectedPosTags: tags})
+       this.forceUpdate();
+       console.log(this.state.session['model']);
+   }
+    
+    addNegTags(tag){
+        var tags = this.state.selectedNegTags;
+	if(tags.includes(tag)){
+            var index = tags.indexOf(tag);
+            tags.splice(index, 1);
         }
         else{
-          tags.push(tag);
+            tags.push(tag);
         }
-        this.setState({tagsPosCheckBox:tags})
-        this.forceUpdate();
-     }
-
-     addNegTags(tag){
-        var tags = this.state.tagsNegCheckBox;
-        if(tags.includes(tag)){
-          var index = tags.indexOf(tag);
-          tags.splice(index, 1);
-        }
-        else{
-          tags.push(tag);
-        }
-        this.setState({tagsNegCheckBox:tags})
-        this.forceUpdate();
-     }
+       this.setState({selectedNegTags: tags})
+	this.forceUpdate();
+	console.log(this.state.session['model']);	
+    }
 
   handleStartCrawler =()=>{
     this.setState({crawlerStart:true});
     this.forceUpdate();
   }
-   handleCloseCancelCreateModel = () => {
-     this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
-     this.forceUpdate();
-   };
-
+    
   render() {
 
     const actionsLoadUrls = [
@@ -539,7 +552,7 @@ class CrawlingView extends Component {
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
                           var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                           var checkedTag=false;
-                          var tags = this.state.tagsPosCheckBox;
+                              var tags = this.state.selectedPosTags;
                           if(tags.includes(tag))
                             checkedTag=true;
                           return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
@@ -548,7 +561,7 @@ class CrawlingView extends Component {
                             {Object.keys(this.state.currentTags).map((tag, index)=>{
                               var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                               var checkedTag=false;
-                              var tags = this.state.tagsNegCheckBox;
+                              var tags = this.state.selectedNegTags;
                               if(tags.includes(tag))
                               checkedTag=true;
                                 return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
@@ -640,7 +653,7 @@ class CrawlingView extends Component {
               <RaisedButton
                 label="Start Crawler"
                 style={
-                        this.state. ?
+                        this.state.disabledStartCrawler ?
                         {pointerEvents: 'none', opacity: 0.5, margin: 12}
                         :
                         {pointerEvents: 'auto', opacity: 1.0, margin: 12}
@@ -771,9 +784,9 @@ class CrawlingView extends Component {
                       {checkedTagsPosNeg}
                     </Row>
                     <Row style={{margin:"-8px 5px 10px 20px"}}>
-                      <RaisedButton disabled={false} onTouchTap={this.handleSave.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      <RaisedButton disabled={false} onTouchTap={this.handleSaveTags.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Save" labelPosition="before" containerElement="label" />
-                      <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            <RaisedButton disabled={false} onTouchTap={this.handleCancelTags.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Cancel" labelPosition="before" containerElement="label" />
                     </Row>
                   </CardText>
