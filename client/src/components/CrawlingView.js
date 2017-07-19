@@ -94,6 +94,7 @@ class CrawlingView extends Component {
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
+    this.startCrawler = this.startCrawler.bind(this);
   }
 
   /**
@@ -226,10 +227,10 @@ class CrawlingView extends Component {
   }
 
   /**
-  * Set the state for displaying the selected list of deep crawlable urls
-  * @method addDomainsOnSelection (onClick event)
-  * @param {Object} event
-  */
+   * Set the state for displaying the selected list of deep crawlable urls
+   * @method addDomainsOnSelection (onClick event)
+   * @param {Object} event
+   */
   addDomainsForDeepCrawl(event) {
     let deepCrawlableIndex = this.state.deepCrawlableDomains.map(domain => domain[2]);
     this.selectedRows.forEach((rowIndex) => {
@@ -246,10 +247,10 @@ class CrawlingView extends Component {
   }
 
   /**
-  * Assigns the selected rows of the table to deepCrawlableDomains key in state
-  * @method addDomainsOnSelection (onRowSelection event)
-  * @param {number[]} selectedRows
-  */
+   * Assigns the selected rows of the table to deepCrawlableDomains key in state
+   * @method addDomainsOnSelection (onRowSelection event)
+   * @param {number[]} selectedRows
+   */
   addDomainsOnSelection(selectedRows) {
     this.selectedRows = selectedRows;
   }
@@ -277,6 +278,85 @@ class CrawlingView extends Component {
       resetSelection: true,
       valueLoadUrls:[],
       valueLoadUrlsFromTextField:"",
+    });
+  }
+
+  /**
+   * Saves all the selected domains with Deep Crawl tag and STARTS the crawler
+   * @method startCrawler (onClick event)
+   * @param {Object} event
+   */
+  startCrawler(event) {
+    this.setDeepcrawlTagtoPages(
+      this.state.deepCrawlableDomains.map(domain => domain[0]),
+      this.postStartCrawlerAPI
+    );
+  }
+
+  /**
+   * Add "Deep Crawl" tag to the list of provided URLs
+   * @method setDeepcrawlTagtoPages
+   * @param {string[]} urls
+   */
+  setDeepcrawlTagtoPages(urls, crawlerAPI) {
+    $.post(
+      '/setPagesTag',
+      {
+        pages: urls.join('|'),
+        tag: 'Deep Crawl',
+        applyTagFlag: false,
+        session: JSON.stringify(this.createSession(this.props.domainId))
+      },
+      (pages) => {
+        crawlerAPI && crawlerAPI(urls);
+
+        urls.forEach(url => {
+          this.state.deepCrawlableDomainsFromTag.push([url, null]);
+        });
+
+        this.setState({
+          deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
+          deepCrawlableDomains: []
+        });
+      }
+    ).fail((error) => {
+      console.log('setPagesTag', error)
+    });
+  }
+
+  /**
+   * POST XHR Request to /startCrawler endpoint to start deep crawl
+   * @method postStartCrawlerAPI
+   * @param {string[]} urls
+   */
+  postStartCrawlerAPI = (urls) => {
+    $.post(
+      '/startCrawler',
+      {
+        session: JSON.stringify(this.createSession(this.props.domainId)),
+        seeds: urls.join('|'),
+        type: 'deep'
+      },
+      (response) => { /* TODO: SUCCESS CALLBACK */ }
+    ).fail((error) => {
+      console.log('startCrawler', error)
+    });
+  }
+
+  /**
+   * POST XHR Request to /stopCrawler endpoint to stop deep crawl
+   * @method postStopCrawlerAPI
+   */
+  postStopCrawlerAPI() {
+    $.post(
+      '/stopCrawler',
+      {
+        session: JSON.stringify(this.createSession(this.props.domainId)),
+        type: 'deep'
+      },
+      (response) => { /* TODO: SUCCESS CALLBACK */ }
+    ).fail((error) => {
+      console.log('stopCrawler', error)
     });
   }
 
@@ -425,7 +505,7 @@ class CrawlingView extends Component {
                   </TableHeaderColumn>
                 </TableRow>
               </TableHeader>
-              <TableBody  showRowHover={false} displayRowCheckbox={false} deselectOnClickaway={false} stripedRows={false}>
+              <TableBody showRowHover={false} displayRowCheckbox={false} deselectOnClickaway={false} stripedRows={false}>
               {
                 (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
                   <TableRow displayBorder={false} key={index} style={heightTableStyle}>
@@ -467,7 +547,11 @@ class CrawlingView extends Component {
               </Table>
             </CardText>
           </Card>
-          <RaisedButton label="Start Crawler" style={{margin: 12,}} />
+          <RaisedButton
+            label="Start Crawler"
+            style={{margin: 12}}
+            onClick={this.startCrawler}
+          />
           </Col>
 
           <Col xs={6} md={6} style={{marginLeft:'0px'}}>
