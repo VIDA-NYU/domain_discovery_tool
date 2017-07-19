@@ -157,8 +157,6 @@ class CrawlingView extends Component {
   }
 
   render() {
-
-
     return (
       <div style={styles.content}>
         <Tabs
