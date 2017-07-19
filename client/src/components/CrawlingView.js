@@ -89,7 +89,7 @@ class CrawlingView extends Component {
       this.state = {
       disableStopCrawlerSignal:true,
       disableAcheInterfaceSignal:true,
-      disabledStartCrawler:true, //false
+      disabledStartCrawler:false, //false
       disabledCreateModel:true, //false
       messageCrawler:"",
       openCreateModel: false,
@@ -101,14 +101,17 @@ class CrawlingView extends Component {
       tagsPosCheckBox:["Relevant"],
       tagsNegCheckBox:["Irrelevant"],
       deepCrawlableDomains: [],
-      deepCrawlableDomainsFromTag: [],	  
+      deepCrawlableDomainsFromTag: [],
       resetSelection: false,
       openLoadURLs: false,
       session:"",
+      crawlerStart:false,
     };
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
+    this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
+    this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
   }
 
   /**
@@ -181,11 +184,12 @@ class CrawlingView extends Component {
       var session = this.createSession(this.props.domainId);
       session['newPageRetrievalCriteria'] = "one";
       session['pageRetrievalCriteria'] = "Tags";
-      session['selected_tags']="Deep Crawl";      
+      session['selected_tags']="Deep Crawl";
       this.getPages(session);
       this.getAvailableTags(session);
+      this.getModelTags(this.props.domainId);
   }
-    
+
   getAvailableTags(session){
      $.post(
         '/getAvailableTags',
@@ -196,6 +200,33 @@ class CrawlingView extends Component {
         }.bind(this)
       );
    }
+
+   getModelTags(domainId){
+     console.log("in get");
+     $.post(
+       '/getModelTags',
+       {'domainId': domainId},
+       function(tags){
+         this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
+         this.forceUpdate();
+       }.bind(this)
+     );
+   }
+
+  handleSave() {
+    var session = this.createSession(this.props.domainId);
+  //  this.setState({session['model']['positive']=this.state.tagsPosCheckBox,session['model']['negative']=this.state.tagsNegCheckBox})
+    session['model']['positive'] = this.state.tagsPosCheckBox;
+    session['model']['negative'] = this.state.tagsNegCheckBox;
+    $.post(
+      '/saveModelTags',
+      {'session': JSON.stringify(session)},
+      function(update){
+        this.forceUpdate();
+      }.bind(this)
+
+    );
+  }
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
@@ -338,7 +369,7 @@ class CrawlingView extends Component {
      });;
    }
 
-  stopCrawler(flag){
+  stopDeepCrawler(event){
       var session = this.state.session;
      var message = "Terminating";
      this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
@@ -351,10 +382,36 @@ class CrawlingView extends Component {
            this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
          this.forceUpdate();
        }.bind(this)
-     );
+     ).fail((error) => {
+       this.setState({disabledStartCrawler: false});
+     });
    }
 
-  
+   addUrlsWhileCrawling(event) {
+     $.post(
+       '/addUrls',
+       {
+         session: JSON.stringify(this.state.session),
+         urls: this.state.deepCrawlableDomains.join("|"),
+         type: "deep"
+       },
+	     (message) => {
+         this.state.deepCrawlableDomains.forEach(url => {
+           if(this.state.deepCrawlableDomainsFromTag.indexOf(url) !== -1)
+             this.state.deepCrawlableDomainsFromTag.push(url);
+         });
+
+         this.setState({
+           deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
+           deepCrawlableDomains: []
+         });
+       }
+     ).fail((error) => {
+       console.log('addUrls failed', error);
+     });
+   }
+
+
 
   /**
    * Add "Deep Crawl" tag to the list of provided URLs
@@ -372,7 +429,7 @@ class CrawlingView extends Component {
       },
       (message) => {
           urls.forEach(url => {
-              this.state.deepCrawlableDomainsFromTag.push(url);
+            this.state.deepCrawlableDomainsFromTag.push(url);
           });
 
           this.setState({
@@ -459,7 +516,10 @@ class CrawlingView extends Component {
         this.forceUpdate();
      }
 
-
+  handleStartCrawler =()=>{
+    this.setState({crawlerStart:true});
+    this.forceUpdate();
+  }
    handleCloseCancelCreateModel = () => {
      this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
      this.forceUpdate();
@@ -494,6 +554,10 @@ class CrawlingView extends Component {
                                 return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
                               })}
                         </div>:<div />;
+      const stopCrawlerButton = [
+        (this.state.crawlerStart)?<RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+          label="Stop Crawler" labelPosition="before" containerElement="label"/>:<div/>
+      ]
 
     return (
       <div style={styles.content}>
@@ -572,11 +636,36 @@ class CrawlingView extends Component {
               </Table>
             </CardText>
           </Card>
-          <RaisedButton
-            label="Start Crawler"
-            style={{margin: 12}}
-        onClick={this.startDeepCrawler.bind(this)}
-          />
+            <div style={{display: 'flex'}}>
+              <RaisedButton
+                label="Start Crawler"
+                style={
+                        this.state. ?
+                        {pointerEvents: 'none', opacity: 0.5, margin: 12}
+                        :
+                        {pointerEvents: 'auto', opacity: 1.0, margin: 12}
+                      }
+                onClick={this.startDeepCrawler.bind(this)}
+              />
+
+              {
+                this.state.disabledStartCrawler ?
+                <div>
+                  <RaisedButton
+                    label="Add URLs"
+                    style={{margin: 12}}
+                    onClick={this.addUrlsWhileCrawling}
+                  />
+                  <RaisedButton
+                    label="Stop Crawler"
+                    style={{margin: 12}}
+                    onClick={this.stopDeepCrawler}
+                  />
+                </div>
+                :
+                null
+              }
+            </div>
           </Col>
 
           <Col xs={6} md={6} style={{marginLeft:'0px'}}>
@@ -675,12 +764,14 @@ class CrawlingView extends Component {
                     style={styles.cardHeader}
                   />
                   <CardText expandable={true} style={styles.cardMedia}>
+
+
                   <Divider/>
                     <Row style={{margin:"5px 5px 10px 20px"}} title="Model Settings">
                       {checkedTagsPosNeg}
                     </Row>
                     <Row style={{margin:"-8px 5px 10px 20px"}}>
-                      <RaisedButton disabled={false} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      <RaisedButton disabled={false} onTouchTap={this.handleSave.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Save" labelPosition="before" containerElement="label" />
                       <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Cancel" labelPosition="before" containerElement="label" />
@@ -692,8 +783,7 @@ class CrawlingView extends Component {
                  <Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}/>
                </Col>
              </Row>
-             <Row style={{textAlign:'center',}}>
-                 </Row>
+
 
            </CardText>
           </Card>
@@ -710,8 +800,9 @@ class CrawlingView extends Component {
             style={{fontWeight:'bold',}}
           />
           <CardText expandable={true} >
-            <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            <RaisedButton disabled={this.state.crawlerStart} onTouchTap={this.handleStartCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
             label="Start Crawler" labelPosition="before" containerElement="label" />
+            {stopCrawlerButton}
           </CardText>
           </Card>
           </Col>
