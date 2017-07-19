@@ -95,6 +95,8 @@ class CrawlingView extends Component {
   }
 
 
+
+
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
