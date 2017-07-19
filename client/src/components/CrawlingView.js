@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Col, Row} from 'react-bootstrap';
 // From https://github.com/oliviertassinari/react-swipeable-views
 import Terms from './Terms';
+import ScaleBar from './ScaleBar';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
@@ -19,6 +20,13 @@ import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
+
+import Avatar from 'material-ui/Avatar';
+import {List, ListItem} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
+
+
 import {
   Table,
   TableBody,
@@ -652,7 +660,7 @@ class CrawlingView extends Component {
                   <CardText expandable={true} style={styles.cardMedia}>
                   <div style={{marginLeft:"20px"}} title="Model Settings">
                   {checkedTagsPosNeg}
-                  
+
                   </div>
                   <Divider/>
                   </CardText>
@@ -699,6 +707,19 @@ class CrawlingView extends Component {
              style={{fontWeight:'bold',}}
            />
            <CardText expandable={true} >
+             <List>
+              <Subheader>Details</Subheader>
+              <ListItem>
+              <p><span>Relevant:</span> 20 </p>
+              <p><span>Irrelevant:</span> 20 </p>
+              <p><span>Domain Model:</span> 20 </p>
+              </ListItem>
+              <Divider />
+              <ScaleBar/>
+              </List>
+
+
+
              <IconMenu
              iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
              label="Export" labelPosition="before" containerElement="label" />} >
