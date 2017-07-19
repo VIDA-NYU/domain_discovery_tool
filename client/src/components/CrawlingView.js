@@ -70,8 +70,6 @@ class CrawlingView extends Component {
     };
   }
 
-
-
   /**
   * Creating session to get the urls with deep crawl tag.
   * @method createSession
@@ -113,41 +111,8 @@ class CrawlingView extends Component {
       var temp_session = this.createSession(this.props.domainId);
       this.setState({session: temp_session});
   }
-  getAvailableTags(session){
-     $.post(
-        '/getAvailableTags',
-        {'session': JSON.stringify(session), 'event': 'Tags'},
-        function(tagsDomain) {
-          this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
-          this.forceUpdate();
-        }.bind(this)
-      );
-   }
 
-   getModelTags(domainId){
-     console.log("in get");
-     $.post(
-       '/getModelTags',
-       {'domainId': JSON.stringify(domainId)},
-       function(tags){
-         console.log(tags['positive']);
-         this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
-         this.forceUpdate();
-       }.bind(this)
-     )
-   }
-
-  handleSave() {
-  //  var session = this.createSession(this.props.domainId);
-    $.post(
-      '/saveModelTags',
-      {'session':JSON.stringify(this.state.session)},
-      function(update){
-        this.forceUpdate();
-      }.bind(this)
-
-    )
-  }
+    
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
