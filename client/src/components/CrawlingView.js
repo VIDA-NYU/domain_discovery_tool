@@ -136,6 +136,7 @@ class CrawlingView extends Component {
         <div id={"deep-crawling"} style={styles.slide}>
           <DeepCrawling domainId={this.props.domainId} session={this.state.session}/>
 
+
         </div>
 
         <div id="focused-crawling" style={styles.slide}>
