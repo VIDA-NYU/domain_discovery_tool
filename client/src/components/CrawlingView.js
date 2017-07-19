@@ -112,6 +112,7 @@ class CrawlingView extends Component {
       this.setState({session: temp_session});
   }
 
+
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
