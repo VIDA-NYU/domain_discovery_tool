@@ -398,9 +398,9 @@ class CrawlingView extends Component {
         pages: urls.join('|'),
         tag: 'Deep Crawl',
         applyTagFlag: true,
-        session: this.state.session
+        session: JSON.stringify(this.state.session)
       },
-      function(message){
+      (message) => {
           urls.forEach(url => {
               this.state.deepCrawlableDomainsFromTag.push(url);
           });
@@ -571,7 +571,7 @@ class CrawlingView extends Component {
               {
                 (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
                   <TableRow displayBorder={false} key={index} style={heightTableStyle}>
-                  <TableRowColumn style={heightTableStyle}>{row[0]}</TableRowColumn>
+                  <TableRowColumn style={heightTableStyle}>{row}</TableRowColumn>
                   </TableRow>
                 ))
               }
