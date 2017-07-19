@@ -123,6 +123,31 @@ class CrawlingView extends Component {
         }.bind(this)
       );
    }
+
+   getModelTags(domainId){
+     console.log("in get");
+     $.post(
+       '/getModelTags',
+       {'domainId': JSON.stringify(domainId)},
+       function(tags){
+         console.log(tags['positive']);
+         this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
+         this.forceUpdate();
+       }.bind(this)
+     )
+   }
+
+  handleSave() {
+  //  var session = this.createSession(this.props.domainId);
+    $.post(
+      '/saveModelTags',
+      {'session':JSON.stringify(this.state.session)},
+      function(update){
+        this.forceUpdate();
+      }.bind(this)
+
+    )
+  }
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
@@ -132,6 +157,7 @@ class CrawlingView extends Component {
   }
 
   render() {
+
 
     return (
       <div style={styles.content}>
@@ -152,7 +178,6 @@ class CrawlingView extends Component {
 
         <div id="focused-crawling" style={styles.slide}>
           <FocusedCrawling domainId={this.props.domainId}  session={this.state.session} />
-
 
         </div>
 
