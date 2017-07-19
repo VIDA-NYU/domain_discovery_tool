@@ -475,7 +475,7 @@ class CrawlingView extends Component {
     const heightTableStyle = { height: "10px", padding: "0px"};
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
-                          <div>
+                          <div style={{height:330, overflowY: "scroll", }}>
                           Positive
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
                           var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
@@ -658,14 +658,14 @@ class CrawlingView extends Component {
         <div id="focused-crawling" style={styles.slide}>
         <Row>
           <Col xs={11} md={11} style={{margin:'10px'}}>
-          <Card id={"Settings"} initiallyExpanded={true} >
+          <Card id={"Settings"} initiallyExpanded={true} style={{paddingBottom:0,}} containerStyle={{paddingBottom:0,}} >
            <CardHeader
              title="Settings"
              actAsExpander={false}
              showExpandableButton={false}
              style={{fontWeight:'bold', padding:'10px 1px 10px 6px', borderRadius: '0px 0px 0px 0px',}}
            />
-           <CardText expandable={true} style={{padding:'1px 16px 10px 16px',}}>
+           <CardText expandable={true} style={{padding:'1px 16px 0px 16px',}}>
              <Row>
                <Col xs={7} md={7} style={{margin:0, padding:0,}}>
                  <Card id={"Tags"} initiallyExpanded={true} style={styles.card}>
@@ -676,11 +676,16 @@ class CrawlingView extends Component {
                     style={styles.cardHeader}
                   />
                   <CardText expandable={true} style={styles.cardMedia}>
-                  <div style={{marginLeft:"20px"}} title="Model Settings">
-                  {checkedTagsPosNeg}
-
-                  </div>
                   <Divider/>
+                    <Row style={{margin:"5px 5px 10px 20px"}} title="Model Settings">
+                      {checkedTagsPosNeg}
+                    </Row>
+                    <Row style={{margin:"-8px 5px 10px 20px"}}>
+                      <RaisedButton disabled={false} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      label="Save" labelPosition="before" containerElement="label" />
+                      <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      label="Cancel" labelPosition="before" containerElement="label" />
+                    </Row>
                   </CardText>
                   </Card>
                </Col>
@@ -689,11 +694,7 @@ class CrawlingView extends Component {
                </Col>
              </Row>
              <Row style={{textAlign:'center',}}>
-               <RaisedButton disabled={false} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-               label="Save" labelPosition="before" containerElement="label" />
-               <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-               label="Cancel" labelPosition="before" containerElement="label" />
-             </Row>
+                 </Row>
 
            </CardText>
           </Card>
