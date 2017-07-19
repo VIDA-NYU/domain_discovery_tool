@@ -193,25 +193,24 @@ class CrawlingView extends Component {
      console.log("in get");
      $.post(
        '/getModelTags',
-       {'domainId': JSON.stringify(domainId)},
+       {'domainId': domainId},
        function(tags){
-         console.log(tags['positive']);
          this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
          this.forceUpdate();
        }.bind(this)
-     )
+     );
    }
 
   handleSave() {
-  //  var session = this.createSession(this.props.domainId);
+    var session = this.createSession(this.props.domainId);
     $.post(
       '/saveModelTags',
-      {'session':JSON.stringify(this.state.session)},
+      {'session': JSON.stringify(session)},
       function(update){
         this.forceUpdate();
       }.bind(this)
 
-    )
+    );
   }
   handleChange = (value) => {
     this.setState({
