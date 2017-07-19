@@ -90,6 +90,7 @@ class CrawlingView extends Component {
       resetSelection: false,
       openLoadURLs: false,
       session:"",
+      crawlerStart:false,
     };
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
@@ -166,6 +167,7 @@ class CrawlingView extends Component {
     var session = this.createSession(this.props.domainId);
     this.getPages(session);
     this.getAvailableTags(session);
+    this.getModelTags(this.props.domainId);
   }
   getAvailableTags(session){
      $.post(
@@ -177,6 +179,31 @@ class CrawlingView extends Component {
         }.bind(this)
       );
    }
+
+   getModelTags(domainId){
+     console.log("in get");
+     $.post(
+       '/getModelTags',
+       {'domainId': JSON.stringify(domainId)},
+       function(tags){
+         console.log(tags['positive']);
+         this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
+         this.forceUpdate();
+       }.bind(this)
+     )
+   }
+
+  handleSave() {
+  //  var session = this.createSession(this.props.domainId);
+    $.post(
+      '/saveModelTags',
+      {'session':JSON.stringify(this.state.session)},
+      function(update){
+        this.forceUpdate();
+      }.bind(this)
+
+    )
+  }
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
@@ -354,7 +381,10 @@ class CrawlingView extends Component {
         this.forceUpdate();
      }
 
-
+  handleStartCrawler =()=>{
+    this.setState({crawlerStart:true});
+    this.forceUpdate();
+  }
    handleCloseCancelCreateModel = () => {
      this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
      this.forceUpdate();
@@ -389,6 +419,10 @@ class CrawlingView extends Component {
                                 return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
                               })}
                         </div>:<div />;
+      const stopCrawlerButton = [
+        (this.state.crawlerStart)?<RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+          label="Stop Crawler" labelPosition="before" containerElement="label"/>:<div/>
+      ]
 
     return (
       <div style={styles.content}>
@@ -568,7 +602,6 @@ class CrawlingView extends Component {
                   <CardText expandable={true} style={styles.cardMedia}>
                   <div style={{marginLeft:"20px"}} title="Model Settings">
                   {checkedTagsPosNeg}
-                  
                   </div>
                   <Divider/>
                   </CardText>
@@ -579,7 +612,7 @@ class CrawlingView extends Component {
                </Col>
              </Row>
              <Row style={{textAlign:'center',}}>
-               <RaisedButton disabled={false} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+               <RaisedButton disabled={false} onTouchTap={this.handleSave.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                label="Save" labelPosition="before" containerElement="label" />
                <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                label="Cancel" labelPosition="before" containerElement="label" />
@@ -600,8 +633,9 @@ class CrawlingView extends Component {
             style={{fontWeight:'bold',}}
           />
           <CardText expandable={true} >
-            <RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            <RaisedButton disabled={this.state.crawlerStart} onTouchTap={this.handleStartCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
             label="Start Crawler" labelPosition="before" containerElement="label" />
+            {stopCrawlerButton}
           </CardText>
           </Card>
           </Col>
