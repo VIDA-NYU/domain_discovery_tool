@@ -254,8 +254,6 @@ class CrawlingView extends Component {
       this.selectedRows.forEach((rowIndex) => {
 	  if(this.state.deepCrawlableDomains.indexOf(this.state.recommendations[rowIndex][0]) === -1) {
               var recommendation = this.state.recommendations[rowIndex][0];
-	      console.log("RECOMMENDATION");
-	      console.log(recommendation);
               aux_deepCrawlableDomains.push(recommendation);
 	  }
       })
@@ -306,12 +304,13 @@ class CrawlingView extends Component {
    * @method startCrawler (onClick event)
    * @param {Object} event
    */
-  startDeepCrawler(event) {
-      this.setDeepcrawlTagtoPages(
-	  this.state.deepCrawlableDomains
-      );
-      
-      this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
+    startDeepCrawler(event) {
+	if(this.state.deepCrawlableDomains.length > 0)
+	    this.setDeepcrawlTagtoPages(
+		this.state.deepCrawlableDomains
+	    );
+	
+	this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
   }
 
     startCrawler(type, seeds){
@@ -321,22 +320,22 @@ class CrawlingView extends Component {
      this.forceUpdate();
      $.post(
          '/startCrawler',
-         {'session': JSON.stringify(session)},
+         {'session': JSON.stringify(session), "type": type, "seeds": seeds.join('|')},
          function(message) {
-           var disableStopCrawlerFlag = false;
-           var disableAcheInterfaceFlag = false;
-           var disabledStartCrawlerFlag = true;
-           if(message.toLowerCase() !== "running"){
-	       disableStopCrawlerFlag = true;
-	       disableAcheInterfaceFlag =true;
-	       disabledStartCrawlerFlag = true;
-           }
-
-           this.props.updateFilterCrawlerData("updateCrawler");
-           this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-           this.forceUpdate();
+             var disableStopCrawlerFlag = false;
+             var disableAcheInterfaceFlag = false;
+             var disabledStartCrawlerFlag = true;
+             if(message.toLowerCase() !== "running"){
+		 disableStopCrawlerFlag = true;
+		 disableAcheInterfaceFlag =true;
+		 disabledStartCrawlerFlag = true;
+             }
+             this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+             this.forceUpdate();
          }.bind(this)
-     );
+     ).fail((error) => {
+	 console.log('startCrawler', error)
+     });;
    }
 
   stopCrawler(flag){
