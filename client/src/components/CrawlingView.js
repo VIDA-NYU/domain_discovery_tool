@@ -46,6 +46,7 @@ class CrawlingView extends Component {
       resetSelection: false,
       openLoadURLs: false,
       session:{},
+
     };
 
   }
@@ -94,9 +95,6 @@ class CrawlingView extends Component {
       this.setState({session: temp_session});
   }
 
-
-
-
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
@@ -106,7 +104,6 @@ class CrawlingView extends Component {
 
     });
   }
-
 
   render() {
 
@@ -124,18 +121,10 @@ class CrawlingView extends Component {
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
         <div id={"deep-crawling"} style={styles.slide}>
           <DeepCrawling domainId={this.props.domainId} session={this.state.session}/>
-
-
-
-
-
         </div>
 
         <div id="focused-crawling" style={styles.slide}>
           <FocusedCrawling domainId={this.props.domainId}  session={this.state.session} />
-
-
-
         </div>
 
         </SwipeableViews>
