@@ -213,6 +213,9 @@ class CrawlingView extends Component {
 
   handleSave() {
     var session = this.createSession(this.props.domainId);
+  //  this.setState({session['model']['positive']=this.state.tagsPosCheckBox,session['model']['negative']=this.state.tagsNegCheckBox})
+    session['model']['positive'] = this.state.tagsPosCheckBox;
+    session['model']['negative'] = this.state.tagsNegCheckBox;
     $.post(
       '/saveModelTags',
       {'session': JSON.stringify(session)},
@@ -709,15 +712,14 @@ class CrawlingView extends Component {
                     style={styles.cardHeader}
                   />
                   <CardText expandable={true} style={styles.cardMedia}>
-                  <div style={{marginLeft:"20px"}} title="Model Settings">
-                  {checkedTagsPosNeg}
-                  </div>
+
+
                   <Divider/>
                     <Row style={{margin:"5px 5px 10px 20px"}} title="Model Settings">
                       {checkedTagsPosNeg}
                     </Row>
                     <Row style={{margin:"-8px 5px 10px 20px"}}>
-                      <RaisedButton disabled={false} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      <RaisedButton disabled={false} onTouchTap={this.handleSave.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Save" labelPosition="before" containerElement="label" />
                       <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Cancel" labelPosition="before" containerElement="label" />
@@ -729,12 +731,7 @@ class CrawlingView extends Component {
                  <Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}/>
                </Col>
              </Row>
-             <Row style={{textAlign:'center',}}>
-               <RaisedButton disabled={false} onTouchTap={this.handleSave.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-               label="Save" labelPosition="before" containerElement="label" />
-               <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-               label="Cancel" labelPosition="before" containerElement="label" />
-             </Row>
+
 
            </CardText>
           </Card>
