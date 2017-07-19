@@ -84,12 +84,6 @@ class Header extends Component {
     this.state = {
       currentDomain:'',
       term:'',
-      disableStopCrawlerSignal:true,
-      disableAcheInterfaceSignal:true,
-      disabledStartCrawler:true, //false
-      disabledCreateModel:true, //false
-      messageCrawler:"",
-      openCreateModel: false,
       openInfo:false,
       currentTags:undefined,
       tagsPosCheckBox:["Relevant"],

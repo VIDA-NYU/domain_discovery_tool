@@ -86,7 +86,13 @@ class CrawlingView extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
+      this.state = {
+      disableStopCrawlerSignal:true,
+      disableAcheInterfaceSignal:true,
+      disabledStartCrawler:true, //false
+      disabledCreateModel:true, //false
+      messageCrawler:"",
+      openCreateModel: false,
       slideIndex: 0,
       recommendations: this.getRecommendationResults(),
       pages:{},
@@ -95,6 +101,7 @@ class CrawlingView extends Component {
       tagsPosCheckBox:["Relevant"],
       tagsNegCheckBox:["Irrelevant"],
       deepCrawlableDomains: [],
+      deepCrawlableDomainsFromTag: [],
       resetSelection: false,
       openLoadURLs: false,
       session:"",
@@ -103,7 +110,6 @@ class CrawlingView extends Component {
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
-    this.startCrawler = this.startCrawler.bind(this);
   }
 
   /**
@@ -138,13 +144,13 @@ class CrawlingView extends Component {
     session['fromDate'] = null;
     session['toDate'] = null;
     session['filter'] = null; //null
-    session['newPageRetrievalCriteria'] = "one";
-    session['pageRetrievalCriteria'] = "Tags";
+    session['newPageRetrievalCriteria'] = "";
+    session['pageRetrievalCriteria'] = "";
     session['selected_morelike'] = "";
     session['selected_queries']="";
     session['selected_tlds']="";
     session['selected_aterms']="";
-    session['selected_tags']="Deep Crawl";
+    session['selected_tags']="";
     session['selected_model_tags']="";
     session['selected_crawled_tags']="";
     session['model'] = {};
@@ -173,11 +179,15 @@ class CrawlingView extends Component {
   * @param
   */
   componentWillMount(){
-    var session = this.createSession(this.props.domainId);
-    this.getPages(session);
-    this.getAvailableTags(session);
-    this.getModelTags(this.props.domainId);
+      var session = this.createSession(this.props.domainId);
+      session['newPageRetrievalCriteria'] = "one";
+      session['pageRetrievalCriteria'] = "Tags";
+      session['selected_tags']="Deep Crawl";
+      this.getPages(session);
+      this.getAvailableTags(session);
+      this.getModelTags(this.props.domainId);
   }
+
   getAvailableTags(session){
      $.post(
         '/getAvailableTags',
@@ -266,16 +276,18 @@ class CrawlingView extends Component {
    * @param {Object} event
    */
   addDomainsForDeepCrawl(event) {
-    let deepCrawlableIndex = this.state.deepCrawlableDomains.map(domain => domain[2]);
-    this.selectedRows.forEach((rowIndex) => {
-      if(deepCrawlableIndex.indexOf(rowIndex) === -1) {
-        let recommendation = this.state.recommendations.find((reco, index) => index === rowIndex);
-        this.state.deepCrawlableDomains.push([recommendation[0], recommendation[1], rowIndex]);
-      }
-    })
+    var aux_deepCrawlableDomains = this.state.deepCrawlableDomains;
+      this.selectedRows.forEach((rowIndex) => {
+	  if(this.state.deepCrawlableDomains.indexOf(this.state.recommendations[rowIndex][0]) === -1) {
+              var recommendation = this.state.recommendations[rowIndex][0];
+	      console.log("RECOMMENDATION");
+	      console.log(recommendation);
+              aux_deepCrawlableDomains.push(recommendation);
+	  }
+      })
 
     this.setState({
-      deepCrawlableDomains: this.state.deepCrawlableDomains,
+      deepCrawlableDomains: aux_deepCrawlableDomains,
       resetSelection: true
     });
   }
@@ -305,7 +317,7 @@ class CrawlingView extends Component {
     });
     //Append new urls to deepCrawlableDomains
     aux_valueLoadUrls.forEach((value) => {
-      aux_deepCrawlableDomains.push([value, 1]);
+      aux_deepCrawlableDomains.push(value);
     })
     this.setState({
       deepCrawlableDomains: aux_deepCrawlableDomains,
@@ -320,77 +332,83 @@ class CrawlingView extends Component {
    * @method startCrawler (onClick event)
    * @param {Object} event
    */
-  startCrawler(event) {
-    this.setDeepcrawlTagtoPages(
-      this.state.deepCrawlableDomains.map(domain => domain[0]),
-      this.postStartCrawlerAPI
-    );
+  startDeepCrawler(event) {
+      this.setDeepcrawlTagtoPages(
+	  this.state.deepCrawlableDomains
+      );
+
+      this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
   }
+
+    startCrawler(type, seeds){
+     var session = this.state.session;
+     var message = "Running";
+     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
+     this.forceUpdate();
+     $.post(
+         '/startCrawler',
+         {'session': JSON.stringify(session)},
+         function(message) {
+           var disableStopCrawlerFlag = false;
+           var disableAcheInterfaceFlag = false;
+           var disabledStartCrawlerFlag = true;
+           if(message.toLowerCase() !== "running"){
+	       disableStopCrawlerFlag = true;
+	       disableAcheInterfaceFlag =true;
+	       disabledStartCrawlerFlag = true;
+           }
+
+           this.props.updateFilterCrawlerData("updateCrawler");
+           this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+           this.forceUpdate();
+         }.bind(this)
+     );
+   }
+
+  stopCrawler(flag){
+      var session = this.state.session;
+     var message = "Terminating";
+     this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+     this.forceUpdate();
+     $.post(
+       '/stopCrawler',
+       {'session': JSON.stringify(session)},
+	 function(message) {
+         this.props.updateFilterCrawlerData("stopCrawler");
+           this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
+         this.forceUpdate();
+       }.bind(this)
+     );
+   }
+
+
 
   /**
    * Add "Deep Crawl" tag to the list of provided URLs
    * @method setDeepcrawlTagtoPages
    * @param {string[]} urls
    */
-  setDeepcrawlTagtoPages(urls, crawlerAPI) {
+  setDeepcrawlTagtoPages(urls) {
     $.post(
       '/setPagesTag',
       {
         pages: urls.join('|'),
         tag: 'Deep Crawl',
-        applyTagFlag: false,
-        session: JSON.stringify(this.createSession(this.props.domainId))
+        applyTagFlag: true,
+        session: this.state.session
       },
-      (pages) => {
-        crawlerAPI && crawlerAPI(urls);
+      function(message){
+          urls.forEach(url => {
+              this.state.deepCrawlableDomainsFromTag.push(url);
+          });
 
-        urls.forEach(url => {
-          this.state.deepCrawlableDomainsFromTag.push([url, null]);
-        });
-
-        this.setState({
-          deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
-          deepCrawlableDomains: []
-        });
+          this.setState({
+              deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
+              deepCrawlableDomains: []
+          });
       }
     ).fail((error) => {
-      console.log('setPagesTag', error)
-    });
-  }
-
-  /**
-   * POST XHR Request to /startCrawler endpoint to start deep crawl
-   * @method postStartCrawlerAPI
-   * @param {string[]} urls
-   */
-  postStartCrawlerAPI = (urls) => {
-    $.post(
-      '/startCrawler',
-      {
-        session: JSON.stringify(this.createSession(this.props.domainId)),
-        seeds: urls.join('|'),
-        type: 'deep'
-      },
-      (response) => { /* TODO: SUCCESS CALLBACK */ }
-    ).fail((error) => {
-      console.log('startCrawler', error)
-    });
-  }
-
-  /**
-   * POST XHR Request to /stopCrawler endpoint to stop deep crawl
-   * @method postStopCrawlerAPI
-   */
-  postStopCrawlerAPI() {
-    $.post(
-      '/stopCrawler',
-      {
-        session: JSON.stringify(this.createSession(this.props.domainId)),
-        type: 'deep'
-      },
-      (response) => { /* TODO: SUCCESS CALLBACK */ }
-    ).fail((error) => {
-      console.log('stopCrawler', error)
+	console.log('setPagesTag', error)
     });
   }
 
@@ -432,7 +450,7 @@ class CrawlingView extends Component {
   }
 
   //Removing selected url from the table to deepCrawlableDomains
-  handleRemodeUrlFromList(url, index){
+  handleRemoveUrlFromList(url, index){
     //var total_deepCrawlableDomains = this.state.deepCrawlableDomainsFromTag.length;
     var urlsList = this.state.deepCrawlableDomains;
     var deepCrawlableDomains_aux =  urlsList.splice(index,1);
@@ -486,7 +504,7 @@ class CrawlingView extends Component {
     const heightTableStyle = { height: "10px", padding: "0px"};
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
-                          <div>
+                          <div style={{height:330, overflowY: "scroll", }}>
                           Positive
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
                           var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
@@ -571,12 +589,12 @@ class CrawlingView extends Component {
               </TableHeader>
               <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
               {
-                (this.state.deepCrawlableDomains || []).map((row, index) => (
+                (this.state.deepCrawlableDomains).map((row, index) => (
                   <TableRow key={index}>
-                  <TableRowColumn>{row[0]}</TableRowColumn>
+                  <TableRowColumn>{row}</TableRowColumn>
                   <TableRowColumn style={{textAlign: 'right'}}>
                     <div>
-                      <IconButton onClick={this.handleRemodeUrlFromList.bind(this,row[0], index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
+                      <IconButton onClick={this.handleRemoveUrlFromList.bind(this,row, index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
                         <RemoveURL />
                       </IconButton>
                     </div>
@@ -591,7 +609,7 @@ class CrawlingView extends Component {
           <RaisedButton
             label="Start Crawler"
             style={{margin: 12}}
-            onClick={this.startCrawler}
+        onClick={this.startDeepCrawler.bind(this)}
           />
           </Col>
 
@@ -673,14 +691,14 @@ class CrawlingView extends Component {
         <div id="focused-crawling" style={styles.slide}>
         <Row>
           <Col xs={11} md={11} style={{margin:'10px'}}>
-          <Card id={"Settings"} initiallyExpanded={true} >
+          <Card id={"Settings"} initiallyExpanded={true} style={{paddingBottom:0,}} containerStyle={{paddingBottom:0,}} >
            <CardHeader
              title="Settings"
              actAsExpander={false}
              showExpandableButton={false}
              style={{fontWeight:'bold', padding:'10px 1px 10px 6px', borderRadius: '0px 0px 0px 0px',}}
            />
-           <CardText expandable={true} style={{padding:'1px 16px 10px 16px',}}>
+           <CardText expandable={true} style={{padding:'1px 16px 0px 16px',}}>
              <Row>
                <Col xs={7} md={7} style={{margin:0, padding:0,}}>
                  <Card id={"Tags"} initiallyExpanded={true} style={styles.card}>
@@ -695,6 +713,15 @@ class CrawlingView extends Component {
                   {checkedTagsPosNeg}
                   </div>
                   <Divider/>
+                    <Row style={{margin:"5px 5px 10px 20px"}} title="Model Settings">
+                      {checkedTagsPosNeg}
+                    </Row>
+                    <Row style={{margin:"-8px 5px 10px 20px"}}>
+                      <RaisedButton disabled={false} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      label="Save" labelPosition="before" containerElement="label" />
+                      <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      label="Cancel" labelPosition="before" containerElement="label" />
+                    </Row>
                   </CardText>
                   </Card>
                </Col>
