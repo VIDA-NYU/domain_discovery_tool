@@ -112,6 +112,7 @@ class CrawlingView extends Component {
   componentWillMount(){
       var temp_session = this.createSession(this.props.domainId);
       this.setState({session: temp_session});
+
   }
 
 
@@ -120,6 +121,7 @@ class CrawlingView extends Component {
       slideIndex: value,
       //valueLoadUrls:[],
       //valueLoadUrlsFromTextField:[],
+
     });
   }
 
