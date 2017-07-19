@@ -6,7 +6,6 @@ import DeepCrawling from './DeepCrawling';
 import FocusedCrawling from './FocusedCrawling';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-
 import $ from 'jquery';
 
 import MultiselectTable from './MultiselectTable';
@@ -22,27 +21,6 @@ const styles = {
     marginLeft: '5px',
     backgroundColor: '#FFFFFF',
     borderRadius: '10px 10px 10px 10px',
-  },
-  card: {
-    borderStyle: 'solid',
-    borderColor: '#C09ED7',
-    background: 'white',
-    borderRadius: '0px 0px 0px 0px',
-    borderWidth: '0px 0px 0px 0px'
-  },
-  avatar:{
-    margin:'-4px 8px 0px 0px',
-  },
-  cardHeader:{
-    background: "white", //'#DCCCE7',
-    padding:'10px 1px 10px 6px',
-    borderRadius: '0px 0px 0px 0px',
-  },
-  cardMedia:{
-    background: "white",
-    padding:'2px 4px 2px 4px',
-    borderRadius: '0px 0px 0px 0px',
-    height: "382px",
   },
 };
 
@@ -71,6 +49,8 @@ class CrawlingView extends Component {
     };
 
   }
+
+
 
   /**
   * Creating session to get the urls with deep crawl tag.
@@ -112,7 +92,6 @@ class CrawlingView extends Component {
   componentWillMount(){
       var temp_session = this.createSession(this.props.domainId);
       this.setState({session: temp_session});
-
   }
 
 
@@ -122,11 +101,13 @@ class CrawlingView extends Component {
       //valueLoadUrls:[],
       //valueLoadUrlsFromTextField:[],
 
+
     });
   }
 
 
   render() {
+
     return (
       <div style={styles.content}>
         <Tabs
@@ -144,10 +125,14 @@ class CrawlingView extends Component {
 
 
 
+
+
         </div>
 
         <div id="focused-crawling" style={styles.slide}>
           <FocusedCrawling domainId={this.props.domainId}  session={this.state.session} />
+
+
 
         </div>
 
