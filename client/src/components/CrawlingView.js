@@ -155,7 +155,7 @@ class CrawlingView extends Component {
     session['selected_crawled_tags']="";
     session['model'] = {};
     session['model']['positive'] = "Relevant";
-    session['model']['nagative'] = "Irrelevant";
+    session['model']['negative'] = "Irrelevant";
     session["from"]=0;
     return session;
   }
@@ -200,7 +200,6 @@ class CrawlingView extends Component {
    }
 
    getModelTags(domainId){
-     console.log("in get");
      $.post(
        '/getModelTags',
        {'domainId': domainId},
@@ -216,6 +215,7 @@ class CrawlingView extends Component {
   //  this.setState({session['model']['positive']=this.state.tagsPosCheckBox,session['model']['negative']=this.state.tagsNegCheckBox})
     session['model']['positive'] = this.state.tagsPosCheckBox;
     session['model']['negative'] = this.state.tagsNegCheckBox;
+    console.log(JSON.stringify(session));
     $.post(
       '/saveModelTags',
       {'session': JSON.stringify(session)},
