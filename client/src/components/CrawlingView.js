@@ -91,6 +91,7 @@ class CrawlingView extends Component {
       disableAcheInterfaceSignal:true,
       disabledStartCrawler:true, //false
       disabledCreateModel:true, //false
+      deepCrawling: false,
       messageCrawler:"",
       openCreateModel: false,
       slideIndex: 0,
@@ -110,6 +111,8 @@ class CrawlingView extends Component {
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
+    this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
+    this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
   }
 
   /**
@@ -365,10 +368,12 @@ class CrawlingView extends Component {
            this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
            this.forceUpdate();
          }.bind(this)
-     );
+     ).fail((error) => {
+       this.setState({deepCrawling: true})
+     });
    }
 
-  stopCrawler(flag){
+  stopDeepCrawler(event){
       var session = this.state.session;
      var message = "Terminating";
      this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
@@ -381,7 +386,33 @@ class CrawlingView extends Component {
            this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
          this.forceUpdate();
        }.bind(this)
-     );
+     ).fail((error) => {
+       this.setState({deepCrawling: false});
+     });
+   }
+
+   addUrlsWhileCrawling(event) {
+     $.post(
+       '/addUrls',
+       {
+         session: JSON.stringify(this.state.session),
+         urls: this.state.deepCrawlableDomains.join("|"),
+         type: "deep"
+       },
+	     (message) => {
+         this.state.deepCrawlableDomains.forEach(url => {
+           if(this.state.deepCrawlableDomainsFromTag.indexOf(url) !== -1)
+             this.state.deepCrawlableDomainsFromTag.push(url);
+         });
+
+         this.setState({
+           deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
+           deepCrawlableDomains: []
+         });
+       }
+     ).fail((error) => {
+       console.log('addUrls failed', error);
+     });
    }
 
 
@@ -402,7 +433,7 @@ class CrawlingView extends Component {
       },
       (message) => {
           urls.forEach(url => {
-              this.state.deepCrawlableDomainsFromTag.push(url);
+            this.state.deepCrawlableDomainsFromTag.push(url);
           });
 
           this.setState({
@@ -609,11 +640,36 @@ class CrawlingView extends Component {
               </Table>
             </CardText>
           </Card>
-          <RaisedButton
-            label="Start Crawler"
-            style={{margin: 12}}
-        onClick={this.startDeepCrawler.bind(this)}
-          />
+            <div style={{display: 'flex'}}>
+              <RaisedButton
+                label="Start Crawler"
+                style={
+                        this.state.deepCrawling ?
+                        {pointerEvents: 'none', opacity: 0.5, margin: 12}
+                        :
+                        {pointerEvents: 'auto', opacity: 1.0, margin: 12}
+                      }
+                onClick={this.startDeepCrawler.bind(this)}
+              />
+
+              {
+                this.state.deepCrawling ?
+                <div>
+                  <RaisedButton
+                    label="Add URLs"
+                    style={{margin: 12}}
+                    onClick={this.addUrlsWhileCrawling}
+                  />
+                  <RaisedButton
+                    label="Stop Crawler"
+                    style={{margin: 12}}
+                    onClick={this.stopDeepCrawler}
+                  />
+                </div>
+                :
+                null
+              }
+            </div>
           </Col>
 
           <Col xs={6} md={6} style={{marginLeft:'0px'}}>
