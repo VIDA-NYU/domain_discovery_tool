@@ -61,6 +61,9 @@ class DeepCrawling extends Component {
     this.selectedRows = [];
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
+
+    this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
+    this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
   }
   /**
   * Set the deepCrawlableDomainsFromTag state for displaying the current tlds in deep crawler tag.
@@ -207,55 +210,82 @@ class DeepCrawling extends Component {
    * @method startCrawler (onClick event)
    * @param {Object} event
    */
-  startDeepCrawler(event) {
-      this.setDeepcrawlTagtoPages(
-    this.state.deepCrawlableDomains
-      );
+   startDeepCrawler(event) {
+ if(this.state.deepCrawlableDomains.length > 0)
+     this.setDeepcrawlTagtoPages(
+   this.state.deepCrawlableDomains
+     );
 
-      this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
+ this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
+ }
+
+   startCrawler(type, seeds){
+    var session = this.state.session;
+    var message = "Running";
+    this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
+    this.forceUpdate();
+    $.post(
+        '/startCrawler',
+        {'session': JSON.stringify(session), "type": type, "seeds": seeds.join('|')},
+        function(message) {
+            var disableStopCrawlerFlag = false;
+            var disableAcheInterfaceFlag = false;
+            var disabledStartCrawlerFlag = true;
+            if(message.toLowerCase() !== "running"){
+    disableStopCrawlerFlag = true;
+    disableAcheInterfaceFlag =true;
+    disabledStartCrawlerFlag = true;
+            }
+            this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+            this.forceUpdate();
+        }.bind(this)
+    ).fail((error) => {
+  console.log('startCrawler', error)
+    });;
   }
 
-    startCrawler(type, seeds){
+ stopDeepCrawler(event){
      var session = this.state.session;
-     var message = "Running";
-     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
-     this.forceUpdate();
-     $.post(
-         '/startCrawler',
-         {'session': JSON.stringify(session)},
-         function(message) {
-           var disableStopCrawlerFlag = false;
-           var disableAcheInterfaceFlag = false;
-           var disabledStartCrawlerFlag = true;
-           if(message.toLowerCase() !== "running"){
-         disableStopCrawlerFlag = true;
-         disableAcheInterfaceFlag =true;
-         disabledStartCrawlerFlag = true;
-           }
+    var message = "Terminating";
+    this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+    this.forceUpdate();
+    $.post(
+      '/stopCrawler',
+      {'session': JSON.stringify(session)},
+  function(message) {
+        this.props.updateFilterCrawlerData("stopCrawler");
+          this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
+        this.forceUpdate();
+      }.bind(this)
+    ).fail((error) => {
+      this.setState({disabledStartCrawler: false});
+    });
+  }
 
-           this.props.updateFilterCrawlerData("updateCrawler");
-           this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-           this.forceUpdate();
-         }.bind(this)
-     );
-   }
 
-  stopCrawler(flag){
-      var session = this.state.session;
-     var message = "Terminating";
-     this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
-     this.forceUpdate();
-     $.post(
-       '/stopCrawler',
-       {'session': JSON.stringify(session)},
-   function(message) {
-         this.props.updateFilterCrawlerData("stopCrawler");
-           this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
-         this.forceUpdate();
-       }.bind(this)
-     );
-   }
+  addUrlsWhileCrawling(event) {
+    $.post(
+      '/addUrls',
+      {
+        session: JSON.stringify(this.state.session),
+        urls: this.state.deepCrawlableDomains.join("|"),
+        type: "deep"
+      },
+      (message) => {
+        this.state.deepCrawlableDomains.forEach(url => {
+          if(this.state.deepCrawlableDomainsFromTag.indexOf(url) !== -1)
+            this.state.deepCrawlableDomainsFromTag.push(url);
+        });
 
+        this.setState({
+          deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
+          deepCrawlableDomains: []
+        });
+      }
+    ).fail((error) => {
+      console.log('addUrls failed', error);
+    });
+  }
 
 
   /**
@@ -274,7 +304,7 @@ class DeepCrawling extends Component {
       },
       (message) => {
           urls.forEach(url => {
-              this.state.deepCrawlableDomainsFromTag.push(url);
+            this.state.deepCrawlableDomainsFromTag.push(url);
           });
 
           this.setState({
@@ -346,150 +376,175 @@ class DeepCrawling extends Component {
 
     return (
 
-  <Row>
-  <Col xs={6} md={6} style={{marginLeft:'0px'}}>
-  <Card>
-   <CardHeader
-     title="Domains for crawling"
-     actAsExpander={false}
-     showExpandableButton={false}
-     style={{fontWeight:'bold', marginBottom:"-70px"}}
-   />
-   <CardText expandable={false} >
-      <Table id={"Annotated urls"} height={"210px"} selectable={false} multiSelectable={false} >
-      <TableHeader displaySelectAll={false} enableSelectAll={false} >
-        <TableRow>
-          <TableHeaderColumn >
-          </TableHeaderColumn>
-        </TableRow>
-        <TableRow style={heightTableStyle}>
-          <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
-            Annotated urls
-          </TableHeaderColumn>
-        </TableRow>
-      </TableHeader>
-      <TableBody showRowHover={false} displayRowCheckbox={false} deselectOnClickaway={false} stripedRows={false}>
-      {
-        (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
-          <TableRow displayBorder={false} key={index} style={heightTableStyle}>
-          <TableRowColumn style={heightTableStyle}>{row}</TableRowColumn>
-          </TableRow>
-        ))
-      }
-      </TableBody>
-      </Table>
+      <Row>
+      <Col xs={6} md={6} style={{marginLeft:'0px'}}>
+      <Card>
+       <CardHeader
+         title="Domains for crawling"
+         actAsExpander={false}
+         showExpandableButton={false}
+         style={{fontWeight:'bold', marginBottom:"-70px"}}
+       />
+       <CardText expandable={false} >
+          <Table id={"Annotated urls"} height={"210px"} selectable={false} multiSelectable={false} >
+          <TableHeader displaySelectAll={false} enableSelectAll={false} >
+            <TableRow>
+              <TableHeaderColumn >
+              </TableHeaderColumn>
+            </TableRow>
+            <TableRow style={heightTableStyle}>
+              <TableHeaderColumn colSpan="1" style={{textAlign: 'center'}}>
+                Annotated urls
+              </TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody showRowHover={false} displayRowCheckbox={false} deselectOnClickaway={false} stripedRows={false}>
+          {
+            (this.state.deepCrawlableDomainsFromTag || []).map((row, index) => (
+              <TableRow displayBorder={false} key={index} style={heightTableStyle}>
+              <TableRowColumn style={heightTableStyle}>{row}</TableRowColumn>
+              </TableRow>
+            ))
+          }
+          </TableBody>
+          </Table>
 
-      <Table id={"Added urls to deep crawl"} height={"210px"} selectable={false} multiSelectable={false} >
-      <TableHeader displaySelectAll={false} enableSelectAll={false} >
-        <TableRow>
-          <TableHeaderColumn >
-          </TableHeaderColumn>
-        </TableRow>
-        <TableRow>
-          <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
-            Added urls to deep crawl
-          </TableHeaderColumn>
-        </TableRow>
-      </TableHeader>
-      <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
-      {
-        (this.state.deepCrawlableDomains).map((row, index) => (
-          <TableRow key={index}>
-          <TableRowColumn>{row}</TableRowColumn>
-          <TableRowColumn style={{textAlign: 'right'}}>
+          <Table id={"Added urls to deep crawl"} height={"210px"} selectable={false} multiSelectable={false} >
+          <TableHeader displaySelectAll={false} enableSelectAll={false} >
+            <TableRow>
+              <TableHeaderColumn >
+              </TableHeaderColumn>
+            </TableRow>
+            <TableRow>
+              <TableHeaderColumn colSpan="2" style={{textAlign: 'center'}}>
+                Added urls to deep crawl
+              </TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
+          {
+            (this.state.deepCrawlableDomains).map((row, index) => (
+              <TableRow key={index}>
+              <TableRowColumn>{row}</TableRowColumn>
+              <TableRowColumn style={{textAlign: 'right'}}>
+                <div>
+                  <IconButton onClick={this.handleRemoveUrlFromList.bind(this,row, index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
+                    <RemoveURL />
+                  </IconButton>
+                </div>
+              </TableRowColumn>
+              </TableRow>
+            ))
+          }
+          </TableBody>
+          </Table>
+        </CardText>
+      </Card>
+        <div style={{display: 'flex'}}>
+          <RaisedButton
+            label="Start Crawler"
+            style={
+                    this.state.disabledStartCrawler ?
+                    {pointerEvents: 'none', opacity: 0.5, margin: 12}
+                    :
+                    {pointerEvents: 'auto', opacity: 1.0, margin: 12}
+                  }
+            onClick={this.startDeepCrawler.bind(this)}
+          />
+
+          {
+            this.state.disabledStartCrawler ?
             <div>
-              <IconButton onClick={this.handleRemoveUrlFromList.bind(this,row, index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
-                <RemoveURL />
-              </IconButton>
+              <RaisedButton
+                label="Add URLs"
+                style={{margin: 12}}
+                onClick={this.addUrlsWhileCrawling}
+              />
+              <RaisedButton
+                label="Stop Crawler"
+                style={{margin: 12}}
+                onClick={this.stopDeepCrawler}
+              />
             </div>
-          </TableRowColumn>
-          </TableRow>
-        ))
-      }
-      </TableBody>
-      </Table>
-    </CardText>
-  </Card>
-  <RaisedButton
-    label="Start Crawler"
-    style={{margin: 12}}
-onClick={this.startDeepCrawler.bind(this)}
-  />
-  </Col>
+            :
+            null
+          }
+        </div>
+      </Col>
 
-  <Col xs={6} md={6} style={{marginLeft:'0px'}}>
-    <Card id={"Recommendations"} initiallyExpanded={true} >
-     <CardHeader
-       title="Recommendations"
-       actAsExpander={false}
-       showExpandableButton={false}
-       style={{fontWeight:'bold', marginBottom:"-70px",}}
-     />
-     <CardText expandable={false} >
-        <MultiselectTable
-          rows={this.state.recommendations}
-          columnHeadings={["DOMAIN", "COUNT"]}
-          onRowSelection={this.addDomainsOnSelection}
-          resetSelection={this.state.resetSelection}
-        />
-        <RaisedButton
-          disabled={false}
-          style={{ height:20, marginTop: 15}}
-          labelStyle={{textTransform: "capitalize"}}
-          buttonStyle={{height:19}}
-          label="Add to deep crawl"
-          onClick={this.addDomainsForDeepCrawl}
-        />
-      </CardText>
-     </Card>
-
-    <Card id={"Load external urls"} initiallyExpanded={true} >
-     <CardHeader
-       title={<RaisedButton
-         disabled={false}
-         style={{ height:20, marginTop: 15}}
-         labelStyle={{textTransform: "capitalize", fontWeight:"bold", fontSize:14,}}
-         buttonStyle={{height:19}}
-         label="Loading external urls"
-         onClick={this.handleOpenDialogLoadUrl.bind(this)}
-         />}
-       actAsExpander={false}
-       showExpandableButton={false}
-       style={{fontWeight:'bold',}}
-     />
-     <CardText expandable={true} >
-     <Dialog title="Adding urls" actions={actionsLoadUrls} modal={false} open={this.state.openDialogLoadUrl} onRequestClose={this.handleCloseDialogLoadUrl.bind(this)}>
-       <Row>
-       <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-         <TextField style={{height:200, width:'260px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
-           onChange={this.handleTextChangeLoadUrls.bind(this)}
-           floatingLabelText="Write urls (one by line)."
-           hintStyle={{ marginLeft:30}}
-           textareaStyle={{marginTop:30,}}
-           inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
-           multiLine={true}
-           rows={6}
-           rowsMax={6}
-           floatingLabelStyle={{marginLeft:10, marginRight:30,}}
-           underlineStyle={{width:210, marginLeft:30, marginRight:30,}}
+      <Col xs={6} md={6} style={{marginLeft:'0px'}}>
+        <Card id={"Recommendations"} initiallyExpanded={true} >
+         <CardHeader
+           title="Recommendations"
+           actAsExpander={false}
+           showExpandableButton={false}
+           style={{fontWeight:'bold', marginBottom:"-70px",}}
          />
-       </Col>
-       </Row>
-       <Row>
-         <br />
-         <FlatButton style={{marginLeft:'15px'}}
-           label="Choose URLs File"
-           labelPosition="before"
-           containerElement="label"
-           labelStyle={{textTransform: "capitalize"}}>
-           <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-         </FlatButton>
-       </Row>
-     </Dialog>
-     </CardText>
-    </Card>
-  </Col>
-  </Row>
+         <CardText expandable={false} >
+            <MultiselectTable
+              rows={this.state.recommendations}
+              columnHeadings={["DOMAIN", "COUNT"]}
+              onRowSelection={this.addDomainsOnSelection}
+              resetSelection={this.state.resetSelection}
+            />
+            <RaisedButton
+              disabled={false}
+              style={{ height:20, marginTop: 15}}
+              labelStyle={{textTransform: "capitalize"}}
+              buttonStyle={{height:19}}
+              label="Add to deep crawl"
+              onClick={this.addDomainsForDeepCrawl}
+            />
+          </CardText>
+         </Card>
+
+        <Card id={"Load external urls"} initiallyExpanded={true} >
+         <CardHeader
+           title={<RaisedButton
+             disabled={false}
+             style={{ height:20, marginTop: 15}}
+             labelStyle={{textTransform: "capitalize", fontWeight:"bold", fontSize:14,}}
+             buttonStyle={{height:19}}
+             label="Loading external urls"
+             onClick={this.handleOpenDialogLoadUrl.bind(this)}
+             />}
+           actAsExpander={false}
+           showExpandableButton={false}
+           style={{fontWeight:'bold',}}
+         />
+         <CardText expandable={true} >
+         <Dialog title="Adding urls" actions={actionsLoadUrls} modal={false} open={this.state.openDialogLoadUrl} onRequestClose={this.handleCloseDialogLoadUrl.bind(this)}>
+           <Row>
+           <Col xs={10} md={10} style={{marginLeft:'0px'}}>
+             <TextField style={{height:200, width:'260px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+               onChange={this.handleTextChangeLoadUrls.bind(this)}
+               floatingLabelText="Write urls (one by line)."
+               hintStyle={{ marginLeft:30}}
+               textareaStyle={{marginTop:30,}}
+               inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
+               multiLine={true}
+               rows={6}
+               rowsMax={6}
+               floatingLabelStyle={{marginLeft:10, marginRight:30,}}
+               underlineStyle={{width:210, marginLeft:30, marginRight:30,}}
+             />
+           </Col>
+           </Row>
+           <Row>
+             <br />
+             <FlatButton style={{marginLeft:'15px'}}
+               label="Choose URLs File"
+               labelPosition="before"
+               containerElement="label"
+               labelStyle={{textTransform: "capitalize"}}>
+               <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
+             </FlatButton>
+           </Row>
+         </Dialog>
+         </CardText>
+        </Card>
+      </Col>
+      </Row>
 );
 }
 }

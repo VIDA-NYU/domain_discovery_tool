@@ -32,7 +32,7 @@ class CrawlingView extends Component {
       this.state = {
       disableStopCrawlerSignal:true,
       disableAcheInterfaceSignal:true,
-      disabledStartCrawler:true, //false
+      disabledStartCrawler:false, //false
       disabledCreateModel:true, //false
       messageCrawler:"",
       openCreateModel: false,
@@ -104,8 +104,7 @@ class CrawlingView extends Component {
       //valueLoadUrls:[],
       //valueLoadUrlsFromTextField:[],
     });
-  };
-
+  }
 
   render() {
 
