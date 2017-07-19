@@ -56,6 +56,7 @@ class CrawlingView extends Component {
       disableAcheInterfaceSignal:true,
       disabledStartCrawler:false, //false
       disabledCreateModel:true, //false
+      deepCrawling: false,
       messageCrawler:"",
       openCreateModel: false,
       slideIndex: 0,
@@ -68,6 +69,7 @@ class CrawlingView extends Component {
       openLoadURLs: false,
       session:{},
     };
+
   }
 
   /**
@@ -121,6 +123,7 @@ class CrawlingView extends Component {
     });
   }
 
+
   render() {
     return (
       <div style={styles.content}>
@@ -136,6 +139,7 @@ class CrawlingView extends Component {
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
         <div id={"deep-crawling"} style={styles.slide}>
           <DeepCrawling domainId={this.props.domainId} session={this.state.session}/>
+
 
 
         </div>
