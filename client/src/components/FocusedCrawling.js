@@ -112,7 +112,7 @@ class FocusedCrawling extends Component {
      }
 
        handleSave() {
-         var session = this.createSession(this.props.domainId);
+         var session = this.props.session;
        //  this.setState({session['model']['positive']=this.state.tagsPosCheckBox,session['model']['negative']=this.state.tagsNegCheckBox})
          session['model']['positive'] = this.state.tagsPosCheckBox;
          session['model']['negative'] = this.state.tagsNegCheckBox;
