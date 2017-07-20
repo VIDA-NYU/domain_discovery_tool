@@ -404,6 +404,7 @@ class ViewTabSnippets extends React.Component{
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
   getPages(session){
+    session['pagesCap'] = "12";
     $.post(
       '/getPages',
       {'session': JSON.stringify(session)},
@@ -935,6 +936,7 @@ class Views extends React.Component {
     getPages(session){
 	var tempSession = session;
 	tempSession["from"]=this.state.offset;
+  tempSession['pagesCap'] = "12";
 	$.post(
       '/getPages',
       {'session': JSON.stringify(tempSession)},
