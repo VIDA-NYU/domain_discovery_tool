@@ -50,6 +50,7 @@ class DeepCrawling extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       recommendations: [],
+      minRecommendationCount: 10,
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -65,6 +66,8 @@ class DeepCrawling extends Component {
 
     this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
     this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
+
+    this.changeMinRecommendationCount = this.changeMinRecommendationCount.bind(this);
   }
 
   /**
@@ -96,7 +99,7 @@ class DeepCrawling extends Component {
   getRecommendations() {
   	$.post(
 	    '/getRecommendations',
-	    { session: JSON.stringify(this.props.session)},
+	    { session: JSON.stringify(this.props.session), minCount: this.state.minRecommendationCount || 10 },
 	    (response) => {
     		this.setState({
     		    recommendations: Object.keys(response || {})
@@ -313,6 +316,20 @@ class DeepCrawling extends Component {
     });
   }
 
+  /**
+   * Set the minRecommendationCount state variable and callback to getRecommendations
+   * This is because setState will not run instantly, hence to prevent anomalies
+   * getRecommendations is fired only after the new state is applied.
+   * @method changeMinRecommendationCount
+   * @param {object} event
+   */
+  changeMinRecommendationCount(event) {
+    this.setState(
+      { minRecommendationCount: event.target.value },
+      () => { this.getRecommendations() }
+    );
+  }
+
   // Download the pages of uploaded urls from file
   runLoadUrlsFileQuery(txt) {
     var allTextLines = txt.split(/\r\n|\n/);
@@ -476,6 +493,15 @@ class DeepCrawling extends Component {
            showExpandableButton={false}
            style={{fontWeight:'bold', marginBottom:"-70px",}}
          />
+         <CardText>
+           <TextField
+            ref={(element) => {this.minRecoInput = element;}}
+            type='number'
+            style={{width: "100px", marginBottom: "-70px", float: "right", padding: "0px"}}
+            value={this.state.minRecommendationCount}
+            onChange={this.changeMinRecommendationCount}
+          />
+        </CardText>
          <CardText expandable={false} >
             <MultiselectTable
               rows={this.state.recommendations}
