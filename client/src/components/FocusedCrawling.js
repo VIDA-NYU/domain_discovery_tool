@@ -20,12 +20,13 @@ import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
-
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
-
+import Monitoring from './Monitoring.js';
 
 import {
   Table,
@@ -76,6 +77,13 @@ class FocusedCrawling extends Component {
       selectedPosTags: ["Relevant"],
       selectedNegTags: ["Irrelevant"],
       session:{},
+      disableStopCrawlerSignal:true,
+      disableAcheInterfaceSignal:true,
+      disabledStartCrawler:true, //false
+      disabledCreateModel:true, //false
+      messageCrawler:"",
+      open:false,
+      anchorEl:undefined,
     };
 
   }
@@ -201,14 +209,62 @@ class FocusedCrawling extends Component {
     }
 
 
-    handleStartCrawler =()=>{
+    handleStartCrawler =(event)=>{
 	this.setState({crawlerStart:true});
+  this.startCrawler();
 	this.forceUpdate();
     }
 handlestopCrawler =() =>{
   this.setState({crawlerStart:false});
+  this.stopCrawler();
   this.forceUpdate();
 }
+startCrawler(){
+     var session = this.props.session;
+     var message = "Running";
+     var type = "focused";
+     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
+     this.forceUpdate();
+     $.post(
+         '/startCrawler',
+         {'session': JSON.stringify(session),'type': type },
+         function(message) {
+           var disableStopCrawlerFlag = false;
+           var disableAcheInterfaceFlag = false;
+           var disabledStartCrawlerFlag = true;
+           if(message.toLowerCase() !== "running"){
+	       disableStopCrawlerFlag = true;
+	       disableAcheInterfaceFlag =true;
+	       disabledStartCrawlerFlag = true;
+           }
+
+           this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+           this.forceUpdate();
+         }.bind(this)
+     );
+   }
+
+   stopCrawler(flag){
+     var session = this.props.session;
+     var message = "Terminating";
+     var type = "focused";
+     this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+     this.forceUpdate();
+     $.post(
+       '/stopCrawler',
+       {'session': JSON.stringify(session), 'type' : type  },
+	 function(message) {
+           this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
+         this.forceUpdate();
+       }.bind(this)
+     );
+   }
+   handleRequestClosePopOver(){
+     this.setState({open:false});
+   }
+   handleExport(event){
+     this.setState({open:true,anchorEl:event.currentTarget})
+   }
   render() {
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
@@ -325,13 +381,21 @@ handlestopCrawler =() =>{
             </List>
 
 
-
-           <IconMenu
-           iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-           label="Export" labelPosition="before" containerElement="label" />} >
-           <MenuItem value="1" primaryText="Create Model" />
-           <MenuItem value="2" primaryText="Settings" />
-           </IconMenu>
+          <div>
+          <RaisedButton disabled={false} onTouchTap={this.handleExport.bind(this)} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+           label="Export" labelPosition="before" containerElement="label" />
+           <Popover
+           open={this.state.open}
+           anchorEl={this.state.anchorEl}
+           onRequestClose={this.handleRequestClosePopOver.bind(this)}
+           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+           targetOrigin={{horizontal: 'left', vertical: 'top'}}
+           >
+           <Menu>
+           <MenuItem primaryText="createModel" />
+           </Menu>
+           </Popover>
+           </div>
          </CardText>
          </Card>
         </Col>
