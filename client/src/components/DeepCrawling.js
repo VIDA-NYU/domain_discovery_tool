@@ -235,7 +235,7 @@ class DeepCrawling extends Component {
 	this.forceUpdate();
 	$.post(
 	    '/stopCrawler',
-	    {'session': JSON.stringify(session)},
+	    {'session': JSON.stringify(session), "type": type},
 	    function(message) {
 		this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
 		this.forceUpdate();
