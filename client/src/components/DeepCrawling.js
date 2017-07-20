@@ -117,6 +117,15 @@ class DeepCrawling extends Component {
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
   getPages(session){
+   $.post(
+   	 '/getAvailableTags',
+   	 {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+     function(tags){
+      session['pagesCap']=tags["tags"]["Deep Crawl"];
+      this.setState({session:session});
+      this.forceUpdate();
+    }.bind(this)
+     );
     $.post(
       '/getPages',
       {'session': JSON.stringify(session)},
@@ -195,7 +204,7 @@ class DeepCrawling extends Component {
 	    this.setDeepcrawlTagtoPages(
 		this.state.deepCrawlableDomains
 	    );
-	
+
 	this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
     }
 
@@ -223,7 +232,7 @@ class DeepCrawling extends Component {
   console.log('startCrawler', error)
     });;
   }
-    
+
     stopDeepCrawler(event) {
 	this.stopCrawler("deep");
     }
@@ -251,7 +260,7 @@ class DeepCrawling extends Component {
 	    this.setDeepcrawlTagtoPages(
 		this.state.deepCrawlableDomains
 	    );
-	
+
 	this.addURLs();
     }
 
@@ -268,7 +277,7 @@ class DeepCrawling extends Component {
 		    if(this.state.deepCrawlableDomainsFromTag.indexOf(url) !== -1)
 			this.state.deepCrawlableDomainsFromTag.push(url);
 		});
-		
+
 		this.setState({
 		    deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
 		    deepCrawlableDomains: []

@@ -15,7 +15,6 @@ import Menu from 'material-ui/Menu';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-<<<<<<< HEAD
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Monitoring from './Monitoring.js';
 
@@ -28,9 +27,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-=======
 
->>>>>>> cefd3e826cb8c57153f9b11436fcd594047b2249
 import $ from 'jquery';
 
 
@@ -190,6 +187,7 @@ class FocusedCrawling extends Component {
 
   handleStartCrawler =()=>{
     this.setState({crawlerStart:true});
+    this.startCrawler();
     this.forceUpdate();
   }
   handlestopCrawler =() =>{
