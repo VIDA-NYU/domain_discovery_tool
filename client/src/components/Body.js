@@ -126,7 +126,7 @@ class Body extends Component{
     session['selected_crawled_tags']="";
     session['model'] = {};
     session['model']['positive'] = "Relevant";
-    session['model']['nagative'] = "Irrelevant";
+    session['model']['negative'] = "Irrelevant";
 
 
 

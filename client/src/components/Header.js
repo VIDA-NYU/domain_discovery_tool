@@ -148,7 +148,7 @@ class Header extends Component {
       session['selected_model_tags']="";
       session['model'] = {};
       session['model']['positive'] = ["Relevant"];
-      session['model']['nagative'] = ["Irrelevant"];
+      session['model']['negative'] = ["Irrelevant"];
       return session;
    }
 
