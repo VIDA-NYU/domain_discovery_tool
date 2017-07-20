@@ -87,12 +87,11 @@ class MultiselectTable extends Component {
                 />
               </TableHeaderColumn>
                 {
-                  this.props.columnHeadings.
-                    map(column =>
-                      <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30}}>
-                        {column}
-                      </TableHeaderColumn>
-                    )
+                  this.props.columnHeadings.map(column =>
+                    <TableHeaderColumn colSpan="7" style={{textAlign:'left', margin:"-10px", height:30}}>
+                      {column}
+                    </TableHeaderColumn>
+                  )
                 }
             </TableRow>
         </TableHeader>
@@ -102,18 +101,27 @@ class MultiselectTable extends Component {
           showRowHover={true}
           stripedRows={false}
         >
-          {this.props.rows.map((row, index) => (
-            <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
-              <TableRowColumn>{row[0]}</TableRowColumn>
-              <TableRowColumn>{row[1]}</TableRowColumn>
-            </TableRow>
-            ))}
+          {
+            this.props.rows.map((row, index) =>
+              <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
+                <TableRowColumn>{row[0]}</TableRowColumn>
+                <TableRowColumn>{row[1]}</TableRowColumn>
+              </TableRow>
+            )
+          }
         </TableBody>
         <TableFooter adjustForCheckbox={true} />
       </Table>
       </div>
     )
   }
+}
+
+MultiselectTable.propTypes = {
+  rows: PropTypes.array,
+  columnHeadings: PropTypes.array,
+  onRowSelection: PropTypes.func,
+  resetSelection: PropTypes.bool
 }
 
 export default MultiselectTable;
