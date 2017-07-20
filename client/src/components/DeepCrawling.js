@@ -59,6 +59,7 @@ class DeepCrawling extends Component {
       session:"",
     };
     this.selectedRows = [];
+    this.recommendationInterval = null;
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
 
@@ -72,34 +73,41 @@ class DeepCrawling extends Component {
   * @param
   */
   componentWillMount(){
-      var session = this.props.session;
-      session['newPageRetrievalCriteria'] = "one";
-      session['pageRetrievalCriteria'] = "Tags";
-      session['selected_tags']="Deep Crawl";
-      this.getPages(session);
-      this.getRecommendations(session);
+    var session = this.props.session;
+    session['newPageRetrievalCriteria'] = "one";
+    session['pageRetrievalCriteria'] = "Tags";
+    session['selected_tags']="Deep Crawl";
+    this.getPages(session);
+    this.getRecommendations();
   }
 
-  /**
-  * POST XHR for fething recommendations and updating the state as response is fulfilled
-  * @method getCurrentTLDSfromDeepCrawlTag
-  * @param
+ /**
+  * Clear the getRecommendations interval when component is teared off the DOM
+  * LifecycleHook: componentWillUnmount
   */
-    getRecommendations(session) {
-	$.post(
+  componentWillUnmount() {
+    clearInterval(this.recommendationInterval)
+  }
+
+ /**
+  * POST XHR for fething recommendations and updating the state as response is fulfilled
+  * @method getRecommendations
+  */
+  getRecommendations() {
+  	$.post(
 	    '/getRecommendations',
-	    { "session": JSON.stringify(session)},
+	    { session: JSON.stringify(this.props.session)},
 	    (response) => {
-		this.setState({
-		    recommendations: Object.keys(response || {})
-                        .map(reco => [reco, response[reco]])
-                        .sort((a, b) => (b[1] - a[1]))
-		})
-	    }
-	).fail((error) => {
-	    console.log('getRecommendations FAILED ', error);
-	});
-    }
+    		this.setState({
+    		    recommendations: Object.keys(response || {})
+                              .map(reco => [reco, response[reco]])
+                              .sort((a, b) => (b[1] - a[1]))
+  		})
+  	    }
+  	).fail((error) => {
+  	    console.log('getRecommendations FAILED ', error);
+  	});
+  }
 
   /**
   * Get the current tlds in deep crawler tag.
@@ -135,14 +143,10 @@ class DeepCrawling extends Component {
    */
   addDomainsForDeepCrawl(event) {
     var aux_deepCrawlableDomains = this.state.deepCrawlableDomains;
-      this.selectedRows.forEach((rowIndex) => {
-    if(this.state.deepCrawlableDomains.indexOf(this.state.recommendations[rowIndex][0]) === -1) {
-              var recommendation = this.state.recommendations[rowIndex][0];
-        console.log("RECOMMENDATION");
-        console.log(recommendation);
-              aux_deepCrawlableDomains.push(recommendation);
-    }
-      })
+    this.selectedRows.forEach((rowIndex) => {
+      if(this.state.deepCrawlableDomains.indexOf(this.state.recommendations[rowIndex][0]) === -1)
+        aux_deepCrawlableDomains.push(this.state.recommendations[rowIndex][0]);
+    });
 
     this.setState({
       deepCrawlableDomains: aux_deepCrawlableDomains,
@@ -190,14 +194,12 @@ class DeepCrawling extends Component {
    * @method startCrawler (onClick event)
    * @param {Object} event
    */
-    startDeepCrawler(event) {
-	if(this.state.deepCrawlableDomains.length > 0)
-	    this.setDeepcrawlTagtoPages(
-		this.state.deepCrawlableDomains
-	    );
-	
-	this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
-    }
+   startDeepCrawler(event) {
+     if(this.state.deepCrawlableDomains.length > 0)
+    	  this.setDeepcrawlTagtoPages(this.state.deepCrawlableDomains);
+
+     this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
+   }
 
    startCrawler(type, seeds){
     var session = this.state.session;
@@ -208,52 +210,54 @@ class DeepCrawling extends Component {
         '/startCrawler',
         {'session': JSON.stringify(session), "type": type, "seeds": seeds.join('|')},
         function(message) {
-            var disableStopCrawlerFlag = false;
-            var disableAcheInterfaceFlag = false;
-            var disabledStartCrawlerFlag = true;
-            if(message.toLowerCase() !== "running"){
-    disableStopCrawlerFlag = true;
-    disableAcheInterfaceFlag =true;
-    disabledStartCrawlerFlag = true;
-            }
-            this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-            this.forceUpdate();
+          var disableStopCrawlerFlag = false;
+          var disableAcheInterfaceFlag = false;
+          var disabledStartCrawlerFlag = true;
+          if(message.toLowerCase() !== "running"){
+            disableStopCrawlerFlag = true;
+            disableAcheInterfaceFlag =true;
+            disabledStartCrawlerFlag = true;
+          }
+          this.recommendationInterval = setInterval(this.getRecommendations.bind(this), 30000);
+          this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+          this.forceUpdate();
         }.bind(this)
     ).fail((error) => {
-  console.log('startCrawler', error)
+      // Fail safe interval clearance in case the startCrawler errors out
+      clearInterval(this.recommendationInterval);
+      console.log('startCrawler', error)
     });;
   }
-    
-    stopDeepCrawler(event) {
-	this.stopCrawler("deep");
-    }
 
-    stopCrawler(type){
-	var session = this.state.session;
-	var message = "Terminating";
-	this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
-	this.forceUpdate();
-	$.post(
+  stopDeepCrawler(event) {
+    this.stopCrawler("deep");
+  }
+
+  stopCrawler(type){
+  	var session = this.state.session;
+  	var message = "Terminating";
+  	this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+  	this.forceUpdate();
+  	$.post(
 	    '/stopCrawler',
 	    {'session': JSON.stringify(session), "type": type},
 	    function(message) {
-		this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
-		this.forceUpdate();
+        clearInterval(this.recommendationInterval);
+    		this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
+    		this.forceUpdate();
 	    }.bind(this)
-	).fail((error) => {
-	    this.setState({disabledStartCrawler: false});
-	});
-    }
+  	).fail((error) => {
+  	   this.setState({disabledStartCrawler: false});
+  	});
+  }
 
 
-    addUrlsWhileCrawling(event) {
-	if(this.state.deepCrawlableDomains.length > 0)
-	    this.setDeepcrawlTagtoPages(
-		this.state.deepCrawlableDomains
-	    );
-	
-	this.addURLs();
-    }
+  addUrlsWhileCrawling(event) {
+	  if(this.state.deepCrawlableDomains.length > 0)
+	    this.setDeepcrawlTagtoPages(this.state.deepCrawlableDomains);
+
+	  this.addURLs();
+  }
 
     addURLs() {
 	$.post(
