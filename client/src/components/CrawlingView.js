@@ -40,8 +40,6 @@ class CrawlingView extends Component {
       pages:{},
       openDialogLoadUrl: false,
       currentTags:undefined,
-      tagsPosCheckBox:["Relevant"],
-      tagsNegCheckBox:["Irrelevant"],
       deepCrawlableDomains: [],
       deepCrawlableDomainsFromTag: [],
       resetSelection: false,
@@ -61,8 +59,7 @@ class CrawlingView extends Component {
   /*consultaQueries: {"search_engine":"GOOG","activeProjectionAlg":"Group by Correlation"
   ,"domainId":"AVWjx7ciIf40cqEj1ACn","pagesCap":"100","fromDate":null,"toDate":null,
   "filter":null,"pageRetrievalCriteria":"Most Recent","selected_morelike":"",
-  "model":{"positive":"Relevant","nagative":"Irrelevant"}}*/
-
+  "model":{"positive":"Relevant","negative":"Irrelevant"}}*/
   createSession(domainId){
     var session = {};
     session['search_engine'] = "GOOG";
@@ -81,8 +78,8 @@ class CrawlingView extends Component {
     session['selected_model_tags']="";
     session['selected_crawled_tags']="";
     session['model'] = {};
-    session['model']['positive'] = "Relevant";
-    session['model']['negative'] = "Irrelevant";
+    session['model']['positive'] = ["Relevant"];
+    session['model']['negative'] = ["Irrelevant"];
     session["from"]=0;
     return session;
   }
@@ -96,8 +93,6 @@ class CrawlingView extends Component {
       this.setState({session: temp_session});
   }
 
-
-
   handleChange = (value) => {
     this.setState({
       slideIndex: value,
@@ -107,7 +102,6 @@ class CrawlingView extends Component {
   }
 
   render() {
-
     return (
       <div style={styles.content}>
         <Tabs

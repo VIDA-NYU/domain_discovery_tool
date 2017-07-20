@@ -73,8 +73,8 @@ class FocusedCrawling extends Component {
       slideIndex: 0,
       pages:{},
       currentTags:undefined,
-      tagsPosCheckBox:["Relevant"],
-      tagsNegCheckBox:["Irrelevant"],
+      selectedPosTags: ["Relevant"],
+      selectedNegTags: ["Irrelevant"],
       session:{},
     };
 
@@ -135,8 +135,7 @@ class FocusedCrawling extends Component {
     this.setState({session: temp_session});
   }
 
-
-  getAvailableTags(session){
+      getAvailableTags(session){
      $.post(
         '/getAvailableTags',
         {'session': JSON.stringify(session), 'event': 'Tags'},
@@ -146,53 +145,79 @@ class FocusedCrawling extends Component {
         }.bind(this)
       );
    }
-  handleChange = (value) => {
-    this.setState({
-      slideIndex: value,
-      //valueLoadUrls:[],
-      //valueLoadUrlsFromTextField:[],
-    });
-  };
 
+   getModelTags(domainId){
+     $.post(
+       '/getModelTags',
+       {'domainId': domainId},
+	 function(tags){
+	     var session = this.state.session;
+	     session['model']['positive'] = tags['positive'].slice();
+	     session['model']['negative'] = tags['negative'].slice();
+	     this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
+	     this.forceUpdate();
+	     
+       }.bind(this)
+     );
+   }
 
+    handleSaveTags() {
+	var session = this.state.session;
+        session['model']['positive'] = this.state.selectedPosTags.slice();
+	session['model']['negative'] = this.state.selectedNegTags.slice();
+	
+	this.setState({session: session})
+	this.forceUpdate();
+	
+	$.post(
+	    '/saveModelTags',
+	    {'session': JSON.stringify(session)},
+	    function(update){
+		this.forceUpdate();
+	    }.bind(this)
+	  
+	);
+    }
 
-  addPosTags(tag){
-        var tags = this.state.tagsPosCheckBox;
-        if(tags.includes(tag)){
-          var index = tags.indexOf(tag);
-          tags.splice(index, 1);
-        }
-        else{
-          tags.push(tag);
-        }
-        this.setState({tagsPosCheckBox:tags})
-        this.forceUpdate();
-     }
+    handleCancelTags(){
+	this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
+	this.forceUpdate();
+	
+    }
 
-     addNegTags(tag){
-        var tags = this.state.tagsNegCheckBox;
-        if(tags.includes(tag)){
-          var index = tags.indexOf(tag);
-          tags.splice(index, 1);
-        }
-        else{
-          tags.push(tag);
-        }
-        this.setState({tagsNegCheckBox:tags})
-        this.forceUpdate();
-     }
-
-
-   handleCloseCancelCreateModel = () => {
-     this.setState({  tagsPosCheckBox:["Relevant"], tagsNegCheckBox:["Irrelevant"],})
-     this.forceUpdate();
-   };
-
-
-     handleStartCrawler =()=>{
-       this.setState({crawlerStart:true});
+       addPosTags(tag){
+       var tags = this.state.selectedPosTags;
+       if(tags.includes(tag)){
+           var index = tags.indexOf(tag);
+           tags.splice(index, 1);
+       }
+       else{
+           tags.push(tag);
+       }
+       this.setState({selectedPosTags: tags})
        this.forceUpdate();
-     }
+       console.log(this.state.session['model']);
+   }
+    
+    addNegTags(tag){
+        var tags = this.state.selectedNegTags;
+	if(tags.includes(tag)){
+            var index = tags.indexOf(tag);
+            tags.splice(index, 1);
+        }
+        else{
+            tags.push(tag);
+        }
+       this.setState({selectedNegTags: tags})
+	this.forceUpdate();
+	console.log(this.state.session['model']);	
+    }
+
+    
+    handleStartCrawler =()=>{
+	this.setState({crawlerStart:true});
+	this.forceUpdate();
+    }
 
   render() {
 
@@ -202,7 +227,7 @@ class FocusedCrawling extends Component {
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
                           var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                           var checkedTag=false;
-                          var tags = this.state.tagsPosCheckBox;
+                          var tags = this.state.selectedPosTags;
                           if(tags.includes(tag))
                             checkedTag=true;
                           return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
@@ -211,7 +236,7 @@ class FocusedCrawling extends Component {
                             {Object.keys(this.state.currentTags).map((tag, index)=>{
                               var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                               var checkedTag=false;
-                              var tags = this.state.tagsNegCheckBox;
+                              var tags = this.state.selectedNegTags;
                               if(tags.includes(tag))
                               checkedTag=true;
                                 return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
@@ -253,9 +278,9 @@ class FocusedCrawling extends Component {
                     {checkedTagsPosNeg}
                   </Row>
                   <Row style={{margin:"-8px 5px 10px 20px"}}>
-                    <RaisedButton disabled={false} onTouchTap={this.handleSave.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                    <RaisedButton disabled={false} onTouchTap={this.handleSaveTags.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                     label="Save" labelPosition="before" containerElement="label" />
-                    <RaisedButton disabled={false} onTouchTap={this.handleCloseCancelCreateModel} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            <RaisedButton disabled={false} onTouchTap={this.handleCancelTags.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                     label="Cancel" labelPosition="before" containerElement="label" />
                   </Row>
                 </CardText>
