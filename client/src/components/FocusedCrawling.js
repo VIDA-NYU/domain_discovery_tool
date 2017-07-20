@@ -93,118 +93,103 @@ class FocusedCrawling extends Component {
       this.getAvailableTags(this.props.session);
       this.getModelTags(this.props.domainId);
 
+
   }
   componentWillReceiveProps  = (newProps, nextState) => {
-      this.loadingTerm();
+
   }
 
-
-     getModelTags(domainId){
-       console.log("in get");
-       $.post(
-         '/getModelTags',
-         {'domainId': domainId},
-           function(tags){
-	       if(Object.keys(tags).length >0){
-		   this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
-		   this.forceUpdate();
-	       }
-         }.bind(this)
-       );
-     }
-
-  loadingTerm(){
-    var temp_session = this.props.session;
+  loadingTerms(){
+    var temp_session = JSON.parse(JSON.stringify(this.props.session));
     temp_session['newPageRetrievalCriteria'] = "one";
     temp_session['pageRetrievalCriteria'] = "Tags";
-    temp_session['selected_tags']="Relevant";
+    temp_session['selected_tags']=this.state.selectedPosTags.join(',');
     this.setState({session: temp_session});
   }
-    
-    getAvailableTags(session){
-	$.post(
-            '/getAvailableTags',
-            {'session': JSON.stringify(session), 'event': 'Tags'},
-            function(tagsDomain) {
-		this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
-		this.forceUpdate();
-            }.bind(this)
-	);
-   }
 
-   getModelTags(domainId){
-     $.post(
-       '/getModelTags',
-       {'domainId': domainId},
-	 function(tags){
-	     if(Object.keys(tags).length > 0){
-		 var session = this.state.session;
-		 session['model']['positive'] = tags['positive'].slice();
-		 session['model']['negative'] = tags['negative'].slice();
-		 this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
-		 this.forceUpdate();
-	     }
-       }.bind(this)
-     );
-   }
+  getAvailableTags(session){
+    $.post(
+      '/getAvailableTags',
+      {'session': JSON.stringify(session), 'event': 'Tags'},
+      function(tagsDomain) {
+        this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
+        this.forceUpdate();
+      }.bind(this)
+    );
+  }
 
-    handleSaveTags() {
-	var session = this.state.session;
-        session['model']['positive'] = this.state.selectedPosTags.slice();
-	session['model']['negative'] = this.state.selectedNegTags.slice();
-	
-	this.setState({session: session})
-	this.forceUpdate();
-	
-	$.post(
-	    '/saveModelTags',
-	    {'session': JSON.stringify(session)},
-	    function(update){
-		this.forceUpdate();
-	    }.bind(this)
-	  
-	);
-    }
-
-    handleCancelTags(){
-	this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
-	this.forceUpdate();
-	
-    }
-
-       addPosTags(tag){
-       var tags = this.state.selectedPosTags;
-       if(tags.includes(tag)){
-           var index = tags.indexOf(tag);
-           tags.splice(index, 1);
-       }
-       else{
-           tags.push(tag);
-       }
-       this.setState({selectedPosTags: tags})
-       this.forceUpdate();
-       console.log(this.state.session['model']);
-   }
-    
-    addNegTags(tag){
-        var tags = this.state.selectedNegTags;
-	if(tags.includes(tag)){
-            var index = tags.indexOf(tag);
-            tags.splice(index, 1);
+  getModelTags(domainId){
+    $.post(
+      '/getModelTags',
+      {'domainId': domainId},
+      function(tags){
+        if(Object.keys(tags).length > 0){
+          var session = this.state.session;
+          session['model']['positive'] = tags['positive'].slice();
+          session['model']['negative'] = tags['negative'].slice();
+          this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
+          this.loadingTerms();
+          this.forceUpdate();
         }
-        else{
-            tags.push(tag);
-        }
-       this.setState({selectedNegTags: tags})
-	this.forceUpdate();
-	console.log(this.state.session['model']);	
-    }
+      }.bind(this)
+    );
+  }
 
-    
-    handleStartCrawler =()=>{
-	this.setState({crawlerStart:true});
-	this.forceUpdate();
+  handleSaveTags() {
+    var session = this.state.session;
+    session['model']['positive'] = this.state.selectedPosTags.slice();
+    session['model']['negative'] = this.state.selectedNegTags.slice();
+    this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    this.loadingTerms();
+    this.forceUpdate();
+
+    $.post(
+      '/saveModelTags',
+      {'session': JSON.stringify(session)},
+      function(update){
+        this.forceUpdate();
+      }.bind(this)
+
+    );
+  }
+
+  handleCancelTags(){
+    this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
+    this.forceUpdate();
+
+  }
+
+  addPosTags(tag){
+    var tags = this.state.selectedPosTags;
+    if(tags.includes(tag)){
+      var index = tags.indexOf(tag);
+      tags.splice(index, 1);
     }
+    else{
+      tags.push(tag);
+    }
+    this.setState({selectedPosTags: tags})
+    this.forceUpdate();
+  }
+
+  addNegTags(tag){
+    var tags = this.state.selectedNegTags;
+    if(tags.includes(tag)){
+      var index = tags.indexOf(tag);
+      tags.splice(index, 1);
+    }
+    else{
+      tags.push(tag);
+    }
+    this.setState({selectedNegTags: tags})
+    this.forceUpdate();
+  }
+
+
+  handleStartCrawler =()=>{
+    this.setState({crawlerStart:true});
+    this.forceUpdate();
+  }
 
   render() {
 
