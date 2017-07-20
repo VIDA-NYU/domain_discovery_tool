@@ -54,6 +54,7 @@ class FocusedCrawling extends Component {
       currentTags:undefined,
       selectedPosTags: ["Relevant"],
       selectedNegTags: ["Irrelevant"],
+      disabledStartCrawler:false, //false
       session:{},
     };
 
@@ -170,6 +171,62 @@ class FocusedCrawling extends Component {
     this.forceUpdate();
   }
 
+  startCrawler(type){
+    var session = this.state.session;
+    var message = "Running";
+    this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
+    this.forceUpdate();
+    $.post(
+      '/startCrawler',
+      {'session': JSON.stringify(session), "type": type, },
+      function(message) {
+        var disableStopCrawlerFlag = false;
+        var disableAcheInterfaceFlag = false;
+        var disabledStartCrawlerFlag = true;
+        if(message.toLowerCase() !== "running"){
+          disableStopCrawlerFlag = true;
+          disableAcheInterfaceFlag =true;
+          disabledStartCrawlerFlag = true;
+        }
+        this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+        this.forceUpdate();
+      }.bind(this)
+    ).fail((error) => {
+      console.log('startCrawler', error)
+    });;
+  }
+
+  stopCrawler(type){
+    var session = this.state.session;
+    var message = "Terminating";
+    this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+    this.forceUpdate();
+    $.post(
+      '/stopCrawler',
+      {'session': JSON.stringify(session), "type": type},
+      function(message) {
+        this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
+        this.forceUpdate();
+      }.bind(this)
+    ).fail((error) => {
+      this.setState({disabledStartCrawler: false});
+    });
+  }
+
+  /**
+  * Saves all the selected domains with Focused Crawl tag and STARTS the crawler
+  * @method startCrawler (onClick event)
+  * @param {Object} event
+  */
+  startFocusedCrawler(event) {
+    this.startCrawler("focused");
+  }
+
+
+  stopFocusedCrawler(event) {
+    this.stopCrawler("focused");
+  }
+
   render() {
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
@@ -258,6 +315,34 @@ class FocusedCrawling extends Component {
           style={{fontWeight:'bold',}}
         />
         <CardText expandable={true} >
+        <div style={{display: 'flex'}}>
+          <RaisedButton
+            label="Start Crawler"
+            labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+            style={
+                    this.state.disabledStartCrawler ?
+                    {pointerEvents: 'none', opacity: 0.5, margin: 12, height:20, marginTop: 15, minWidth:118, width:118,}
+                    :
+                    {pointerEvents: 'auto', opacity: 1.0, margin: 12, height:20, marginTop: 15, minWidth:118, width:118,}
+                  }
+            labelPosition="before" containerElement="label"
+            onClick={this.startFocusedCrawler.bind(this)}
+          />
+
+          {
+            this.state.disabledStartCrawler ?
+            <div>
+              <RaisedButton
+                label="Stop Crawler"
+                style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                onClick={this.stopFocusedCrawler}
+              />
+            </div>
+            :
+            null
+          }
+        </div>
+
           <RaisedButton disabled={this.state.crawlerStart} onTouchTap={this.handleStartCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
           label="Start Crawler" labelPosition="before" containerElement="label" />
           {stopCrawlerButton}
@@ -277,16 +362,13 @@ class FocusedCrawling extends Component {
            <List>
             <Subheader>Details</Subheader>
             <ListItem>
-            <p><span>Relevant:</span> 20 </p>
-            <p><span>Irrelevant:</span> 20 </p>
-            <p><span>Domain Model:</span> 20 </p>
+              <p><span>Relevant:</span> 20 </p>
+              <p><span>Irrelevant:</span> 20 </p>
+              <p><span>Domain Model:</span> 20 </p>
             </ListItem>
             <Divider />
             <ScaleBar/>
             </List>
-
-
-
            <IconMenu
            iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
            label="Export" labelPosition="before" containerElement="label" />} >
