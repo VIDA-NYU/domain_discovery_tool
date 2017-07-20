@@ -104,9 +104,11 @@ class FocusedCrawling extends Component {
        $.post(
          '/getModelTags',
          {'domainId': domainId},
-         function(tags){
-           this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
-           this.forceUpdate();
+           function(tags){
+	       if(Object.keys(tags).length >0){
+		   this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
+		   this.forceUpdate();
+	       }
          }.bind(this)
        );
      }
