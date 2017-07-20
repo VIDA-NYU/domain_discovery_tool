@@ -49,7 +49,7 @@ class DeepCrawling extends Component {
       disabledStartCrawler:false, //false
       disabledCreateModel:true, //false
       messageCrawler:"",
-      recommendations: this.getRecommendationResults(),
+      recommendations: [],
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -65,6 +65,7 @@ class DeepCrawling extends Component {
     this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
     this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
   }
+
   /**
   * Set the deepCrawlableDomainsFromTag state for displaying the current tlds in deep crawler tag.
   * @method componentWillMount
@@ -76,50 +77,29 @@ class DeepCrawling extends Component {
       session['pageRetrievalCriteria'] = "Tags";
       session['selected_tags']="Deep Crawl";
       this.getPages(session);
+      this.getRecommendations(session);
   }
 
-
-    getRecommendationResults() {
-      var recommendations = {
-        'pajiba.com': 1,
-        'pamageller.com': 6,
-        'pandemic.internationalsos.com': 1,
-        'papmiket.com': 1,
-        'paper.wenweipo.com': 1,
-        'papers.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'paraitesinblackandwhite.blogspot.com': 6,
-        'parusfamilia.com': 10,
-        'papers.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'parasitesinblackandwhite.blogspot.com': 6,
-        'paratusfamilia.com': 10,
-        'papers.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'parasitesinblackandwhite.com': 6,
-        'paratufia.com': 10,
-        'papes.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'parasitenblackandwhite.blogspot.com': 6,
-        'paratusamilia.com': 10,
-        'paratufia.': 10,
-        'papes.ssrcom': 1,
-        'parabarbariancom': 25,
-        'com': 15,
-        '.blogspot.com': 6,
-        '.com': 10
-      };
-
-      return Object.keys(recommendations)
-              .map(reco => [reco, recommendations[reco]])
-              .sort((a, b) => ((a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0)));
+  /**
+  * POST XHR for fething recommendations and updating the state as response is fulfilled
+  * @method getCurrentTLDSfromDeepCrawlTag
+  * @param
+  */
+    getRecommendations(session) {
+	$.post(
+	    '/getRecommendations',
+	    { "session": JSON.stringify(session)},
+	    (response) => {
+		this.setState({
+		    recommendations: Object.keys(response || {})
+                        .map(reco => [reco, response[reco]])
+                        .sort((a, b) => (b[1] - a[1]))
+		})
+	    }
+	).fail((error) => {
+	    console.log('getRecommendations FAILED ', error);
+	});
     }
-
-
 
   /**
   * Get the current tlds in deep crawler tag.
@@ -210,14 +190,14 @@ class DeepCrawling extends Component {
    * @method startCrawler (onClick event)
    * @param {Object} event
    */
-   startDeepCrawler(event) {
- if(this.state.deepCrawlableDomains.length > 0)
-     this.setDeepcrawlTagtoPages(
-   this.state.deepCrawlableDomains
-     );
-
- this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
- }
+    startDeepCrawler(event) {
+	if(this.state.deepCrawlableDomains.length > 0)
+	    this.setDeepcrawlTagtoPages(
+		this.state.deepCrawlableDomains
+	    );
+	
+	this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
+    }
 
    startCrawler(type, seeds){
     var session = this.state.session;
@@ -243,49 +223,61 @@ class DeepCrawling extends Component {
   console.log('startCrawler', error)
     });;
   }
+    
+    stopDeepCrawler(event) {
+	this.stopCrawler("deep");
+    }
 
- stopDeepCrawler(event){
-     var session = this.state.session;
-    var message = "Terminating";
-    this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
-    this.forceUpdate();
-    $.post(
-      '/stopCrawler',
-      {'session': JSON.stringify(session)},
-  function(message) {
-        this.props.updateFilterCrawlerData("stopCrawler");
-          this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
-        this.forceUpdate();
-      }.bind(this)
-    ).fail((error) => {
-      this.setState({disabledStartCrawler: false});
-    });
-  }
+    stopCrawler(type){
+	var session = this.state.session;
+	var message = "Terminating";
+	this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+	this.forceUpdate();
+	$.post(
+	    '/stopCrawler',
+	    {'session': JSON.stringify(session)},
+	    function(message) {
+		this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
+		this.forceUpdate();
+	    }.bind(this)
+	).fail((error) => {
+	    this.setState({disabledStartCrawler: false});
+	});
+    }
 
 
-  addUrlsWhileCrawling(event) {
-    $.post(
-      '/addUrls',
-      {
-        session: JSON.stringify(this.state.session),
-        urls: this.state.deepCrawlableDomains.join("|"),
-        type: "deep"
-      },
-      (message) => {
-        this.state.deepCrawlableDomains.forEach(url => {
-          if(this.state.deepCrawlableDomainsFromTag.indexOf(url) !== -1)
-            this.state.deepCrawlableDomainsFromTag.push(url);
-        });
+    addUrlsWhileCrawling(event) {
+	if(this.state.deepCrawlableDomains.length > 0)
+	    this.setDeepcrawlTagtoPages(
+		this.state.deepCrawlableDomains
+	    );
+	
+	this.addURLs();
+    }
 
-        this.setState({
-          deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
-          deepCrawlableDomains: []
-        });
-      }
-    ).fail((error) => {
-      console.log('addUrls failed', error);
-    });
-  }
+    addURLs() {
+	$.post(
+	    '/addUrls',
+	    {
+		session: JSON.stringify(this.state.session),
+		urls: this.state.deepCrawlableDomains.join("|"),
+		type: "deep"
+	    },
+	    (message) => {
+		this.state.deepCrawlableDomains.forEach(url => {
+		    if(this.state.deepCrawlableDomainsFromTag.indexOf(url) !== -1)
+			this.state.deepCrawlableDomainsFromTag.push(url);
+		});
+		
+		this.setState({
+		    deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
+		    deepCrawlableDomains: []
+		});
+	    }
+	).fail((error) => {
+	    console.log('addUrls failed', error);
+	});
+    }
 
 
   /**

@@ -104,28 +104,14 @@ class FocusedCrawling extends Component {
        $.post(
          '/getModelTags',
          {'domainId': domainId},
-         function(tags){
-           this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
-           this.forceUpdate();
+           function(tags){
+	       if(Object.keys(tags).length >0){
+		   this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
+		   this.forceUpdate();
+	       }
          }.bind(this)
        );
      }
-
-       handleSave() {
-         var session = this.props.session;
-       //  this.setState({session['model']['positive']=this.state.tagsPosCheckBox,session['model']['negative']=this.state.tagsNegCheckBox})
-         session['model']['positive'] = this.state.tagsPosCheckBox;
-         session['model']['negative'] = this.state.tagsNegCheckBox;
-         console.log(JSON.stringify(session));
-         $.post(
-           '/saveModelTags',
-           {'session': session},
-           function(update){
-             this.forceUpdate();
-           }.bind(this)
-
-         );
-       }
 
   loadingTerm(){
     var temp_session = this.props.session;
@@ -135,15 +121,15 @@ class FocusedCrawling extends Component {
     this.setState({session: temp_session});
   }
 
-      getAvailableTags(session){
-     $.post(
-        '/getAvailableTags',
-        {'session': JSON.stringify(session), 'event': 'Tags'},
-        function(tagsDomain) {
-          this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
-          this.forceUpdate();
-        }.bind(this)
-      );
+    getAvailableTags(session){
+	$.post(
+            '/getAvailableTags',
+            {'session': JSON.stringify(session), 'event': 'Tags'},
+            function(tagsDomain) {
+		this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
+		this.forceUpdate();
+            }.bind(this)
+	);
    }
 
    getModelTags(domainId){
@@ -151,12 +137,13 @@ class FocusedCrawling extends Component {
        '/getModelTags',
        {'domainId': domainId},
 	 function(tags){
-	     var session = this.state.session;
-	     session['model']['positive'] = tags['positive'].slice();
-	     session['model']['negative'] = tags['negative'].slice();
-	     this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
-	     this.forceUpdate();
-	     
+	     if(Object.keys(tags).length > 0){
+		 var session = this.state.session;
+		 session['model']['positive'] = tags['positive'].slice();
+		 session['model']['negative'] = tags['negative'].slice();
+		 this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
+		 this.forceUpdate();
+	     }
        }.bind(this)
      );
    }
@@ -165,24 +152,24 @@ class FocusedCrawling extends Component {
 	var session = this.state.session;
         session['model']['positive'] = this.state.selectedPosTags.slice();
 	session['model']['negative'] = this.state.selectedNegTags.slice();
-	
+
 	this.setState({session: session})
 	this.forceUpdate();
-	
+
 	$.post(
 	    '/saveModelTags',
 	    {'session': JSON.stringify(session)},
 	    function(update){
 		this.forceUpdate();
 	    }.bind(this)
-	  
+
 	);
     }
 
     handleCancelTags(){
 	this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
 	this.forceUpdate();
-	
+
     }
 
        addPosTags(tag){
@@ -198,7 +185,7 @@ class FocusedCrawling extends Component {
        this.forceUpdate();
        console.log(this.state.session['model']);
    }
-    
+
     addNegTags(tag){
         var tags = this.state.selectedNegTags;
 	if(tags.includes(tag)){
@@ -210,10 +197,10 @@ class FocusedCrawling extends Component {
         }
        this.setState({selectedNegTags: tags})
 	this.forceUpdate();
-	console.log(this.state.session['model']);	
+	console.log(this.state.session['model']);
     }
 
-    
+
     handleStartCrawler =()=>{
 	this.setState({crawlerStart:true});
 	this.forceUpdate();
