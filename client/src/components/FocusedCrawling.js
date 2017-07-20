@@ -3,19 +3,9 @@ import { Col, Row} from 'react-bootstrap';
 // From https://github.com/oliviertassinari/react-swipeable-views
 import Terms from './Terms';
 import ScaleBar from './ScaleBar';
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
 import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
-import FlatButton from 'material-ui/FlatButton';
-import {fullWhite} from 'material-ui/styles/colors';
-import Search from 'material-ui/svg-icons/action/search';
-import TextField from 'material-ui/TextField';
-import Dialog from 'material-ui/Dialog';
-import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconMenu from 'material-ui/IconMenu';
-import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
 import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
@@ -25,6 +15,7 @@ import Menu from 'material-ui/Menu';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+<<<<<<< HEAD
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Monitoring from './Monitoring.js';
 
@@ -37,6 +28,9 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+=======
+
+>>>>>>> cefd3e826cb8c57153f9b11436fcd594047b2249
 import $ from 'jquery';
 
 
@@ -101,148 +95,132 @@ class FocusedCrawling extends Component {
       this.getAvailableTags(this.props.session);
       this.getModelTags(this.props.domainId);
 
+
   }
   componentWillReceiveProps  = (newProps, nextState) => {
-      this.loadingTerm();
+
   }
 
-
-     getModelTags(domainId){
-       console.log("in get");
-       $.post(
-         '/getModelTags',
-         {'domainId': domainId},
-           function(tags){
-	       if(Object.keys(tags).length >0){
-		   this.setState({tagsPosCheckBox: tags['positive'],tagsPosCheckBox: tags['negative']});
-		   this.forceUpdate();
-	       }
-         }.bind(this)
-       );
-     }
-
-  loadingTerm(){
-    var temp_session = this.props.session;
+  loadingTerms(){
+    var temp_session = JSON.parse(JSON.stringify(this.props.session));
     temp_session['newPageRetrievalCriteria'] = "one";
     temp_session['pageRetrievalCriteria'] = "Tags";
-    temp_session['selected_tags']="Relevant";
+    temp_session['selected_tags']=this.state.selectedPosTags.join(',');
     this.setState({session: temp_session});
   }
 
-    getAvailableTags(session){
-	$.post(
-            '/getAvailableTags',
-            {'session': JSON.stringify(session), 'event': 'Tags'},
-            function(tagsDomain) {
-		this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
-		this.forceUpdate();
-            }.bind(this)
-	);
-   }
+  getAvailableTags(session){
+    $.post(
+      '/getAvailableTags',
+      {'session': JSON.stringify(session), 'event': 'Tags'},
+      function(tagsDomain) {
+        this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
+        this.forceUpdate();
+      }.bind(this)
+    );
+  }
 
-   getModelTags(domainId){
-     $.post(
-       '/getModelTags',
-       {'domainId': domainId},
-	 function(tags){
-	     if(Object.keys(tags).length > 0){
-		 var session = this.state.session;
-		 session['model']['positive'] = tags['positive'].slice();
-		 session['model']['negative'] = tags['negative'].slice();
-		 this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
-		 this.forceUpdate();
-	     }
-       }.bind(this)
-     );
-   }
+  getModelTags(domainId){
+    $.post(
+      '/getModelTags',
+      {'domainId': domainId},
+      function(tags){
+        if(Object.keys(tags).length > 0){
+          var session = this.state.session;
+          session['model']['positive'] = tags['positive'].slice();
+          session['model']['negative'] = tags['negative'].slice();
+          this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
+          this.loadingTerms();
+          this.forceUpdate();
+        }
+      }.bind(this)
+    );
+  }
 
-    handleSaveTags() {
-	var session = this.state.session;
-  session['model']['positive'] = this.state.selectedPosTags.slice();
-	session['model']['negative'] = this.state.selectedNegTags.slice();
+  handleSaveTags() {
+    var session = this.state.session;
+    session['model']['positive'] = this.state.selectedPosTags.slice();
+    session['model']['negative'] = this.state.selectedNegTags.slice();
+    this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    this.loadingTerms();
+    this.forceUpdate();
 
-	this.setState({session: session})
-	this.forceUpdate();
+    $.post(
+      '/saveModelTags',
+      {'session': JSON.stringify(session)},
+      function(update){
+        this.forceUpdate();
+      }.bind(this)
 
-	$.post(
-	    '/saveModelTags',
-	    {'session': JSON.stringify(session)},
-	    function(update){
-		this.forceUpdate();
-	    }.bind(this)
+    );
+  }
 
-	);
+  handleCancelTags(){
+    this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
+    this.forceUpdate();
+
+  }
+
+  addPosTags(tag){
+    var tags = this.state.selectedPosTags;
+    if(tags.includes(tag)){
+      var index = tags.indexOf(tag);
+      tags.splice(index, 1);
     }
-
-    handleCancelTags(){
-	this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
-	this.forceUpdate();
-
+    else{
+      tags.push(tag);
     }
+    this.setState({selectedPosTags: tags})
+    this.forceUpdate();
+  }
 
-       addPosTags(tag){
-       var tags = this.state.selectedPosTags;
-       if(tags.includes(tag)){
-           var index = tags.indexOf(tag);
-           tags.splice(index, 1);
-       }
-       else{
-           tags.push(tag);
-       }
-       this.setState({selectedPosTags: tags})
+  addNegTags(tag){
+    var tags = this.state.selectedNegTags;
+    if(tags.includes(tag)){
+      var index = tags.indexOf(tag);
+      tags.splice(index, 1);
+    }
+    else{
+      tags.push(tag);
+    }
+    this.setState({selectedNegTags: tags})
+    this.forceUpdate();
+  }
+
+
+  handleStartCrawler =()=>{
+    this.setState({crawlerStart:true});
+    this.forceUpdate();
+  }
+  handlestopCrawler =() =>{
+    this.setState({crawlerStart:false});
+    this.stopCrawler();
+    this.forceUpdate();
+  }
+  startCrawler(){
+       var session = this.props.session;
+       var message = "Running";
+       var type = "focused";
+       this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
        this.forceUpdate();
-       console.log(this.state.session['model']);
-   }
+       $.post(
+           '/startCrawler',
+           {'session': JSON.stringify(session),'type': type },
+           function(message) {
+             var disableStopCrawlerFlag = false;
+             var disableAcheInterfaceFlag = false;
+             var disabledStartCrawlerFlag = true;
+             if(message.toLowerCase() !== "running"){
+  	       disableStopCrawlerFlag = true;
+  	       disableAcheInterfaceFlag =true;
+  	       disabledStartCrawlerFlag = true;
+             }
 
-    addNegTags(tag){
-        var tags = this.state.selectedNegTags;
-	if(tags.includes(tag)){
-            var index = tags.indexOf(tag);
-            tags.splice(index, 1);
-        }
-        else{
-            tags.push(tag);
-        }
-       this.setState({selectedNegTags: tags})
-	this.forceUpdate();
-	console.log(this.state.session['model']);
-    }
-
-
-    handleStartCrawler =(event)=>{
-	this.setState({crawlerStart:true});
-  this.startCrawler();
-	this.forceUpdate();
-    }
-handlestopCrawler =() =>{
-  this.setState({crawlerStart:false});
-  this.stopCrawler();
-  this.forceUpdate();
-}
-startCrawler(){
-     var session = this.props.session;
-     var message = "Running";
-     var type = "focused";
-     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
-     this.forceUpdate();
-     $.post(
-         '/startCrawler',
-         {'session': JSON.stringify(session),'type': type },
-         function(message) {
-           var disableStopCrawlerFlag = false;
-           var disableAcheInterfaceFlag = false;
-           var disabledStartCrawlerFlag = true;
-           if(message.toLowerCase() !== "running"){
-	       disableStopCrawlerFlag = true;
-	       disableAcheInterfaceFlag =true;
-	       disabledStartCrawlerFlag = true;
-           }
-
-           this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-           this.forceUpdate();
-         }.bind(this)
-     );
-   }
+             this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+             this.forceUpdate();
+           }.bind(this)
+       );
+     }
 
    stopCrawler(flag){
      var session = this.props.session;
