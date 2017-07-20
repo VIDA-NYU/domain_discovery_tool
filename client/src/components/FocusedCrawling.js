@@ -150,7 +150,7 @@ class FocusedCrawling extends Component {
 
     handleSaveTags() {
 	var session = this.state.session;
-        session['model']['positive'] = this.state.selectedPosTags.slice();
+  session['model']['positive'] = this.state.selectedPosTags.slice();
 	session['model']['negative'] = this.state.selectedNegTags.slice();
 
 	this.setState({session: session})
@@ -205,7 +205,10 @@ class FocusedCrawling extends Component {
 	this.setState({crawlerStart:true});
 	this.forceUpdate();
     }
-
+handlestopCrawler =() =>{
+  this.setState({crawlerStart:false});
+  this.forceUpdate();
+}
   render() {
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
@@ -232,8 +235,8 @@ class FocusedCrawling extends Component {
 
 
     const stopCrawlerButton = [
-      (this.state.crawlerStart)?<RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-        label="Stop Crawler" labelPosition="before" containerElement="label"/>:<div/>
+      (this.state.crawlerStart)?<div><RaisedButton disabled={false} onTouchTap={this.handlestopCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+        label="Stop Crawler" labelPosition="before" containerElement="label"/></div>:<div/>
     ];
 
     return (
