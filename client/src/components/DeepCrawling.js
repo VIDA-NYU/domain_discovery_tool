@@ -50,7 +50,7 @@ class DeepCrawling extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       recommendations: [],
-      minURLCount: 10,
+      minURLCount: 3,
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -96,10 +96,10 @@ class DeepCrawling extends Component {
   * POST XHR for fething recommendations and updating the state as response is fulfilled
   * @method getRecommendations
   */
-  getRecommendations() {
+    getRecommendations() {
   	$.post(
 	    '/getRecommendations',
-	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 10 },
+	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 3 },
 	    (response) => {
     		this.setState({
     		    recommendations: Object.keys(response || {})
@@ -325,11 +325,9 @@ class DeepCrawling extends Component {
    */
   changeMinURLCount(event) {
     this.setState(
-      { minURLCount: event.target.value },
-      () => { this.getRecommendations() }
+      { minURLCount: event.target.value }
     );
   }
-
   // Download the pages of uploaded urls from file
   runLoadUrlsFileQuery(txt) {
     var allTextLines = txt.split(/\r\n|\n/);
@@ -500,6 +498,7 @@ class DeepCrawling extends Component {
             style={{width: "100px", marginBottom: "-70px", float: "right", padding: "0px"}}
             value={this.state.minURLCount}
             onChange={this.changeMinURLCount}
+	    onKeyPress={(e) => {(e.key === 'Enter') ? this.getRecommendations(this) : null}}
           />
         </CardText>
          <CardText expandable={false} >
