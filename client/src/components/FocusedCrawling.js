@@ -10,10 +10,23 @@ import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
-
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
+import Monitoring from './Monitoring.js';
+
+import {
+  Table,
+  TableBody,
+  TableFooter,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
 import $ from 'jquery';
 
@@ -56,6 +69,13 @@ class FocusedCrawling extends Component {
       selectedNegTags: ["Irrelevant"],
       disabledStartCrawler:false, //false
       session:{},
+      disableStopCrawlerSignal:true,
+      disableAcheInterfaceSignal:true,
+      disabledStartCrawler:true, //false
+      disabledCreateModel:true, //false
+      messageCrawler:"",
+      open:false,
+      anchorEl:undefined,
     };
 
   }
@@ -168,6 +188,7 @@ class FocusedCrawling extends Component {
 
   handleStartCrawler =()=>{
     this.setState({crawlerStart:true});
+    this.startCrawler();
     this.forceUpdate();
   }
 
@@ -253,8 +274,8 @@ class FocusedCrawling extends Component {
 
 
     const stopCrawlerButton = [
-      (this.state.crawlerStart)?<RaisedButton disabled={false} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-        label="Stop Crawler" labelPosition="before" containerElement="label"/>:<div/>
+      (this.state.crawlerStart)?<div><RaisedButton disabled={false} onTouchTap={this.handlestopCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+        label="Stop Crawler" labelPosition="before" containerElement="label"/></div>:<div/>
     ];
 
     return (
