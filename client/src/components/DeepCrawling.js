@@ -50,7 +50,7 @@ class DeepCrawling extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       recommendations: [],
-      minRecommendationCount: 10,
+      minURLCount: 10,
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -67,7 +67,7 @@ class DeepCrawling extends Component {
     this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
     this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
 
-    this.changeMinRecommendationCount = this.changeMinRecommendationCount.bind(this);
+    this.changeMinURLCount = this.changeMinURLCount.bind(this);
   }
 
   /**
@@ -99,7 +99,7 @@ class DeepCrawling extends Component {
   getRecommendations() {
   	$.post(
 	    '/getRecommendations',
-	    { session: JSON.stringify(this.props.session), minCount: this.state.minRecommendationCount || 10 },
+	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 10 },
 	    (response) => {
     		this.setState({
     		    recommendations: Object.keys(response || {})
@@ -317,15 +317,15 @@ class DeepCrawling extends Component {
   }
 
   /**
-   * Set the minRecommendationCount state variable and callback to getRecommendations
+   * Set the minURLCount state variable and callback to getRecommendations
    * This is because setState will not run instantly, hence to prevent anomalies
    * getRecommendations is fired only after the new state is applied.
-   * @method changeMinRecommendationCount
+   * @method changeMinURLCount
    * @param {object} event
    */
-  changeMinRecommendationCount(event) {
+  changeMinURLCount(event) {
     this.setState(
-      { minRecommendationCount: event.target.value },
+      { minURLCount: event.target.value },
       () => { this.getRecommendations() }
     );
   }
@@ -498,8 +498,8 @@ class DeepCrawling extends Component {
             ref={(element) => {this.minRecoInput = element;}}
             type='number'
             style={{width: "100px", marginBottom: "-70px", float: "right", padding: "0px"}}
-            value={this.state.minRecommendationCount}
-            onChange={this.changeMinRecommendationCount}
+            value={this.state.minURLCount}
+            onChange={this.changeMinURLCount}
           />
         </CardText>
          <CardText expandable={false} >
