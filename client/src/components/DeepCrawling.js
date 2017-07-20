@@ -49,7 +49,7 @@ class DeepCrawling extends Component {
       disabledStartCrawler:false, //false
       disabledCreateModel:true, //false
       messageCrawler:"",
-      recommendations: this.getRecommendationResults(),
+      recommendations: [],
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -62,6 +62,7 @@ class DeepCrawling extends Component {
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
   }
+
   /**
   * Set the deepCrawlableDomainsFromTag state for displaying the current tlds in deep crawler tag.
   * @method componentWillMount
@@ -73,50 +74,29 @@ class DeepCrawling extends Component {
       session['pageRetrievalCriteria'] = "Tags";
       session['selected_tags']="Deep Crawl";
       this.getPages(session);
+      this.getRecommendations(JSON.stringify(session));
   }
 
-
-    getRecommendationResults() {
-      var recommendations = {
-        'pajiba.com': 1,
-        'pamageller.com': 6,
-        'pandemic.internationalsos.com': 1,
-        'papmiket.com': 1,
-        'paper.wenweipo.com': 1,
-        'papers.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'paraitesinblackandwhite.blogspot.com': 6,
-        'parusfamilia.com': 10,
-        'papers.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'parasitesinblackandwhite.blogspot.com': 6,
-        'paratusfamilia.com': 10,
-        'papers.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'parasitesinblackandwhite.com': 6,
-        'paratufia.com': 10,
-        'papes.ssrn.com': 1,
-        'parabarbarian.blogspot.com': 25,
-        'parade.com': 15,
-        'parasitenblackandwhite.blogspot.com': 6,
-        'paratusamilia.com': 10,
-        'paratufia.': 10,
-        'papes.ssrcom': 1,
-        'parabarbariancom': 25,
-        'com': 15,
-        '.blogspot.com': 6,
-        '.com': 10
-      };
-
-      return Object.keys(recommendations)
-              .map(reco => [reco, recommendations[reco]])
-              .sort((a, b) => ((a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0)));
-    }
-
-
+  /**
+  * POST XHR for fething recommendations and updating the state as response is fulfilled
+  * @method getCurrentTLDSfromDeepCrawlTag
+  * @param
+  */
+  getRecommendations(session) {
+    $.post(
+      '/getRecommendations',
+      { session },
+      (response) => {
+        this.setState({
+          recommendations: Object.keys(response || {})
+                            .map(reco => [reco, response[reco]])
+                            .sort((a, b) => (b[1] - a[1]))
+        })
+      }
+    ).fail((error) => {
+      console.log('getRecommendations FAILED ', error);
+    });
+  }
 
   /**
   * Get the current tlds in deep crawler tag.
