@@ -113,21 +113,6 @@ class FocusedCrawling extends Component {
        );
      }
 
-       handleSave() {
-         var session = this.props.session;
-       //  this.setState({session['model']['positive']=this.state.tagsPosCheckBox,session['model']['negative']=this.state.tagsNegCheckBox})
-         session['model']['positive'] = this.state.tagsPosCheckBox;
-         session['model']['negative'] = this.state.tagsNegCheckBox;
-         $.post(
-           '/saveModelTags',
-           {'session': JSON.stringify(session)},
-           function(update){
-             this.forceUpdate();
-           }.bind(this)
-
-         );
-       }
-
   loadingTerm(){
     var temp_session = this.props.session;
     temp_session['newPageRetrievalCriteria'] = "one";
@@ -135,16 +120,16 @@ class FocusedCrawling extends Component {
     temp_session['selected_tags']="Relevant";
     this.setState({session: temp_session});
   }
-
-      getAvailableTags(session){
-     $.post(
-        '/getAvailableTags',
-        {'session': JSON.stringify(session), 'event': 'Tags'},
-        function(tagsDomain) {
-          this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
-          this.forceUpdate();
-        }.bind(this)
-      );
+    
+    getAvailableTags(session){
+	$.post(
+            '/getAvailableTags',
+            {'session': JSON.stringify(session), 'event': 'Tags'},
+            function(tagsDomain) {
+		this.setState({currentTags: tagsDomain['tags']}); //, session:this.props.session, tagString: JSON.stringify(this.props.session['selected_tags'])});
+		this.forceUpdate();
+            }.bind(this)
+	);
    }
 
    getModelTags(domainId){
@@ -152,12 +137,13 @@ class FocusedCrawling extends Component {
        '/getModelTags',
        {'domainId': domainId},
 	 function(tags){
-	     var session = this.state.session;
-	     session['model']['positive'] = tags['positive'].slice();
-	     session['model']['negative'] = tags['negative'].slice();
-	     this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
-	     this.forceUpdate();
-	     
+	     if(Object.keys(tags).length > 0){
+		 var session = this.state.session;
+		 session['model']['positive'] = tags['positive'].slice();
+		 session['model']['negative'] = tags['negative'].slice();
+		 this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
+		 this.forceUpdate();
+	     }
        }.bind(this)
      );
    }
