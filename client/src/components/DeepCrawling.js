@@ -77,7 +77,7 @@ class DeepCrawling extends Component {
       session['pageRetrievalCriteria'] = "Tags";
       session['selected_tags']="Deep Crawl";
       this.getPages(session);
-      this.getRecommendations(JSON.stringify(session));
+      this.getRecommendations(session);
   }
 
   /**
@@ -88,14 +88,14 @@ class DeepCrawling extends Component {
   getRecommendations(session) {
     $.post(
       '/getRecommendations',
-      { session },
-      (response) => {
+      { 'session': JSON.stringify(session) },
+      function(response) {
         this.setState({
           recommendations: Object.keys(response || {})
                             .map(reco => [reco, response[reco]])
                             .sort((a, b) => (b[1] - a[1]))
         })
-      }
+      }.bind(this)
     ).fail((error) => {
       console.log('getRecommendations FAILED ', error);
     });
