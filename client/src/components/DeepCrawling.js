@@ -285,17 +285,17 @@ class DeepCrawling extends Component {
    * @method setDeepcrawlTagtoPages
    * @param {string[]} urls
    */
-  setDeepcrawlTagtoPages(urls) {
+  setDeepcrawlTagtoPages(tlds) {
     $.post(
-      '/setPagesTag',
+      '/setDomainsTag',
       {
-        pages: urls.join('|'),
-        tag: 'Deep Crawl',
-        applyTagFlag: true,
-        session: JSON.stringify(this.state.session)
+        "tlds": tlds.join('|'),
+        "tag": 'Deep Crawl',
+        "applyTagFlag": true,
+        "session": JSON.stringify(this.state.session)
       },
       (message) => {
-          urls.forEach(url => {
+          tlds.forEach(url => {
             this.state.deepCrawlableDomainsFromTag.push(url);
           });
 
