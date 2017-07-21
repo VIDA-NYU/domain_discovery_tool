@@ -162,14 +162,11 @@ class SearchTabs extends React.Component {
 	this.handleCloseLoadURLs();
 	this.uploadTag = "Neutral";
 	this.runLoadUrls(this.state.valueLoadUrls);
-<<<<<<< 84f1c1c33152c9d4ed0b99fdfc4f750fac51b60e
     }
     addCustomTagURLs(event){
       this.handleCloseLoadURLs();
       this.uploadTag = event.value;
       this.runLoadUrls(this.state.valueLoadUrls);
-=======
->>>>>>> Improving the indentation.
     }
 
 

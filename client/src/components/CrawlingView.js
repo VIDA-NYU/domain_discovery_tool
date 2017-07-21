@@ -34,7 +34,6 @@ class CrawlingView extends Component {
       disableAcheInterfaceSignal:true,
       disabledStartCrawler:false, //false
       disabledCreateModel:true, //false
-      deepCrawling: false,
       messageCrawler:"",
       openCreateModel: false,
       slideIndex: 0,
@@ -100,13 +99,10 @@ class CrawlingView extends Component {
       slideIndex: value,
       //valueLoadUrls:[],
       //valueLoadUrlsFromTextField:[],
-
-
     });
   }
 
   render() {
-
     return (
       <div style={styles.content}>
         <Tabs
