@@ -61,7 +61,9 @@ class DeepCrawling extends Component {
   * @method componentWillMount
   * @param
   */
-  componentWillMount(){
+    componentWillMount(){
+      this.setState({session:this.props.session});
+      this.forceUpdate();
       var session = this.props.session;  
       session['newPageRetrievalCriteria'] = "one";
       session['pageRetrievalCriteria'] = "Tags";
@@ -120,7 +122,7 @@ class DeepCrawling extends Component {
       {'session': JSON.stringify(session)},
       function(pages) {
         var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
-        this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+        this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag,});
         this.forceUpdate();
       }.bind(this)
     );
@@ -270,9 +272,8 @@ class DeepCrawling extends Component {
 	$.post(
 	    '/addUrls',
 	    {
-		session: JSON.stringify(this.state.session),
-		urls: this.state.deepCrawlableUrls.join("|"),
-		type: "deep"
+		"session": JSON.stringify(this.state.session),
+		"seeds": this.state.deepCrawlableUrls.join("|")
 	    },
 	    (message) => {
 		this.state.deepCrawlableUrls.forEach(url => {
