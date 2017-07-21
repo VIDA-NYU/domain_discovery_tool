@@ -3,15 +3,14 @@ import { Col, Row} from 'react-bootstrap';
 // From https://github.com/oliviertassinari/react-swipeable-views
 import Terms from './Terms';
 import ScaleBar from './ScaleBar';
-import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
+import { InputGroup, FormControl , DropdownButton} from 'react-bootstrap';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
@@ -196,7 +195,7 @@ class FocusedCrawling extends Component {
 
   handleStartCrawler =()=>{
     this.setState({crawlerStart:true});
-    this.startCrawler();
+    this.startCrawler("focused");
     this.forceUpdate();
   }
 
@@ -205,8 +204,25 @@ class FocusedCrawling extends Component {
     var message = "Running";
     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
     this.forceUpdate();
+    $.post(
+        '/startCrawler',
+        {'session': JSON.stringify(session),'type': type },
+        function(message) {
+          var disableStopCrawlerFlag = false;
+          var disableAcheInterfaceFlag = false;
+          var disabledStartCrawlerFlag = true;
+          if(message.toLowerCase() !== "running"){
+        disableStopCrawlerFlag = true;
+        disableAcheInterfaceFlag =true;
+        disabledStartCrawlerFlag = true;
+          }
+
+          this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+          this.forceUpdate();
+        }.bind(this)
+    );
   }
-  startCrawler(){
+/*  startCrawler(){
        var session = this.props.session;
        var message = "Running";
        var type = "focused";
@@ -229,7 +245,7 @@ class FocusedCrawling extends Component {
              this.forceUpdate();
            }.bind(this)
        );
-     }
+     }*/
 
    stopCrawler(flag){
      var session = this.props.session;
@@ -252,6 +268,17 @@ class FocusedCrawling extends Component {
    handleExport(event){
      this.setState({open:true,anchorEl:event.currentTarget})
    }
+   handleOpenMenu = () => {
+    this.setState({
+      openMenu: true,
+    });
+  }
+
+  handleOnRequestChange = (value) => {
+    this.setState({
+      openMenu: value,
+    });
+  }
   render() {
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
@@ -278,7 +305,7 @@ class FocusedCrawling extends Component {
 
 
     const stopCrawlerButton = [
-      (this.state.crawlerStart)?<div><RaisedButton disabled={false} onTouchTap={this.handlestopCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+      (this.state.crawlerStart)?<div><RaisedButton disabled={false}  style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
         label="Stop Crawler" labelPosition="before" containerElement="label"/></div>:<div/>
     ];
 
@@ -372,20 +399,17 @@ class FocusedCrawling extends Component {
 
 
           <div>
-          <RaisedButton disabled={false} onTouchTap={this.handleExport.bind(this)} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-           label="Export" labelPosition="before" containerElement="label" />
-           <Popover
-           open={this.state.open}
-           anchorEl={this.state.anchorEl}
-           onRequestClose={this.handleRequestClosePopOver.bind(this)}
-           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-           targetOrigin={{horizontal: 'left', vertical: 'top'}}
-           >
-           <Menu>
-           <MenuItem primaryText="createModel" />
-           </Menu>
-           </Popover>
-           </div>
+          <IconMenu
+           iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />}
+          
+         >
+           <MenuItem value="1" primaryText="Create Model" />
+           <MenuItem value="2" primaryText="Settings" />
+         </IconMenu>
+
+
+      </div>
+
          </CardText>
          </Card>
         </Col>
