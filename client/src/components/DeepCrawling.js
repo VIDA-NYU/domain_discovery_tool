@@ -50,7 +50,7 @@ class DeepCrawling extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       recommendations: [],
-      minURLCount: 10,
+      minURLCount: 3,
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -96,10 +96,10 @@ class DeepCrawling extends Component {
   * POST XHR for fething recommendations and updating the state as response is fulfilled
   * @method getRecommendations
   */
-  getRecommendations() {
+    getRecommendations() {
   	$.post(
 	    '/getRecommendations',
-	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 10 },
+	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 3 },
 	    (response) => {
     		this.setState({
     		    recommendations: Object.keys(response || {})
@@ -130,23 +130,21 @@ class DeepCrawling extends Component {
   getPages(session){
    $.post(
    	 '/getAvailableTags',
-   	 {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+   	 {'session': JSON.stringify(session), 'event': 'Tags'},
      function(tags){
-      session['pagesCap']=tags["tags"]["Deep Crawl"];
-      this.setState({session:session});
-      this.forceUpdate();
+        session['pagesCap']=tags["tags"]["Deep Crawl"];
+        $.post(
+          '/getPages',
+          {'session': JSON.stringify(session)},
+          function(pages) {
+            var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
+            this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+            this.forceUpdate();
+          }.bind(this)
+        );
     }.bind(this)
      );
-    $.post(
-      '/getPages',
-      {'session': JSON.stringify(session)},
-      function(pages) {
-        console.log(pages);
-        var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
-        this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
-        this.forceUpdate();
-      }.bind(this)
-    );
+
   }
 
   /**
@@ -335,11 +333,9 @@ class DeepCrawling extends Component {
    */
   changeMinURLCount(event) {
     this.setState(
-      { minURLCount: event.target.value },
-      () => { this.getRecommendations() }
+      { minURLCount: event.target.value }
     );
   }
-
   // Download the pages of uploaded urls from file
   runLoadUrlsFileQuery(txt) {
     var allTextLines = txt.split(/\r\n|\n/);
@@ -409,7 +405,7 @@ class DeepCrawling extends Component {
          style={{fontWeight:'bold', marginBottom:"-70px"}}
        />
        <CardText expandable={false} >
-          <Table id={"Annotated urls"} height={"210px"} selectable={false} multiSelectable={false} >
+          <Table id={"Annotated urls"} height={"255px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >
@@ -432,7 +428,7 @@ class DeepCrawling extends Component {
           </TableBody>
           </Table>
 
-          <Table id={"Added urls to deep crawl"} height={"210px"} selectable={false} multiSelectable={false} >
+          <Table id={"Added urls to deep crawl"} style={{marginTop:"-40px", }} height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >
@@ -510,6 +506,7 @@ class DeepCrawling extends Component {
             style={{width: "100px", marginBottom: "-70px", float: "right", padding: "0px"}}
             value={this.state.minURLCount}
             onChange={this.changeMinURLCount}
+	    onKeyPress={(e) => {(e.key === 'Enter') ? this.getRecommendations(this) : null}}
           />
         </CardText>
          <CardText expandable={false} >

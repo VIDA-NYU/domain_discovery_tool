@@ -36,6 +36,9 @@ class Terms extends Component{
 
   componentWillMount = () => {
    this.setState({expanded: this.props.statedCard, session:this.props.session, sessionString:JSON.stringify(this.props.session) });
+   if(this.props.focusedCrawlDomains){
+      this.loadTerms();
+   }
   };
 
 
@@ -98,7 +101,7 @@ class Terms extends Component{
 
   //Check if the component should be updated or not
   shouldComponentUpdate(nextProps, nextState) {
-    if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
+    if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString || this.props.focusedCrawlDomains) {
           return true;
     }
     return false;
