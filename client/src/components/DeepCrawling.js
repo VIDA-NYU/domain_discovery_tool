@@ -141,6 +141,7 @@ class DeepCrawling extends Component {
       '/getPages',
       {'session': JSON.stringify(session)},
       function(pages) {
+        console.log(pages);
         var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
         this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
         this.forceUpdate();
