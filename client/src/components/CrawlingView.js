@@ -65,7 +65,7 @@ class CrawlingView extends Component {
     session['search_engine'] = "GOOG";
     session['activeProjectionAlg'] = "Group by Correlation";
     session['domainId'] = domainId;
-    session['pagesCap'] = "100";
+    session['pagesCap'] = "5";
     session['fromDate'] = null;
     session['toDate'] = null;
     session['filter'] = null; //null
