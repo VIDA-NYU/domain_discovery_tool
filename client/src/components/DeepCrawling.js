@@ -402,7 +402,7 @@ class DeepCrawling extends Component {
          style={{fontWeight:'bold', marginBottom:"-70px"}}
        />
        <CardText expandable={false} >
-          <Table id={"Annotated urls"} height={"210px"} selectable={false} multiSelectable={false} >
+          <Table id={"Annotated urls"} height={"255px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >
@@ -425,7 +425,7 @@ class DeepCrawling extends Component {
           </TableBody>
           </Table>
 
-          <Table id={"Added urls to deep crawl"} height={"210px"} selectable={false} multiSelectable={false} >
+          <Table id={"Added urls to deep crawl"} style={{marginTop:"-40px", }} height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >

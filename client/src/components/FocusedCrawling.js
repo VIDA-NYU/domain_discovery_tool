@@ -69,9 +69,9 @@ class FocusedCrawling extends Component {
       selectedNegTags: ["Irrelevant"],
       disabledStartCrawler:false, //false
       session:{},
+      loadTerms:false,
       disableStopCrawlerSignal:true,
       disableAcheInterfaceSignal:true,
-      disabledStartCrawler:true, //false
       disabledCreateModel:true, //false
       messageCrawler:"",
       open:false,
@@ -89,7 +89,6 @@ class FocusedCrawling extends Component {
   */
   componentWillMount(){
       var temp_session = this.props.session;
-      this.setState({session: temp_session});
       this.getAvailableTags(this.props.session);
       this.getModelTags(this.props.domainId);
 
@@ -99,12 +98,16 @@ class FocusedCrawling extends Component {
 
   }
 
-  loadingTerms(){
-    var temp_session = JSON.parse(JSON.stringify(this.props.session));
+  setSelectedPosTags(selectedPosTags){
+
+  }
+
+  loadingTerms(session, selectedPosTags){
+    var temp_session = session;
     temp_session['newPageRetrievalCriteria'] = "one";
     temp_session['pageRetrievalCriteria'] = "Tags";
     temp_session['selected_tags']=this.state.selectedPosTags.join(',');
-    this.setState({session: temp_session});
+    this.setState({session: temp_session, selectedPosTags: selectedPosTags, loadingTerms:false});
   }
 
   getAvailableTags(session){
@@ -124,12 +127,18 @@ class FocusedCrawling extends Component {
       {'domainId': domainId},
       function(tags){
         if(Object.keys(tags).length > 0){
-          var session = this.state.session;
+          var session = this.props.session;
           session['model']['positive'] = tags['positive'].slice();
           session['model']['negative'] = tags['negative'].slice();
-          this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice()})
-          this.loadingTerms();
+
+          //setting session info for generating terms.
+          session['newPageRetrievalCriteria'] = "one";
+          session['pageRetrievalCriteria'] = "Tags";
+          session['selected_tags']=(tags['positive'].slice()).join(',');
+
+          this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
           this.forceUpdate();
+
         }
       }.bind(this)
     );
@@ -139,15 +148,15 @@ class FocusedCrawling extends Component {
     var session = this.state.session;
     session['model']['positive'] = this.state.selectedPosTags.slice();
     session['model']['negative'] = this.state.selectedNegTags.slice();
-    this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
-    this.loadingTerms();
+    //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    this.loadingTerms(session, this.state.selectedPosTags);
     this.forceUpdate();
 
     $.post(
       '/saveModelTags',
       {'session': JSON.stringify(session)},
       function(update){
-        this.forceUpdate();
+        //this.forceUpdate();
       }.bind(this)
 
     );
@@ -193,7 +202,7 @@ class FocusedCrawling extends Component {
   }
 
   startCrawler(type){
-    var session = this.state.session;
+    var session = JSON.parse(JSON.stringify(this.state.session));
     var message = "Running";
     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
     this.forceUpdate();
@@ -278,6 +287,9 @@ class FocusedCrawling extends Component {
         label="Stop Crawler" labelPosition="before" containerElement="label"/></div>:<div/>
     ];
 
+    var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session} focusedCrawlDomains={this.state.loadTerms}/>
+    :<div>Save some positive tag.</div>;
+
     return (
       <div>
       <Row>
@@ -316,8 +328,8 @@ class FocusedCrawling extends Component {
                 </Card>
              </Col>
              <Col xs={5} md={5} style={{margin:0, padding:0,}}>
-               <Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}/>
-             </Col>
+             {renderTerms}
+               </Col>
            </Row>
 
 
