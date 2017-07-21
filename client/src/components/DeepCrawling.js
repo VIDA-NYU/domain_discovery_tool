@@ -1,34 +1,17 @@
 import React, { Component } from 'react';
 import { Col, Row} from 'react-bootstrap';
 // From https://github.com/oliviertassinari/react-swipeable-views
-import Terms from './Terms';
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
-import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
-import {fullWhite} from 'material-ui/styles/colors';
-import Search from 'material-ui/svg-icons/action/search';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
-import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import IconMenu from 'material-ui/IconMenu';
 import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
 import IconButton from 'material-ui/IconButton';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import Checkbox from 'material-ui/Checkbox';
-import Divider from 'material-ui/Divider';
-
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
-
+import {Card, CardHeader, CardText} from 'material-ui/Card';
 
 import {
   Table,
   TableBody,
-  TableFooter,
   TableHeader,
   TableHeaderColumn,
   TableRow,
@@ -38,6 +21,7 @@ import $ from 'jquery';
 
 import MultiselectTable from './MultiselectTable';
 
+const PAGE_COUNT = 2000000
 
 class DeepCrawling extends Component {
 
@@ -54,6 +38,7 @@ class DeepCrawling extends Component {
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
+      deepCrawlableUrls: [],	  
       deepCrawlableDomainsFromTag: [],
       resetSelection: false,
       openLoadURLs: false,
@@ -67,7 +52,8 @@ class DeepCrawling extends Component {
     this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
     this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
 
-    this.changeMinURLCount = this.changeMinURLCount.bind(this);
+      this.changeMinURLCount = this.changeMinURLCount.bind(this);
+   
   }
 
   /**
@@ -76,12 +62,13 @@ class DeepCrawling extends Component {
   * @param
   */
   componentWillMount(){
-    var session = this.props.session;
-    session['newPageRetrievalCriteria'] = "one";
-    session['pageRetrievalCriteria'] = "Tags";
-    session['selected_tags']="Deep Crawl";
-    this.getPages(session);
-    this.getRecommendations();
+      var session = this.props.session;  
+      session['newPageRetrievalCriteria'] = "one";
+      session['pageRetrievalCriteria'] = "Tags";
+      session['selected_tags']="Deep Crawl";
+      session['pagesCap']=PAGE_COUNT;
+      this.getPages(session);      
+      this.getRecommendations();
   }
 
  /**
@@ -128,23 +115,15 @@ class DeepCrawling extends Component {
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
   getPages(session){
-   $.post(
-   	 '/getAvailableTags',
-   	 {'session': JSON.stringify(session), 'event': 'Tags'},
-     function(tags){
-        session['pagesCap']=tags["tags"]["Deep Crawl"];
-        $.post(
-          '/getPages',
-          {'session': JSON.stringify(session)},
-          function(pages) {
-            var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
-            this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
-            this.forceUpdate();
-          }.bind(this)
-        );
-    }.bind(this)
-     );
-
+    $.post(
+      '/getPages',
+      {'session': JSON.stringify(session)},
+      function(pages) {
+        var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
+        this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+        this.forceUpdate();
+      }.bind(this)
+    );
   }
 
   /**
@@ -152,18 +131,35 @@ class DeepCrawling extends Component {
    * @method addDomainsOnSelection (onClick event)
    * @param {Object} event
    */
-  addDomainsForDeepCrawl(event) {
-    var aux_deepCrawlableDomains = this.state.deepCrawlableDomains;
-    this.selectedRows.forEach((rowIndex) => {
-      if(this.state.deepCrawlableDomains.indexOf(this.state.recommendations[rowIndex][0]) === -1)
-        aux_deepCrawlableDomains.push(this.state.recommendations[rowIndex][0]);
-    });
-
-    this.setState({
-      deepCrawlableDomains: aux_deepCrawlableDomains,
-      resetSelection: true
-    });
-  }
+    addDomainsForDeepCrawl(event) {
+	var aux_deepCrawlableDomains = [];
+	this.selectedRows.forEach((rowIndex) => {
+	    if(this.state.deepCrawlableDomains.indexOf(this.state.recommendations[rowIndex][0]) === -1)
+		aux_deepCrawlableDomains.push(this.state.recommendations[rowIndex][0]);
+	});
+	
+	var session = this.props.session;  
+	session['newPageRetrievalCriteria'] = "one";
+	session['pageRetrievalCriteria'] = "TLDs";
+	session['selected_tlds']=aux_deepCrawlableDomains.join(",");      
+	session['pagesCap']=PAGE_COUNT;
+	
+	$.post(
+	    '/getPages',
+	    {'session': JSON.stringify(session)},
+	    function(pages) {
+		var urlsfromRecommendations = Object.keys(pages["data"]["results"]).map(result=>{return result;});
+		this.setState({deepCrawlableUrls: urlsfromRecommendations.concat(this.state.deepCrawlableUrls)});
+		this.forceUpdate();
+	    }.bind(this)
+	);
+	
+      
+	this.setState({
+	    deepCrawlableDomains: aux_deepCrawlableDomains.concat(this.state.deepCrawlableDomains),
+	    resetSelection: true
+	});
+    }
 
   /**
    * Assigns the selected rows of the table to deepCrawlableDomains key in state
@@ -180,7 +176,7 @@ class DeepCrawling extends Component {
   * @param {}
   */
   addDomainsFromFileForDeepCrawl() {
-    let aux_deepCrawlableDomains = this.state.deepCrawlableDomains;
+    let aux_deepCrawlableUrls = this.state.deepCrawlableUrls;
     var aux_valueLoadUrls = (this.state.valueLoadUrls!==undefined)?this.state.valueLoadUrls:[];
     //Append urls from textField to this.state.valueLoadUrls
     var valueLoadUrlsFromTextField = (this.state.valueLoadUrlsFromTextField!==undefined)?((this.state.valueLoadUrlsFromTextField!=="")?this.state.valueLoadUrlsFromTextField.split(/\r\n|\n/):[]):[];
@@ -188,12 +184,12 @@ class DeepCrawling extends Component {
     valueLoadUrlsFromTextField.forEach((value) => {
       aux_valueLoadUrls.push(value);
     });
-    //Append new urls to deepCrawlableDomains
+    //Append new urls to deepCrawlableUrls
     aux_valueLoadUrls.forEach((value) => {
-      aux_deepCrawlableDomains.push(value);
+      aux_deepCrawlableUrls.push(value);
     })
     this.setState({
-      deepCrawlableDomains: aux_deepCrawlableDomains,
+      deepCrawlableUrls: aux_deepCrawlableUrls,
       resetSelection: true,
       valueLoadUrls:[],
       valueLoadUrlsFromTextField:"",
@@ -205,13 +201,13 @@ class DeepCrawling extends Component {
    * @method startCrawler (onClick event)
    * @param {Object} event
    */
-   startDeepCrawler(event) {
-     if(this.state.deepCrawlableDomains.length > 0)
-    	  this.setDeepcrawlTagtoPages(this.state.deepCrawlableDomains);
-
-     this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
-   }
-
+    startDeepCrawler(event) {
+	if(this.state.deepCrawlableUrls.length > 0)
+    	    this.setDeepcrawlTagtoPages(this.state.deepCrawlableUrls);
+	
+	this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
+    }
+    
    startCrawler(type, seeds){
     var session = this.state.session;
     var message = "Running";
@@ -264,8 +260,8 @@ class DeepCrawling extends Component {
 
 
   addUrlsWhileCrawling(event) {
-	  if(this.state.deepCrawlableDomains.length > 0)
-	    this.setDeepcrawlTagtoPages(this.state.deepCrawlableDomains);
+	  if(this.state.deepCrawlableUrls.length > 0)
+	    this.setDeepcrawlTagtoPages(this.state.deepCrawlableUrls);
 
 	  this.addURLs();
   }
@@ -275,18 +271,19 @@ class DeepCrawling extends Component {
 	    '/addUrls',
 	    {
 		session: JSON.stringify(this.state.session),
-		urls: this.state.deepCrawlableDomains.join("|"),
+		urls: this.state.deepCrawlableUrls.join("|"),
 		type: "deep"
 	    },
 	    (message) => {
-		this.state.deepCrawlableDomains.forEach(url => {
+		this.state.deepCrawlableUrls.forEach(url => {
 		    if(this.state.deepCrawlableDomainsFromTag.indexOf(url) !== -1)
 			this.state.deepCrawlableDomainsFromTag.push(url);
 		});
 
 		this.setState({
 		    deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
-		    deepCrawlableDomains: []
+		    deepCrawlableDomains: [],
+		    deepCrawlableUrls: []		    
 		});
 	    }
 	).fail((error) => {
@@ -300,23 +297,24 @@ class DeepCrawling extends Component {
    * @method setDeepcrawlTagtoPages
    * @param {string[]} urls
    */
-  setDeepcrawlTagtoPages(tlds) {
+  setDeepcrawlTagtoPages(urls) {
     $.post(
-      '/setDomainsTag',
+      '/setPagesTag',
       {
-        "tlds": tlds.join('|'),
+        "pages": urls.join('|'),
         "tag": 'Deep Crawl',
         "applyTagFlag": true,
         "session": JSON.stringify(this.state.session)
       },
       (message) => {
-          tlds.forEach(url => {
+          urls.forEach(url => {
             this.state.deepCrawlableDomainsFromTag.push(url);
           });
 
           this.setState({
               deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
-              deepCrawlableDomains: []
+              deepCrawlableDomains: [],
+	      deepCrawlableUrls: []
           });
       }
     ).fail((error) => {
@@ -377,10 +375,9 @@ class DeepCrawling extends Component {
 
     //Removing selected url from the table to deepCrawlableDomains
     handleRemoveUrlFromList(url, index){
-      //var total_deepCrawlableDomains = this.state.deepCrawlableDomainsFromTag.length;
-      var urlsList = this.state.deepCrawlableDomains;
-      var deepCrawlableDomains_aux =  urlsList.splice(index,1);
-      this.setState({deepCrawlableDomains:urlsList});
+      var urlsList = this.state.deepCrawlableUrls;
+      var deepCrawlableUrls_aux =  urlsList.splice(index,1);
+      this.setState({deepCrawlableUrls:urlsList});
       this.forceUpdate();
     }
 
@@ -442,7 +439,7 @@ class DeepCrawling extends Component {
           </TableHeader>
           <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
           {
-            (this.state.deepCrawlableDomains).map((row, index) => (
+            (this.state.deepCrawlableUrls).map((row, index) => (
               <TableRow key={index}>
               <TableRowColumn>{row}</TableRowColumn>
               <TableRowColumn style={{textAlign: 'right'}}>
