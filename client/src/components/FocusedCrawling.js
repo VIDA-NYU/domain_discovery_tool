@@ -3,15 +3,14 @@ import { Col, Row} from 'react-bootstrap';
 // From https://github.com/oliviertassinari/react-swipeable-views
 import Terms from './Terms';
 import ScaleBar from './ScaleBar';
-import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
+import { InputGroup, FormControl , DropdownButton} from 'react-bootstrap';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
@@ -67,7 +66,6 @@ class FocusedCrawling extends Component {
       currentTags:undefined,
       selectedPosTags: ["Relevant"],
       selectedNegTags: ["Irrelevant"],
-      disabledStartCrawler:false, //false
       session:{},
       loadTerms:false,
       disableStopCrawlerSignal:true,
@@ -197,7 +195,7 @@ class FocusedCrawling extends Component {
 
   handleStartCrawler =()=>{
     this.setState({crawlerStart:true});
-    this.startCrawler();
+    this.startCrawler("focused");
     this.forceUpdate();
   }
 
@@ -207,56 +205,80 @@ class FocusedCrawling extends Component {
     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
     this.forceUpdate();
     $.post(
-      '/startCrawler',
-      {'session': JSON.stringify(session), "type": type, },
-      function(message) {
-        var disableStopCrawlerFlag = false;
-        var disableAcheInterfaceFlag = false;
-        var disabledStartCrawlerFlag = true;
-        if(message.toLowerCase() !== "running"){
-          disableStopCrawlerFlag = true;
-          disableAcheInterfaceFlag =true;
-          disabledStartCrawlerFlag = true;
-        }
-        this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-        this.forceUpdate();
-      }.bind(this)
-    ).fail((error) => {
-      console.log('startCrawler', error)
-    });;
-  }
+        '/startCrawler',
+        {'session': JSON.stringify(session),'type': type },
+        function(message) {
+          var disableStopCrawlerFlag = false;
+          var disableAcheInterfaceFlag = false;
+          var disabledStartCrawlerFlag = true;
+          if(message.toLowerCase() !== "running"){
+        disableStopCrawlerFlag = true;
+        disableAcheInterfaceFlag =true;
+        disabledStartCrawlerFlag = true;
+          }
 
-  stopCrawler(type){
-    var session = this.state.session;
-    var message = "Terminating";
-    this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
-    this.forceUpdate();
-    $.post(
-      '/stopCrawler',
-      {'session': JSON.stringify(session), "type": type},
-      function(message) {
-        this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
-        this.forceUpdate();
-      }.bind(this)
-    ).fail((error) => {
-      this.setState({disabledStartCrawler: false});
+          this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+          this.forceUpdate();
+        }.bind(this)
+    );
+  }
+/*  startCrawler(){
+       var session = this.props.session;
+       var message = "Running";
+       var type = "focused";
+       this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
+       this.forceUpdate();
+       $.post(
+           '/startCrawler',
+           {'session': JSON.stringify(session),'type': type },
+           function(message) {
+             var disableStopCrawlerFlag = false;
+             var disableAcheInterfaceFlag = false;
+             var disabledStartCrawlerFlag = true;
+             if(message.toLowerCase() !== "running"){
+  	       disableStopCrawlerFlag = true;
+  	       disableAcheInterfaceFlag =true;
+  	       disabledStartCrawlerFlag = true;
+             }
+
+             this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+             this.forceUpdate();
+           }.bind(this)
+       );
+     }*/
+
+   stopCrawler(flag){
+     var session = this.props.session;
+     var message = "Terminating";
+     var type = "focused";
+     this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
+     this.forceUpdate();
+     $.post(
+       '/stopCrawler',
+       {'session': JSON.stringify(session), 'type' : type  },
+	 function(message) {
+           this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
+         this.forceUpdate();
+       }.bind(this)
+     );
+   }
+   handleRequestClosePopOver(){
+     this.setState({open:false});
+   }
+   handleExport(event){
+     this.setState({open:true,anchorEl:event.currentTarget})
+   }
+   handleOpenMenu = () => {
+    this.setState({
+      openMenu: true,
     });
   }
 
-  /**
-  * Saves all the selected domains with Focused Crawl tag and STARTS the crawler
-  * @method startCrawler (onClick event)
-  * @param {Object} event
-  */
-  startFocusedCrawler(event) {
-    this.startCrawler("focused");
+  handleOnRequestChange = (value) => {
+    this.setState({
+      openMenu: value,
+    });
   }
-
-
-  stopFocusedCrawler(event) {
-    this.stopCrawler("focused");
-  }
-
   render() {
 
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
@@ -283,7 +305,7 @@ class FocusedCrawling extends Component {
 
 
     const stopCrawlerButton = [
-      (this.state.crawlerStart)?<div><RaisedButton disabled={false} onTouchTap={this.handlestopCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+      (this.state.crawlerStart)?<div><RaisedButton disabled={false}  style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
         label="Stop Crawler" labelPosition="before" containerElement="label"/></div>:<div/>
     ];
 
@@ -348,34 +370,6 @@ class FocusedCrawling extends Component {
           style={{fontWeight:'bold',}}
         />
         <CardText expandable={true} >
-        <div style={{display: 'flex'}}>
-          <RaisedButton
-            label="Start Crawler"
-            labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-            style={
-                    this.state.disabledStartCrawler ?
-                    {pointerEvents: 'none', opacity: 0.5, margin: 12, height:20, marginTop: 15, minWidth:118, width:118,}
-                    :
-                    {pointerEvents: 'auto', opacity: 1.0, margin: 12, height:20, marginTop: 15, minWidth:118, width:118,}
-                  }
-            labelPosition="before" containerElement="label"
-            onClick={this.startFocusedCrawler.bind(this)}
-          />
-
-          {
-            this.state.disabledStartCrawler ?
-            <div>
-              <RaisedButton
-                label="Stop Crawler"
-                style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                onClick={this.stopFocusedCrawler}
-              />
-            </div>
-            :
-            null
-          }
-        </div>
-
           <RaisedButton disabled={this.state.crawlerStart} onTouchTap={this.handleStartCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
           label="Start Crawler" labelPosition="before" containerElement="label" />
           {stopCrawlerButton}
@@ -395,19 +389,27 @@ class FocusedCrawling extends Component {
            <List>
             <Subheader>Details</Subheader>
             <ListItem>
-              <p><span>Relevant:</span> 20 </p>
-              <p><span>Irrelevant:</span> 20 </p>
-              <p><span>Domain Model:</span> 20 </p>
+            <p><span>Relevant:</span> 20 </p>
+            <p><span>Irrelevant:</span> 20 </p>
+            <p><span>Domain Model:</span> 20 </p>
             </ListItem>
             <Divider />
             <ScaleBar/>
             </List>
-           <IconMenu
-           iconButtonElement={<RaisedButton disabled={false} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-           label="Export" labelPosition="before" containerElement="label" />} >
+
+
+          <div>
+          <IconMenu
+           iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />}
+          
+         >
            <MenuItem value="1" primaryText="Create Model" />
            <MenuItem value="2" primaryText="Settings" />
-           </IconMenu>
+         </IconMenu>
+
+
+      </div>
+
          </CardText>
          </Card>
         </Col>
