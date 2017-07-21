@@ -130,22 +130,21 @@ class DeepCrawling extends Component {
   getPages(session){
    $.post(
    	 '/getAvailableTags',
-   	 {'session': JSON.stringify(this.props.session), 'event': 'Tags'},
+   	 {'session': JSON.stringify(session), 'event': 'Tags'},
      function(tags){
-      session['pagesCap']=tags["tags"]["Deep Crawl"];
-      this.setState({session:session});
-      this.forceUpdate();
+        session['pagesCap']=tags["tags"]["Deep Crawl"];
+        $.post(
+          '/getPages',
+          {'session': JSON.stringify(session)},
+          function(pages) {
+            var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
+            this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+            this.forceUpdate();
+          }.bind(this)
+        );
     }.bind(this)
      );
-    $.post(
-      '/getPages',
-      {'session': JSON.stringify(session)},
-      function(pages) {
-        var urlsfromDeepCrawlTag = this.getCurrentUrlsfromDeepCrawlTag(pages["data"]["results"]);
-        this.setState({deepCrawlableDomainsFromTag: urlsfromDeepCrawlTag, session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
-        this.forceUpdate();
-      }.bind(this)
-    );
+
   }
 
   /**
@@ -406,7 +405,7 @@ class DeepCrawling extends Component {
          style={{fontWeight:'bold', marginBottom:"-70px"}}
        />
        <CardText expandable={false} >
-          <Table id={"Annotated urls"} height={"210px"} selectable={false} multiSelectable={false} >
+          <Table id={"Annotated urls"} height={"255px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >
@@ -429,7 +428,7 @@ class DeepCrawling extends Component {
           </TableBody>
           </Table>
 
-          <Table id={"Added urls to deep crawl"} height={"210px"} selectable={false} multiSelectable={false} >
+          <Table id={"Added urls to deep crawl"} style={{marginTop:"-40px", }} height={"210px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >
