@@ -96,6 +96,7 @@ class FocusedCrawling extends Component {
       temp_session['pageRetrievalCriteria'] = "Tags";
       temp_session['selected_tags']=this.state.selectedPosTags.join(',');
       this.setState({session: temp_session, selectedPosTags: selectedPosTags, loadTerms:true});
+      this.forceUpdate();
   }
 
   updateTerms(terms){
@@ -121,8 +122,11 @@ class FocusedCrawling extends Component {
       {'domainId': domainId},
 	function(tags){
 	    console.log(tags);
+      var session = this.props.session;
+      session['model']['positive'] = [];
+      session['model']['negative'] = [];
         if(Object.keys(tags).length > 0){
-          var session = this.props.session;
+          console.log(tags);
           session['model']['positive'] = tags['positive'].slice();
           session['model']['negative'] = tags['negative'].slice();
 
@@ -135,6 +139,11 @@ class FocusedCrawling extends Component {
           this.forceUpdate();
 
         }
+        else {if(!(session['model']['positive'].length>0)){
+            this.setState({openDialog:true , loadTerms:false,});
+            this.forceUpdate();
+        }}
+
       }.bind(this)
     );
   }
@@ -145,22 +154,21 @@ class FocusedCrawling extends Component {
     session['model']['negative'] = this.state.selectedNegTags.slice();
     //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),})
     if(session['model']['positive'].length>0 ){
-    this.loadingTerms(session, this.state.selectedPosTags);
-  }
-    else{
-      this.setState({openDialog:true});
+      this.loadingTerms(session, this.state.selectedPosTags);
     }
-    this.forceUpdate();
+      else{
+        this.setState({openDialog:true});
+      }
 
-    $.post(
-      '/saveModelTags',
-      {'session': JSON.stringify(session)},
-      function(update){
-        //this.forceUpdate();
-      }.bind(this)
-    );
-      this.setState({loadTerms:false});
-  }
+
+      $.post(
+        '/saveModelTags',
+        {'session': JSON.stringify(session)},
+        function(update){
+          //this.forceUpdate();
+        }.bind(this)
+      );
+    }
 
   handleCancelTags(){
     this.setState({selectedPosTags: this.state.session['model']['positive'].slice(), selectedNegTags: this.state.session['model']['negative'].slice()})
@@ -315,8 +323,8 @@ class FocusedCrawling extends Component {
     var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false}
                                                     BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}
       focusedCrawlDomains={this.state.loadTerms} fromCrawling={true} updateTerms={this.updateTerms.bind(this)}/>
-    :<div>Save some positive tag.</div>;
-
+    :<div></div>;
+    var openMessage = (this.props.slideIndex && this.state.openDialog)?true:false;
     return (
       <div>
       <Row>
@@ -351,7 +359,7 @@ class FocusedCrawling extends Component {
                     <RaisedButton disabled={false} onTouchTap={this.handleCancelTags.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Cancel" labelPosition="before" containerElement="label" />
                   </Row>
-                  <Dialog title="Select Tag" open={this.state.openDialog}>
+                  <Dialog title="Select positive tags to extract terms." open={openMessage}>
                   {DialogBox}</Dialog>
                 </CardText>
                 </Card>

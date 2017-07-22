@@ -120,7 +120,7 @@ class CrawlingView extends Component {
         </div>
 
         <div id="focused-crawling" style={styles.slide}>
-          <FocusedCrawling domainId={this.props.domainId}  session={this.state.session} />
+          <FocusedCrawling domainId={this.props.domainId}  session={this.state.session} slideIndex={this.state.slideIndex}/>
         </div>
 
         </SwipeableViews>
