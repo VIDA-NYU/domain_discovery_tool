@@ -149,7 +149,6 @@ class FocusedCrawling extends Component {
     session['model']['positive'] = this.state.selectedPosTags.slice();
     session['model']['negative'] = this.state.selectedNegTags.slice();
     //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
-    console.log(session['model']['negative']);
     if(session['model']['positive'].length>0 ){
     this.loadingTerms(session, this.state.selectedPosTags);
   }
@@ -229,30 +228,7 @@ class FocusedCrawling extends Component {
         }.bind(this)
     );
   }
-/*  startCrawler(){
-       var session = this.props.session;
-       var message = "Running";
-       var type = "focused";
-       this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
-       this.forceUpdate();
-       $.post(
-           '/startCrawler',
-           {'session': JSON.stringify(session),'type': type },
-           function(message) {
-             var disableStopCrawlerFlag = false;
-             var disableAcheInterfaceFlag = false;
-             var disabledStartCrawlerFlag = true;
-             if(message.toLowerCase() !== "running"){
-  	       disableStopCrawlerFlag = true;
-  	       disableAcheInterfaceFlag =true;
-  	       disabledStartCrawlerFlag = true;
-             }
 
-             this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-             this.forceUpdate();
-           }.bind(this)
-       );
-     }*/
    stopFocusedCrawler(event) {
      this.stopCrawler("focused");
    }
