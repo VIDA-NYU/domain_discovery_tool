@@ -16,7 +16,7 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Monitoring from './Monitoring.js';
-
+import Dialog from 'material-ui/Dialog';
 import {
   Table,
   TableBody,
@@ -74,6 +74,7 @@ class FocusedCrawling extends Component {
       disabledStartCrawler:false, //false
       messageCrawler:"",
       open:false,
+      openDialog:false,
       anchorEl:undefined,
     };
 
@@ -147,8 +148,13 @@ class FocusedCrawling extends Component {
     var session = this.state.session;
     session['model']['positive'] = this.state.selectedPosTags.slice();
     session['model']['negative'] = this.state.selectedNegTags.slice();
-    //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),})
+    if(session['model']['positive'].length>0 ){
     this.loadingTerms(session, this.state.selectedPosTags);
+  }
+    else{
+      this.setState({openDialog:true});
+    }
     this.forceUpdate();
 
     $.post(
@@ -278,7 +284,10 @@ class FocusedCrawling extends Component {
       openMenu: true,
     });
   }
-
+  handlecloseDialog(){
+    this.setState({openDialog:false});
+    this.forceUpdate();
+  }
   handleOnRequestChange = (value) => {
     this.setState({
       openMenu: value,
@@ -311,7 +320,8 @@ class FocusedCrawling extends Component {
                           </Col>
                         </Row>:<div />;
 
-
+    var DialogBox= <RaisedButton disabled={false} onTouchTap={this.handlecloseDialog.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+      label="Close" labelPosition="before" containerElement="label" />;
     var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false}
                                                     BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}
                                                     focusedCrawlDomains={this.state.loadTerms} fromCrawling={true}/>
@@ -351,6 +361,8 @@ class FocusedCrawling extends Component {
                     <RaisedButton disabled={false} onTouchTap={this.handleCancelTags.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                       label="Cancel" labelPosition="before" containerElement="label" />
                   </Row>
+                  <Dialog title="Select Tag" open={this.state.openDialog}>
+                  {DialogBox}</Dialog>
                 </CardText>
                 </Card>
              </Col>

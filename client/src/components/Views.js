@@ -865,7 +865,6 @@ class ViewTabSnippets extends React.Component{
               <div style={{float:'right',width:'100px', marginRight: "5px"}}>
                 <Select.Creatable
                   placeholder="Add Tag"
-                  className="menu-outer-top"
                   multi={false}
                   options={this.availableTags}
                   onChange={this.addCustomTag.bind(this, this.currentUrls)}
