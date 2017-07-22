@@ -95,6 +95,12 @@ class Terms extends Component{
       }.bind(this));
     };
 
+    updateTerms(){
+	console.log(this.props.updateTerms);
+      if(this.props.updateTerms != undefined)	
+	  this.props.updateTerms(this.state.listTerms);
+  }
+    
   updateListTermParent(updateListTerm){
       this.setState({listTerms: updateListTerm});
       this.forceUpdate();
@@ -109,7 +115,10 @@ class Terms extends Component{
   }
 
 
-  render(){
+    render(){
+	console.log("RENDER TERMS");
+	this.updateTerms();
+	
     const styles = {
       card: {
         borderStyle: 'solid',
