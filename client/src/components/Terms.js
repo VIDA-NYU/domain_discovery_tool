@@ -90,19 +90,21 @@ class Terms extends Component{
           return {'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]}
         });
         this.setState({listTerms: entries});
+        this.updateTerms(entries); //sending new terms to FocusedCrawling component
       }.bind(this)).fail(function() {
         console.log("Something wrong happen. Try again.");
       }.bind(this));
     };
 
-    updateTerms(){
-	console.log(this.props.updateTerms);
-      if(this.props.updateTerms != undefined)	
-	  this.props.updateTerms(this.state.listTerms);
+  //sending new terms to FocusedCrawling component
+  updateTerms(updateListTerm){
+    if(this.props.updateTerms != undefined)
+	    this.props.updateTerms(updateListTerm);
   }
-    
+
   updateListTermParent(updateListTerm){
       this.setState({listTerms: updateListTerm});
+      this.updateTerms(updateListTerm); //sending new terms to FocusedCrawling component
       this.forceUpdate();
   }
 
@@ -116,9 +118,7 @@ class Terms extends Component{
 
 
     render(){
-	console.log("RENDER TERMS");
-	this.updateTerms();
-	
+
     const styles = {
       card: {
         borderStyle: 'solid',
