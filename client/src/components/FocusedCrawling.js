@@ -11,7 +11,7 @@ import Divider from 'material-ui/Divider';
 import MenuItem from 'material-ui/MenuItem';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-
+import Dialog from 'material-ui/Dialog';
 import $ from 'jquery';
 
 const styles = {
