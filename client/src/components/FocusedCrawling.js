@@ -71,6 +71,7 @@ class FocusedCrawling extends Component {
       disableStopCrawlerSignal:true,
       disableAcheInterfaceSignal:true,
       disabledCreateModel:true, //false
+      disabledStartCrawler:false, //false
       messageCrawler:"",
       open:false,
       anchorEl:undefined,
@@ -193,8 +194,7 @@ class FocusedCrawling extends Component {
   }
 
 
-  handleStartCrawler =()=>{
-    this.setState({crawlerStart:true});
+  startFocusedCrawler =()=>{
     this.startCrawler("focused");
     this.forceUpdate();
   }
@@ -246,11 +246,14 @@ class FocusedCrawling extends Component {
            }.bind(this)
        );
      }*/
+   stopFocusedCrawler(event) {
+     this.stopCrawler("focused");
+   }
 
-   stopCrawler(flag){
+
+   stopCrawler(type){
      var session = this.props.session;
      var message = "Terminating";
-     var type = "focused";
      this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler:true, messageCrawler:message,});
      this.forceUpdate();
      $.post(
@@ -260,7 +263,9 @@ class FocusedCrawling extends Component {
            this.setState({disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: false, messageCrawler:"",});
          this.forceUpdate();
        }.bind(this)
-     );
+   ).fail((error) => {
+      this.setState({disabledStartCrawler: false});
+   });
    }
    handleRequestClosePopOver(){
      this.setState({open:false});
@@ -281,7 +286,8 @@ class FocusedCrawling extends Component {
   }
   render() {
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
-                          <div style={{height:330, overflowY: "scroll", }}>
+                          <Row style={{height:330, overflowY: "scroll", }}>
+                          <Col xs={6} md={6} style={{marginTop:'2px'}}>
                           Positive
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
                           var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
@@ -291,6 +297,8 @@ class FocusedCrawling extends Component {
                             checkedTag=true;
                           return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
                           })}
+                          </Col>
+                          <Col xs={6} md={6} style={{marginTop:'2px'}}>
                           Negative
                             {Object.keys(this.state.currentTags).map((tag, index)=>{
                               var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
@@ -300,14 +308,13 @@ class FocusedCrawling extends Component {
                               checkedTag=true;
                                 return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
                               })}
-                        </div>:<div />;
+                          </Col>
+                        </Row>:<div />;
 
-    const stopCrawlerButton = [
-      (this.state.crawlerStart)?<div><RaisedButton disabled={false}  style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-        label="Stop Crawler" labelPosition="before" containerElement="label"/></div>:<div/>
-    ];
 
-    var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session} focusedCrawlDomains={this.state.loadTerms}/>
+    var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false}
+                                                    BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}
+                                                    focusedCrawlDomains={this.state.loadTerms} fromCrawling={true}/>
     :<div>Save some positive tag.</div>;
 
     return (
@@ -316,7 +323,7 @@ class FocusedCrawling extends Component {
         <Col xs={11} md={11} style={{margin:'10px'}}>
         <Card id={"Settings"} initiallyExpanded={true} style={{paddingBottom:0,}} containerStyle={{paddingBottom:0,}} >
          <CardHeader
-           title="Settings"
+           title="Model Settings"
            actAsExpander={false}
            showExpandableButton={false}
            style={{fontWeight:'bold', padding:'10px 1px 10px 6px', borderRadius: '0px 0px 0px 0px',}}
@@ -326,7 +333,7 @@ class FocusedCrawling extends Component {
              <Col xs={7} md={7} style={{margin:0, padding:0,}}>
                <Card id={"Tags"} initiallyExpanded={true} style={styles.card}>
                 <CardHeader
-                  title="Tags"
+                  title="Select postive and negative examples."
                   actAsExpander={false}
                   showExpandableButton={false}
                   style={styles.cardHeader}
@@ -340,9 +347,9 @@ class FocusedCrawling extends Component {
                   </Row>
                   <Row style={{margin:"-8px 5px 10px 20px"}}>
                     <RaisedButton disabled={false} onTouchTap={this.handleSaveTags.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                    label="Save" labelPosition="before" containerElement="label" />
-            <RaisedButton disabled={false} onTouchTap={this.handleCancelTags.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                    label="Cancel" labelPosition="before" containerElement="label" />
+                      label="Save" labelPosition="before" containerElement="label" />
+                    <RaisedButton disabled={false} onTouchTap={this.handleCancelTags.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+                      label="Cancel" labelPosition="before" containerElement="label" />
                   </Row>
                 </CardText>
                 </Card>
@@ -368,9 +375,42 @@ class FocusedCrawling extends Component {
           style={{fontWeight:'bold',}}
         />
         <CardText expandable={true} >
-          <RaisedButton disabled={this.state.crawlerStart} onTouchTap={this.handleStartCrawler.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-          label="Start Crawler" labelPosition="before" containerElement="label" />
-          {stopCrawlerButton}
+        <div style={{display: 'flex'}}>
+          <RaisedButton
+            label="Start Crawler"
+            style={{margin: 5}}
+            labelStyle={{textTransform: "capitalize"}}
+            style={
+                    this.state.disabledStartCrawler ?
+                    {pointerEvents: 'none', opacity: 0.5, margin: 12}
+                    :
+                    {pointerEvents: 'auto', opacity: 1.0, margin: 12}
+                  }
+            onClick={this.startFocusedCrawler.bind(this)}
+          />
+
+          {
+            this.state.disabledStartCrawler ?
+            <div>
+              <RaisedButton
+                label="Stop Crawler"
+                style={{margin: 5,}}
+                labelStyle={{textTransform: "capitalize"}}
+                onClick={this.stopFocusedCrawler.bind(this)}
+              />
+              <br/>
+              <RaisedButton
+                label="Click to open ACHE Interface"
+                style={{margin: 5}}
+                labelStyle={{textTransform: "capitalize"}}
+                href="http://localhost:8080/monitoring" target="_blank"
+              />
+
+            </div>
+            :
+            null
+          }
+        </div>
         </CardText>
         </Card>
         </Col>
@@ -399,7 +439,7 @@ class FocusedCrawling extends Component {
           <div>
           <IconMenu
            iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />}
-          
+
          >
            <MenuItem value="1" primaryText="Create Model" />
            <MenuItem value="2" primaryText="Settings" />

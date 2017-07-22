@@ -25,6 +25,8 @@ import SvgIcon from 'material-ui/SvgIcon';
 import AvStop from 'material-ui/svg-icons/av/stop';
 import { Col, Row} from 'react-bootstrap';
 import ActionAutorenew from 'material-ui/svg-icons/action/autorenew';
+import RaisedButton from 'material-ui/RaisedButton';
+
 //import {select} from 'd3-selection';
 //import cloud from 'd3-cloud';
 //import ReactFauxDom from 'react-faux-dom';
@@ -360,15 +362,25 @@ class TermsList extends Component {
 
           return (
                   <div>
-                  <div style={{fontSize: 10, height: '180px', overflowY: "scroll",}}>
+                  <div style={{fontSize: 10, height: '190px', overflowY: "scroll",}}>
                   <svg ref="svg_container"  width={this.props.width} height={this.state.listTerms.length*20}  style={{marginTop:4, cursor:'default',MozUserSelect:'none', WebkitUserSelect:'none',msUserSelect:'none'}} xmlns="http://www.w3.org/2000/svg">
                   {terms_array}
                   </svg>
                   </div>
-                  <div style={{ textAlign:"right", margin:"-20px 0px -10px 0px"}}>
+                  <div style={{ textAlign:"right", margin:"-10px 0px 0px 0px"}}>
+                  {
+                    this.props.fromCrawling?
+                    <RaisedButton disabled={false}
+                      style={{ backgroundColor: "#9575CD", height:24, marginRight: 8, padding:0, minWidth:85, width:85 ,}} labelStyle={{marginTop:2, fontSize:12, textTransform: "capitalize"}}
+                      buttonStyle={{backgroundColor: "#9575CD", height:23, margin:0, padding:0, minWidth:85, width:85,}}
+                      onTouchTap={this.handleOpenAddTerm.bind(this)}
+                      label="Add term" labelPosition="before" containerElement="label" />
+
+                    :
                   <IconButton tooltip="Add term" onTouchTap={this.handleOpenAddTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} >
                   <AddTermIcon color={"#9575CD"} />
                   </IconButton>
+                  }
                   <IconButton tooltip="Reload terms" onTouchTap={this.handleAutorenewTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} style={{marginLeft: "-20px"}}>
                   <ActionAutorenew color={"#9575CD"} />
                   </IconButton>
@@ -388,8 +400,8 @@ class TermsList extends Component {
                   <br />
                   </Dialog>
 		  </div>
-                     <Divider style={{margin:"10px 10px 10px 10px"}}/>
-                     <div style={{fontSize: 12, padding:10, height: '180px', overflowY: "scroll", borderTopColor:"#FFFFFF"}}>
+                     <Divider style={{margin:"15px 10px 10px 10px"}}/>
+                     <div style={{fontSize: 12, marginTop:4, adding:10, height: '145px', overflowY: "scroll", borderTopColor:"#FFFFFF"}}>
                        <TermsSnippetViewer term= {this.state.term} session={this.props.session} focusContext={this.state.focusContext} focusTermContext={this.state.focusTermContext}/>
                      </div>
                   </div>
