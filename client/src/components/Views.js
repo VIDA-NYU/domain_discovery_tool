@@ -782,9 +782,10 @@ class ViewTabSnippets extends React.Component{
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
-          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '100px' , height:"20"}}>
+          <div style={{float:"right", fontSize: "12px", fontWeight: "500", width: '100px' }}>
             <Select.Creatable
               placeholder="Add Tag"
+              className="menu-outer-top"
               multi={false}
               options={this.availableTags}
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
@@ -857,13 +858,14 @@ class ViewTabSnippets extends React.Component{
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
-            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px",marginRight:"20px", marginTop: "20px"}}>
+            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px",marginRight:"20px", marginTop: "20px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
               <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
               </div>
               <div style={{float:'right',width:'100px', marginRight: "5px"}}>
                 <Select.Creatable
                   placeholder="Add Tag"
+                  className="menu-outer-top"
                   multi={false}
                   options={this.availableTags}
                   onChange={this.addCustomTag.bind(this, this.currentUrls)}
