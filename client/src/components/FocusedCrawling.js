@@ -312,7 +312,9 @@ class FocusedCrawling extends Component {
                         </Row>:<div />;
 
 
-    var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session} focusedCrawlDomains={this.state.loadTerms}/>
+    var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false}
+                                                    BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}
+                                                    focusedCrawlDomains={this.state.loadTerms} fromCrawling={true}/>
     :<div>Save some positive tag.</div>;
 
     return (

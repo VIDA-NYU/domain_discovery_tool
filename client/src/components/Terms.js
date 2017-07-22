@@ -31,11 +31,12 @@ class Terms extends Component{
       listTerms: [],
       session:{},
       sessionString:"",
+      fromCrawling:false,
     };
   };
 
   componentWillMount = () => {
-   this.setState({expanded: this.props.statedCard, session:this.props.session, sessionString:JSON.stringify(this.props.session) });
+   this.setState({expanded: this.props.statedCard, session:this.props.session, sessionString:JSON.stringify(this.props.session) , fromCrawling:this.props.fromCrawling,});
    if(this.props.focusedCrawlDomains){
       this.loadTerms();
    }
@@ -140,7 +141,7 @@ class Terms extends Component{
         return <p>{w["word"]}</p>;
       });
     }
-    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)} loadTerms={this.loadTerms.bind(this)}></TermsList>:<CircularProgressSimple />;
+    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)} loadTerms={this.loadTerms.bind(this)} fromCrawling={this.state.fromCrawling} ></TermsList>:<CircularProgressSimple />;
     var avatarElement = (this.props.renderAvatar)?<Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />
     :null;
     return(
