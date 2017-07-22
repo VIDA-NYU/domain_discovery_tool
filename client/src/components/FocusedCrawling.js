@@ -286,7 +286,8 @@ class FocusedCrawling extends Component {
   }
   render() {
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
-                          <div style={{height:330, overflowY: "scroll", }}>
+                          <Row style={{height:330, overflowY: "scroll", }}>
+                          <Col xs={6} md={6} style={{marginTop:'2px'}}>
                           Positive
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
                           var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
@@ -296,6 +297,8 @@ class FocusedCrawling extends Component {
                             checkedTag=true;
                           return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
                           })}
+                          </Col>
+                          <Col xs={6} md={6} style={{marginTop:'2px'}}>
                           Negative
                             {Object.keys(this.state.currentTags).map((tag, index)=>{
                               var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
@@ -305,7 +308,8 @@ class FocusedCrawling extends Component {
                               checkedTag=true;
                                 return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
                               })}
-                        </div>:<div />;
+                          </Col>
+                        </Row>:<div />;
 
 
     var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false} BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session} focusedCrawlDomains={this.state.loadTerms}/>
@@ -317,7 +321,7 @@ class FocusedCrawling extends Component {
         <Col xs={11} md={11} style={{margin:'10px'}}>
         <Card id={"Settings"} initiallyExpanded={true} style={{paddingBottom:0,}} containerStyle={{paddingBottom:0,}} >
          <CardHeader
-           title="Settings"
+           title="Model Settings"
            actAsExpander={false}
            showExpandableButton={false}
            style={{fontWeight:'bold', padding:'10px 1px 10px 6px', borderRadius: '0px 0px 0px 0px',}}
@@ -327,7 +331,7 @@ class FocusedCrawling extends Component {
              <Col xs={7} md={7} style={{margin:0, padding:0,}}>
                <Card id={"Tags"} initiallyExpanded={true} style={styles.card}>
                 <CardHeader
-                  title="Tags"
+                  title="Select postive and negative examples."
                   actAsExpander={false}
                   showExpandableButton={false}
                   style={styles.cardHeader}
