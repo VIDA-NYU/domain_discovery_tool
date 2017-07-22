@@ -38,7 +38,7 @@ class DeepCrawling extends Component {
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
-      deepCrawlableUrls: [],	  
+      deepCrawlableUrls: [],
       deepCrawlableDomainsFromTag: [],
       resetSelection: false,
       openLoadURLs: false,
@@ -53,7 +53,7 @@ class DeepCrawling extends Component {
     this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
 
     this.changeMinURLCount = this.changeMinURLCount.bind(this);
-   
+
   }
 
   /**
@@ -64,12 +64,12 @@ class DeepCrawling extends Component {
     componentWillMount(){
       this.setState({session:this.props.session});
       this.forceUpdate();
-      var session = this.props.session;  
+      var session = this.props.session;
       session['newPageRetrievalCriteria'] = "one";
       session['pageRetrievalCriteria'] = "Tags";
       session['selected_tags']="Deep Crawl";
       session['pagesCap']=PAGE_COUNT;
-      this.getPages(session);      
+      this.getPages(session);
       this.getRecommendations();
   }
 
@@ -139,13 +139,13 @@ class DeepCrawling extends Component {
 	    if(this.state.deepCrawlableDomains.indexOf(this.state.recommendations[rowIndex][0]) === -1)
 		aux_deepCrawlableDomains.push(this.state.recommendations[rowIndex][0]);
 	});
-	
-	var session = this.props.session;  
+
+	var session = this.props.session;
 	session['newPageRetrievalCriteria'] = "one";
 	session['pageRetrievalCriteria'] = "TLDs";
-	session['selected_tlds']=aux_deepCrawlableDomains.join(",");      
+	session['selected_tlds']=aux_deepCrawlableDomains.join(",");
 	session['pagesCap']=PAGE_COUNT;
-	
+
 	$.post(
 	    '/getPages',
 	    {'session': JSON.stringify(session)},
@@ -155,8 +155,8 @@ class DeepCrawling extends Component {
 		this.forceUpdate();
 	    }.bind(this)
 	);
-	
-      
+
+
 	this.setState({
 	    deepCrawlableDomains: aux_deepCrawlableDomains.concat(this.state.deepCrawlableDomains),
 	    resetSelection: true
@@ -206,10 +206,10 @@ class DeepCrawling extends Component {
     startDeepCrawler(event) {
 	if(this.state.deepCrawlableUrls.length > 0)
     	    this.setDeepcrawlTagtoPages(this.state.deepCrawlableUrls);
-	
+
 	this.startCrawler("deep", this.state.deepCrawlableDomainsFromTag.concat(this.state.deepCrawlableDomains));
     }
-    
+
    startCrawler(type, seeds){
     var session = this.state.session;
     var message = "Running";
@@ -284,7 +284,7 @@ class DeepCrawling extends Component {
 		this.setState({
 		    deepCrawlableDomainsFromTag: this.state.deepCrawlableDomainsFromTag,
 		    deepCrawlableDomains: [],
-		    deepCrawlableUrls: []		    
+		    deepCrawlableUrls: []
 		});
 	    }
 	).fail((error) => {
@@ -480,6 +480,12 @@ class DeepCrawling extends Component {
                 style={{margin: 12}}
                 onClick={this.stopDeepCrawler}
               />
+              <RaisedButton
+                label="Click to open ACHE Interface"
+                style={{margin: 12}}
+                href="http://localhost:8080/monitoring" target="_blank"
+              />
+
             </div>
             :
             null
