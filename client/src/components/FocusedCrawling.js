@@ -3,16 +3,32 @@ import { Col, Row} from 'react-bootstrap';
 // From https://github.com/oliviertassinari/react-swipeable-views
 import Terms from './Terms';
 import ScaleBar from './ScaleBar';
+import { InputGroup, FormControl , DropdownButton} from 'react-bootstrap';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconMenu from 'material-ui/IconMenu';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
+import IconButton from 'material-ui/IconButton';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
 import MenuItem from 'material-ui/MenuItem';
+import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
+import Monitoring from './Monitoring.js';
 import Dialog from 'material-ui/Dialog';
+import {
+  Table,
+  TableBody,
+  TableFooter,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
+
 import $ from 'jquery';
+
 
 const styles = {
 
@@ -74,15 +90,12 @@ class FocusedCrawling extends Component {
   * @param
   */
   componentWillMount(){
-      var session = this.props.session;
-      session['model'] = {};
-      this.setState({session: session});
-      this.forceUpdate();
-
-      this.getAvailableTags(session);
+      var temp_session = this.props.session;
+      this.getAvailableTags(this.props.session);
       this.getModelTags(this.props.domainId);
-  }
 
+
+  }
   componentWillReceiveProps  = (newProps, nextState) => {
 
   }
@@ -92,6 +105,7 @@ class FocusedCrawling extends Component {
   }
 
   loadingTerms(session, selectedPosTags){
+
       var temp_session = session;
       temp_session['newPageRetrievalCriteria'] = "one";
       temp_session['pageRetrievalCriteria'] = "Tags";
@@ -126,35 +140,37 @@ class FocusedCrawling extends Component {
             if(Object.keys(tags).length > 0){
 		session['model']['positive'] = tags['positive'].slice();
 		session['model']['negative'] = tags['negative'].slice();
-		
+
 		//setting session info for generating terms.
 		session['newPageRetrievalCriteria'] = "one";
 		session['pageRetrievalCriteria'] = "Tags";
 		session['selected_tags']=(tags['positive'].slice()).join(',');
-		
+
 		this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
 		this.forceUpdate();
-		
+
             }
             else {if(!(session['model']['positive'].length>0)){
-		this.setState({openDialog:true , loadTerms:false,});
+		this.setState({loadTerms:false,});
 		this.forceUpdate();
             }}
-	    
+
 	}.bind(this)
     );
   }
 
   handleSaveTags() {
-    var session = this.state.session;
+    var session = this.props.session;
+    console.log(session['model']);
     session['model']['positive'] = this.state.selectedPosTags.slice();
     session['model']['negative'] = this.state.selectedNegTags.slice();
-    //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),})
+    //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    console.log(session['model']['positive'].length);
     if(session['model']['positive'].length>0 ){
       this.loadingTerms(session, this.state.selectedPosTags);
     }
     else{
-      this.setState({openDialog:true});
+      this.setState({openDialog:true, loadTerms:false});
     }
     this.updateOnlineClassifier(session);
 
@@ -227,7 +243,7 @@ class FocusedCrawling extends Component {
 
     $.post(
         '/startCrawler',
-        {'session': JSON.stringify(session),'type': type, 'terms': terms.join('|')},
+        {'session': JSON.stringify(session),'type': type },
         function(message) {
           var disableStopCrawlerFlag = false;
           var disableAcheInterfaceFlag = false;
@@ -407,9 +423,11 @@ class FocusedCrawling extends Component {
         />
         <CardText expandable={true} >
         <div style={{display: 'flex'}}>
+        <div>
           <RaisedButton
             label="Start Crawler"
             style={{margin: 5}}
+            disable={this.state.disabledStartCrawler}
             labelStyle={{textTransform: "capitalize"}}
             style={
                     this.state.disabledStartCrawler ?
@@ -419,10 +437,10 @@ class FocusedCrawling extends Component {
                   }
             onClick={this.startFocusedCrawler.bind(this)}
           />
-
+          </div>
           {
             this.state.disabledStartCrawler ?
-            <div>
+            <div style={{float:'right'}}>
               <RaisedButton
                 label="Stop Crawler"
                 style={{margin: 5,}}
