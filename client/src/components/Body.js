@@ -23,6 +23,7 @@ import Subheader from 'material-ui/Subheader';
 
 const styles = {
   button:{
+    //hoverColor:"#9c9ca4"
     marginTop:20,
     paddingBottom:'-145px',
     marginBottom:'-545px',
@@ -304,7 +305,7 @@ class Body extends Component{
               <Terms statedCard={this.state.stateTermsCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} BackgroundColorTerm={'#DCCCE7'} renderAvatar={true} showExpandableButton={true} actAsExpander={true}/>
             </Row>
             <Row className="Menus-child">
-              <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
+              <FloatingActionButton mini={true}  style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
                 <Plus />
               </FloatingActionButton>
             </Row>

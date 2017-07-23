@@ -343,16 +343,17 @@ render() {
           />
         </Col>
         </Row>
-        <Row style={{textAlign: "left"}}> Or </Row>
-        <Row>
-        <RaisedButton
-          disabled={false}
-          style={{ height:20, marginTop: 15}}
-          labelStyle={{textTransform: "capitalize", fontWeight:"bold", fontSize:14,}}
-          buttonStyle={{height:19}}
-          label="Run multiple queries"
-          onClick={this.handleOpenDialogLoadMultiQueries.bind(this)}
-          />
+        <Row style={{marginLeft:0, marginTop:20, extAlign: "left"}}> Or </Row>
+        <Row style={{marginLeft:0, marginTop:20,}}>
+
+        <FlatButton style={{height:35, marginTop: 0}}
+        buttonStyle={{height:35}}
+        labelStyle={{textTransform: "capitalize", fontSize:14, color:"white", fontWeight:"normal"}}
+        backgroundColor="#26C6DA"
+        hoverColor="#80DEEA"
+        label="Run multiple queries"
+        onClick={this.handleOpenDialogLoadMultiQueries.bind(this)}
+        />
         </Row>
 
         <Dialog title="Run multiples queries" actions={actionsLoadMultiQueries} modal={false} open={this.state.openDialogLoadMultiQueries} onRequestClose={this.handleCloseDialogLoadMultiQueries.bind(this)}>
@@ -426,7 +427,7 @@ render() {
 
         <Col xs={10} md={10} style={{marginLeft:'-15px'}} >
         <InputGroup >
-        <FormControl style={{width: '268px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
+        <FormControl style={{width: '258px'}} type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.runSeedFinderQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} />
         </InputGroup>
         </Col>
         <Col xs={2} md={1} >
