@@ -313,6 +313,8 @@ class FocusedCrawling extends Component {
   render() {
     var total_selectedPosTags=0;
     var total_selectedNegTags=0;
+    var ratioPosNeg =0;
+    var ratioAccuracy=0;
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
                           <Row style={{height:330, overflowY: "scroll", }}>
                           <Col xs={6} md={6} style={{marginTop:'2px'}}>
@@ -343,7 +345,8 @@ class FocusedCrawling extends Component {
                           </Col>
                         </Row>:<div />;
 
-
+    ratioPosNeg = total_selectedPosTags/total_selectedNegTags;
+    ratioAccuracy = ratioPosNeg*this.state.accuracyOnlineLearning;
     var DialogBox= <RaisedButton disabled={false} onTouchTap={this.handlecloseDialog.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
       label="Close" labelPosition="before" containerElement="label" />;
     var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false}
@@ -451,39 +454,29 @@ class FocusedCrawling extends Component {
         </Card>
         </Col>
 
-        <Col xs={6} md={6} style={{margin:'10px'}}>
-        <Card id={"Model"} initiallyExpanded={true}  style={{marginTop:"-15px",}}>
+        <Col xs={6} md={6} style={{margin:'10px', marginLeft:"-10px",}}>
+        <Card id={"Model"} initiallyExpanded={true} >
          <CardHeader
            title="Model"
            actAsExpander={false}
            showExpandableButton={false}
-           style={{fontWeight:'bold',}}
+           style={{fontWeight:'bold'}}
          />
-         <CardText expandable={true} >
-           <List>
-            <Subheader>Details</Subheader>
-            <ListItem>
+         <CardText expandable={true} style={{marginTop:"-12px", paddingTop:0,}}>
             <p><span style={{marginRight:10,}}>Relevant: </span>{total_selectedPosTags} </p>
             <p><span style={{marginRight:10,}}>Irrelevant: </span>{total_selectedNegTags} </p>
             <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
-            </ListItem>
             <Divider />
-            <ScaleBar/>
-            </List>
-
-
-          <div>
-          <IconMenu
-           iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />}
-
-         >
-           <MenuItem value="1" primaryText="Create Model" />
-           <MenuItem value="2" primaryText="Settings" />
-         </IconMenu>
-
-
-      </div>
-
+            <div style={{marginLeft:10, marginTop:10,}}>
+              <ScaleBar ratioAccuracy={ratioAccuracy}/>
+            </div>
+            <div style={{marginTop:"-20px",}}>
+              <IconMenu
+               iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />} >
+               <MenuItem value="1" primaryText="Create Model" />
+               <MenuItem value="2" primaryText="Settings" />
+             </IconMenu>
+            </div>
          </CardText>
          </Card>
         </Col>

@@ -10,6 +10,7 @@ class ScaleBar extends React.Component{
   }
 
   render(){
+    var ratioAccuracy = this.props.ratioAccuracy;
     return(
       <svg width="360" height="100" viewBox="0 0 460 100" fill="none">
   <g transform="translate(0,10)" font-size="10" font-family="sans-serif" text-anchor="middle">
@@ -24,7 +25,7 @@ class ScaleBar extends React.Component{
     <g transform="translate(80,0)">
       <text fill="#000" y="16" x="0.5" dy="0.71em">Fair</text>
     </g>
-    <g transform="translate(150,0)">
+    <g transform={`translate(${ratioAccuracy},0)`}>
       <line stroke="#000" y2="13" x1="0.5" x2="0.5"></line>
     </g>
     <g transform="translate(140,0)">
