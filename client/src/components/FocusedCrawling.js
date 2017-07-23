@@ -292,17 +292,21 @@ class FocusedCrawling extends Component {
     });
   }
   render() {
+    var total_selectedPosTags=0;
+    var total_selectedNegTags=0;
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
                           <Row style={{height:330, overflowY: "scroll", }}>
                           <Col xs={6} md={6} style={{marginTop:'2px'}}>
                           Positive
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
-                          var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
-                          var checkedTag=false;
-                          var tags = this.state.selectedPosTags;
-                          if(tags.includes(tag))
-                            checkedTag=true;
-                          return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
+                            var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
+                            var checkedTag=false;
+                            var tags = this.state.selectedPosTags;
+                            if(tags.includes(tag)){
+                                checkedTag=true;
+                                total_selectedPosTags=total_selectedPosTags +this.state.currentTags[tag];
+                            }
+                            return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
                           })}
                           </Col>
                           <Col xs={6} md={6} style={{marginTop:'2px'}}>
@@ -311,9 +315,11 @@ class FocusedCrawling extends Component {
                               var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                               var checkedTag=false;
                               var tags = this.state.selectedNegTags;
-                              if(tags.includes(tag))
-                              checkedTag=true;
-                                return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
+                              if(tags.includes(tag)){
+                                checkedTag=true;
+                                total_selectedNegTags=total_selectedNegTags+this.state.currentTags[tag];
+                              }
+                              return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
                               })}
                           </Col>
                         </Row>:<div />;
@@ -437,9 +443,9 @@ class FocusedCrawling extends Component {
            <List>
             <Subheader>Details</Subheader>
             <ListItem>
-            <p><span>Relevant:</span> 20 </p>
-            <p><span>Irrelevant:</span> 20 </p>
-            <p><span>Domain Model:</span> 20 </p>
+            <p><span style={{marginRight:10,}}>Relevant: </span>{total_selectedPosTags} </p>
+            <p><span style={{marginRight:10,}}>Irrelevant: </span>{total_selectedNegTags} </p>
+            <p><span>Domain Model: </span> 20 </p>
             </ListItem>
             <Divider />
             <ScaleBar/>
