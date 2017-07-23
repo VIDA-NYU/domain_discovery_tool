@@ -151,7 +151,7 @@ class FocusedCrawling extends Component {
 
             }
             else {if(!(session['model']['positive'].length>0)){
-		this.setState({openDialog:true , loadTerms:false,});
+		this.setState({loadTerms:false,});
 		this.forceUpdate();
             }}
 
@@ -160,7 +160,8 @@ class FocusedCrawling extends Component {
   }
 
   handleSaveTags() {
-    var session = this.state.session;
+    var session = this.props.session;
+    console.log(session['model']);
     session['model']['positive'] = this.state.selectedPosTags.slice();
     session['model']['negative'] = this.state.selectedNegTags.slice();
     //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
@@ -169,7 +170,7 @@ class FocusedCrawling extends Component {
       this.loadingTerms(session, this.state.selectedPosTags);
     }
     else{
-      this.setState({openDialog:true});
+      this.setState({openDialog:true, loadTerms:false});
     }
     this.updateOnlineClassifier(session);
 
