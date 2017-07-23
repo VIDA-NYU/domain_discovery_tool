@@ -90,11 +90,14 @@ class DeepCrawling extends Component {
 	    '/getRecommendations',
 	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 3 },
 	    (response) => {
-    		this.setState({
-    		    recommendations: Object.keys(response || {})
-                              .map(reco => [reco, response[reco]])
-                              .sort((a, b) => (b[1] - a[1]))
-  		})
+		var recommendations = Object.keys(response || {})
+                    .map(reco => [reco, response[reco]])
+                    .sort((a, b) => {
+			if(b[1]['score'] === undefined)
+			    return (b[1]['count'] - a[1]['count']);
+			else return (b[1]['score'] - a[1]['score']);
+		    });
+    		this.setState({recommendations: recommendations})
   	    }
   	).fail((error) => {
   	    console.log('getRecommendations FAILED ', error);
