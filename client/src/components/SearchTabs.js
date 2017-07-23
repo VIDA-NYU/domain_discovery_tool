@@ -280,7 +280,7 @@ class SearchTabs extends React.Component {
       array_valueLoadMultiQueriesFromTextField.forEach((value) => {
         array_queries.push(value);
       });
-      if(array_queries.length>0) this.runMutipleQuery(array_queries,"");
+      if(array_queries.length>0) this.runMutipleQuery(array_queries,"",1);
       this.setState({
         array_queries:[],
         valueLoadMultiQueriesFromTextField:"",
@@ -289,25 +289,31 @@ class SearchTabs extends React.Component {
     }
 
     //Loop over the list of terms.
-    runMutipleQuery(queries, previous_valueQuery){
+    //updateView=1; //the view will be update just one time (with the fisrt query.)
+    runMutipleQuery(queries, previous_valueQuery, updateView){
       var valueQuery = queries[queries.length-1];
       queries.pop();
       //Submits a web query for a list of terms, e.g. 'ebola disease'
         var session =this.props.session;
         session['search_engine']=this.state.search_engine;
+        var concat_valueQuery = (previous_valueQuery!=='')?previous_valueQuery:valueQuery;
+        //var concat_valueQuery = (previous_valueQuery!=='')? previous_valueQuery+ "," + valueQuery :valueQuery;
+        //this.props.getQueryPages(concat_valueQuery);
         session = this.resetAllFilters(session);
-        var concat_valueQuery = (previous_valueQuery!=='')? previous_valueQuery+ "," + valueQuery :valueQuery;
         this.props.getQueryPages(concat_valueQuery);
+
+        updateView=updateView+1;
         $.post(
           '/queryWeb',
           {'terms': valueQuery,  'session': JSON.stringify(session)},
           function(data) {
               this.props.queryPagesDone();
               this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" is completed');
-              if(queries.length>0) this.runMutipleQuery(queries, concat_valueQuery);
+
+              if(queries.length>0) this.runMutipleQuery(queries, concat_valueQuery, updateView);
           }.bind(this)).fail(function() { console.log("Something is wrong. Try again.");
                                           this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" has failed');
-                                          if(queries.length>0) this.runMutipleQuery(queries, previous_valueQuery);
+                                          if(queries.length>0) this.runMutipleQuery(queries, previous_valueQuery, updateView);
                                         }.bind(this));
           this.props.updateStatusMessage(true, 'Searching: Web query "' + valueQuery + '"');
     }
