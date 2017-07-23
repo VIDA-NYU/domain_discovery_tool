@@ -45,7 +45,7 @@ class CrawlingView extends Component {
       resetSelection: false,
       openLoadURLs: false,
       session:{},
-
+      crawlerServers: {},
     };
 
   }
@@ -92,6 +92,7 @@ class CrawlingView extends Component {
   componentWillMount(){
       var temp_session = this.createSession(this.props.domainId);
       this.setState({session: temp_session});
+      this.getCrawlerServers();
   }
 
   handleChange = (value) => {
@@ -102,6 +103,20 @@ class CrawlingView extends Component {
     });
   }
 
+  getCrawlerServers(){
+      $.post(
+	  '/getCrawlerServers',
+	  {},
+	  (crawlerServers) => {
+	      console.log("CRAWLER SERVERS");
+	      console.log(crawlerServers);
+    	      this.setState({crawlerServers: crawlerServers});
+	      this.forceUpdate();
+  	    }
+  	).fail((error) => {
+  	    console.log('getCrawlerServers FAILED ', error);
+  	});
+  }
   render() {
     return (
       <div style={styles.content}>
@@ -116,11 +131,11 @@ class CrawlingView extends Component {
         </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
         <div id={"deep-crawling"} style={styles.slide}>
-          <DeepCrawling domainId={this.props.domainId} session={this.state.session}/>
+            <DeepCrawling domainId={this.props.domainId} session={this.state.session} crawlerServers={this.state.crawlerServers}/>
         </div>
 
         <div id="focused-crawling" style={styles.slide}>
-          <FocusedCrawling domainId={this.props.domainId}  session={this.state.session} slideIndex={this.state.slideIndex}/>
+          <FocusedCrawling domainId={this.props.domainId}  session={this.state.session}  crawlerServers={this.state.crawlerServers} slideIndex={this.state.slideIndex}/>
         </div>
 
         </SwipeableViews>
