@@ -76,6 +76,8 @@ class FocusedCrawling extends Component {
       open:false,
       openDialog:false,
       anchorEl:undefined,
+      termsList: [],
+      accuracyOnlineLearning:0,
     };
 
   }
@@ -113,8 +115,6 @@ class FocusedCrawling extends Component {
   }
 
   updateTerms(terms){
-      console.log("TERMS LIST");
-      console.log(terms);
       this.setState({termsList: terms});
   }
 
@@ -134,30 +134,28 @@ class FocusedCrawling extends Component {
       '/getModelTags',
       {'domainId': domainId},
 	function(tags){
-	    console.log(tags);
-      var session = this.props.session;
-      session['model']['positive'] = [];
-      session['model']['negative'] = [];
-        if(Object.keys(tags).length > 0){
-          console.log(tags);
-          session['model']['positive'] = tags['positive'].slice();
-          session['model']['negative'] = tags['negative'].slice();
+	    var session = this.props.session;
+	    session['model']['positive'] = [];
+	    session['model']['negative'] = [];
+            if(Object.keys(tags).length > 0){
+		session['model']['positive'] = tags['positive'].slice();
+		session['model']['negative'] = tags['negative'].slice();
 
-          //setting session info for generating terms.
-          session['newPageRetrievalCriteria'] = "one";
-          session['pageRetrievalCriteria'] = "Tags";
-          session['selected_tags']=(tags['positive'].slice()).join(',');
+		//setting session info for generating terms.
+		session['newPageRetrievalCriteria'] = "one";
+		session['pageRetrievalCriteria'] = "Tags";
+		session['selected_tags']=(tags['positive'].slice()).join(',');
 
-          this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
-          this.forceUpdate();
+		this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
+		this.forceUpdate();
 
-        }
-        else {if(!(session['model']['positive'].length>0)){
-            this.setState({openDialog:true , loadTerms:false,});
-            this.forceUpdate();
-        }}
+            }
+            else {if(!(session['model']['positive'].length>0)){
+		this.setState({openDialog:true , loadTerms:false,});
+		this.forceUpdate();
+            }}
 
-      }.bind(this)
+	}.bind(this)
     );
   }
 
@@ -169,9 +167,10 @@ class FocusedCrawling extends Component {
     if(session['model']['positive'].length>0 ){
       this.loadingTerms(session, this.state.selectedPosTags);
     }
-      else{
-        this.setState({openDialog:true});
-      }
+    else{
+      this.setState({openDialog:true});
+    }
+    this.updateOnlineClassifier(session);
 
 
       $.post(
@@ -190,7 +189,7 @@ class FocusedCrawling extends Component {
   }
 
   addPosTags(tag){
-    var tags = this.state.selectedPosTags;
+      var tags = this.state.selectedPosTags;
     if(tags.includes(tag)){
       var index = tags.indexOf(tag);
       tags.splice(index, 1);
@@ -226,6 +225,20 @@ class FocusedCrawling extends Component {
     var message = "Running";
     this.setState({disableAcheInterfaceSignal:false, disableStopCrawlerSignal:false, disabledStartCrawler:true, messageCrawler:message});
     this.forceUpdate();
+
+    var terms = [];
+    var pos_terms = [];
+    terms = pos_terms = this.state.termsList.map((term)=>{
+	if(term['tags'].indexOf('Positive') !== -1)
+	    return term['word'];
+    }).filter((term)=>{return term !== undefined});
+
+    if(pos_terms.length === 0){
+	terms = this.state.termsList.map((term)=>{
+	    return term['word']
+	});
+    }
+
     $.post(
         '/startCrawler',
         {'session': JSON.stringify(session),'type': type },
@@ -286,18 +299,41 @@ class FocusedCrawling extends Component {
       openMenu: value,
     });
   }
+
+
+  //////////////////////
+  /////////////////////
+  updateOnlineClassifier(sessionTemp){
+    console.log(" ONLINE CLASSIFIER");
+    $.post(
+      '/updateOnlineClassifier',
+      {'session':  JSON.stringify(sessionTemp)},
+      function(accuracy) {
+          this.setState({accuracyOnlineLearning:accuracy,});
+          this.forceUpdate();
+    }.bind(this)
+    );
+  }
+///////////////////////
+//////////////////////
   render() {
+    var total_selectedPosTags=0;
+    var total_selectedNegTags=0;
+    var ratioPosNeg =0;
+    var ratioAccuracy=0;
     var checkedTagsPosNeg = (this.state.currentTags!==undefined) ?
                           <Row style={{height:330, overflowY: "scroll", }}>
                           <Col xs={6} md={6} style={{marginTop:'2px'}}>
                           Positive
                           {Object.keys(this.state.currentTags).map((tag, index)=>{
-                          var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
-                          var checkedTag=false;
-                          var tags = this.state.selectedPosTags;
-                          if(tags.includes(tag))
-                            checkedTag=true;
-                          return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
+                            var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
+                            var checkedTag=false;
+                            var tags = this.state.selectedPosTags;
+                            if(tags.includes(tag)){
+                                checkedTag=true;
+                                total_selectedPosTags=total_selectedPosTags +this.state.currentTags[tag];
+                            }
+                            return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addPosTags.bind(this,tag)} />
                           })}
                           </Col>
                           <Col xs={6} md={6} style={{marginTop:'2px'}}>
@@ -306,13 +342,17 @@ class FocusedCrawling extends Component {
                               var labelTags=  tag+" (" +this.state.currentTags[tag]+")";
                               var checkedTag=false;
                               var tags = this.state.selectedNegTags;
-                              if(tags.includes(tag))
-                              checkedTag=true;
-                                return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
+                              if(tags.includes(tag)){
+                                checkedTag=true;
+                                total_selectedNegTags=total_selectedNegTags+this.state.currentTags[tag];
+                              }
+                              return <Checkbox label={labelTags} checked={checkedTag}  onClick={this.addNegTags.bind(this,tag)} />
                               })}
                           </Col>
                         </Row>:<div />;
 
+    ratioPosNeg = total_selectedPosTags/total_selectedNegTags;
+    ratioAccuracy = ratioPosNeg*this.state.accuracyOnlineLearning;
     var DialogBox= <RaisedButton disabled={false} onTouchTap={this.handlecloseDialog.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
       label="Close" labelPosition="before" containerElement="label" />;
     var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false}
@@ -405,7 +445,7 @@ class FocusedCrawling extends Component {
               />
               <br/>
               <RaisedButton
-                label="Click to open ACHE Interface"
+                label="Crawler Monitor"
                 style={{margin: 5}}
                 labelStyle={{textTransform: "capitalize"}}
                 href="http://localhost:8080/monitoring" target="_blank"
@@ -420,39 +460,29 @@ class FocusedCrawling extends Component {
         </Card>
         </Col>
 
-        <Col xs={6} md={6} style={{margin:'10px'}}>
+        <Col xs={6} md={6} style={{margin:'10px', marginLeft:"-10px",}}>
         <Card id={"Model"} initiallyExpanded={true} >
          <CardHeader
            title="Model"
            actAsExpander={false}
            showExpandableButton={false}
-           style={{fontWeight:'bold',}}
+           style={{fontWeight:'bold'}}
          />
-         <CardText expandable={true} >
-           <List>
-            <Subheader>Details</Subheader>
-            <ListItem>
-            <p><span>Relevant:</span> 20 </p>
-            <p><span>Irrelevant:</span> 20 </p>
-            <p><span>Domain Model:</span> 20 </p>
-            </ListItem>
+         <CardText expandable={true} style={{marginTop:"-12px", paddingTop:0,}}>
+            <p><span style={{marginRight:10,}}>Relevant: </span>{total_selectedPosTags} </p>
+            <p><span style={{marginRight:10,}}>Irrelevant: </span>{total_selectedNegTags} </p>
+            <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
             <Divider />
-            <ScaleBar/>
-            </List>
-
-
-          <div>
-          <IconMenu
-           iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />}
-
-         >
-           <MenuItem value="1" primaryText="Create Model" />
-           <MenuItem value="2" primaryText="Settings" />
-         </IconMenu>
-
-
-      </div>
-
+            <div style={{marginLeft:10, marginTop:10,}}>
+              <ScaleBar ratioAccuracy={ratioAccuracy}/>
+            </div>
+            <div style={{marginTop:"-20px",}}>
+              <IconMenu
+               iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />} >
+               <MenuItem value="1" primaryText="Create Model" />
+               <MenuItem value="2" primaryText="Settings" />
+             </IconMenu>
+            </div>
          </CardText>
          </Card>
         </Col>

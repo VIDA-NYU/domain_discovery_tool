@@ -34,7 +34,7 @@ class DeepCrawling extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       recommendations: [],
-      minURLCount: 3,
+      minURLCount: 10,
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -88,13 +88,20 @@ class DeepCrawling extends Component {
     getRecommendations() {
   	$.post(
 	    '/getRecommendations',
-	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 3 },
+	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 10},
 	    (response) => {
-    		this.setState({
-    		    recommendations: Object.keys(response || {})
-                              .map(reco => [reco, response[reco]])
-                              .sort((a, b) => (b[1] - a[1]))
-  		})
+		var recommendations = Object.keys(response || {})
+                    .map(reco => [reco, response[reco]])
+                    .sort((a, b) => {
+			if(b[1]['score'] === undefined)
+			    return (b[1]['count'] - a[1]['count']);
+			else {
+			    if(parseFloat(b[1]['score'].toFixed(3)) === parseFloat(a[1]['score'].toFixed(3)))
+				return (b[1]['count'] - a[1]['count']);				
+			    else return (b[1]['score'] - a[1]['score']);
+			};
+		    });
+    		this.setState({recommendations: recommendations})
   	    }
   	).fail((error) => {
   	    console.log('getRecommendations FAILED ', error);
@@ -481,7 +488,7 @@ class DeepCrawling extends Component {
                 onClick={this.stopDeepCrawler}
               />
               <RaisedButton
-                label="Click to open ACHE Interface"
+                label="Crawler Monitor"
                 style={{margin: 12}}
                 href="http://localhost:8080/monitoring" target="_blank"
               />
@@ -514,7 +521,7 @@ class DeepCrawling extends Component {
          <CardText expandable={false} >
             <MultiselectTable
               rows={this.state.recommendations}
-              columnHeadings={["DOMAIN", "COUNT"]}
+              columnHeadings={["DOMAIN", "SCORE, COUNT"]}
               onRowSelection={this.addDomainsOnSelection}
               resetSelection={this.state.resetSelection}
             />
