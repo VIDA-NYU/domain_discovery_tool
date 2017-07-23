@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import ReactPaginate from 'react-paginate';
+
 import Checkbox from 'material-ui/Checkbox';
 import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
          TableRow, TableRowColumn } from 'material-ui/Table';
@@ -13,16 +15,26 @@ class MultiselectTable extends Component {
     super(props);
     this.state = {
       selectedRows: [],
-      selectAll: false
+      selectAll: false,
+      pageCount: (props.rows || [])/10,
+      currentPage: 0
     }
 
+
+    this.perPage = 100;
     this.toggleSelectOrDeselectAll = this.toggleSelectOrDeselectAll.bind(this);
     this.onRowSelection = this.onRowSelection.bind(this);
+
+    this.toggleRowSelection = this.toggleRowSelection.bind(this);
+
+    this.changeTableOffset = this.changeTableOffset.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.resetSelection) {
-      this.setState({selectedRows: [], selectAll: false});
+      this.setState({selectedRows: [], selectAll: false, pageCount: (nextProps.rows.length/10)});
+    } else {
+      this.setState({pageCount: (nextProps.rows.length/10)})
     }
   }
 
@@ -56,6 +68,24 @@ class MultiselectTable extends Component {
     this.props.onRowSelection && this.props.onRowSelection(selectedRows);
   }
 
+  toggleRowSelection(event) {
+    var selectedRows = this.state.selectedRows;
+    var rowId = event.target.id.split("-")[1];
+    if(event.target.checked)
+      selectedRows.push(parseInt(rowId));
+    else
+      selectedRows.splice(selectedRows.indexOf(parseInt(rowId)), 1);
+
+    this.setState({selectedRows, selectAll: false});
+
+    this.props.onRowSelection && this.props.onRowSelection(selectedRows);
+  }
+
+  changeTableOffset(page) {
+    this.setState({
+      currentPage: page.selected
+    });
+  }
 
   render() {
     return (
@@ -64,8 +94,8 @@ class MultiselectTable extends Component {
           height={"390px"}
           fixedHeader={true}
           fixedFooter={true}
-          selectable={true}
-          multiSelectable={true}
+          selectable={false}
+          multiSelectable={false}
           onRowSelection={this.onRowSelection}
           style={{width:700}}
         >
@@ -96,22 +126,44 @@ class MultiselectTable extends Component {
             </TableRow>
         </TableHeader>
         <TableBody
-          displayRowCheckbox={true}
+          displayRowCheckbox={false}
           deselectOnClickaway={false}
           showRowHover={true}
           stripedRows={false}
         >
           {
-            this.props.rows.map((row, index) =>
-              <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
-		<TableRowColumn>{row[0]}</TableRowColumn>
-		<TableRowColumn>{(row[1]['score'] === undefined)? '1, '+row[1]['count']: row[1]['score'].toFixed(3)+', '+row[1]['count']}</TableRowColumn>
+            this.props.rows.slice(this.state.currentPage*this.perPage, (this.state.currentPage+1)*this.perPage).map((row, index) =>
+              <TableRow key={row[0]}>
+                <TableRowColumn colSpan="1">
+                  <Checkbox
+                    id={"recommendations-" + (this.state.currentPage*this.perPage + index)}
+                    checked={(this.state.selectedRows || []).indexOf(this.state.currentPage*this.perPage + index) !== -1}
+                    onCheck={this.toggleRowSelection}
+                  />
+                </TableRowColumn>
+		             <TableRowColumn colSpan="7">{row[0]}</TableRowColumn>
+		             <TableRowColumn colSpan="7">{(row[1]['score'] === undefined)? '1, '+row[1]['count']: row[1]['score'].toFixed(3)+', '+row[1]['count']}</TableRowColumn>
               </TableRow>
             )
           }
         </TableBody>
         <TableFooter adjustForCheckbox={true} />
       </Table>
+      <div style={{float: 'right', marginTop: '-12px'}}>
+        <ReactPaginate
+          previousLabel={"previous"}
+          nextLabel={"next"}
+          initialPage={0}
+          breakLabel={<a >...</a>}
+          breakClassName={"break-me"}
+          pageCount={(this.props.rows || []).length/this.perPage}
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={1}
+          onPageChange={this.changeTableOffset}
+          containerClassName={"pagination"}
+          subContainerClassName={"pages pagination"}
+          activeClassName={"active"} />
+        </div>
       </div>
     )
   }
