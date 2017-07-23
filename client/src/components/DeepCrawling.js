@@ -34,7 +34,7 @@ class DeepCrawling extends Component {
       disabledCreateModel:true, //false
       messageCrawler:"",
       recommendations: [],
-      minURLCount: 3,
+      minURLCount: 10,
       pages:{},
       openDialogLoadUrl: false,
       deepCrawlableDomains: [],
@@ -88,7 +88,7 @@ class DeepCrawling extends Component {
     getRecommendations() {
   	$.post(
 	    '/getRecommendations',
-	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 3 },
+	    { session: JSON.stringify(this.props.session), minCount: this.state.minURLCount || 10},
 	    (response) => {
 		var recommendations = Object.keys(response || {})
                     .map(reco => [reco, response[reco]])
@@ -488,7 +488,7 @@ class DeepCrawling extends Component {
                 onClick={this.stopDeepCrawler}
               />
               <RaisedButton
-                label="Click to open ACHE Interface"
+                label="Crawler Monitor"
                 style={{margin: 12}}
                 href="http://localhost:8080/monitoring" target="_blank"
               />
