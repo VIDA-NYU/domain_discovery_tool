@@ -431,7 +431,7 @@ class FocusedCrawling extends Component {
               />
               <br/>
               <RaisedButton
-                label="Click to open ACHE Interface"
+                label="Crawler Monitor"
                 style={{margin: 5}}
                 labelStyle={{textTransform: "capitalize"}}
                 href="http://localhost:8080/monitoring" target="_blank"
