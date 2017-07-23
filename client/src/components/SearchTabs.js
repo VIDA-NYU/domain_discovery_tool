@@ -113,21 +113,21 @@ class SearchTabs extends React.Component {
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
     runSeedFinderQuery(){
-	var session =this.props.session;
-	session['search_engine']=this.state.search_engine;
-	$.post(
-            '/runSeedFinder',
-            {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
-            function(data) {
-		setTimeout(function(){
-		    this.props.queryPagesDone();
-		    this.props.updateStatusMessage(false, 'Searching: SeedFinder query "' + this.state.valueQuery + '" has completed' );
-		}.bind(this), 9000);
-            }.bind(this)).fail(function() {
-		console.log("Something is wrong. Try again.");
-		this.props.updateStatusMessage(false, 'Searching: SeedFinder query "'+this.state.valueQuery+ '" has failed');
-            }.bind(this));
-	this.props.updateStatusMessage(true, 'Searching: SeedFinder query "'+this.state.valueQuery+'". Check status in process monitor.');
+    	var session =this.props.session;
+    	session['search_engine']=this.state.search_engine;
+    	$.post(
+          '/runSeedFinder',
+          {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
+          function(data) {
+    		      setTimeout(function(){
+    		          this.props.queryPagesDone();
+    		          this.props.updateStatusMessage(false, 'Searching: SeedFinder query "' + this.state.valueQuery + '" has completed' );
+    		      }.bind(this), 9000);
+          }.bind(this)).fail(function() {
+    		  console.log("Something is wrong. Try again.");
+    		  this.props.updateStatusMessage(false, 'Searching: SeedFinder query "'+this.state.valueQuery+ '" has failed');
+          }.bind(this));
+    	this.props.updateStatusMessage(true, 'Searching: SeedFinder query "'+this.state.valueQuery+'". Check status in process monitor.');
     }
 
     // Download the pages of uploaded urls
@@ -220,7 +220,7 @@ class SearchTabs extends React.Component {
       this.setState({openLoadURLs: true});
     };
     handleCloseLoadURLs = () => {
-	this.setState({openLoadURLs: false,});
+	     this.setState({openLoadURLs: false,});
     };
 
     // Explicitly focus the text input using the raw DOM API
@@ -297,11 +297,9 @@ class SearchTabs extends React.Component {
         var session =this.props.session;
         session['search_engine']=this.state.search_engine;
         var concat_valueQuery = (previous_valueQuery!=='')?previous_valueQuery:valueQuery;
-        //var concat_valueQuery = (previous_valueQuery!=='')? previous_valueQuery+ "," + valueQuery :valueQuery;
-        //this.props.getQueryPages(concat_valueQuery);
         if(updateView==1) {
           session = this.resetAllFilters(session);
-                this.props.getQueryPages(concat_valueQuery);
+          this.props.getQueryPages(concat_valueQuery);
         }
         updateView=updateView+1;
         $.post(
@@ -310,7 +308,6 @@ class SearchTabs extends React.Component {
           function(data) {
               if(queries.length==0) this.props.queryPagesDone();
               this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" is completed');
-
               if(queries.length>0) this.runMutipleQuery(queries, concat_valueQuery, updateView);
           }.bind(this)).fail(function() { console.log("Something is wrong. Try again.");
                                           this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" has failed');

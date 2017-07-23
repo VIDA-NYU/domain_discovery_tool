@@ -99,7 +99,7 @@ class Body extends Component{
         update:false,
         runCurrentQuery: "*",
         intervalFuncId:undefined,
-        stopApplyQueryOverView:false,
+        stopApplyQueryOverView:false, //Allow interactions with data (applying filters, tagging, etc) while multiple searches are running.
     };
     this.sessionB={};
   }
