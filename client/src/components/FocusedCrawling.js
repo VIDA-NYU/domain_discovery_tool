@@ -100,8 +100,6 @@ class FocusedCrawling extends Component {
   }
 
   updateTerms(terms){
-      console.log("TERMS LIST");
-      console.log(terms);
       this.setState({termsList: terms});
   }
 
@@ -121,30 +119,28 @@ class FocusedCrawling extends Component {
       '/getModelTags',
       {'domainId': domainId},
 	function(tags){
-	    console.log(tags);
-      var session = this.props.session;
-      session['model']['positive'] = [];
-      session['model']['negative'] = [];
-        if(Object.keys(tags).length > 0){
-          console.log(tags);
-          session['model']['positive'] = tags['positive'].slice();
-          session['model']['negative'] = tags['negative'].slice();
-
-          //setting session info for generating terms.
-          session['newPageRetrievalCriteria'] = "one";
-          session['pageRetrievalCriteria'] = "Tags";
-          session['selected_tags']=(tags['positive'].slice()).join(',');
-
-          this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
-          this.forceUpdate();
-
-        }
-        else {if(!(session['model']['positive'].length>0)){
-            this.setState({openDialog:true , loadTerms:false,});
-            this.forceUpdate();
-        }}
-
-      }.bind(this)
+	    var session = this.props.session;
+	    session['model']['positive'] = [];
+	    session['model']['negative'] = [];
+            if(Object.keys(tags).length > 0){
+		session['model']['positive'] = tags['positive'].slice();
+		session['model']['negative'] = tags['negative'].slice();
+		
+		//setting session info for generating terms.
+		session['newPageRetrievalCriteria'] = "one";
+		session['pageRetrievalCriteria'] = "Tags";
+		session['selected_tags']=(tags['positive'].slice()).join(',');
+		
+		this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
+		this.forceUpdate();
+		
+            }
+            else {if(!(session['model']['positive'].length>0)){
+		this.setState({openDialog:true , loadTerms:false,});
+		this.forceUpdate();
+            }}
+	    
+	}.bind(this)
     );
   }
 
@@ -178,7 +174,6 @@ class FocusedCrawling extends Component {
 
   addPosTags(tag){
       var tags = this.state.selectedPosTags;
-      console.log(tags);
     if(tags.includes(tag)){
       var index = tags.indexOf(tag);
       tags.splice(index, 1);
@@ -186,7 +181,6 @@ class FocusedCrawling extends Component {
     else{
       tags.push(tag);
     }
-      console.log(tags);
     this.setState({selectedPosTags: tags})
     this.forceUpdate();
   }
@@ -219,17 +213,15 @@ class FocusedCrawling extends Component {
     var terms = [];
     var pos_terms = [];
     terms = pos_terms = this.state.termsList.map((term)=>{
-	if(term['tags'].includes('Positive'))
-	    return term['word']
-    });
+	if(term['tags'].indexOf('Positive') !== -1)
+	    return term['word'];
+    }).filter((term)=>{return term !== undefined});
 
     if(pos_terms.length === 0){
 	terms = this.state.termsList.map((term)=>{
 	    return term['word']
 	});
     }
-    console.log("TOP TERMS");
-    console.log(terms);
 
     $.post(
         '/startCrawler',
