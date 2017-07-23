@@ -95,7 +95,11 @@ class DeepCrawling extends Component {
                     .sort((a, b) => {
 			if(b[1]['score'] === undefined)
 			    return (b[1]['count'] - a[1]['count']);
-			else return (b[1]['score'] - a[1]['score']);
+			else {
+			    if(parseFloat(b[1]['score'].toFixed(3)) === parseFloat(a[1]['score'].toFixed(3)))
+				return (b[1]['count'] - a[1]['count']);				
+			    else return (b[1]['score'] - a[1]['score']);
+			};
 		    });
     		this.setState({recommendations: recommendations})
   	    }
@@ -517,7 +521,7 @@ class DeepCrawling extends Component {
          <CardText expandable={false} >
             <MultiselectTable
               rows={this.state.recommendations}
-              columnHeadings={["DOMAIN", "COUNT"]}
+              columnHeadings={["DOMAIN", "SCORE, COUNT"]}
               onRowSelection={this.addDomainsOnSelection}
               resetSelection={this.state.resetSelection}
             />
