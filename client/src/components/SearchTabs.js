@@ -13,6 +13,7 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import Select from 'react-select';
 import RaisedButton from 'material-ui/RaisedButton';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import $ from 'jquery';
 
 const styles = {
@@ -44,6 +45,8 @@ class SearchTabs extends React.Component {
     	flat:true,
     	openLoadURLs: false,
       openDialogLoadMultiQueries: false,
+      valueLoadMultiQueriesFromTextField:'',
+      valueLoadMultiQueriesFromFile:[],
 
     };
       uploadTag: "Neutral";
@@ -259,11 +262,53 @@ class SearchTabs extends React.Component {
       this.setState({ valueLoadMultiQueriesFromTextField: e.target.value});
     }
 
+
+
     //Adding urls from file and the textField.
-    addMultiQueriesfromFileAndTextField(){
-      this.addDomainsFromFileForDeepCrawl();
+    runMultiQueriesfromFileAndTextField(){
+      this.runMultiQueries();
       this.handleCloseDialogLoadMultiQueries();
 
+    }
+
+    runMutipleQuery(queries, previous_valueQuery){
+      var valueQuery = queries[queries.length-1];
+      queries.pop();
+      //Submits a web query for a list of terms, e.g. 'ebola disease'
+        var session =this.props.session;
+        session['search_engine']=this.state.search_engine;
+        session = this.resetAllFilters(session);
+        var concat_valueQuery = (previous_valueQuery!=='')? previous_valueQuery+ "," + valueQuery :valueQuery;
+        this.props.getQueryPages(concat_valueQuery);
+        $.post(
+          '/queryWeb',
+          {'terms': valueQuery,  'session': JSON.stringify(session)},
+          function(data) {
+              this.props.queryPagesDone();
+              this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" is completed');
+              if(queries.length>0) this.runMutipleQuery(queries, concat_valueQuery);
+          }.bind(this)).fail(function() { console.log("Something is wrong. Try again.");
+                                          this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" has failed');
+                                          if(queries.length>0) this.runMutipleQuery(queries, previous_valueQuery);
+                                        }.bind(this));
+          this.props.updateStatusMessage(true, 'Searching: Web query "' + valueQuery + '"');
+    }
+
+    runMultiQueries() {
+      //Append urls from textField to this.state.valueLoadUrls
+      var array_queries = this.state.valueLoadMultiQueriesFromFile;
+
+      var array_valueLoadMultiQueriesFromTextField = (this.state.valueLoadMultiQueriesFromTextField!=="")?this.state.valueLoadMultiQueriesFromTextField.split(/\r\n|\n/):[];
+
+      array_valueLoadMultiQueriesFromTextField.forEach((value) => {
+        array_queries.push(value);
+      });
+      if(array_queries.length>0) this.runMutipleQuery(array_queries,"");
+
+      this.setState({
+        array_queries:[],
+        valueLoadMultiQueriesFromTextField:"",
+      });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +333,7 @@ render() {
                           ];
   const actionsLoadMultiQueries = [
                       <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseDialogLoadMultiQueries.bind(this)}/>,
-                      <FlatButton label="Run" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addMultiQueriesfromFileAndTextField.bind(this)}/>,
+                      <FlatButton label="Run" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.runMultiQueriesfromFileAndTextField.bind(this)}/>,
                           ];
 
   let show_choose_file = (this.fromFile || this.fromFile === undefined)? <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}>"Upload URLs from file"</p> <br />
@@ -358,8 +403,8 @@ render() {
 
         <Dialog title="Run multiples queries" actions={actionsLoadMultiQueries} modal={false} open={this.state.openDialogLoadMultiQueries} onRequestClose={this.handleCloseDialogLoadMultiQueries.bind(this)}>
           <Row>
-          <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-            <TextField style={{height:200, width:'260px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+          <Col xs={6} md={6} style={{marginLeft:'0px'}}>
+            <TextField style={{height:200, width:'340px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
               onChange={this.handleTextChangeLoadMultiQueries.bind(this)}
               floatingLabelText="Write queries (one by line)."
               hintStyle={{ marginLeft:30}}
@@ -369,8 +414,21 @@ render() {
               rows={6}
               rowsMax={6}
               floatingLabelStyle={{marginLeft:10, marginRight:30,}}
-              underlineStyle={{width:210, marginLeft:30, marginRight:30,}}
+              underlineStyle={{width:290, marginLeft:20, marginRight:30,}}
             />
+          </Col>
+          <Col xs={4} md={4} style={{marginLeft:'0px'}}>
+          <RadioButtonGroup name="search_engine" defaultSelected={this.state.search_engine} onChange={(event, value) =>{
+            this.setState({search_engine:value,}); }}>
+            <RadioButton
+              value="GOOG"
+              label="Google"
+            />
+            <RadioButton
+              value="BING"
+              label="Bing"
+            />
+          </RadioButtonGroup>
           </Col>
           </Row>
           <Row>
