@@ -104,8 +104,8 @@ class MultiselectTable extends Component {
           {
             this.props.rows.map((row, index) =>
               <TableRow key={row[0]} selected={(this.state.selectedRows || []).indexOf(index) !== -1}>
-                <TableRowColumn>{row[0]}</TableRowColumn>
-                <TableRowColumn>{row[1]}</TableRowColumn>
+		<TableRowColumn>{row[0]}</TableRowColumn>
+		<TableRowColumn>{(row[1]['score'] === undefined)? '1, '+row[1]['count']: row[1]['score'].toFixed(3)+', '+row[1]['count']}</TableRowColumn>
               </TableRow>
             )
           }
