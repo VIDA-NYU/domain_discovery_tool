@@ -16,7 +16,6 @@ class MultiselectTable extends Component {
     this.state = {
       selectedRows: [],
       selectAll: false,
-      pageCount: (props.rows || [])/10,
       currentPage: 0
     }
 
@@ -24,18 +23,11 @@ class MultiselectTable extends Component {
     this.perPage = 100;
     this.toggleSelectOrDeselectAll = this.toggleSelectOrDeselectAll.bind(this);
     this.onRowSelection = this.onRowSelection.bind(this);
-
-    this.toggleRowSelection = this.toggleRowSelection.bind(this);
-
-    this.changeTableOffset = this.changeTableOffset.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.resetSelection) {
-      this.setState({selectedRows: [], selectAll: false, pageCount: (nextProps.rows.length/10)});
-    } else {
-      this.setState({pageCount: (nextProps.rows.length/10)})
-    }
+    if(nextProps.resetSelection)
+      this.setState({selectedRows: [], selectAll: false});
   }
 
   /**
@@ -57,18 +49,12 @@ class MultiselectTable extends Component {
   }
 
   /**
-   * Set selectedRows accordingly without weird strings such as 'none' or 'all'
+   * Set the selectedRows state variable with the checked element id "recommendation-index"
    * and call the parent components method to manipulate data
    * @method onRowSelection (onClick event)
    * @param {number[]} selectedRows
    */
-  onRowSelection(selectedRows) {
-    selectedRows = (selectedRows === 'none' ? [] : selectedRows);
-    this.setState({selectedRows, selectAll: false});
-    this.props.onRowSelection && this.props.onRowSelection(selectedRows);
-  }
-
-  toggleRowSelection(event) {
+  onRowSelection(event) {
     var selectedRows = this.state.selectedRows;
     var rowId = event.target.id.split("-")[1];
     if(event.target.checked)
@@ -77,14 +63,7 @@ class MultiselectTable extends Component {
       selectedRows.splice(selectedRows.indexOf(parseInt(rowId)), 1);
 
     this.setState({selectedRows, selectAll: false});
-
     this.props.onRowSelection && this.props.onRowSelection(selectedRows);
-  }
-
-  changeTableOffset(page) {
-    this.setState({
-      currentPage: page.selected
-    });
   }
 
   render() {
@@ -96,7 +75,6 @@ class MultiselectTable extends Component {
           fixedFooter={true}
           selectable={false}
           multiSelectable={false}
-          onRowSelection={this.onRowSelection}
           style={{width:700}}
         >
           <TableHeader
@@ -132,13 +110,16 @@ class MultiselectTable extends Component {
           stripedRows={false}
         >
           {
-            this.props.rows.slice(this.state.currentPage*this.perPage, (this.state.currentPage+1)*this.perPage).map((row, index) =>
+            this.props.rows.slice(
+              this.state.currentPage * this.perPage,
+              (this.state.currentPage + 1) * this.perPage
+            ).map((row, index) =>
               <TableRow key={row[0]}>
                 <TableRowColumn colSpan="1">
                   <Checkbox
                     id={"recommendations-" + (this.state.currentPage*this.perPage + index)}
                     checked={(this.state.selectedRows || []).indexOf(this.state.currentPage*this.perPage + index) !== -1}
-                    onCheck={this.toggleRowSelection}
+                    onCheck={this.onRowSelection}
                   />
                 </TableRowColumn>
 		             <TableRowColumn colSpan="7">{row[0]}</TableRowColumn>
@@ -159,7 +140,7 @@ class MultiselectTable extends Component {
           pageCount={(this.props.rows || []).length/this.perPage}
           marginPagesDisplayed={1}
           pageRangeDisplayed={1}
-          onPageChange={this.changeTableOffset}
+          onPageChange={(page) => {this.setState({currentPage: page.selected})}}
           containerClassName={"pagination"}
           subContainerClassName={"pages pagination"}
           activeClassName={"active"} />

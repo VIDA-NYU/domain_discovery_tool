@@ -357,10 +357,10 @@ class FocusedCrawling extends Component {
     ratioAccuracy = ratioPosNeg*this.state.accuracyOnlineLearning;
     var DialogBox= <RaisedButton disabled={false} onTouchTap={this.handlecloseDialog.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
       label="Close" labelPosition="before" containerElement="label" />;
-    var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} setActiveMenu={true} showExpandableButton={false} actAsExpander={false}
+    var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} showExpandableButton={false} actAsExpander={false}
                                                     BackgroundColorTerm={"white"} renderAvatar={false} session={this.state.session}
-      focusedCrawlDomains={this.state.loadTerms} fromCrawling={true} updateTerms={this.updateTerms.bind(this)}/>
-    :<div></div>;
+                                                    focusedCrawlDomains={this.state.loadTerms} fromCrawling={true} updateTerms={this.updateTerms.bind(this)}/>
+                                                    :<div></div>;
     var openMessage = (this.props.slideIndex && this.state.openDialog)?true:false;
     return (
       <div>
