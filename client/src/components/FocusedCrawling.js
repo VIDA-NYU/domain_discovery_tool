@@ -17,6 +17,8 @@ import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Monitoring from './Monitoring.js';
 import Dialog from 'material-ui/Dialog';
+import {scaleLinear} from 'd3-scale';
+import {range} from 'd3-array';
 import {
   Table,
   TableBody,
@@ -93,7 +95,7 @@ class FocusedCrawling extends Component {
       var temp_session = this.props.session;
       this.getAvailableTags(this.props.session);
       this.getModelTags(this.props.domainId);
-
+      this.updateOnlineClassifier(temp_session);
 
   }
   componentWillReceiveProps  = (newProps, nextState) => {
@@ -161,11 +163,9 @@ class FocusedCrawling extends Component {
 
   handleSaveTags() {
     var session = this.props.session;
-    console.log(session['model']);
     session['model']['positive'] = this.state.selectedPosTags.slice();
     session['model']['negative'] = this.state.selectedNegTags.slice();
     //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
-    console.log(session['model']['positive'].length);
     if(session['model']['positive'].length>0 ){
       this.loadingTerms(session, this.state.selectedPosTags);
     }
@@ -306,7 +306,6 @@ class FocusedCrawling extends Component {
   //////////////////////
   /////////////////////
   updateOnlineClassifier(sessionTemp){
-    console.log(" ONLINE CLASSIFIER");
     $.post(
       '/updateOnlineClassifier',
       {'session':  JSON.stringify(sessionTemp)},
@@ -353,8 +352,11 @@ class FocusedCrawling extends Component {
                           </Col>
                         </Row>:<div />;
 
-    ratioPosNeg = total_selectedPosTags/total_selectedNegTags;
+    ratioPosNeg = (total_selectedPosTags>total_selectedNegTags)?total_selectedNegTags/total_selectedPosTags:total_selectedPosTags/total_selectedNegTags;
     ratioAccuracy = ratioPosNeg*this.state.accuracyOnlineLearning;
+    var barScale = scaleLinear().range([0, 240]);
+	  barScale.domain([0, 100]);
+    var aux_ratioAccuracy = barScale(ratioAccuracy);
     var DialogBox= <RaisedButton disabled={false} onTouchTap={this.handlecloseDialog.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
       label="Close" labelPosition="before" containerElement="label" />;
     var renderTerms = (this.state.loadTerms)?<Terms statedCard={true} sizeAvatar={20} showExpandableButton={false} actAsExpander={false}
@@ -478,7 +480,7 @@ class FocusedCrawling extends Component {
             <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
             <Divider />
             <div style={{marginLeft:10, marginTop:10,}}>
-              <ScaleBar ratioAccuracy={ratioAccuracy}/>
+              <ScaleBar ratioAccuracy={aux_ratioAccuracy}/>
             </div>
             <div style={{marginTop:"-20px",}}>
               <IconMenu

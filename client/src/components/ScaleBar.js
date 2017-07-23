@@ -10,7 +10,7 @@ class ScaleBar extends React.Component{
   }
 
   render(){
-    var ratioAccuracy = this.props.ratioAccuracy;
+    var ratioAccuracy = (this.props.ratioAccuracy===undefined)?0:this.props.ratioAccuracy;
     return(
       <svg width="360" height="100" viewBox="0 0 460 100" fill="none">
   <g transform="translate(0,10)" font-size="10" font-family="sans-serif" text-anchor="middle">
