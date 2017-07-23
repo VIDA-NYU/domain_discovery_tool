@@ -37,34 +37,32 @@ class Terms extends Component{
 
   componentWillMount = () => {
    this.setState({expanded: this.props.statedCard, session:this.props.session, sessionString:JSON.stringify(this.props.session) , fromCrawling:this.props.fromCrawling,});
-   if(this.props.focusedCrawlDomains){
-      this.loadTerms();
-   }
+   this.loadTerms();
   };
 
 
   //Handling state's changes of search card. (expanded or reduced)
   componentWillReceiveProps  = (nextProps) => {
-      // Calculate new state
+    // Calculate new state
     if(nextProps.statedCard !== this.state.statedCard){
       this.setState({expanded: nextProps.statedCard}, function() {
-           this.setState({expanded: nextProps.statedCard});
+        this.setState({expanded: nextProps.statedCard});
       });
     }
 
-      if(JSON.stringify(nextProps.session) !== this.state.sessionString && nextProps.statedCard){
-	  this.setState({
-              session:nextProps.session,
-              sessionString:JSON.stringify(this.props.session),
-              listTerms: [],
-	  });
-	  this.loadTerms();
-      }
-      else{
-	  return;
-      }
+    if(JSON.stringify(nextProps.session) !== this.state.sessionString && nextProps.statedCard){
+      this.setState({
+        session:nextProps.session,
+        sessionString:JSON.stringify(this.props.session),
+        listTerms: [],
+      });
+      this.loadTerms();
+    }
+    else{
+      return;
+    }
 
-   };
+  };
 
   handleExpandChange = (expanded) => {
     this.setState({expanded: expanded});
@@ -117,7 +115,7 @@ class Terms extends Component{
   }
 
 
-    render(){
+  render(){
 
     const styles = {
       card: {
