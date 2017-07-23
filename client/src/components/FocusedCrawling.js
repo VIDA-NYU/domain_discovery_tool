@@ -164,6 +164,7 @@ class FocusedCrawling extends Component {
     session['model']['positive'] = this.state.selectedPosTags.slice();
     session['model']['negative'] = this.state.selectedNegTags.slice();
     //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    console.log(session['model']['positive'].length);
     if(session['model']['positive'].length>0 ){
       this.loadingTerms(session, this.state.selectedPosTags);
     }
@@ -421,9 +422,11 @@ class FocusedCrawling extends Component {
         />
         <CardText expandable={true} >
         <div style={{display: 'flex'}}>
+        <div>
           <RaisedButton
             label="Start Crawler"
             style={{margin: 5}}
+            disable={this.state.disabledStartCrawler}
             labelStyle={{textTransform: "capitalize"}}
             style={
                     this.state.disabledStartCrawler ?
@@ -433,10 +436,10 @@ class FocusedCrawling extends Component {
                   }
             onClick={this.startFocusedCrawler.bind(this)}
           />
-
+          </div>
           {
             this.state.disabledStartCrawler ?
-            <div>
+            <div style={{float:'right'}}>
               <RaisedButton
                 label="Stop Crawler"
                 style={{margin: 5,}}

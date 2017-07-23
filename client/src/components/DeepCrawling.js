@@ -97,7 +97,7 @@ class DeepCrawling extends Component {
 			    return (b[1]['count'] - a[1]['count']);
 			else {
 			    if(parseFloat(b[1]['score'].toFixed(3)) === parseFloat(a[1]['score'].toFixed(3)))
-				return (b[1]['count'] - a[1]['count']);				
+				return (b[1]['count'] - a[1]['count']);
 			    else return (b[1]['score'] - a[1]['score']);
 			};
 		    });
@@ -463,8 +463,10 @@ class DeepCrawling extends Component {
         </CardText>
       </Card>
         <div style={{display: 'flex'}}>
+        <div>
           <RaisedButton
             label="Start Crawler"
+            disable={this.state.disabledStartCrawler}
             style={
                     this.state.disabledStartCrawler ?
                     {pointerEvents: 'none', opacity: 0.5, margin: 12}
@@ -473,7 +475,7 @@ class DeepCrawling extends Component {
                   }
             onClick={this.startDeepCrawler.bind(this)}
           />
-
+          </div>
           {
             this.state.disabledStartCrawler ?
             <div>
