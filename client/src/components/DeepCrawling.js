@@ -511,14 +511,21 @@ class DeepCrawling extends Component {
            style={{fontWeight:'bold', marginBottom:"-70px",}}
          />
          <CardText>
-           <TextField
-            ref={(element) => {this.minRecoInput = element;}}
-            type='number'
-            style={{width: "100px", marginBottom: "-70px", float: "right", padding: "0px"}}
-            value={this.state.minURLCount}
-            onChange={this.changeMinURLCount}
-	    onKeyPress={(e) => {(e.key === 'Enter') ? this.getRecommendations(this) : null}}
-          />
+           <div style={{display: 'flex', float: 'right', marginBottom: '-10px'}}>
+             <div style={{marginTop: '15px', marginRight: '19px'}}>
+              Min URLs in Domain
+             </div>
+             <div>
+               <TextField
+                 ref={(element) => {this.minRecoInput = element;}}
+                 type='number'
+                 style={{width: "100px", marginBottom: "-70px", float: "right", padding: "0px"}}
+                 value={this.state.minURLCount}
+                 onChange={this.changeMinURLCount}
+                 onKeyPress={(e) => {(e.key === 'Enter') ? this.getRecommendations(this) : null}}
+                />
+              </div>
+            </div>
         </CardText>
          <CardText expandable={false} >
             <MultiselectTable
