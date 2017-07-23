@@ -61,6 +61,7 @@ class FocusedCrawling extends Component {
       openDialog:false,
       anchorEl:undefined,
       termsList: [],
+      accuracyOnlineLearning:0,
     };
 
   }
@@ -134,7 +135,7 @@ class FocusedCrawling extends Component {
           session['newPageRetrievalCriteria'] = "one";
           session['pageRetrievalCriteria'] = "Tags";
           session['selected_tags']=(tags['positive'].slice()).join(',');
-
+          this.updateOnlineClassifier(session);
           this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
           this.forceUpdate();
 
@@ -156,9 +157,10 @@ class FocusedCrawling extends Component {
     if(session['model']['positive'].length>0 ){
       this.loadingTerms(session, this.state.selectedPosTags);
     }
-      else{
-        this.setState({openDialog:true});
-      }
+    else{
+      this.setState({openDialog:true});
+    }
+    this.updateOnlineClassifier(session);
 
 
       $.post(
@@ -291,6 +293,23 @@ class FocusedCrawling extends Component {
       openMenu: value,
     });
   }
+
+
+  //////////////////////
+  /////////////////////
+  updateOnlineClassifier(sessionTemp){
+    console.log(" ONLINE CLASSIFIER");
+    $.post(
+      '/updateOnlineClassifier',
+      {'session':  JSON.stringify(sessionTemp)},
+      function(accuracy) {
+          this.setState({accuracyOnlineLearning:accuracy,});
+          this.forceUpdate();
+    }.bind(this)
+    );
+  }
+///////////////////////
+//////////////////////
   render() {
     var total_selectedPosTags=0;
     var total_selectedNegTags=0;
@@ -323,6 +342,7 @@ class FocusedCrawling extends Component {
                               })}
                           </Col>
                         </Row>:<div />;
+
 
     var DialogBox= <RaisedButton disabled={false} onTouchTap={this.handlecloseDialog.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
       label="Close" labelPosition="before" containerElement="label" />;
@@ -432,7 +452,7 @@ class FocusedCrawling extends Component {
         </Col>
 
         <Col xs={6} md={6} style={{margin:'10px'}}>
-        <Card id={"Model"} initiallyExpanded={true} >
+        <Card id={"Model"} initiallyExpanded={true}  style={{marginTop:"-15px",}}>
          <CardHeader
            title="Model"
            actAsExpander={false}
@@ -445,7 +465,7 @@ class FocusedCrawling extends Component {
             <ListItem>
             <p><span style={{marginRight:10,}}>Relevant: </span>{total_selectedPosTags} </p>
             <p><span style={{marginRight:10,}}>Irrelevant: </span>{total_selectedNegTags} </p>
-            <p><span>Domain Model: </span> 20 </p>
+            <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
             </ListItem>
             <Divider />
             <ScaleBar/>
