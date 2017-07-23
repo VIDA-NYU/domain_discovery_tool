@@ -202,7 +202,7 @@ class SearchTabs extends React.Component {
     // Download the pages of uploaded urls from file
     runLoadUrlsFileQuery(txt) {
         var allTextLines = txt.split(/\r\n|\n/);
-	this.setState({ "valueLoadUrls": allTextLines.join(" ")});
+	       this.setState({ "valueLoadUrls": allTextLines.join(" ")});
     }
 
     //Reading file's content.
@@ -232,17 +232,18 @@ class SearchTabs extends React.Component {
     ///////////////////////////////////***********Loading multi queries ****************/////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Load the pages of uploaded queries from file
-    /*runLoadUrlsFileQuery(txt) {
-      var allTextLines = txt.split(/\r\n|\n/);
-      this.setState({ valueLoadUrls: allTextLines, });//allTextLines.join(" ")});
-    }*/
+    // Download the pages of uploaded urls from file
+    runLoadMultiQueriesFile(txt) {
+        var allTextLines = txt.split(/\r\n|\n/);
+         this.setState({ "valueLoadMultiQueriesFromFile": allTextLines});
+    }
+
     //Reading file's content.
     handleFileMultiQueries(event) {
       const reader = new FileReader();
       const file = event.target.files[0];
       reader.onload = (upload) => {
-        //this.runLoadUrlsFileQuery(upload.target.result);
+        this.runLoadMultiQueriesFile(upload.target.result);
       };
       reader.readAsText(file);
     }
@@ -271,6 +272,23 @@ class SearchTabs extends React.Component {
 
     }
 
+    //Call runMutipleQuery to run multiple queries
+    runMultiQueries() {
+      //Append urls from textField to this.state.valueLoadUrls
+      var array_queries = this.state.valueLoadMultiQueriesFromFile;
+      var array_valueLoadMultiQueriesFromTextField = (this.state.valueLoadMultiQueriesFromTextField!=="")?this.state.valueLoadMultiQueriesFromTextField.split(/\r\n|\n/):[];
+      array_valueLoadMultiQueriesFromTextField.forEach((value) => {
+        array_queries.push(value);
+      });
+      if(array_queries.length>0) this.runMutipleQuery(array_queries,"");
+      this.setState({
+        array_queries:[],
+        valueLoadMultiQueriesFromTextField:"",
+        runLoadUrlsFileQuery:[],
+      });
+    }
+
+    //Loop over the list of terms.
     runMutipleQuery(queries, previous_valueQuery){
       var valueQuery = queries[queries.length-1];
       queries.pop();
@@ -294,22 +312,7 @@ class SearchTabs extends React.Component {
           this.props.updateStatusMessage(true, 'Searching: Web query "' + valueQuery + '"');
     }
 
-    runMultiQueries() {
-      //Append urls from textField to this.state.valueLoadUrls
-      var array_queries = this.state.valueLoadMultiQueriesFromFile;
 
-      var array_valueLoadMultiQueriesFromTextField = (this.state.valueLoadMultiQueriesFromTextField!=="")?this.state.valueLoadMultiQueriesFromTextField.split(/\r\n|\n/):[];
-
-      array_valueLoadMultiQueriesFromTextField.forEach((value) => {
-        array_queries.push(value);
-      });
-      if(array_queries.length>0) this.runMutipleQuery(array_queries,"");
-
-      this.setState({
-        array_queries:[],
-        valueLoadMultiQueriesFromTextField:"",
-      });
-    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,7 +437,7 @@ render() {
           <Row>
             <br />
             <FlatButton style={{marginLeft:'15px'}}
-              label="Choose queries File"
+              label="Load queries from file"
               labelPosition="before"
               containerElement="label"
               labelStyle={{textTransform: "capitalize"}}>
