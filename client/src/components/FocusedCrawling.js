@@ -434,7 +434,7 @@ class FocusedCrawling extends Component {
                 label="Crawler Monitor"
                 style={{margin: 5}}
                 labelStyle={{textTransform: "capitalize"}}
-                href="http://localhost:8080/monitoring" target="_blank"
+              href={this.props.crawlerServers['focused']+"/monitoring"} target="_blank"
               />
 
             </div>

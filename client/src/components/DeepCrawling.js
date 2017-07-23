@@ -490,7 +490,7 @@ class DeepCrawling extends Component {
               <RaisedButton
                 label="Crawler Monitor"
                 style={{margin: 12}}
-                href="http://localhost:8080/monitoring" target="_blank"
+              href={this.props.crawlerServers['deep']+"/monitoring"} target="_blank"
               />
 
             </div>
