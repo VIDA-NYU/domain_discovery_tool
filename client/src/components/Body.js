@@ -99,7 +99,7 @@ class Body extends Component{
         update:false,
         runCurrentQuery: "*",
         intervalFuncId:undefined,
-
+        stopApplyQueryOverView:false,
     };
     this.sessionB={};
   }
@@ -225,7 +225,7 @@ class Body extends Component{
   deletedFilter(sessionTemp){
     this.props.deletedFilter(sessionTemp["filter"]);
     this.setState({
-        sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp)
+        sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp), stopApplyQueryOverView:true,
     });
     this.updateSession(sessionTemp);
   }
@@ -245,27 +245,31 @@ class Body extends Component{
   getQueryPages(term){
     if(this.state.intervalFuncId !== undefined)
       this.queryPagesDone();
-    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 1000)});
+
+    this.setState({stopApplyQueryOverView:false, intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 1000)});
 
   }
 
   applyFilterByQuery(term){
     var session =this.state.sessionBody;
-    session['newPageRetrievalCriteria'] = "one";
-    session['pageRetrievalCriteria'] = "Queries";
-    session['selected_queries']=term;
+    if(!this.state.stopApplyQueryOverView){
+      session['newPageRetrievalCriteria'] = "one";
+      session['pageRetrievalCriteria'] = "Queries";
+      session['selected_queries']=term;
+    }
     this.updateSession(session);
+
   }
 
   // Stop timer to stop getting pages fromt the server as all downloaded pages have been retrieved
   queryPagesDone(){
     window.clearInterval(this.state.intervalFuncId);
-    this.setState({intervalFuncId:undefined});
+    this.setState({intervalFuncId:undefined, stopApplyQueryOverView:false,});
   }
 
   //Update session
   updateSession(newSession){
-    this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
+    this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession), stopApplyQueryOverView:true,});
     this.forceUpdate();
   }
 

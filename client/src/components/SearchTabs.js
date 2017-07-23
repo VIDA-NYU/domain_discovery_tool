@@ -299,15 +299,16 @@ class SearchTabs extends React.Component {
         var concat_valueQuery = (previous_valueQuery!=='')?previous_valueQuery:valueQuery;
         //var concat_valueQuery = (previous_valueQuery!=='')? previous_valueQuery+ "," + valueQuery :valueQuery;
         //this.props.getQueryPages(concat_valueQuery);
-        session = this.resetAllFilters(session);
-        this.props.getQueryPages(concat_valueQuery);
-
+        if(updateView==1) {
+          session = this.resetAllFilters(session);
+                this.props.getQueryPages(concat_valueQuery);
+        }
         updateView=updateView+1;
         $.post(
           '/queryWeb',
           {'terms': valueQuery,  'session': JSON.stringify(session)},
           function(data) {
-              this.props.queryPagesDone();
+              if(queries.length==0) this.props.queryPagesDone();
               this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" is completed');
 
               if(queries.length>0) this.runMutipleQuery(queries, concat_valueQuery, updateView);
