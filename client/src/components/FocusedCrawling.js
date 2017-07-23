@@ -243,7 +243,7 @@ class FocusedCrawling extends Component {
 
     $.post(
         '/startCrawler',
-        {'session': JSON.stringify(session),'type': type },
+        {'session': JSON.stringify(session),'type': type, 'terms': this.state.termsList.join('|')},
         function(message) {
           var disableStopCrawlerFlag = false;
           var disableAcheInterfaceFlag = false;
