@@ -103,13 +103,7 @@ class FocusedCrawling extends Component {
   }
 
   loadingTerms(session, selectedPosTags){
-<<<<<<< HEAD
-    var temp_session = session;
-    temp_session['newPageRetrievalCriteria'] = "one";
-    temp_session['pageRetrievalCriteria'] = "Tags";
-    temp_session['selected_tags']=this.state.selectedPosTags.join(',');
-    this.setState({session: temp_session, selectedPosTags: selectedPosTags, loadingTerms:false});
-=======
+
       var temp_session = session;
       temp_session['newPageRetrievalCriteria'] = "one";
       temp_session['pageRetrievalCriteria'] = "Tags";
@@ -122,7 +116,6 @@ class FocusedCrawling extends Component {
       console.log("TERMS LIST");
       console.log(terms);
       this.setState({termsList: terms});
->>>>>>> 3b88dc8662f4cfe9b7fc2ec7e8496b2a0d932e5c
   }
 
   getAvailableTags(session){
