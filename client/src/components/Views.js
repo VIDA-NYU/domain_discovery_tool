@@ -651,9 +651,12 @@ class ViewTabSnippets extends React.Component{
               this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
               this.state.pages[inputURL[i]]["tags"].push(val[0].value);
               this.removeAddTagElasticSearch(inputURL, val[0].value, true);
+            }}
+            else if(this.state.pages[inputURL[i]]["tags"]===undefined){
+              this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
+              this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+              this.removeAddTagElasticSearch(inputURL, val[0].value, true);
             }
-
-          }
 
         }
 

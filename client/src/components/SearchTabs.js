@@ -113,21 +113,21 @@ class SearchTabs extends React.Component {
 
     // Submits a query and then run ACHE SeedFinder to generate queries and corresponding seed urls
     runSeedFinderQuery(){
-	var session =this.props.session;
-	session['search_engine']=this.state.search_engine;
-	$.post(
-            '/runSeedFinder',
-            {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
-            function(data) {
-		setTimeout(function(){
-		    this.props.queryPagesDone();
-		    this.props.updateStatusMessage(false, 'Searching: SeedFinder query "' + this.state.valueQuery + '" has completed' );
-		}.bind(this), 9000);
-            }.bind(this)).fail(function() {
-		console.log("Something is wrong. Try again.");
-		this.props.updateStatusMessage(false, 'Searching: SeedFinder query "'+this.state.valueQuery+ '" has failed');
-            }.bind(this));
-	this.props.updateStatusMessage(true, 'Searching: SeedFinder query "'+this.state.valueQuery+'". Check status in process monitor.');
+    	var session =this.props.session;
+    	session['search_engine']=this.state.search_engine;
+    	$.post(
+          '/runSeedFinder',
+          {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
+          function(data) {
+    		      setTimeout(function(){
+    		          this.props.queryPagesDone();
+    		          this.props.updateStatusMessage(false, 'Searching: SeedFinder query "' + this.state.valueQuery + '" has completed' );
+    		      }.bind(this), 9000);
+          }.bind(this)).fail(function() {
+    		  console.log("Something is wrong. Try again.");
+    		  this.props.updateStatusMessage(false, 'Searching: SeedFinder query "'+this.state.valueQuery+ '" has failed');
+          }.bind(this));
+    	this.props.updateStatusMessage(true, 'Searching: SeedFinder query "'+this.state.valueQuery+'". Check status in process monitor.');
     }
 
     // Download the pages of uploaded urls
@@ -220,7 +220,7 @@ class SearchTabs extends React.Component {
       this.setState({openLoadURLs: true});
     };
     handleCloseLoadURLs = () => {
-	this.setState({openLoadURLs: false,});
+	     this.setState({openLoadURLs: false,});
     };
 
     // Explicitly focus the text input using the raw DOM API
@@ -280,7 +280,7 @@ class SearchTabs extends React.Component {
       array_valueLoadMultiQueriesFromTextField.forEach((value) => {
         array_queries.push(value);
       });
-      if(array_queries.length>0) this.runMutipleQuery(array_queries,"");
+      if(array_queries.length>0) this.runMutipleQuery(array_queries,"",1);
       this.setState({
         array_queries:[],
         valueLoadMultiQueriesFromTextField:"",
@@ -289,25 +289,29 @@ class SearchTabs extends React.Component {
     }
 
     //Loop over the list of terms.
-    runMutipleQuery(queries, previous_valueQuery){
+    //updateView=1; //the view will be update just one time (with the fisrt query.)
+    runMutipleQuery(queries, previous_valueQuery, updateView){
       var valueQuery = queries[queries.length-1];
       queries.pop();
       //Submits a web query for a list of terms, e.g. 'ebola disease'
         var session =this.props.session;
         session['search_engine']=this.state.search_engine;
-        session = this.resetAllFilters(session);
-        var concat_valueQuery = (previous_valueQuery!=='')? previous_valueQuery+ "," + valueQuery :valueQuery;
-        this.props.getQueryPages(concat_valueQuery);
+        var concat_valueQuery = (previous_valueQuery!=='')?previous_valueQuery:valueQuery;
+        if(updateView==1) {
+          session = this.resetAllFilters(session);
+          this.props.getQueryPages(concat_valueQuery);
+        }
+        updateView=updateView+1;
         $.post(
           '/queryWeb',
           {'terms': valueQuery,  'session': JSON.stringify(session)},
           function(data) {
-              this.props.queryPagesDone();
+              if(queries.length==0) this.props.queryPagesDone();
               this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" is completed');
-              if(queries.length>0) this.runMutipleQuery(queries, concat_valueQuery);
+              if(queries.length>0) this.runMutipleQuery(queries, concat_valueQuery, updateView);
           }.bind(this)).fail(function() { console.log("Something is wrong. Try again.");
                                           this.props.updateStatusMessage(false, 'Searching: Web query "' + valueQuery + '" has failed');
-                                          if(queries.length>0) this.runMutipleQuery(queries, previous_valueQuery);
+                                          if(queries.length>0) this.runMutipleQuery(queries, previous_valueQuery, updateView);
                                         }.bind(this));
           this.props.updateStatusMessage(true, 'Searching: Web query "' + valueQuery + '"');
     }
