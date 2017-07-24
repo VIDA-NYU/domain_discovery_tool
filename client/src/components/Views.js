@@ -461,6 +461,10 @@ class ViewTabSnippets extends React.Component{
                       if(updatedPages[url]["tags"][key] !== null){
                         console.log(updatedPages[url]["tags"][key]);
                         var itemTag = updatedPages[url]["tags"][key].toString();
+                        if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                        }
                         if(tag==="Neutral"){
                           if(itemTag!=="Neutral"){
                         //      updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(key),1);
@@ -545,7 +549,10 @@ class ViewTabSnippets extends React.Component{
         var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
                       if(updatedPages[url]["tags"][key] !== null){
                       var itemTag = updatedPages[url]["tags"][key].toString();
-
+                      if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                        }
                       if(tag==="Neutral"){
                         if(itemTag!=="Neutral"){
                       delete updatedPages[url]["tags"][key];
