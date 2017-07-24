@@ -432,7 +432,7 @@ class DeepCrawling extends Component {
           </TableBody>
           </Table>
 
-          <Table id={"Added urls to deep crawl"} style={{marginTop:"-40px", }} height={"200px"} selectable={false} multiSelectable={false} >
+          <Table id={"Added urls to deep crawl"} style={{marginTop:"0px", }} height={"200px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >
