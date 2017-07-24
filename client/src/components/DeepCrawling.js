@@ -462,7 +462,7 @@ class DeepCrawling extends Component {
           </Table>
         </CardText>
       </Card>
-        <div style={{display: 'flex'}}>
+        <div >
         <div>
           <RaisedButton
             label="Start Crawler"
@@ -479,22 +479,26 @@ class DeepCrawling extends Component {
           {
             this.state.disabledStartCrawler ?
             <div>
+            <div style={{float:'right'}}>
+              <RaisedButton
+                label="Stop Crawler"
+                style={{margin: 12}}
+                onClick={this.stopDeepCrawler}
+              />
+              </div>
+            <div>
               <RaisedButton
                 label="Add URLs"
                 style={{margin: 12}}
                 onClick={this.addUrlsWhileCrawling}
               />
               <RaisedButton
-                label="Stop Crawler"
-                style={{margin: 12}}
-                onClick={this.stopDeepCrawler}
-              />
-              <RaisedButton
                 label="Crawler Monitor"
-                style={{margin: 12}}
+                style={{margin: 12, float:'right'}}
               href={this.props.crawlerServers['deep']+"/monitoring"} target="_blank"
               />
 
+            </div>
             </div>
             :
             null
