@@ -1,7 +1,7 @@
 Run Crawler
 -----------
 
-Once a sufficiently good model is available you can change from Explore Data View to the Crawler View shown below:
+Once a sufficiently good model is available or pages are uploaded for a deep crawl you can change from Explore Data View to the Crawler View shown below:
 
 .. image:: deep_crawl.png
    :width: 800px
