@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
 import IconButton from 'material-ui/IconButton';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
+import Divider from 'material-ui/Divider';
 
 import {
   Table,
@@ -431,7 +432,7 @@ class DeepCrawling extends Component {
           </TableBody>
           </Table>
 
-          <Table id={"Added urls to deep crawl"} style={{marginTop:"-40px", }} height={"210px"} selectable={false} multiSelectable={false} >
+          <Table id={"Added urls to deep crawl"} style={{marginTop:"-40px", }} height={"200px"} selectable={false} multiSelectable={false} >
           <TableHeader displaySelectAll={false} enableSelectAll={false} >
             <TableRow>
               <TableHeaderColumn >
@@ -510,7 +511,8 @@ class DeepCrawling extends Component {
            showExpandableButton={false}
            style={{fontWeight:'bold', marginBottom:"-70px",}}
          />
-         <CardText>
+
+         <CardText >
            <div style={{display: 'flex', float: 'right', marginBottom: '-10px'}}>
              <div style={{marginTop: '15px', marginRight: '19px'}}>
               Min URLs in Domain
@@ -527,7 +529,8 @@ class DeepCrawling extends Component {
               </div>
             </div>
         </CardText>
-         <CardText expandable={false} >
+         <CardText expandable={false} style={{marginTop:"0px",}}>
+            <Divider style={{marginTop:20,}}/>
             <MultiselectTable
               rows={this.state.recommendations}
               columnHeadings={["DOMAIN", "SCORE, COUNT"]}

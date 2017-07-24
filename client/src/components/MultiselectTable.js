@@ -84,10 +84,6 @@ class MultiselectTable extends Component {
             headerStyle={{textAlign:'left',}}
           >
             <TableRow>
-              <TableHeaderColumn colSpan="10">
-              </TableHeaderColumn>
-            </TableRow>
-            <TableRow>
               <TableHeaderColumn colSpan="1">
                 <Checkbox
                   checked={this.state.selectAll}
