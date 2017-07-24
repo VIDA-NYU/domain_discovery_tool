@@ -95,6 +95,7 @@ class SearchTabs extends React.Component {
   RunQuery(){
     var session =this.props.session;
     session['search_engine']=this.state.search_engine;
+    session['pagesCap'] = "100";
     session = this.resetAllFilters(session);
     this.props.getQueryPages(this.state.valueQuery);
 
@@ -115,6 +116,7 @@ class SearchTabs extends React.Component {
     runSeedFinderQuery(){
     	var session =this.props.session;
     	session['search_engine']=this.state.search_engine;
+      session['pagesCap'] = "100";
     	$.post(
           '/runSeedFinder',
           {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
@@ -134,6 +136,7 @@ class SearchTabs extends React.Component {
     runLoadUrls(valueLoadUrls){
       var session =this.props.session;
       session['search_engine']=this.state.search_engine;
+      session['pagesCap'] = "100";
       session = this.resetAllFilters(session);
 	this.props.getQueryPages("uploaded");
 	var tag = (this.uploadTag !== "Neutral")?this.uploadTag:"";
@@ -296,6 +299,7 @@ class SearchTabs extends React.Component {
       //Submits a web query for a list of terms, e.g. 'ebola disease'
         var session =this.props.session;
         session['search_engine']=this.state.search_engine;
+        session['pagesCap'] = "100";
         var concat_valueQuery = (previous_valueQuery!=='')?previous_valueQuery:valueQuery;
         if(updateView==1) {
           session = this.resetAllFilters(session);
