@@ -448,8 +448,8 @@ class DeepCrawling extends Component {
           {
             (this.state.deepCrawlableUrls).map((row, index) => (
               <TableRow key={index}>
-              <TableRowColumn>{row}</TableRowColumn>
-              <TableRowColumn style={{textAlign: 'right'}}>
+              <TableRowColumn width={450} >{row}</TableRowColumn>
+              <TableRowColumn width={90} style={{textAlign: 'right'}}>
                 <div>
                   <IconButton onClick={this.handleRemoveUrlFromList.bind(this,row, index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
                     <RemoveURL />
