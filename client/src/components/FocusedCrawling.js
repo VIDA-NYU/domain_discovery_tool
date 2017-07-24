@@ -524,8 +524,8 @@ class FocusedCrawling extends Component {
            style={{fontWeight:'bold'}}
          />
          <CardText expandable={true} style={{marginTop:"-12px", paddingTop:0, marginBottom:18,}}>
-            <p><span style={{marginRight:10,}}>Relevant: </span>{total_selectedPosTags} </p>
-            <p><span style={{marginRight:10,}}>Irrelevant: </span>{total_selectedNegTags} </p>
+            <p><span style={{marginRight:10,}}>Total Positive: </span>{total_selectedPosTags} </p>
+            <p><span style={{marginRight:10,}}>Total Negative: </span>{total_selectedNegTags} </p>
             <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
             <Divider />
             <div style={{marginLeft:10, marginTop:10,}}>
