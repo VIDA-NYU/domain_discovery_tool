@@ -19,6 +19,8 @@ import Monitoring from './Monitoring.js';
 import Dialog from 'material-ui/Dialog';
 import {scaleLinear} from 'd3-scale';
 import {range} from 'd3-array';
+import CircularProgress from 'material-ui/CircularProgress';
+import FlatButton from 'material-ui/FlatButton';
 import {
   Table,
   TableBody,
@@ -57,6 +59,14 @@ const styles = {
   },
 };
 
+class CircularProgressSimple extends React.Component{
+  render(){
+    return(
+    <div style={{borderColor:"green", marginLeft:"50%"}}>
+      <CircularProgress size={30} thickness={7} />
+    </div>
+  );}
+}
 
 class FocusedCrawling extends Component {
 
@@ -72,7 +82,7 @@ class FocusedCrawling extends Component {
       loadTerms:false,
       disableStopCrawlerSignal:true,
       disableAcheInterfaceSignal:true,
-      disabledCreateModel:true, //false
+      disabledCreateModel:false, //false
       disabledStartCrawler:false, //false
       messageCrawler:"",
       open:false,
@@ -80,6 +90,9 @@ class FocusedCrawling extends Component {
       anchorEl:undefined,
       termsList: [],
       accuracyOnlineLearning:0,
+      loadingModel:false,
+      createModelMessage:"",
+      openMessageModelResult:false,
     };
 
   }
@@ -302,6 +315,32 @@ class FocusedCrawling extends Component {
     });
   }
 
+  ////////////////////
+  ///Create a model////
+  ////////////////////
+  getCreatedModel(session){
+    this.setState({loadingModel:true, disabledCreateModel:true, createModelMessage:"",})
+    $.post(
+       '/createModel',
+       {'session': JSON.stringify(session)},
+       function(model_file) {
+         var url = model_file;
+         var message = (url.indexOf("_model.zip")==-1)?"Model was not created.":"Model created successfully.";
+         if(url.indexOf("_model.zip")>-1) window.open(url,'Download');
+         this.setState({loadingModel:false, disabledCreateModel:false, createModelMessage:message, openMessageModelResult:true,})
+         this.forceUpdate();
+       }.bind(this)
+     );
+  }
+
+  exportModel(){
+    this.getCreatedModel(this.state.session);
+  }
+
+  handleCloseModelResult = () => {
+    this.setState({openMessageModelResult: false});
+  };
+  ////////////////////
 
   //////////////////////
   /////////////////////
@@ -364,6 +403,16 @@ class FocusedCrawling extends Component {
                                                     focusedCrawlDomains={this.state.loadTerms} fromCrawling={true} updateTerms={this.updateTerms.bind(this)}/>
                                                     :<div></div>;
     var openMessage = (this.props.slideIndex && this.state.openDialog)?true:false;
+    var loadingModel_signal = (this.state.disabledCreateModel)?<CircularProgressSimple style={{marginTop:"5px", marginLeft:"-30px"}} size={20} thickness={4} />:<div />;
+
+    const actionsModelResult = [
+      <FlatButton
+        label="Close"
+        primary={true}
+        onTouchTap={this.handleCloseModelResult.bind(this)}
+      />,
+    ];
+
     return (
       <div>
       <Row>
@@ -423,7 +472,7 @@ class FocusedCrawling extends Component {
           showExpandableButton={false}
           style={{fontWeight:'bold',}}
         />
-        <CardText expandable={true} >
+        <CardText expandable={true} style={{height:212}}>
         <div style={{display: 'flex'}}>
         <div>
           <RaisedButton
@@ -474,7 +523,7 @@ class FocusedCrawling extends Component {
            showExpandableButton={false}
            style={{fontWeight:'bold'}}
          />
-         <CardText expandable={true} style={{marginTop:"-12px", paddingTop:0,}}>
+         <CardText expandable={true} style={{marginTop:"-12px", paddingTop:0, marginBottom:18,}}>
             <p><span style={{marginRight:10,}}>Relevant: </span>{total_selectedPosTags} </p>
             <p><span style={{marginRight:10,}}>Irrelevant: </span>{total_selectedNegTags} </p>
             <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
@@ -482,12 +531,25 @@ class FocusedCrawling extends Component {
             <div style={{marginLeft:10, marginTop:10,}}>
               <ScaleBar ratioAccuracy={aux_ratioAccuracy}/>
             </div>
-            <div style={{marginTop:"-20px",}}>
-              <IconMenu
-               iconButtonElement={ <RaisedButton onTouchTap={this.handleOpenMenu} label="Export" />} >
-               <MenuItem value="1" primaryText="Create Model" />
-               <MenuItem value="2" primaryText="Settings" />
-             </IconMenu>
+            <div style={{marginTop:"-20px", }}>
+            <RaisedButton
+              disabled={this.state.disabledCreateModel}
+              label="Export"
+              style={{margin: 5}}
+              labelStyle={{textTransform: "capitalize"}}
+              onClick={this.exportModel.bind(this)}
+            />
+            <div style={{marginTop:"-40px", marginLeft:"-180px"}}>
+            {loadingModel_signal}
+            </div>
+            <Dialog
+              actions={actionsModelResult}
+              modal={false}
+              open={this.state.openMessageModelResult}
+              onRequestClose={this.handleCloseModelResult.bind(this)}
+            >
+              {this.state.createModelMessage}
+            </Dialog>
             </div>
          </CardText>
          </Card>
