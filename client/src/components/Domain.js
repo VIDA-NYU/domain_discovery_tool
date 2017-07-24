@@ -59,7 +59,6 @@ class Domain extends Component {
     }
 
     selectedViewBody(valueViewBody){
-      console.log(valueViewBody);
       this.setState({valueSelectedViewBody:valueViewBody});
       this.forceUpdate();
     }

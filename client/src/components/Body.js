@@ -293,7 +293,7 @@ class Body extends Component{
     if(this.props.selectedViewBody===1) //explore data view
     {
       //console.log(this.state.sessionBody);
-      console.log("------body----------");
+      //console.log("------body----------");
       const sidebar = (<div style={{width:this.state.size}}>
       <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:335, background:"white"}}>
             <Row className="Menus-child">
