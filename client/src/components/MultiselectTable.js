@@ -70,7 +70,7 @@ class MultiselectTable extends Component {
     return (
       <div>
         <Table
-          height={"390px"}
+          height={"408px"}
           fixedHeader={true}
           fixedFooter={true}
           selectable={false}
