@@ -30,8 +30,9 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-
 import $ from 'jquery';
+
+import DropDownMenu from 'material-ui/DropDownMenu';
 
 const styles = {
   backgound: {
@@ -83,12 +84,6 @@ class Header extends Component {
     this.state = {
       currentDomain:'',
       term:'',
-      disableStopCrawlerSignal:true,
-      disableAcheInterfaceSignal:true,
-      disabledStartCrawler:true, //false
-      disabledCreateModel:true, //false
-      messageCrawler:"",
-      openCreateModel: false,
       openInfo:false,
       currentTags:undefined,
       tagsPosCheckBox:["Relevant"],
@@ -96,6 +91,7 @@ class Header extends Component {
       loadingModel:false,
       processes:{},
       noModelAvailable:true, //the first time we dont have a model
+      valueViewBody:1,
     };
 
     this.intervalFuncId = undefined;
@@ -151,8 +147,8 @@ class Header extends Component {
       session['selected_tags']="";
       session['selected_model_tags']="";
       session['model'] = {};
-      session['model']['positive'] = "Relevant";
-      session['model']['nagative'] = "Irrelevant";
+      session['model']['positive'] = ["Relevant"];
+      session['model']['negative'] = ["Irrelevant"];
       return session;
    }
 
@@ -208,7 +204,7 @@ class Header extends Component {
 	    }.bind(this)
 	);
     }
-    
+
    setStatusInterval(){
        this.intervalFuncId = window.setInterval(function() {this.getStatus();}.bind(this), 1000);
    }
@@ -230,7 +226,7 @@ class Header extends Component {
 	       disableAcheInterfaceFlag =true;
 	       disabledStartCrawlerFlag = true;
            }
-	     
+
            this.props.updateFilterCrawlerData("updateCrawler");
            this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
            this.forceUpdate();
@@ -362,6 +358,22 @@ class Header extends Component {
       this.forceUpdate();
    }
 
+   handleOnRequestChange = (event, value)=> {
+       var session = this.createSession(this.props.idDomain);
+       if(value === "2"){
+    this.getAvailableTags(session);
+    this.setState({ openCreateModel: true });
+       }
+       else if(value === "1"){
+    this.createModel();
+       }
+   }
+
+   handleChangeViewBoby = (event, index, valueViewBody) => {
+     this.setState({valueViewBody:valueViewBody});
+     this.props.selectedViewBody(valueViewBody);//1: explore data view, 2: crawling view
+   }
+
    render() {
      const actionsCreateModel = [
                                  <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseCancelCreateModel} />,
@@ -412,26 +424,16 @@ class Header extends Component {
        <AppBar showMenuIconButton={true} style={styles.backgound} title={<span style={styles.titleText}> Domain Discovery Tool </span>}
         iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40'  />} >
          <Toolbar style={styles.toolBarHeader}>
-             <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
-             <ToolbarSeparator style={{ marginTop:"5px"}} />
-                 <Link to='/'>
-                  <IconButton tooltip="Change Domain" style={{marginLeft:'-15px'}} tooltipStyles={{fontSize:14, fontWeight:"bold"}} > <SwitchDomain /> </IconButton>
-                 </Link>
-             <ToolbarSeparator style={{ marginTop:"5px", marginLeft:"-20px"}} />
-             <RaisedButton onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                           label="Start Crawler" labelPosition="before" containerElement="label" />
-             {crawlerAcheInterface}
-             {crawlerStop}
-             {messageCrawlerRunning}
-             {crawlingProgress}
+         <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
+         <Link to='/'>
+          <IconButton tooltip="Change Domain" style={{marginLeft:'0px'}} tooltipStyles={{fontSize:14, fontWeight:"bold"}} > <SwitchDomain /> </IconButton>
+         </Link>
+         <ToolbarSeparator style={{ marginTop:"5px"}} />
+          <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBoby.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
+            <MenuItem value={1} primaryText="Explore Data View" />
+            <MenuItem value={2} primaryText="Crawling View" />
+         </DropDownMenu>
 
-             <IconMenu
-             iconButtonElement={<RaisedButton disabled={this.state.disabledCreateModel} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-             label="Model" labelPosition="before" containerElement="label" />} onChange={this.handleOnRequestChange.bind(this)}>
-                 <MenuItem value="1" primaryText="Create Model" />
-                 <MenuItem value="2" primaryText="Settings" />
-             </IconMenu>
-	     {loadingModel}
 	     <ToolbarSeparator style={{ marginTop:"5px"}} />
 	     {infoCrawlerRunning}
              <ToolbarSeparator style={{ marginTop:"5px"}} />
@@ -456,3 +458,20 @@ class Header extends Component {
  }
 
  export default Header;
+/*
+<ToolbarSeparator style={{ marginTop:"5px", marginLeft:"-20px"}} />
+<RaisedButton onClick={this.startCrawler.bind(this)} disabled={this.state.disabledStartCrawler} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+              label="Start Crawler" labelPosition="before" containerElement="label" />
+{crawlerAcheInterface}
+{crawlerStop}
+{messageCrawlerRunning}
+{crawlingProgress}
+
+<IconMenu
+iconButtonElement={<RaisedButton disabled={this.state.disabledCreateModel} style={{height:20, marginTop: 15,minWidth:68, width:68}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
+label="Model" labelPosition="before" containerElement="label" />} onChange={this.handleOnRequestChange.bind(this)}>
+    <MenuItem value="1" primaryText="Create Model" />
+    <MenuItem value="2" primaryText="Settings" />
+</IconMenu>
+{loadingModel}
+*/

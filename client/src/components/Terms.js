@@ -10,31 +10,6 @@ import Divider from 'material-ui/Divider';
 import $ from 'jquery';
 import CircularProgress from 'material-ui/CircularProgress';
 
-const styles = {
-  card: {
-
-    borderStyle: 'solid',
-    borderColor: '#C09ED7',
-    background: 'white',
-    borderRadius: '0px 0px 0px 0px',
-    borderWidth: '0px 0px 1px 0px'
-  },
-  avatar:{
-    margin:'-4px 8px 0px 0px',
-  },
-  cardHeader:{
-    background: '#DCCCE7',
-    padding:'10px 1px 10px 6px',
-    borderRadius: '0px 0px 0px 0px',
-  },
-  cardMedia:{
-    background: '#DCCCE7',
-    padding:'2px 4px 2px 4px',
-    borderRadius: '0px 0px 0px 0px',
-    height: "390px",
-  },
-
-};
 
 class CircularProgressSimple extends React.Component{
   render(){
@@ -56,36 +31,38 @@ class Terms extends Component{
       listTerms: [],
       session:{},
       sessionString:"",
+      fromCrawling:false,
     };
   };
 
   componentWillMount = () => {
-   this.setState({expanded: this.props.statedCard, session:this.props.session, sessionString:JSON.stringify(this.props.session) });
+   this.setState({expanded: this.props.statedCard, session:this.props.session, sessionString:JSON.stringify(this.props.session) , fromCrawling:this.props.fromCrawling,});
+   this.loadTerms();
   };
 
 
   //Handling state's changes of search card. (expanded or reduced)
   componentWillReceiveProps  = (nextProps) => {
-      // Calculate new state
+    // Calculate new state
     if(nextProps.statedCard !== this.state.statedCard){
       this.setState({expanded: nextProps.statedCard}, function() {
-           this.setState({expanded: nextProps.statedCard});
+        this.setState({expanded: nextProps.statedCard});
       });
     }
 
-      if(JSON.stringify(nextProps.session) !== this.state.sessionString && nextProps.statedCard){
-	  this.setState({
-              session:nextProps.session,
-              sessionString:JSON.stringify(this.props.session),
-              listTerms: [],
-	  });
-	  this.loadTerms();
-      }
-      else{
-	  return;
-      }
+    if(JSON.stringify(nextProps.session) !== this.state.sessionString && nextProps.statedCard){
+      this.setState({
+        session:nextProps.session,
+        sessionString:JSON.stringify(this.props.session),
+        listTerms: [],
+      });
+      this.loadTerms();
+    }
+    else{
+      return;
+    }
 
-   };
+  };
 
   handleExpandChange = (expanded) => {
     this.setState({expanded: expanded});
@@ -111,19 +88,27 @@ class Terms extends Component{
           return {'word': w[0], 'posFreq': w[1], 'negFreq': w[2], 'tags': w[3]}
         });
         this.setState({listTerms: entries});
+        this.updateTerms(entries); //sending new terms to FocusedCrawling component
       }.bind(this)).fail(function() {
         console.log("Something wrong happen. Try again.");
       }.bind(this));
     };
 
+  //sending new terms to FocusedCrawling component
+  updateTerms(updateListTerm){
+    if(this.props.updateTerms != undefined)
+	    this.props.updateTerms(updateListTerm);
+  }
+
   updateListTermParent(updateListTerm){
       this.setState({listTerms: updateListTerm});
+      this.updateTerms(updateListTerm); //sending new terms to FocusedCrawling component
       this.forceUpdate();
   }
 
   //Check if the component should be updated or not
   shouldComponentUpdate(nextProps, nextState) {
-    if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString) {
+    if(JSON.stringify(nextProps.session) !== this.state.sessionString || nextProps.statedCard !== this.state.statedCard || JSON.stringify(nextState.session) !== this.state.sessionString || this.props.focusedCrawlDomains) {
           return true;
     }
     return false;
@@ -131,22 +116,50 @@ class Terms extends Component{
 
 
   render(){
+
+    const styles = {
+      card: {
+        borderStyle: 'solid',
+        borderColor: '#C09ED7',
+        background: 'white',
+        borderRadius: '0px 0px 0px 0px',
+        borderWidth: '0px 0px 0px 0px'
+      },
+      avatar:{
+        margin:'-4px 8px 0px 0px',
+      },
+      cardHeader:{
+        background: this.props.BackgroundColorTerm, //'#DCCCE7',
+        padding:'10px 1px 10px 6px',
+        borderRadius: '0px 0px 0px 0px',
+      },
+      cardMedia:{
+        background: this.props.BackgroundColorTerm,
+        padding:'2px 4px 2px 4px',
+        borderRadius: '0px 0px 0px 0px',
+        height: "390px",
+      },
+
+    };
+
     let terms = " ";
     if(this.state.listTerms.length>0){
       terms = this.state.listTerms.map(function(w) {
         return <p>{w["word"]}</p>;
       });
     }
-    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)} loadTerms={this.loadTerms.bind(this)}></TermsList>:<CircularProgressSimple />;
+    var isThereTerms = (this.state.listTerms.length>0)?<TermsList listTerms={this.state.listTerms}  session={this.props.session} updateListTermParent={this.updateListTermParent.bind(this)} loadTerms={this.loadTerms.bind(this)} fromCrawling={this.state.fromCrawling} ></TermsList>:<CircularProgressSimple />;
+    var avatarElement = (this.props.renderAvatar)?<Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />
+    :null;
     return(
 
       <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} style={styles.card}>
         <CardHeader
             title="Terms"
-            avatar={ <Avatar color={'white'} backgroundColor={'#7940A0'} size={this.props.sizeAvatar} style={styles.avatar} icon={<Assignment />} />}
+            avatar={avatarElement}
             style={styles.cardHeader}
-            actAsExpander={true}
-            showExpandableButton={true}
+            actAsExpander={this.props.actAsExpander}
+            showExpandableButton={this.props.showExpandableButton}
         />
         <CardMedia expandable={true} style={styles.cardMedia}>
           <Divider/>

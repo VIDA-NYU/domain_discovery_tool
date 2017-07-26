@@ -404,6 +404,7 @@ class ViewTabSnippets extends React.Component{
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
   getPages(session){
+    session['pagesCap'] = "12";
     $.post(
       '/getPages',
       {'session': JSON.stringify(session)},
@@ -460,6 +461,10 @@ class ViewTabSnippets extends React.Component{
                       if(updatedPages[url]["tags"][key] !== null){
                         console.log(updatedPages[url]["tags"][key]);
                         var itemTag = updatedPages[url]["tags"][key].toString();
+                        if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                        }
                         if(tag==="Neutral"){
                           if(itemTag!=="Neutral"){
                         //      updatedPages[url]["tags"].splice(updatedPages[url]["tags"].indexOf(key),1);
@@ -544,7 +549,10 @@ class ViewTabSnippets extends React.Component{
         var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
                       if(updatedPages[url]["tags"][key] !== null){
                       var itemTag = updatedPages[url]["tags"][key].toString();
-
+                      if(itemTag==="Relevant" || itemTag==="Irrelevant"){
+                          delete updatedPages[url]["tags"][key];
+                          this.removeAddTagElasticSearch(urls, itemTag, false ); //Remove tag
+                        }
                       if(tag==="Neutral"){
                         if(itemTag!=="Neutral"){
                       delete updatedPages[url]["tags"][key];
@@ -650,9 +658,12 @@ class ViewTabSnippets extends React.Component{
               this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
               this.state.pages[inputURL[i]]["tags"].push(val[0].value);
               this.removeAddTagElasticSearch(inputURL, val[0].value, true);
+            }}
+            else if(this.state.pages[inputURL[i]]["tags"]===undefined){
+              this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
+              this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+              this.removeAddTagElasticSearch(inputURL, val[0].value, true);
             }
-
-          }
 
         }
 
@@ -758,7 +769,7 @@ class ViewTabSnippets extends React.Component{
         this.currentUrls.push(url_info[0]);
 
 
-        return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor }} >
+        return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor, zIndex: 'none' }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
             <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'45px',height:'45px', marginRight:'3px',}}/>
@@ -781,9 +792,10 @@ class ViewTabSnippets extends React.Component{
                 </Button>
               </OverlayTrigger>
             </ButtonGroup></p>
-          <div style={{float:"right", fontSize: "14px", fontWeight: "500", width: '100px' , height:"20"}}>
+          <div style={{float:"right", fontSize: "12px", fontWeight: "500", width: '100px' }}>
             <Select.Creatable
               placeholder="Add Tag"
+              className="menu-outer-top"
               multi={false}
               options={this.availableTags}
               onChange={this.addCustomTag.bind(this, [url_info[0]])}
@@ -856,7 +868,7 @@ class ViewTabSnippets extends React.Component{
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
-            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "14px", fontWeight: "500", paddingRight: "20px",marginBottom:"30px",marginRight:"20px", marginTop: "20px"}}>
+            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px",marginRight:"20px", marginTop: "20px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
               <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
               </div>
@@ -935,6 +947,7 @@ class Views extends React.Component {
     getPages(session){
 	var tempSession = session;
 	tempSession["from"]=this.state.offset;
+  tempSession['pagesCap'] = "12";
 	$.post(
       '/getPages',
       {'session': JSON.stringify(tempSession)},

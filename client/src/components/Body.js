@@ -8,6 +8,7 @@ import Search from './Search';
 import Filters from './Filters';
 import Terms from './Terms';
 import Views from './Views';
+import CrawlingView from './CrawlingView';
 import '../css/Components.css';
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import 'react-select/dist/react-select.css';
@@ -22,6 +23,7 @@ import Subheader from 'material-ui/Subheader';
 
 const styles = {
   button:{
+    //hoverColor:"#9c9ca4"
     marginTop:20,
     paddingBottom:'-145px',
     marginBottom:'-545px',
@@ -97,7 +99,7 @@ class Body extends Component{
         update:false,
         runCurrentQuery: "*",
         intervalFuncId:undefined,
-
+        stopApplyQueryOverView:false, //Allow interactions with data (applying filters, tagging, etc) while multiple searches are running.
     };
     this.sessionB={};
   }
@@ -125,7 +127,7 @@ class Body extends Component{
     session['selected_crawled_tags']="";
     session['model'] = {};
     session['model']['positive'] = "Relevant";
-    session['model']['nagative'] = "Irrelevant";
+    session['model']['negative'] = "Irrelevant";
 
 
 
@@ -223,7 +225,7 @@ class Body extends Component{
   deletedFilter(sessionTemp){
     this.props.deletedFilter(sessionTemp["filter"]);
     this.setState({
-        sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp)
+        sessionBody:sessionTemp, sessionString: JSON.stringify(sessionTemp), stopApplyQueryOverView:true,
     });
     this.updateSession(sessionTemp);
   }
@@ -243,27 +245,31 @@ class Body extends Component{
   getQueryPages(term){
     if(this.state.intervalFuncId !== undefined)
       this.queryPagesDone();
-    this.setState({intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 1000)});
+
+    this.setState({stopApplyQueryOverView:false, intervalFuncId: window.setInterval(function() {this.applyFilterByQuery(term);}.bind(this), 1000)});
 
   }
 
   applyFilterByQuery(term){
     var session =this.state.sessionBody;
-    session['newPageRetrievalCriteria'] = "one";
-    session['pageRetrievalCriteria'] = "Queries";
-    session['selected_queries']=term;
+    if(!this.state.stopApplyQueryOverView){
+      session['newPageRetrievalCriteria'] = "one";
+      session['pageRetrievalCriteria'] = "Queries";
+      session['selected_queries']=term;
+    }
     this.updateSession(session);
+
   }
 
   // Stop timer to stop getting pages fromt the server as all downloaded pages have been retrieved
   queryPagesDone(){
     window.clearInterval(this.state.intervalFuncId);
-    this.setState({intervalFuncId:undefined});
+    this.setState({intervalFuncId:undefined, stopApplyQueryOverView:false,});
   }
 
   //Update session
   updateSession(newSession){
-    this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession)});
+    this.setState({sessionBody: newSession , sessionString: JSON.stringify(newSession), stopApplyQueryOverView:true,});
     this.forceUpdate();
   }
 
@@ -284,59 +290,72 @@ class Body extends Component{
 
   render(){
 
-    //console.log(this.state.sessionBody);
-    console.log("------body----------");
-    const sidebar = (<div style={{width:this.state.size}}>
-    <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:335, background:"white"}}>
-          <Row className="Menus-child">
-            <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
-          </Row>
-          <Row className="Menus-child">
-  		     <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
-          </Row>
-          <Row className="Menus-child">
-            <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateStatusMessage={this.updateStatusMessage.bind(this)} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
-          </Row>
-          <Row className="Menus-child">
-            <Terms statedCard={this.state.stateTermsCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody}/>
-          </Row>
-          <Row className="Menus-child">
-            <FloatingActionButton mini={true} style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
-              <Plus />
-            </FloatingActionButton>
-          </Row>
-        </Col>
-      </div>
-    );
-
-    const sidebarProps = {
-      sidebar: sidebar,
-      docked: this.state.docked,
-      sidebarClassName: 'custom-sidebar-class',
-      open: this.state.open,
-      touch: this.state.touch,
-      shadow: this.state.shadow,
-      pullRight: this.state.pullRight,
-      touchHandleWidth: this.state.touchHandleWidth,
-      dragToggleDistance: this.state.dragToggleDistance,
-      transitions: this.state.transitions,
-      onSetOpen: this.onSetOpen,
-    };
-
-  return (
-    <Sidebar {...sidebarProps}>
-      <div>
-        <Row style={styles.content}>
-          <Views queryFromSearch={this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} handlePageClick={this.handlePageClick.bind(this)}/>
-        </Row>
+    if(this.props.selectedViewBody===1) //explore data view
+    {
+      //console.log(this.state.sessionBody);
+      //console.log("------body----------");
+      const sidebar = (<div style={{width:this.state.size}}>
+      <Col style={{marginTop:70, marginLeft:10, marginRight:10, width:335, background:"white"}}>
+            <Row className="Menus-child">
+              <DomainInfo nameDomain={this.props.nameDomain} session={this.state.sessionBody} statedCard={this.state.stateDomainInfoCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)}/>
+            </Row>
+            <Row className="Menus-child">
+             <Search statedCard={this.state.stateSearchCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updatePages={this.updatePages.bind(this)} updateStatusMessage={this.updateStatusMessage.bind(this)} getQueryPages={this.getQueryPages.bind(this)} queryPagesDone={this.queryPagesDone.bind(this)}/>
+            </Row>
+            <Row className="Menus-child">
+              <Filters updateCrawlerData={this.props.updateCrawlerData} queryFromSearch = {this.state.intervalFuncId} update={this.state.update} statedCard={this.state.stateFiltersCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} updateStatusMessage={this.updateStatusMessage.bind(this)} updateSession={this.updateSession.bind(this)} deletedFilter={this.deletedFilter.bind(this)}/>
+            </Row>
+            <Row className="Menus-child">
+              <Terms statedCard={this.state.stateTermsCard} sizeAvatar={this.state.sizeAvatar} setActiveMenu={this.setActiveMenu.bind(this)} session={this.state.sessionBody} BackgroundColorTerm={'#DCCCE7'} renderAvatar={true} showExpandableButton={true} actAsExpander={true}/>
+            </Row>
+            <Row className="Menus-child">
+              <FloatingActionButton mini={true}  style={styles.button} zDepth={3} onClick={this.openDockMenu.bind(this)}>
+                <Plus />
+              </FloatingActionButton>
+            </Row>
+          </Col>
         </div>
-        <Snackbar
-      open={this.state.update || this.state.intervalFuncId !== undefined}
-      message={this.state.runCurrentQuery}
-        //autoHideDuration={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? 30000: (this.state.runCurrentQuery === "process*concluded")?2000: 0}
-      />
-      </Sidebar>
-    )
+      );
+
+      const sidebarProps = {
+        sidebar: sidebar,
+        docked: this.state.docked,
+        sidebarClassName: 'custom-sidebar-class',
+        open: this.state.open,
+        touch: this.state.touch,
+        shadow: this.state.shadow,
+        pullRight: this.state.pullRight,
+        touchHandleWidth: this.state.touchHandleWidth,
+        dragToggleDistance: this.state.dragToggleDistance,
+        transitions: this.state.transitions,
+        onSetOpen: this.onSetOpen,
+      };
+
+    return (
+      <Sidebar {...sidebarProps}>
+        <div>
+          <Row style={styles.content}>
+            <Views queryFromSearch={this.state.intervalFuncId} domainId={this.state.currentDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} handlePageClick={this.handlePageClick.bind(this)}/>
+          </Row>
+          </div>
+          <Snackbar
+        open={this.state.update || this.state.intervalFuncId !== undefined}
+        message={this.state.runCurrentQuery}
+          //autoHideDuration={(this.state.runCurrentQuery !== "process*concluded" && this.state.runCurrentQuery !== "*" )? 30000: (this.state.runCurrentQuery === "process*concluded")?2000: 0}
+        />
+        </Sidebar>
+      )
+    }
+    else //crawling view
+    {
+      return(
+        <div>
+        <CrawlingView domainId={this.state.currentDomain} />
+        </div>
+      )
+    }
+
+
   }
 }
 
