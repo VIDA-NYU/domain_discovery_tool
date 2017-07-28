@@ -63,7 +63,9 @@ class DeepCrawling extends Component {
   * @param
   */
     componentWillMount(){
-      this.setState({session:this.props.session});
+      var update_disabledStartCrawler = (this.props.updateCrawlerData)?true:false;
+      this.setState({session:this.props.session, disabledStartCrawler:update_disabledStartCrawler,});
+      //this.setState({session:this.props.session});
       this.forceUpdate();
       var session = this.props.session;
       session['newPageRetrievalCriteria'] = "one";

@@ -105,6 +105,9 @@ class FocusedCrawling extends Component {
   * @param
   */
   componentWillMount(){
+      var update_disabledStartCrawler = (this.props.updateCrawlerData)?true:false;
+      this.setState({session:this.props.session, disabledStartCrawler:update_disabledStartCrawler,});
+      this.forceUpdate();
       var temp_session = this.props.session;
       this.getAvailableTags(this.props.session);
       this.getModelTags(this.props.domainId);
