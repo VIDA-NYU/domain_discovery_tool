@@ -118,6 +118,20 @@ class CrawlingView extends Component {
   	});
   }
   render() {
+    var disableDeepCrawlerButton =false;
+    var disableFocusedCrawlerButton = false;
+    if(this.props.statusCrawlers!== undefined && this.props.statusCrawlers.length > 0){
+      // Crawler is executing
+      this.props.statusCrawlers.forEach(function(obj){
+        if(obj.description==="deep"){
+          disableDeepCrawlerButton = (obj.status.toLowerCase() === "running")?true:false;
+        }
+        if(obj.description==="focused"){
+          disableFocusedCrawlerButton = (obj.status.toLowerCase() === "running")?true:false;
+        }
+      }.bind(this));
+    }
+
     return (
       <div style={styles.content}>
         <Tabs
@@ -131,11 +145,11 @@ class CrawlingView extends Component {
         </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
         <div id={"deep-crawling"} style={styles.slide}>
-            <DeepCrawling domainId={this.props.domainId} session={this.state.session} crawlerServers={this.state.crawlerServers}/>
+          <DeepCrawling updateCrawlerData={disableDeepCrawlerButton} domainId={this.props.domainId} session={this.state.session} crawlerServers={this.state.crawlerServers}/>
         </div>
 
         <div id="focused-crawling" style={styles.slide}>
-          <FocusedCrawling domainId={this.props.domainId}  session={this.state.session}  crawlerServers={this.state.crawlerServers} slideIndex={this.state.slideIndex}/>
+          <FocusedCrawling updateCrawlerData={disableFocusedCrawlerButton} domainId={this.props.domainId}  session={this.state.session}  crawlerServers={this.state.crawlerServers} slideIndex={this.state.slideIndex}/>
         </div>
 
         </SwipeableViews>
