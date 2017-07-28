@@ -350,7 +350,7 @@ class Body extends Component{
     {
       return(
         <div>
-        <CrawlingView domainId={this.state.currentDomain} />
+        <CrawlingView domainId={this.state.currentDomain} statusCrawlers={this.props.statusCrawlers} />
         </div>
       )
     }

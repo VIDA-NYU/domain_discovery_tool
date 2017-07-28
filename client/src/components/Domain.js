@@ -14,6 +14,7 @@ class Domain extends Component {
     	    updateCrawlerData:"",
     	    filterKeyword:null,
           valueSelectedViewBody:1,
+          statusCrawlers:[],
     	};
     };
 
@@ -53,9 +54,9 @@ class Domain extends Component {
 	this.forceUpdate();
     }
     //if updateCrawlerData is true, then the filter 'crawler data' should be updated because the crawler is still running.
-    updateFilterCrawlerData(updateCrawlerData){
-	this.setState({ updateCrawlerData:updateCrawlerData, reloadBody:true });
-	this.forceUpdate();
+    updateFilterCrawlerData(updateCrawlerData, statusCrawlers){
+	     this.setState({ updateCrawlerData:updateCrawlerData, reloadBody:true, statusCrawlers:statusCrawlers});
+	     this.forceUpdate();
     }
 
     selectedViewBody(valueViewBody){
@@ -68,7 +69,7 @@ class Domain extends Component {
 	return (
 		<div>
 		<Header deleteKeywordSignal={this.state.deleteKeywordSignal} currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} noModelAvailable={this.state.noModelAvailable} updateFilterCrawlerData={this.updateFilterCrawlerData.bind(this)} selectedViewBody={this.selectedViewBody.bind(this)}/>
-		<Body selectedViewBody={this.state.valueSelectedViewBody} updateCrawlerData={this.state.updateCrawlerData} nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
+		<Body selectedViewBody={this.state.valueSelectedViewBody} statusCrawlers={this.state.statusCrawlers} updateCrawlerData={this.state.updateCrawlerData} nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
 		</div>
 	);
     }
