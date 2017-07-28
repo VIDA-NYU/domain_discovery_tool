@@ -92,9 +92,15 @@ class Header extends Component {
       processes:{},
       noModelAvailable:true, //the first time we dont have a model
       valueViewBody:1,
+
     };
 
     this.intervalFuncId = undefined;
+    this.deepCrawlerSignal="";
+    this.deepCrawlerStopSignal="";
+    this.focusedCrawlerSignal="";
+    this.focusedCrawlerStopSignal="";
+
   }
 
   componentWillMount(){
@@ -123,6 +129,10 @@ class Header extends Component {
 
     //Kill window.setInterval() for the current intervalFuncId. It happen when you go out from the domain (switching domain)
     componentWillUnmount() {
+      this.deepCrawlerSignal="";
+      this.deepCrawlerStopSignal="";
+      this.focusedCrawlerSignal="";
+      this.focusedCrawlerStopSignal="";
       window.clearInterval(this.intervalFuncId);
     }
 
@@ -169,29 +179,70 @@ class Header extends Component {
 		    disabledCreateModelFlag = true;
 		}
 		if(status !== undefined && Object.keys(status).length > 0) {
-		    // Background processes exist
-		    if(status.Crawler !== undefined && status.Crawler.length > 0){
-			// Crawler is executing
-			var message = status.Crawler[0].status;
-			if( message !== undefined){
+		  // Background processes exist
+		  if(status.Crawler !== undefined && status.Crawler.length > 0){
+  			// Crawler is executing
+        status.Crawler.forEach(function(obj){
+          if(obj.description==="focused"){
+            var message = obj.status;
+      			if( message !== undefined){
+    			    if(message.toLowerCase() === "running"){
+                if(this.focusedCrawlerSignal!=="focused"){
+                  this.props.updateFilterCrawlerData("updateCrawler",status.Crawler);
+                }
+                this.focusedCrawlerSignal="focused";
+              }
+              else if(message.toLowerCase() === "terminating"){
+                if(this.focusedCrawlerStopSignal!=="focused stop") {
+                  this.props.updateFilterCrawlerData("stopCrawler",status.Crawler);
+                }
+                this.focusedCrawlerStopSignal="focused stop";
+    			    }
+            }
+          }//end focused
+          if(obj.description==="deep"){
+            var message = obj.status;
+      			if( message !== undefined){
+    			    if(message.toLowerCase() === "running"){
+                if(this.deepCrawlerSignal!=="deep") {
+                  this.props.updateFilterCrawlerData("updateCrawler", status.Crawler);
+                }
+                this.deepCrawlerSignal="deep";
+              }
+              else if(message.toLowerCase() === "terminating"){
+                if(this.deepCrawlerStopSignal!=="deep stop") {
+                  this.props.updateFilterCrawlerData("stopCrawler",status.Crawler);
+                }
+                this.deepCrawlerStopSignal="deep stop";
+    			    }
+            }
+          }
+        }.bind(this));
+
+  			var message = status.Crawler[0].status;
+  			if( message !== undefined){
 			    if(message.toLowerCase() === "running"){
-				disableStopCrawlerFlag = false;
-				disableAcheInterfaceFlag =false;
-				disabledStartCrawlerFlag = true;
+    				disableStopCrawlerFlag = false;
+    				disableAcheInterfaceFlag =false;
+    				disabledStartCrawlerFlag = true;
+          //  if(this.deepCrawlerSignal!=="deep") this.props.updateFilterCrawlerData("updateCrawler");
+          //  this.deepCrawlerSignal="deep";
 			    }else if(message.toLowerCase() === "terminating"){
-				disabledStartCrawlerFlag = true;
+          //  if(this.deepCrawlerStopSignal!=="deep stop") this.props.updateFilterCrawlerData("stopCrawler");
+          //  this.deepCrawlerStopSignal="deep stop";
+				    disabledStartCrawlerFlag = true;
 			    }
 			    if(this.props.currentDomain !== status.Crawler[0].domain){
-				// Crawler is rumming in a different domain
-				disableStopCrawlerFlag = true;
-				disableAcheInterfaceFlag =true;
-				disabledStartCrawlerFlag = true;
-				message = message +" in domain: " +  status.Crawler[0].domain;
+  				// Crawler is rumming in a different domain
+  				disableStopCrawlerFlag = true;
+  				disableAcheInterfaceFlag =true;
+  				disabledStartCrawlerFlag = true;
+  				message = message +" in domain: " +  status.Crawler[0].domain;
 			    }
 			    this.setState({processes: status, disableAcheInterfaceSignal:disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, disabledCreateModel: disabledCreateModelFlag, messageCrawler:message, });
 			    this.forceUpdate();
-			}
-		    } else {
+  			}
+		   } else {
 			// Not a crawler process. Could be seedfinder
 			this.setState({processes: status, disableAcheInterfaceSignal:true, disableStopCrawlerSignal:true, disabledStartCrawler: disabledStartCrawlerFlag, disabledCreateModel: disabledCreateModelFlag, messageCrawler:"", });
 			this.forceUpdate();
