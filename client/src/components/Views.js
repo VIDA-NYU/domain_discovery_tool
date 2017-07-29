@@ -700,59 +700,59 @@ class ViewTabSnippets extends React.Component{
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
-      var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
-      var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
-	  return [k, this.state.pages[k]]
-  });
-      sorted_urlsList.sort(function(first, second) {
-	  return Number(first[1]["order"]) - Number(second[1]["order"])
-      });
+    var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
+    var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
+	    return [k, this.state.pages[k]]
+    });
 
-      var urlsList = sorted_urlsList.map((url_info, index)=>{
+    sorted_urlsList.sort(function(first, second) {
+	     return Number(first[1]["order"]) - Number(second[1]["order"])
+    });
 
-        var chip=[];
+    var urlsList = sorted_urlsList.map((url_info, index)=>{
 
-        if(this.customTagPages.indexOf(url_info[0])>-1){
-           value = this.state.custom_tag_val;
-        }
-        var bgColor = "";
-        bgColor = (this.state.change_color_urls.indexOf(url_info[0])> -1)?"silver":"white";
-        if(url_info[1]["tags"]){
-             let uniqueTag="";
-             uniqueTag = this.getTag(url_info[0]);
-             if(uniqueTag==='Relevant')relev_total++;
-             if(uniqueTag==='Irrelevant')irrelev_total++;
-             if(uniqueTag==='Neutral')neut_total++;
-             var data = url_info[1]["tags"].filter(function(tag){
-               return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral"
-             }).map((tag, index)=>{
-                return {'key':index, 'label':tag, 'url':url_info[0]}
-             });
-             chip =data.map(this.renderCustomTag.bind(this));
-        }
-        else{
-            neut_total++;
-        }
-        let colorTagRelev = "";
-        let colorTagIrrelev="";
-        let colorTagNeutral="silver";
-        let uniqueTag="";
-        var checkTagRelev=false;
-        var checkTagIrrelev=false;
-        var checkTagNeutral=false;
-        if(url_info[1]["tags"]){
-           uniqueTag = url_info[1]["tags"];
-           for(var i=0;i<uniqueTag.length;i++){
-             if(uniqueTag[i] === 'Relevant' ){
-               checkTagRelev=true;
-             }
-             if(uniqueTag[i]==='Irrelevant'){
-               checkTagIrrelev=true;
-             }
-             if(uniqueTag[i]==='Neutral'){
-               checkTagNeutral=true;
-             }
-           }
+    var chip=[];
+
+    if(this.customTagPages.indexOf(url_info[0])>-1){
+      value = this.state.custom_tag_val;
+    }
+    var bgColor = "";
+    bgColor = (this.state.change_color_urls.indexOf(url_info[0])> -1)?"silver":"white";
+    if(url_info[1]["tags"]){
+      let uniqueTag="";
+      uniqueTag = this.getTag(url_info[0]);
+      if(uniqueTag==='Relevant')relev_total++;
+      if(uniqueTag==='Irrelevant')irrelev_total++;
+      if(uniqueTag==='Neutral')neut_total++;
+      var data = url_info[1]["tags"].filter(function(tag){
+                   return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral"
+                 }).map((tag, index)=>{
+                   return {'key':index, 'label':tag, 'url':url_info[0]}
+                 });
+      chip =data.map(this.renderCustomTag.bind(this));
+    } else {
+      neut_total++;
+    }
+    let colorTagRelev = "";
+    let colorTagIrrelev="";
+    let colorTagNeutral="silver";
+    let uniqueTag="";
+    var checkTagRelev=false;
+    var checkTagIrrelev=false;
+    var checkTagNeutral=false;
+    if(url_info[1]["tags"]){
+       uniqueTag = url_info[1]["tags"];
+       for(var i=0;i<uniqueTag.length;i++){
+         if(uniqueTag[i] === 'Relevant' ){
+           checkTagRelev=true;
+         }
+         if(uniqueTag[i]==='Irrelevant'){
+           checkTagIrrelev=true;
+         }
+         if(uniqueTag[i]==='Neutral'){
+           checkTagNeutral=true;
+         }
+       }
            colorTagRelev=(checkTagRelev)?"#4682B4":"silver";
            colorTagIrrelev=(checkTagIrrelev)?"#CD5C5C":"silver";
            colorTagNeutral=(checkTagNeutral )?'silver':"silver";
@@ -772,58 +772,83 @@ class ViewTabSnippets extends React.Component{
         return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor, zIndex: 'none' }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
-            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'45px',height:'45px', marginRight:'3px',}}/>
-            </p>
-            <p style={{float:'right'}}>
-            <ButtonGroup>
-              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                <Button >
-                   <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
-                </Button>
-              </OverlayTrigger>
-              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                <Button>
-                  <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
-                </Button>
-              </OverlayTrigger>
-              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                <Button >
-                  <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
-                </Button>
-              </OverlayTrigger>
-            </ButtonGroup></p>
-          <div style={{float:"right", fontSize: "12px", fontWeight: "500", width: '100px' }}>
-            <Select.Creatable
-              placeholder="Add Tag"
-              className="menu-outer-top"
-              multi={false}
-              options={this.availableTags}
-              onChange={this.addCustomTag.bind(this, [url_info[0]])}
-              ignoreCase={true}
-            />
+            <div>
+              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <div>
+                  <img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'45px',height:'45px', marginRight:'3px',}}/>
+                </div>
+                <div style={{width: "61%"}}>
+                  <a
+                    target="_blank"
+                    href={this.augmentURL(url_info[0])}
+                    style={{ fontSize:'18px',color:'#1a0dab'}}
+                  >
+                    <Highlighter
+                      searchWords={this.state.allSearchQueries.split(",")}
+                      textToHighlight={tittleUrl}
+                    />
+                  </a>
+                  <br/>
+                  <a target="_blank" href={this.augmentURL(url_info[0])} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
+                  <p style={{fontSize:'13px', color:'#545454'}}>
+                    <Highlighter
+                      className={css.ellipsis}
+                      highlightStyle={{fontWeight: 'bold'}}
+                      searchWords={this.state.allSearchQueries.split(",")}
+                      textToHighlight={url_info[1]["snippet"]}
+                    />
+                  </p>
+                </div>
+                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                  <div style={{display: "flex"}}>
+                    <div style={{fontSize: "12px", fontWeight: "500", width: '100px'}}>
+                      <Select.Creatable
+                        placeholder="Add Tag"
+                        className="menu-outer-top"
+                        multi={false}
+                        options={this.availableTags}
+                        onChange={this.addCustomTag.bind(this, [url_info[0]])}
+                        ignoreCase={true}
+                      />
 
-          </div>
-            <p>
-              <a
-                target="_blank"
-                href={this.augmentURL(url_info[0])}
-                style={{ fontSize:'18px',color:'#1a0dab'}}
-              >
-                <Highlighter
-                  searchWords={this.state.allSearchQueries.split(",")}
-                  textToHighlight={tittleUrl}
-                />
-              </a>
-              <br/>
-              <a target="_blank" href={this.augmentURL(url_info[0])} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
-              <p style={{fontSize:'13px', color:'#545454'}}>
-                <Highlighter
-                  highlightStyle={{fontWeight: 'bold'}}
-                  searchWords={this.state.allSearchQueries.split(",")}
-                  textToHighlight={url_info[1]["snippet"]}
-                />
-              </p>
-            </p>
+                    </div>
+                    <div>
+                      <ButtonGroup>
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
+                          <Button style={{height: "100%"}}>
+                             <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                          </Button>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
+                          <Button style={{height: "100%"}}>
+                            <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                          </Button>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
+                          <Button style={{height: "100%"}}>
+                            <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                          </Button>
+                        </OverlayTrigger>
+                      </ButtonGroup>
+                    </div>
+                  </div>
+                  <div>
+                    <ButtonGroup>
+                      <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Backward</Tooltip>}>
+                        <Button>
+                           <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"backwardlinks-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                        </Button>
+                      </OverlayTrigger>
+                      <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Forward</Tooltip>}>
+                        <Button >
+                          <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"forwardlinks-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                        </Button>
+                      </OverlayTrigger>
+                    </ButtonGroup>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div style={{display: 'flex',flexWrap: 'wrap'}}>
             {chip}
             </div>
