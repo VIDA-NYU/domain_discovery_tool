@@ -696,7 +696,7 @@ class ViewTabSnippets extends React.Component{
     $.post(
 	    '/get' + type + 'Links',
 	    {
-        urls: urls.join("|"),
+        urls: (urls || this.currentUrls).join("|"),
         session: JSON.stringify(this.props.session)
       },
 	    (response) => {
@@ -886,12 +886,11 @@ class ViewTabSnippets extends React.Component{
         </div>
       </ListItem>;
     });
+
     const popUpButton = [
-      <p style={{height:"175px", marginTop:"50px" }}>
-        <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
-          <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
-          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <div style={{float:"right",marginRight:"325px",fontSize: "14px", fontWeight: "500",width: '100px', height:'88%'}}>
+      <div style={{marginTop:"50px", marginBottom: "160px", display: "flex", justifyContent: "space-between" }}>
+        <div style={{width: "60%", display: "flex", justifyContent: "space-between"}}>
+          <div style={{fontSize: "14px", fontWeight: "500",width: '150px', height:'88%'}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={false}
@@ -899,8 +898,18 @@ class ViewTabSnippets extends React.Component{
               onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
               ignoreCase={true}
             />
-            </div>
-      </p>
+          </div>
+
+          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
+          <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
+          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
+        </div>
+
+        <div style={{width: "30%", display: "flex", justifyContent: "space-around"}}>
+          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", null)}/>
+          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", null)}/>
+        </div>
+      </div>
     ];
 
       return (
@@ -937,6 +946,9 @@ class ViewTabSnippets extends React.Component{
                 <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
                 <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
                 <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
+                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
               </div>
               </div>
               <div >
