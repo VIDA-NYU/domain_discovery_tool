@@ -1,0 +1,19 @@
+.url-link {
+  font-size: 14px;
+  color: #006621;
+  margin-bottom: 4px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+}
+
+.url-title-link {
+  height: 20px;
+  font-size: 18px;
+  color: #1a0dab;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+}

@@ -41,6 +41,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Select from 'react-select';
 
+import '../css/Views.css';
 
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
@@ -691,6 +692,21 @@ class ViewTabSnippets extends React.Component{
       ""
     )
 
+  crawlNextLevel = (type, urls) => (event) => {
+    $.post(
+	    '/get' + type + 'Links',
+	    {
+        urls: urls.join("|"),
+        session: JSON.stringify(this.props.session)
+      },
+	    (response) => {
+        console.log("WHAT TO DO NOW! FORCE UPDATE?");
+  	  }
+  	).fail((error) => {
+  	   console.log('POST FAILED for ' + type + ' crawl with ERROR ' + error);
+  	});
+  }
+
 
   render(){
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
@@ -781,18 +797,18 @@ class ViewTabSnippets extends React.Component{
                   <a
                     target="_blank"
                     href={this.augmentURL(url_info[0])}
-                    style={{ fontSize:'18px',color:'#1a0dab'}}
+                    className="url-title-link"
                   >
                     <Highlighter
                       searchWords={this.state.allSearchQueries.split(",")}
                       textToHighlight={tittleUrl}
                     />
                   </a>
-                  <br/>
-                  <a target="_blank" href={this.augmentURL(url_info[0])} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
+                  <a target="_blank" href={this.augmentURL(url_info[0])} className="url-link">
+                    {urlLink}
+                  </a>
                   <p style={{fontSize:'13px', color:'#545454'}}>
                     <Highlighter
-                      className={css.ellipsis}
                       highlightStyle={{fontWeight: 'bold'}}
                       searchWords={this.state.allSearchQueries.split(",")}
                       textToHighlight={url_info[1]["snippet"]}
@@ -800,7 +816,7 @@ class ViewTabSnippets extends React.Component{
                   </p>
                 </div>
                 <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                  <div style={{display: "flex"}}>
+                  <div style={{display: "flex", marginBottom: "10px"}}>
                     <div style={{fontSize: "12px", fontWeight: "500", width: '100px'}}>
                       <Select.Creatable
                         placeholder="Add Tag"
@@ -813,7 +829,7 @@ class ViewTabSnippets extends React.Component{
 
                     </div>
                     <div>
-                      <ButtonGroup>
+                      <ButtonGroup style={{height: "100%"}}>
                         <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
                           <Button style={{height: "100%"}}>
                              <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
@@ -836,12 +852,24 @@ class ViewTabSnippets extends React.Component{
                     <ButtonGroup>
                       <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Backward</Tooltip>}>
                         <Button>
-                           <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"backwardlinks-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                           <IconButton
+                            onClick={this.crawlNextLevel("Backward", [url_info[0]])}
+                            iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }}
+                            style={{height: 8, margin: "-10px", padding:0,}}
+                           >
+                            BACKWARD
+                          </IconButton>
                         </Button>
                       </OverlayTrigger>
                       <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Forward</Tooltip>}>
                         <Button >
-                          <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"forwardlinks-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                          <IconButton
+                            onClick={this.crawlNextLevel("Forward", [url_info[0]])}
+                            iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }}
+                            style={{height: 8, margin: "-10px", padding:0,}}
+                          >
+                            FORWARD
+                          </IconButton>
                         </Button>
                       </OverlayTrigger>
                     </ButtonGroup>
