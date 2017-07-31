@@ -815,7 +815,7 @@ class ViewTabSnippets extends React.Component{
                     />
                   </p>
                 </div>
-                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                <div style={{display: "flex", flexDirection: "column", alignItems: "flex-end"}}>
                   <div style={{display: "flex", marginBottom: "10px"}}>
                     <div style={{fontSize: "12px", fontWeight: "500", width: '100px'}}>
                       <Select.Creatable
@@ -849,19 +849,14 @@ class ViewTabSnippets extends React.Component{
                     </div>
                   </div>
                   <div>
-                    <RaisedButton
-                      label="Backward"
-                      backgroundColor={"#FFFFFF"}
-                      labelStyle={{textTransform: "capitalize"}}
-                      onClick={this.crawlNextLevel("Backward", [url_info[0]])}
-                    />
-
-                    <RaisedButton
-                      label="Forward"
-                      backgroundColor={"#FFFFFF"}
-                      labelStyle={{textTransform: "capitalize"}}
-                      onClick={this.crawlNextLevel("Forward", [url_info[0]])}
-                    />                    
+                    <Button style={{width: "80px", fontSize: "10px"}}
+                      onClick={this.crawlNextLevel("Backward", [url_info[0]])}>
+                       BACKWARD
+                    </Button>
+                    <Button style={{width: "80px", fontSize: "10px"}}
+                      onClick={this.crawlNextLevel("Forward", [url_info[0]])}>
+                       FORWARD
+                    </Button>
                   </div>
                 </div>
               </div>
