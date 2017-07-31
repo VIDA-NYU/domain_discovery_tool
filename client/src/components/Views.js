@@ -694,17 +694,17 @@ class ViewTabSnippets extends React.Component{
 
   crawlNextLevel = (type, urls) => (event) => {
     $.post(
-	    '/get' + type + 'Links',
-	    {
+      '/get' + type + 'Links',
+      {
         urls: (urls || this.currentUrls).join("|"),
         session: JSON.stringify(this.props.session)
       },
-	    (response) => {
+      (response) => {
         console.log("WHAT TO DO NOW! FORCE UPDATE?");
-  	  }
-  	).fail((error) => {
-  	   console.log('POST FAILED for ' + type + ' crawl with ERROR ' + error);
-  	});
+      }
+    ).fail((error) => {
+      console.log('POST FAILED for ' + type + ' crawl with ERROR ' + error);
+    });
   }
 
 
