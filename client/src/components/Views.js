@@ -849,30 +849,19 @@ class ViewTabSnippets extends React.Component{
                     </div>
                   </div>
                   <div>
-                    <ButtonGroup>
-                      <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Backward</Tooltip>}>
-                        <Button>
-                           <IconButton
-                            onClick={this.crawlNextLevel("Backward", [url_info[0]])}
-                            iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }}
-                            style={{height: 8, margin: "-10px", padding:0,}}
-                           >
-                            BACKWARD
-                          </IconButton>
-                        </Button>
-                      </OverlayTrigger>
-                      <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Forward</Tooltip>}>
-                        <Button >
-                          <IconButton
-                            onClick={this.crawlNextLevel("Forward", [url_info[0]])}
-                            iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }}
-                            style={{height: 8, margin: "-10px", padding:0,}}
-                          >
-                            FORWARD
-                          </IconButton>
-                        </Button>
-                      </OverlayTrigger>
-                    </ButtonGroup>
+                    <RaisedButton
+                      label="Backward"
+                      backgroundColor={"#FFFFFF"}
+                      labelStyle={{textTransform: "capitalize"}}
+                      onClick={this.crawlNextLevel("Backward", [url_info[0]])}
+                    />
+
+                    <RaisedButton
+                      label="Forward"
+                      backgroundColor={"#FFFFFF"}
+                      labelStyle={{textTransform: "capitalize"}}
+                      onClick={this.crawlNextLevel("Forward", [url_info[0]])}
+                    />                    
                   </div>
                 </div>
               </div>
@@ -906,8 +895,8 @@ class ViewTabSnippets extends React.Component{
         </div>
 
         <div style={{width: "30%", display: "flex", justifyContent: "space-around"}}>
-          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", null)}/>
-          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", null)}/>
+          <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", null)}/>
+          <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", null)}/>
         </div>
       </div>
     ];
@@ -947,8 +936,8 @@ class ViewTabSnippets extends React.Component{
                 <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
                 <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
 
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
+                <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
+                <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
               </div>
               </div>
               <div >
