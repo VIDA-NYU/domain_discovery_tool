@@ -700,7 +700,7 @@ class ViewTabSnippets extends React.Component{
         session: JSON.stringify(this.props.session)
       },
       (response) => {
-        console.log("WHAT TO DO NOW! FORCE UPDATE?");
+        this.props.reloadFilters();
       }
     ).fail((error) => {
       console.log('POST FAILED for ' + type + ' crawl with ERROR ' + error);
@@ -849,11 +849,11 @@ class ViewTabSnippets extends React.Component{
                     </div>
                   </div>
                   <div>
-                    <Button style={{width: "80px", fontSize: "10px"}}
+                    <Button style={{width: "80px", height: "37px", fontSize: "10px", marginRight: "4px"}}
                       onClick={this.crawlNextLevel("Backward", [url_info[0]])}>
                        BACKWARD
                     </Button>
-                    <Button style={{width: "80px", fontSize: "10px"}}
+                    <Button style={{width: "75px", height: "37px", fontSize: "10px"}}
                       onClick={this.crawlNextLevel("Forward", [url_info[0]])}>
                        FORWARD
                     </Button>
@@ -914,7 +914,7 @@ class ViewTabSnippets extends React.Component{
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
-            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px",marginRight:"20px", marginTop: "20px"}}>
+            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px", marginTop: "20px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
               <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
               </div>
@@ -927,12 +927,23 @@ class ViewTabSnippets extends React.Component{
                   ignoreCase={true}
                   />
               </div>
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-                <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+              <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+              <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+              <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
 
-                <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
-                <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
+              <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD", marginRight: "4px"}}
+                onClick={this.crawlNextLevel("Backward", this.state.currentUrls)}>
+                 BACKWARD
+              </Button>
+              <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD"}}
+                onClick={this.crawlNextLevel("Forward", this.state.currentUrls)}>
+                 FORWARD
+              </Button>
+
+                {
+                  // <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
+                  // <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
+                }
               </div>
               </div>
               <div >
