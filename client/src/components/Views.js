@@ -857,11 +857,11 @@ class ViewTabSnippets extends React.Component{
                   <div>
                     <Button style={{width: "80px", height: "37px", fontSize: "10px", marginRight: "4px"}}
                       onClick={this.crawlNextLevel("Backward", [url_info[0]])}>
-                       BACKWARD
+                       BACKWARD<br/>LINKS
                     </Button>
                     <Button style={{width: "75px", height: "37px", fontSize: "10px"}}
                       onClick={this.crawlNextLevel("Forward", [url_info[0]])}>
-                       FORWARD
+                       FORWARD<br/>LINKS
                     </Button>
                   </div>
                 </div>
@@ -896,8 +896,8 @@ class ViewTabSnippets extends React.Component{
         </div>
 
         <div style={{width: "30%", display: "flex", justifyContent: "space-around"}}>
-          <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", null)}/>
-          <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", null)}/>
+            <RaisedButton label="Backward" backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", null)}/>
+            <RaisedButton label="Forward" backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", null)}/>
         </div>
       </div>
     ];
@@ -939,11 +939,11 @@ class ViewTabSnippets extends React.Component{
 
               <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD", marginRight: "4px"}}
                 onClick={this.crawlNextLevel("Backward", this.state.currentUrls)}>
-                 BACKWARD
+                 BACKWARD<br/>LINKS
               </Button>
               <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD"}}
                 onClick={this.crawlNextLevel("Forward", this.state.currentUrls)}>
-                 FORWARD
+                 FORWARD<br/>LINKS
               </Button>
 
                 {
