@@ -679,7 +679,10 @@ class ViewTabSnippets extends React.Component{
   buildQueryString = (session) =>
     [
       stopWordFilter(session.filter || ""),
-      (session.selected_queries || "").split(",").map(string => stopWordFilter(string)).join(",")
+      (session.selected_queries || "")
+      .split(",")
+      .filter(string => string.indexOf("BackLink_") === -1 && string.indexOf("ForwardLink_") === -1)
+      .map(string => stopWordFilter(string)).join(",")
     ].filter(string => string !== "").join(",")
 
   augmentURL = (url) =>
@@ -705,6 +708,9 @@ class ViewTabSnippets extends React.Component{
     ).fail((error) => {
       console.log('POST FAILED for ' + type + ' crawl with ERROR ' + error);
     });
+
+    if(this.state.click_flag)
+      this.handleCloseMultipleSelection();
   }
 
 
@@ -781,9 +787,9 @@ class ViewTabSnippets extends React.Component{
         let urlLink= (url_info[0].length<110)?url_info[0]:url_info[0].substring(0,109);
         let tittleUrl = (url_info[1]["title"] === "" || url_info[1]["title"] === undefined )?url_info[0].substring(url_info[0].indexOf("//")+2, url_info[0].indexOf("//")+15) + "..." : url_info[1]["title"] ;
         let imageUrl=(url_info[1]["image_url"]==="")? NoFoundImg:url_info[1]["image_url"];
+        let urlSnippet = url_info[1]["snippet"] || "";
 
         this.currentUrls.push(url_info[0]);
-
 
         return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor, zIndex: 'none' }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
@@ -811,7 +817,7 @@ class ViewTabSnippets extends React.Component{
                     <Highlighter
                       highlightStyle={{fontWeight: 'bold'}}
                       searchWords={this.state.allSearchQueries.split(",")}
-                      textToHighlight={url_info[1]["snippet"]}
+                      textToHighlight={urlSnippet}
                     />
                   </p>
                 </div>
