@@ -6,7 +6,8 @@ import { } from 'material-ui/styles/colors';
 
 import IconButton from 'material-ui/IconButton';
 import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import SwitchDomain from 'material-ui/svg-icons/maps/transfer-within-a-station';
+//import SwitchDomain from 'material-ui/svg-icons/maps/transfer-within-a-station';
+import SwitchDomain from 'material-ui/svg-icons/action/home';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 import Search from 'material-ui/svg-icons/action/search';
@@ -420,7 +421,7 @@ class Header extends Component {
        }
    }
 
-   handleChangeViewBoby = (event, index, valueViewBody) => {
+   handleChangeViewBody = (event, index, valueViewBody) => {
      this.setState({valueViewBody:valueViewBody});
      this.props.selectedViewBody(valueViewBody);//1: explore data view, 2: crawling view
    }
@@ -480,7 +481,7 @@ class Header extends Component {
           <IconButton tooltip="Change Domain" style={{marginLeft:'0px'}} tooltipStyles={{fontSize:14, fontWeight:"bold"}} > <SwitchDomain /> </IconButton>
          </Link>
          <ToolbarSeparator style={{ marginTop:"5px"}} />
-          <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBoby.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
+          <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBody.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
             <MenuItem value={1} primaryText="Explore Data View" />
             <MenuItem value={2} primaryText="Crawling View" />
          </DropDownMenu>
