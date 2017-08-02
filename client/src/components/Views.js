@@ -22,7 +22,7 @@ import Qicon from '../images/qicon.png';
 import Ticon from '../images/ticon.png';
 import Dicon from '../images/dicon.png';
 import NoFoundImg from '../images/images_not_available.png';
-import Searchicon from '../images/searchicon.png';
+import Searchicon from '../images/search_icon.png';
 import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
 import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
 import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
