@@ -14,7 +14,7 @@ You can install the system from source or using Docker.
 
 ## Docker Version
 
-You must have docker installed ((`Docker Installation for Mac <https://docs.docker.com/docker-for-mac/install/>`_ , `Docker Installation for Ubuntu <https://docs.docker.com/engine/installation/linux/ubuntu/>`_)
+You must have docker installed ([Docker Installation for Mac](https://docs.docker.com/docker-for-mac/install/), [Docker Installation for Ubuntu](https://docs.docker.com/engine/installation/linux/ubuntu/))
 
 To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
 
