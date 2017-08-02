@@ -27,7 +27,7 @@ If you have a set of URLs of sites you already know, you can add them from the *
 
 Enter one URL per line.
 
-You can also upload a file with the list of URLs by clicking on the **LOAD URLS FROM FILE** button. This will bring up a file explorer window where you can select the file to upload. The list of URLs should be entered one per line in the file. Download an example URLs list file for ebola domain `HERE <https://github.com/ViDA-NYU/domain_discovery_tool_react/raw/master/docs/ebola_urls.txt>`_. The uploaded URLs are listed in the **Filters** Tab under **Queries** as **Uploaded**.
+You can also upload a file with the list of URLs by clicking on the **LOAD URLS FROM FILE** button. This will bring up a file explorer window where you can select the file to upload. The list of URLs should be entered one per line in the file. Download an example URLs list file for ebola domain `HERE <https://github.com/ViDA-NYU/domain_discovery_tool/raw/master/docs/ebola_urls.txt>`_. The uploaded URLs are listed in the **Filters** Tab under **Queries** as **Uploaded**.
 
 SeedFinder
 ~~~~~~~~~~

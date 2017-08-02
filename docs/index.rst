@@ -32,7 +32,7 @@ Contents
 Links
 ========
 
-* `GitHub repository <https://github.com/ViDA-NYU/domain_discovery_tool_react>`_
+* `GitHub repository <https://github.com/ViDA-NYU/domain_discovery_tool>`_
 
 Indices and tables
 ==================

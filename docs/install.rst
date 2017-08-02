@@ -99,8 +99,8 @@ Add domain_discovery_API to the environment:
 
 Clone the DDT repository and enter it:
 
->>> https://github.com/ViDA-NYU/domain_discovery_tool_react
->>> cd domain_discovery_tool_react
+>>> https://github.com/ViDA-NYU/domain_discovery_tool
+>>> cd domain_discovery_tool
 
 Use the `make` command to build ddt and download/install its dependencies.
 
@@ -110,7 +110,7 @@ After a successful installation, you can activate the DDT development environmen
 
 >>> source activate ddt
 
-(from the top-level `domain_discovery_tool_react` directory) execute:
+(from the top-level `domain_discovery_tool` directory) execute:
 
 >>> ./bin/ddt-dev
 
