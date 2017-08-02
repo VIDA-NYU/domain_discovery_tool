@@ -878,9 +878,9 @@ class ViewTabSnippets extends React.Component{
     });
 
     const popUpButton = [
-      <div style={{marginTop:"50px", marginBottom: "160px", display: "flex", justifyContent: "space-between" }}>
+      <div style={{display: "flex", justifyContent: "space-between" }}>
         <div style={{width: "60%", display: "flex", justifyContent: "space-between"}}>
-          <div style={{fontSize: "14px", fontWeight: "500",width: '150px', height:'88%'}}>
+          <div style={{fontSize: "14px", fontWeight: "500",width: '150px', height:'88%', position: "absolute"}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={false}
@@ -889,7 +889,11 @@ class ViewTabSnippets extends React.Component{
               ignoreCase={true}
             />
           </div>
-
+          {
+            // Below is a dummy DIV to compensate for the absolute positioning
+            // of the Select component
+          }
+          <div style={{width: "150px", height: "80%"}}></div>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
           <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
           <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
