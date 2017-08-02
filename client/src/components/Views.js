@@ -41,6 +41,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Select from 'react-select';
 
+import '../css/Views.css';
 
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
@@ -680,7 +681,10 @@ class ViewTabSnippets extends React.Component{
   buildQueryString = (session) =>
     [
       stopWordFilter(session.filter || ""),
-      (session.selected_queries || "").split(",").map(string => stopWordFilter(string)).join(",")
+      (session.selected_queries || "")
+      .split(",")
+      .filter(string => string.indexOf("BackLink_") === -1 && string.indexOf("ForwardLink_") === -1)
+      .map(string => stopWordFilter(string)).join(",")
     ].filter(string => string !== "").join(",")
 
   augmentURL = (url) =>
@@ -693,6 +697,24 @@ class ViewTabSnippets extends React.Component{
       ""
     )
 
+  crawlNextLevel = (type, urls) => (event) => {
+    $.post(
+      '/get' + type + 'Links',
+      {
+        urls: (urls || this.currentUrls).join("|"),
+        session: JSON.stringify(this.props.session)
+      },
+      (response) => {
+        this.props.reloadFilters();
+      }
+    ).fail((error) => {
+      console.log('POST FAILED for ' + type + ' crawl with ERROR ' + error);
+    });
+
+    if(this.state.click_flag)
+      this.handleCloseMultipleSelection();
+  }
+
 
   render(){
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
@@ -702,59 +724,59 @@ class ViewTabSnippets extends React.Component{
     var currentPageCount = (this.state.lengthTotalPages/this.perPage);
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
     this.currentUrls=[];
-      var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
-      var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
-	  return [k, this.state.pages[k]]
-  });
-      sorted_urlsList.sort(function(first, second) {
-	  return Number(first[1]["order"]) - Number(second[1]["order"])
-      });
+    var relev_total = 0; var irrelev_total = 0; var neut_total = 0;
+    var sorted_urlsList =  Object.keys(this.state.pages).map((k, index)=>{
+	    return [k, this.state.pages[k]]
+    });
 
-      var urlsList = sorted_urlsList.map((url_info, index)=>{
+    sorted_urlsList.sort(function(first, second) {
+	     return Number(first[1]["order"]) - Number(second[1]["order"])
+    });
 
-        var chip=[];
+    var urlsList = sorted_urlsList.map((url_info, index)=>{
 
-        if(this.customTagPages.indexOf(url_info[0])>-1){
-           value = this.state.custom_tag_val;
-        }
-        var bgColor = "";
-        bgColor = (this.state.change_color_urls.indexOf(url_info[0])> -1)?"silver":"white";
-        if(url_info[1]["tags"]){
-             let uniqueTag="";
-             uniqueTag = this.getTag(url_info[0]);
-             if(uniqueTag==='Relevant')relev_total++;
-             if(uniqueTag==='Irrelevant')irrelev_total++;
-             if(uniqueTag==='Neutral')neut_total++;
-             var data = url_info[1]["tags"].filter(function(tag){
-               return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral"
-             }).map((tag, index)=>{
-                return {'key':index, 'label':tag, 'url':url_info[0]}
-             });
-             chip =data.map(this.renderCustomTag.bind(this));
-        }
-        else{
-            neut_total++;
-        }
-        let colorTagRelev = "";
-        let colorTagIrrelev="";
-        let colorTagNeutral="silver";
-        let uniqueTag="";
-        var checkTagRelev=false;
-        var checkTagIrrelev=false;
-        var checkTagNeutral=false;
-        if(url_info[1]["tags"]){
-           uniqueTag = url_info[1]["tags"];
-           for(var i=0;i<uniqueTag.length;i++){
-             if(uniqueTag[i] === 'Relevant' ){
-               checkTagRelev=true;
-             }
-             if(uniqueTag[i]==='Irrelevant'){
-               checkTagIrrelev=true;
-             }
-             if(uniqueTag[i]==='Neutral'){
-               checkTagNeutral=true;
-             }
-           }
+    var chip=[];
+
+    if(this.customTagPages.indexOf(url_info[0])>-1){
+      value = this.state.custom_tag_val;
+    }
+    var bgColor = "";
+    bgColor = (this.state.change_color_urls.indexOf(url_info[0])> -1)?"silver":"white";
+    if(url_info[1]["tags"]){
+      let uniqueTag="";
+      uniqueTag = this.getTag(url_info[0]);
+      if(uniqueTag==='Relevant')relev_total++;
+      if(uniqueTag==='Irrelevant')irrelev_total++;
+      if(uniqueTag==='Neutral')neut_total++;
+      var data = url_info[1]["tags"].filter(function(tag){
+                   return tag !== "Relevant" && tag !== "Irrelevant" && tag !== "Neutral"
+                 }).map((tag, index)=>{
+                   return {'key':index, 'label':tag, 'url':url_info[0]}
+                 });
+      chip =data.map(this.renderCustomTag.bind(this));
+    } else {
+      neut_total++;
+    }
+    let colorTagRelev = "";
+    let colorTagIrrelev="";
+    let colorTagNeutral="silver";
+    let uniqueTag="";
+    var checkTagRelev=false;
+    var checkTagIrrelev=false;
+    var checkTagNeutral=false;
+    if(url_info[1]["tags"]){
+       uniqueTag = url_info[1]["tags"];
+       for(var i=0;i<uniqueTag.length;i++){
+         if(uniqueTag[i] === 'Relevant' ){
+           checkTagRelev=true;
+         }
+         if(uniqueTag[i]==='Irrelevant'){
+           checkTagIrrelev=true;
+         }
+         if(uniqueTag[i]==='Neutral'){
+           checkTagNeutral=true;
+         }
+       }
            colorTagRelev=(checkTagRelev)?"#4682B4":"silver";
            colorTagIrrelev=(checkTagIrrelev)?"#CD5C5C":"silver";
            colorTagNeutral=(checkTagNeutral )?'silver':"silver";
@@ -767,65 +789,86 @@ class ViewTabSnippets extends React.Component{
         let urlLink= (url_info[0].length<110)?url_info[0]:url_info[0].substring(0,109);
         let tittleUrl = (url_info[1]["title"] === "" || url_info[1]["title"] === undefined )?url_info[0].substring(url_info[0].indexOf("//")+2, url_info[0].indexOf("//")+15) + "..." : url_info[1]["title"] ;
         let imageUrl=(url_info[1]["image_url"]==="")? NoFoundImg:url_info[1]["image_url"];
+        let urlSnippet = url_info[1]["snippet"] || "";
 
         this.currentUrls.push(url_info[0]);
-
 
         return <ListItem key={index} onClick={this.clickEvent.bind(this, url_info[0])} hoverColor="#CD5C5C" style={{ backgroundColor:bgColor, zIndex: 'none' }} >
         <div style={{  minHeight: '60px',  borderColor:"silver", marginLeft: '8px', marginTop: '3px', fontFamily:"arial,sans-serif"}}>
           <div>
-            <p style={{float:'left'}}><img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'45px',height:'45px', marginRight:'3px',}}/>
-            </p>
-            <p style={{float:'right'}}>
-            <ButtonGroup>
-              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                <Button >
-                   <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
-                </Button>
-              </OverlayTrigger>
-              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                <Button>
-                  <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
-                </Button>
-              </OverlayTrigger>
-              <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                <Button >
-                  <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
-                </Button>
-              </OverlayTrigger>
-            </ButtonGroup></p>
-          <div style={{float:"right", fontSize: "12px", fontWeight: "500", width: '100px' }}>
-            <Select.Creatable
-              placeholder="Add Tag"
-              className="menu-outer-top"
-              multi={false}
-              options={this.availableTags}
-              onChange={this.addCustomTag.bind(this, [url_info[0]])}
-              ignoreCase={true}
-            />
+            <div>
+              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <div>
+                  <img src={imageUrl} onError={(ev) => { ev.target.src = NoFoundImg;}} style={{width:'45px',height:'45px', marginRight:'3px',}}/>
+                </div>
+                <div style={{width: "61%"}}>
+                  <a
+                    target="_blank"
+                    href={this.augmentURL(url_info[0])}
+                    className="url-title-link"
+                  >
+                    <Highlighter
+                      searchWords={this.state.allSearchQueries.split(",")}
+                      textToHighlight={tittleUrl}
+                    />
+                  </a>
+                  <a target="_blank" href={this.augmentURL(url_info[0])} className="url-link">
+                    {urlLink}
+                  </a>
+                  <p style={{fontSize:'13px', color:'#545454'}}>
+                    <Highlighter
+                      highlightStyle={{fontWeight: 'bold'}}
+                      searchWords={this.state.allSearchQueries.split(",")}
+                      textToHighlight={urlSnippet}
+                    />
+                  </p>
+                </div>
+                <div style={{display: "flex", flexDirection: "column", alignItems: "flex-end"}}>
+                  <div style={{display: "flex", marginBottom: "10px"}}>
+                    <div style={{fontSize: "12px", fontWeight: "500", width: '100px'}}>
+                      <Select.Creatable
+                        placeholder="Add Tag"
+                        className="menu-outer-top"
+                        multi={false}
+                        options={this.availableTags}
+                        onChange={this.addCustomTag.bind(this, [url_info[0]])}
+                        ignoreCase={true}
+                      />
 
-          </div>
-            <p>
-              <a
-                target="_blank"
-                href={this.augmentURL(url_info[0])}
-                style={{ fontSize:'18px',color:'#1a0dab'}}
-              >
-                <Highlighter
-                  searchWords={this.state.allSearchQueries.split(",")}
-                  textToHighlight={tittleUrl}
-                />
-              </a>
-              <br/>
-              <a target="_blank" href={this.augmentURL(url_info[0])} style={{fontSize:'14px', color:'#006621', marginBottom:4, marginTop:2}}> {urlLink} </a>
-              <p style={{fontSize:'13px', color:'#545454'}}>
-                <Highlighter
-                  highlightStyle={{fontWeight: 'bold'}}
-                  searchWords={this.state.allSearchQueries.split(",")}
-                  textToHighlight={url_info[1]["snippet"]}
-                />
-              </p>
-            </p>
+                    </div>
+                    <div>
+                      <ButtonGroup style={{height: "100%"}}>
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
+                          <Button style={{height: "100%"}}>
+                             <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                          </Button>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
+                          <Button style={{height: "100%"}}>
+                            <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                          </Button>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
+                          <Button style={{height: "100%"}}>
+                            <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                          </Button>
+                        </OverlayTrigger>
+                      </ButtonGroup>
+                    </div>
+                  </div>
+                  <div>
+                    <Button style={{width: "80px", height: "37px", fontSize: "10px", marginRight: "4px"}}
+                      onClick={this.crawlNextLevel("Backward", [url_info[0]])}>
+                       BACKWARD<br/>LINKS
+                    </Button>
+                    <Button style={{width: "75px", height: "37px", fontSize: "10px"}}
+                      onClick={this.crawlNextLevel("Forward", [url_info[0]])}>
+                       FORWARD<br/>LINKS
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div style={{display: 'flex',flexWrap: 'wrap'}}>
             {chip}
             </div>
@@ -835,12 +878,11 @@ class ViewTabSnippets extends React.Component{
         </div>
       </ListItem>;
     });
+
     const popUpButton = [
-      <p style={{height:"175px", marginTop:"50px" }}>
-        <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
-          <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
-          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
-          <div style={{float:"right",marginRight:"325px",fontSize: "14px", fontWeight: "500",width: '100px', height:'88%'}}>
+      <div style={{display: "flex", justifyContent: "space-between" }}>
+        <div style={{width: "60%", display: "flex", justifyContent: "space-between"}}>
+          <div style={{fontSize: "14px", fontWeight: "500",width: '150px', height:'88%', position: "absolute"}}>
             <Select.Creatable
               placeholder="Add Tag"
               multi={false}
@@ -848,8 +890,22 @@ class ViewTabSnippets extends React.Component{
               onChange={this.addCustomTag.bind(this, this.multipleSelectionPages)}
               ignoreCase={true}
             />
-            </div>
-      </p>
+          </div>
+          {
+            // Below is a dummy DIV to compensate for the absolute positioning
+            // of the Select component
+          }
+          <div style={{width: "150px", height: "80%"}}></div>
+          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{ marginRight:4}}   labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagSelectedPages.bind(this,"Relevant")}/>
+          <RaisedButton label="Tag" labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagSelectedPages.bind(this,"Irrelevant")}/>
+          <RaisedButton label="Tag" labelPosition="before"  backgroundColor={"#BDBDBD"}  labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagSelectedPages.bind(this,"Neutral")}/>
+        </div>
+
+        <div style={{width: "30%", display: "flex", justifyContent: "space-around"}}>
+            <RaisedButton label="Backward" backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", null)}/>
+            <RaisedButton label="Forward" backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", null)}/>
+        </div>
+      </div>
     ];
 
       return (
@@ -870,7 +926,7 @@ class ViewTabSnippets extends React.Component{
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
-            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px",marginRight:"20px", marginTop: "20px"}}>
+            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px", marginTop: "20px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
               <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
               </div>
@@ -883,9 +939,23 @@ class ViewTabSnippets extends React.Component{
                   ignoreCase={true}
                   />
               </div>
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-                <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-                <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+              <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+              <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+              <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+
+              <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD", marginRight: "4px"}}
+                onClick={this.crawlNextLevel("Backward", this.state.currentUrls)}>
+                 BACKWARD<br/>LINKS
+              </Button>
+              <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD"}}
+                onClick={this.crawlNextLevel("Forward", this.state.currentUrls)}>
+                 FORWARD<br/>LINKS
+              </Button>
+
+                {
+                  // <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
+                  // <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
+                }
               </div>
               </div>
               <div >
