@@ -16,7 +16,7 @@ You can install the system from source or using Docker.
 
 You must have docker installed ((`Docker Installation for Mac <https://docs.docker.com/docker-for-mac/install/>`_ , `Docker Installation for Ubuntu <https://docs.docker.com/engine/installation/linux/ubuntu/>`_)
 
-To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool_react/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
+To run using the docker version download the script <a href="https://github.com/ViDA-NYU/domain_discovery_tool/blob/master/bin/run_docker_ddt.zip" download>run_docker_ddt</a> and run it:
 
 ```
 ./run_docker_ddt
@@ -58,8 +58,8 @@ export DD_API_HOME="{path-to-cloned-domain_discovery_API-repository}"
 Clone the DDT repository and enter it:
 
 ```
-https://github.com/ViDA-NYU/domain_discovery_tool_react
-cd domain_discovery_tool_react
+https://github.com/ViDA-NYU/domain_discovery_tool
+cd domain_discovery_tool
 ```
 
 Use the `make` command to build DDT and download/install its dependencies.
@@ -80,7 +80,7 @@ supervisord to run the web application and its associated services:
 ```
 supervisord
 ```
-or (from the top-level `domain_discovery_tool_react` directory) execute:
+or (from the top-level `domain_discovery_tool` directory) execute:
 
 ```
 ./bin/ddt-dev
