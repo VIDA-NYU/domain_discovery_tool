@@ -139,7 +139,7 @@ class SearchTabs extends React.Component {
       session['pagesCap'] = "100";
       session = this.resetAllFilters(session);
 	this.props.getQueryPages("uploaded");
-	var tag = (this.uploadTag !== "Neutral")?this.uploadTag:"";
+	var tag = this.uploadTag;
       $.post(
         '/uploadUrls',
           {'urls': valueLoadUrls, 'tag':tag,  'session': JSON.stringify(session)},
@@ -171,6 +171,7 @@ class SearchTabs extends React.Component {
 	this.uploadTag = "Neutral";
 	this.runLoadUrls(this.state.valueLoadUrls);
     }
+
     addCustomTagURLs(event){
       this.handleCloseLoadURLs();
       this.uploadTag = event.value;

@@ -459,7 +459,7 @@ class ViewTabSnippets extends React.Component{
         if(updatedPages[url]["tags"]){
             var temp = Object.keys(updatedPages[url]["tags"]).map(key => {
                       if(updatedPages[url]["tags"][key] !== null){
-                        console.log(updatedPages[url]["tags"][key]);
+                      //  console.log(updatedPages[url]["tags"][key]);
                         var itemTag = updatedPages[url]["tags"][key].toString();
                         if(itemTag==="Relevant" || itemTag==="Irrelevant"){
                           delete updatedPages[url]["tags"][key];
@@ -473,6 +473,7 @@ class ViewTabSnippets extends React.Component{
 
                           }
                         }
+
                       }
 
                       });
@@ -481,9 +482,9 @@ class ViewTabSnippets extends React.Component{
         }
 
     //    if(tag!=="Neutral"){ //Applying tag on the interface it is different to a Neutral tag
-          updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral",null].indexOf(tag) === -1);
+          updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant","Neutral"].indexOf(tag) === -1);
           updatedPages[url]["tags"].push(tag);
-  //   }
+     //}
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           totalTagRemoved++;
           delete updatedPages[url];
@@ -566,7 +567,7 @@ class ViewTabSnippets extends React.Component{
                     });
         //  delete updatedPages[url]["tags"]; //Removing tag on the interface
       }
-      updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral",null].indexOf(tag) === -1);
+      updatedPages[url]["tags"] = (updatedPages[url]["tags"] || []).filter(tag => ["Irrelevant", "Relevant", "Neutral"].indexOf(tag) === -1);
       updatedPages[url]["tags"].push(tag);
       //checking if the new tag belong to the filter
       if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
@@ -652,13 +653,14 @@ class ViewTabSnippets extends React.Component{
         return;
       }
         for(var i=0;i<inputURL.length;i++){
+
           if(this.state.pages[inputURL[i]]["tags"]!== undefined)
           {
             if(this.state.pages[inputURL[i]]["tags"].map(k=>k.toLowerCase()).indexOf(val[0].value.toLowerCase())<0){
               this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
               this.state.pages[inputURL[i]]["tags"].push(val[0].value);
               this.removeAddTagElasticSearch(inputURL, val[0].value, true);
-            }}
+            }
             else if(this.state.pages[inputURL[i]]["tags"]===undefined){
               this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
               this.state.pages[inputURL[i]]["tags"].push(val[0].value);
@@ -666,7 +668,7 @@ class ViewTabSnippets extends React.Component{
             }
 
         }
-
+      }
         this.setState({multi:false,pages:this.state.pages});
         this.handleCloseMultipleSelection();
       	this.forceUpdate();
