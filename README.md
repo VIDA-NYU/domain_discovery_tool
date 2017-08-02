@@ -43,7 +43,7 @@ Set up Domain Discovery API
 git clone https://github.com/ViDA-NYU/domain_discovery_API
 cd domain_discovery_API
 ```
-The `make` command builds MDPROJ,  downloads and installs its dependencies.
+The `make` command builds dd_api,  downloads and installs its dependencies.
 
 ```
 make
