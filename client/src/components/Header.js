@@ -6,13 +6,12 @@ import { } from 'material-ui/styles/colors';
 
 import IconButton from 'material-ui/IconButton';
 import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-//import SwitchDomain from 'material-ui/svg-icons/maps/transfer-within-a-station';
-import SwitchDomain from 'material-ui/svg-icons/action/home';
+import SwitchDomain from 'material-ui/svg-icons/action/exit-to-app';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 import Search from 'material-ui/svg-icons/action/search';
 import OpenInNewTab from 'material-ui/svg-icons/action/open-in-new';
-import InfoIcon from 'material-ui/svg-icons/action/info';
+import MonitoringIcon from 'material-ui/svg-icons/action/track-changes';
 import TextField from 'material-ui/TextField';
 
 import IconMenu from 'material-ui/IconMenu';
@@ -43,7 +42,7 @@ const styles = {
     color: 'white'
   },
   toolBarHeader: {
-    width:'75%',
+    width:'77%',
     height:45,
     marginTop:8,
     marginRight:'-15px',
@@ -460,11 +459,21 @@ class Header extends Component {
      var loadingModel = (this.state.loadingModel)?<CircularProgress style={{marginTop:15, marginLeft:"-30px"}} size={20} thickness={4} />: <div/>;
      var crawlingProgress = (this.state.disableStopCrawlerSignal)?<div />: <CircularProgress style={{marginTop:15, marginLeft:"-10px"}} size={20} thickness={4} />;
      var messageCrawlerRunning = (this.state.disabledStartCrawler)?<div style={{marginTop:15, fontFamily:"arial", fontSize:14 , fontWeight:"bold"}}>{this.state.messageCrawler} </div>:"";
-     var infoCrawlerRunning = <IconButton tooltip="Process Monitor" onTouchTap={this.handleOpenInfo.bind(this)}
-                                  style={{height:20, marginLeft: "-20px", minWidth:58, width:48}} tooltipStyles={{fontSize:14, fontWeight:"bold"}}
-                              >
-                                <InfoIcon />
-                              </IconButton>;
+     var switchDomain = <RaisedButton
+                                 label="Switch Domain"
+                                 labelStyle={{textTransform: "capitalize"}}
+                                 backgroundColor="#9A7BB0"
+                                 icon={<SwitchDomain />}
+                                 style={{marginRight:"-10px",marginTop:6, height:30}}
+                               />;
+     var infoCrawlerRunning = <RaisedButton
+                                 label="Monitoring"
+                                 labelStyle={{textTransform: "capitalize"}}
+                                 backgroundColor="#9A7BB0"
+                                 icon={<MonitoringIcon />}
+                                 style={{marginLeft:"-10px", marginTop:6, height:30}}
+                                 onTouchTap={this.handleOpenInfo.bind(this)}
+                               />;
      var crawlerStop = (this.state.disableStopCrawlerSignal)?<div/>:<RaisedButton  onClick={this.stopCrawler.bind(this, true)} style={{height:20, marginTop: 15, minWidth:58, width:48}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
                                                                                    label="Stop" labelPosition="before" containerElement="label"/>;
      var crawlerAcheInterface = (this.state.disableStopCrawlerSignal)?<div/>:<IconButton tooltip="Click to open ACHE Interface"
@@ -472,28 +481,26 @@ class Header extends Component {
                                 >
                                   <OpenInNewTab />
                                 </IconButton>;
+
      return (
         <AppBar showMenuIconButton={true} style={styles.backgound} title={<span style={styles.titleText}> Domain Discovery Tool </span>}
          titleStyle={{width:40, margin:0, padding:0,}}  iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40'  />} >
           <Toolbar style={styles.toolBarHeader}>
           <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
           <Link to='/'>
-           <IconButton tooltip="Change Domain" style={{marginLeft:'0px'}} tooltipStyles={{fontSize:14, fontWeight:"bold"}} > <SwitchDomain /> </IconButton>
+          {switchDomain}
           </Link>
-          <ToolbarSeparator style={{ marginTop:"5px"}} />
            <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBoby.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
              <MenuItem value={1} primaryText="Explore Data View" />
              <MenuItem value={2} primaryText="Crawling View" />
           </DropDownMenu>
-   	     <ToolbarSeparator style={{ marginTop:"5px"}} />
    	     {infoCrawlerRunning}
-          <ToolbarSeparator style={{ marginTop:"5px"}} />
           <TextField
-          style={{marginRight:"-15px", marginTop:4, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+          style={{width:"19%", marginRight:"-15px", marginTop:4, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
           floatingLabelFixed={true} floatingLabelText={ <Search color={"silver"} />} floatingLabelStyle={{marginTop:"-8px", marginLeft:3, }}
           hintText="Search ..."
           hintStyle={{marginBottom:"-8px", marginLeft:25}}
-          inputStyle={{ width:"85%", marginTop:0, marginBottom:10, marginLeft:25}} underlineShow={false}
+          inputStyle={{ width:"80%", marginTop:0, marginBottom:10, marginLeft:25}} underlineShow={false}
           value={this.state.term} onKeyPress={(e) => {(e.key === 'Enter') ? this.filterKeyword(this.state.term) : null}} onChange={e => this.setState({ term: e.target.value })}
           />
           <Dialog title=" Model Settings" actions={actionsCreateModel} modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
