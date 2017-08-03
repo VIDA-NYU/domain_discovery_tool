@@ -15,6 +15,9 @@ import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
+import Save from 'material-ui/svg-icons/content/save';
+import Cancel from 'material-ui/svg-icons/action/highlight-off';
+import Export from 'material-ui/svg-icons/file/file-download';
 import Monitoring from './Monitoring.js';
 import Dialog from 'material-ui/Dialog';
 import {scaleLinear} from 'd3-scale';
@@ -450,10 +453,28 @@ class FocusedCrawling extends Component {
                     {checkedTagsPosNeg}
                   </Row>
                   <Row style={{margin:"-8px 5px 10px 20px"}}>
-                    <RaisedButton disabled={false} onTouchTap={this.handleSaveTags.bind(this)} style={{ height:20, marginTop: 15, marginRight:10, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                      label="Save" labelPosition="before" containerElement="label" />
-                    <RaisedButton disabled={false} onTouchTap={this.handleCancelTags.bind(this)} style={{ height:20, marginTop: 15, minWidth:118, width:118}} labelStyle={{textTransform: "capitalize"}} buttonStyle={{height:19}}
-                      label="Cancel" labelPosition="before" containerElement="label" />
+                    <RaisedButton
+                      disabled={false}
+                      label="Save"
+                      labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                      backgroundColor={this.props.backgroundColor}
+                      icon={<Save />}
+                      //buttonStyle={{height:19}}
+                      style={{height:35, marginTop: 8, marginBottom:"-8px", marginRight:10}}
+                      disabled={false}
+                      onTouchTap={this.handleSaveTags.bind(this)}
+                    />
+                    <RaisedButton
+                      disabled={false}
+                      label="Cancel"
+                      labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                      backgroundColor={this.props.backgroundColor}
+                      icon={<Cancel />}
+                      //buttonStyle={{height:19}}
+                      style={{height:35, marginTop: 8, marginBottom:"-8px"}}
+                      disabled={false}
+                      onTouchTap={this.handleCancelTags.bind(this)}
+                    />
                   </Row>
                   <Dialog title="Select positive tags to extract terms." open={openMessage}>
                   {DialogBox}</Dialog>
@@ -481,44 +502,47 @@ class FocusedCrawling extends Component {
           style={{fontWeight:'bold',}}
         />
         <CardText expandable={true} style={{height:212}}>
-        <div style={{display: 'flex'}}>
-        <div>
-          <RaisedButton
-            label="Start Crawler"
-            style={{margin: 5}}
-            disable={this.state.disabledStartCrawler}
-            labelStyle={{textTransform: "capitalize"}}
-            style={
-                    this.state.disabledStartCrawler ?
-                    {pointerEvents: 'none', opacity: 0.5, margin: 12}
-                    :
-                    {pointerEvents: 'auto', opacity: 1.0, margin: 12}
-                  }
-            onClick={this.startFocusedCrawler.bind(this)}
-          />
-          </div>
-          {
-            this.state.disabledStartCrawler ?
-            <div style={{float:'right'}}>
+          <Row>
+            <Col xs={5} md={5} style={{marginLeft:'0px'}}>
               <RaisedButton
-                label="Stop Crawler"
-                style={{margin: 5,}}
-                labelStyle={{textTransform: "capitalize"}}
-                onClick={this.stopFocusedCrawler.bind(this)}
+                label="Start Crawler"
+                labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                backgroundColor={this.props.backgroundColor}
+                //icon={<Search />}
+                disable={this.state.disabledStartCrawler}
+                style={
+                        this.state.disabledStartCrawler ?
+                        {pointerEvents: 'none', opacity: 0.5, height:35, marginTop: 0, margin: 12}
+                        :
+                        {pointerEvents: 'auto', opacity: 1.0, height:35, marginTop: 0, margin: 12}
+                      }
+                onClick={this.startFocusedCrawler}
               />
-              <br/>
-              <RaisedButton
-                label="Crawler Monitor"
-                style={{margin: 5}}
-                labelStyle={{textTransform: "capitalize"}}
-              href={this.props.crawlerServers['focused']+"/monitoring"} target="_blank"
-              />
-
-            </div>
-            :
-            null
-          }
-        </div>
+            </Col>
+            {
+              this.state.disabledStartCrawler ?
+              <Col xs={7} md={7} style={{marginLeft:'-70px'}}>
+                <RaisedButton
+                  label="Stop Crawler"
+                  labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                  backgroundColor={this.props.backgroundColor}
+                  //icon={<Search />}
+                  style={{height:35, marginTop: 0, margin: 12}}
+                  onClick={this.stopFocusedCrawler.bind(this)}
+                />
+                <RaisedButton
+                  label="Crawler Monitor"
+                  labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                  backgroundColor={this.props.backgroundColor}
+                  //icon={<Search />}
+                  style={{height:35, marginTop: 0, margin: 12}}
+                  href={this.props.crawlerServers['focused']+"/monitoring"} target="_blank"
+                />
+                </Col>
+              :
+              null
+            }
+          </Row>
         </CardText>
         </Card>
         </Col>
@@ -543,8 +567,10 @@ class FocusedCrawling extends Component {
             <RaisedButton
               disabled={this.state.disabledCreateModel}
               label="Export"
-              style={{margin: 5}}
-              labelStyle={{textTransform: "capitalize"}}
+              labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+              backgroundColor={this.props.backgroundColor}
+              icon={<Export />}
+              style={{height:35, marginTop: 0, margin: 12}}
               onClick={this.exportModel.bind(this)}
             />
             <div style={{marginTop:"-40px", marginLeft:"-180px"}}>
@@ -573,5 +599,10 @@ class FocusedCrawling extends Component {
     );
   }
 }
+
+
+FocusedCrawling.defaultProps = {
+    backgroundColor:"#9A7BB0",
+};
 
 export default FocusedCrawling;
