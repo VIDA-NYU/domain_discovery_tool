@@ -190,46 +190,46 @@ class Home extends Component {
                     <FlatButton style={{margin:'70px 10px 10px 10px'}}
                     backgroundColor="#26C6DA"
                     hoverColor="#80DEEA"
-	            onTouchTap={this.handleOpenDeleteDomain.bind(this)}
+	                  onTouchTap={this.handleOpenDeleteDomain.bind(this)}
                     icon={<DeleteForever color={fullWhite} />}
                     />
                   </Link>
                   <Dialog
-                     title="Adding a domain"
-                     actions={actionsCreateDomain}
-                     modal={false}
-                     open={this.state.openCreateDomain}
-                     onRequestClose={this.handleCloseCreateDomain.bind(this)}
-                   >
+                   title="Adding a domain"
+                   actions={actionsCreateDomain}
+                   modal={false}
+                   open={this.state.openCreateDomain}
+                   onRequestClose={this.handleCloseCreateDomain.bind(this)}
+                  >
                      <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-                        ref={(input) => { this.textInput = input;}}
-                       value={this.state.newNameDomain}
-                       onChange={this.handleTextChangeNewNameDomain.bind(this)}
-                       onKeyPress={(e) => {(e.key === 'Enter') ? this.createNewDomain(this) : null}}
-                       hintText="Write the name domain."
-                       hintStyle={{ marginLeft:10}}
-                       inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+                      ref={(input) => { this.textInput = input;}}
+                      value={this.state.newNameDomain}
+                      onChange={this.handleTextChangeNewNameDomain.bind(this)}
+                      onKeyPress={(e) => {(e.key === 'Enter') ? this.createNewDomain(this) : null}}
+                      hintText="Write the name domain."
+                      hintStyle={{ marginLeft:10}}
+                      inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
                      />
                    </Dialog>
 
                    <Dialog
-                      title="Deleting a domain"
-                      actions={actionsDeleteDomain}
-                      modal={false}
-                      open={this.state.openDeleteDomain}
-                      onRequestClose={this.handleCloseDeleteDomain.bind(this)}
+                    title="Deleting a domain"
+                    actions={actionsDeleteDomain}
+                    modal={false}
+                    open={this.state.openDeleteDomain}
+                    onRequestClose={this.handleCloseDeleteDomain.bind(this)}
                    >
-	           <div style={styles.block}>
-	              {Object.keys(mydata).map((k, index)=>{
-		      return <Checkbox
-			   label={mydata[k].name}
-			   value={mydata[k].id}
-			   style={styles.checkbox}
-		           onClick={this.addDelDomains.bind(this,mydata[k].id,mydata[k].index)}
-			   />
-		       })}
-	            </div>
-                    </Dialog>
+        	           <div style={{height:430, overflowY: "scroll",}}>
+        	              {Object.keys(mydata).map((k, index)=>{
+                		      return <Checkbox
+                            			   label={mydata[k].name}
+                            			   value={mydata[k].id}
+                            			   style={styles.checkbox}
+                		                 onClick={this.addDelDomains.bind(this,mydata[k].id,mydata[k].index)}
+                			           />
+        		            })}
+        	            </div>
+                   </Dialog>
                 </Col>
               </Row>
             </div>
