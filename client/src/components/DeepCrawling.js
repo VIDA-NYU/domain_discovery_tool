@@ -6,6 +6,8 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import RemoveURL from 'material-ui/svg-icons/navigation/cancel';
+import LoadExternalUrls from 'material-ui/svg-icons/file/file-upload';
+import AddRecommendationUrls from 'material-ui/svg-icons/content/add-circle-outline';
 import IconButton from 'material-ui/IconButton';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
@@ -49,11 +51,12 @@ class DeepCrawling extends Component {
     this.recommendationInterval = null;
     this.addDomainsForDeepCrawl = this.addDomainsForDeepCrawl.bind(this);
     this.addDomainsOnSelection = this.addDomainsOnSelection.bind(this);
-
+    this.startDeepCrawler = this.startDeepCrawler.bind(this);
     this.stopDeepCrawler = this.stopDeepCrawler.bind(this);
     this.addUrlsWhileCrawling = this.addUrlsWhileCrawling.bind(this);
 
     this.changeMinURLCount = this.changeMinURLCount.bind(this);
+    this.handleOpenDialogLoadUrl = this.handleOpenDialogLoadUrl.bind(this);
 
   }
 
@@ -465,44 +468,55 @@ class DeepCrawling extends Component {
           </Table>
         </CardText>
       </Card>
-        <div >
-        <div>
-          <RaisedButton
-            label="Start Crawler"
-            disable={this.state.disabledStartCrawler}
-            style={
-                    this.state.disabledStartCrawler ?
-                    {pointerEvents: 'none', opacity: 0.5, margin: 12}
-                    :
-                    {pointerEvents: 'auto', opacity: 1.0, margin: 12}
-                  }
-            onClick={this.startDeepCrawler.bind(this)}
-          />
-            </div>
+        <Row>
+          <Col xs={4} md={4} style={{marginLeft:'0px'}}>
+            <RaisedButton
+              label="Start Crawler"
+              labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+              backgroundColor={this.props.backgroundColor}
+              //icon={<Search />}
+              disable={this.state.disabledStartCrawler}
+              style={
+                      this.state.disabledStartCrawler ?
+                      {pointerEvents: 'none', opacity: 0.5, height:35, marginTop: 0, margin: 12}
+                      :
+                      {pointerEvents: 'auto', opacity: 1.0, height:35, marginTop: 0, margin: 12}
+                    }
+              onClick={this.startDeepCrawler}
+            />
+          </Col>
           {
             this.state.disabledStartCrawler ?
-            <div style={{float:'right'}}>
-
+            <Col xs={9} md={9} style={{marginLeft:'-70px'}}>
               <RaisedButton
                 label="Add URLs"
-                style={{margin: 12}}
+                labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                backgroundColor={this.props.backgroundColor}
+                //icon={<Search />}
+                style={{height:35, marginTop: 0, margin: 12}}
                 onClick={this.addUrlsWhileCrawling}
               />
               <RaisedButton
                 label="Crawler Monitor"
-                style={{margin: 12}}
-              href={this.props.crawlerServers['deep']+"/monitoring"} target="_blank"
+                labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                backgroundColor={this.props.backgroundColor}
+                //icon={<Search />}
+                style={{height:35, marginTop: 0, margin: 12}}
+                href={this.props.crawlerServers['deep']+"/monitoring"} target="_blank"
               />
               <RaisedButton
                 label="Stop Crawler"
-                style={{margin: 12}}
+                labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                backgroundColor={this.props.backgroundColor}
+                //icon={<Search />}
+                style={{height:35, marginTop: 0, margin: 12}}
                 onClick={this.stopDeepCrawler}
               />
-            </div>
+              </Col>
             :
             null
           }
-        </div>
+        </Row>
       </Col>
 
       <Col xs={6} md={6} style={{marginLeft:'0px'}}>
@@ -540,11 +554,11 @@ class DeepCrawling extends Component {
               resetSelection={this.state.resetSelection}
             />
             <RaisedButton
-              disabled={false}
-              style={{ height:20, marginTop: 15}}
-              labelStyle={{textTransform: "capitalize"}}
-              buttonStyle={{height:19}}
               label="Add to deep crawl"
+              labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+              backgroundColor={this.props.backgroundColor}
+              icon={<AddRecommendationUrls />}
+              style={{height:35, marginTop: 12}}
               onClick={this.addDomainsForDeepCrawl}
             />
           </CardText>
@@ -553,13 +567,14 @@ class DeepCrawling extends Component {
         <Card id={"Load external urls"} initiallyExpanded={true} >
          <CardHeader
            title={<RaisedButton
-             disabled={false}
-             style={{ height:20, marginTop: 15}}
-             labelStyle={{textTransform: "capitalize", fontWeight:"bold", fontSize:14,}}
-             buttonStyle={{height:19}}
              label="Loading external urls"
-             onClick={this.handleOpenDialogLoadUrl.bind(this)}
-             />}
+             labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+             backgroundColor={this.props.backgroundColor}
+             icon={<LoadExternalUrls />}
+             style={{height:35, marginTop: 8, marginBottom:"-8px"}}
+             disabled={false}
+             onClick={this.handleOpenDialogLoadUrl}
+           />}
            actAsExpander={false}
            showExpandableButton={false}
            style={{fontWeight:'bold',}}
@@ -600,5 +615,9 @@ class DeepCrawling extends Component {
 );
 }
 }
+
+DeepCrawling.defaultProps = {
+    backgroundColor:"#9A7BB0",
+};
 
 export default DeepCrawling;

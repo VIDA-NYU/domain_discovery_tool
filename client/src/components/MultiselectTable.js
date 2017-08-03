@@ -126,7 +126,7 @@ class MultiselectTable extends Component {
         </TableBody>
         <TableFooter adjustForCheckbox={true} />
       </Table>
-      <div style={{float: 'right', marginTop: '-12px'}}>
+      <div style={{float: 'right', marginTop: '-6px'}}>
         <ReactPaginate
           previousLabel={"previous"}
           nextLabel={"next"}
