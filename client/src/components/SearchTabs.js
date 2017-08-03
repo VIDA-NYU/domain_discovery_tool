@@ -401,7 +401,7 @@ render() {
       onChange={this.handleChange}
       value={this.state.slideIndex}
       inkBarStyle={{background: '#7940A0' ,height: '4px'}}
-      tabItemContainerStyle={{background: '#9A7BB0' ,height: '30px'}}
+      tabItemContainerStyle={{background: this.props.backgroundColor, height: '30px'}}
       >
         <Tab label={'Web'} value={0}  style={styles.tab} tabItemContainerStyle={{textTransform: "capitalize"}} />
         <Tab label={'Load URLs'} value={1} style={styles.tab} tabItemContainerStyle={{textTransform: "capitalize"}}/>
@@ -434,15 +434,14 @@ render() {
         <Col xs={9} md={9} style={{marginLeft:'0px'}} >
           <InputGroup >
           <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'265px'}}  />
-
           </InputGroup>
         </Col>
         <Col xs={3} md={3} >
-          <FlatButton style={{marginLeft:'0px', minWidth: '58px'}}
-          backgroundColor="#26C6DA"
-          hoverColor="#80DEEA"
-          icon={<Search color={fullWhite} />}
-          onTouchTap={this.RunQuery.bind(this)}
+          <RaisedButton
+            style={{marginLeft:'0px', minWidth: '58px'}}
+            backgroundColor={this.props.backgroundColor}
+            icon={<Search  />}
+            onTouchTap={this.RunQuery.bind(this)}
           />
         </Col>
         </Row>
@@ -459,6 +458,7 @@ render() {
         label="Run multiple queries"
         onClick={this.handleOpenDialogLoadMultiQueries.bind(this)}
         />
+
         </Row>
 
         <Dialog title="Run multiples queries" actions={actionsLoadMultiQueries} modal={false} open={this.state.openDialogLoadMultiQueries} onRequestClose={this.handleCloseDialogLoadMultiQueries.bind(this)}>
@@ -514,7 +514,7 @@ render() {
       <div id={"Load URls"}  style={styles.slide}>
         <Row>
         <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-        <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+        <TextField style={{width:'267px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
         onChange={this.handleTextChangeLoadUrls.bind(this)}
         hintText="Write urls."
         hintStyle={{ marginLeft:10}}
@@ -525,11 +525,11 @@ render() {
         />
         </Col>
         <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
-        <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
-        backgroundColor="#26C6DA"
-        hoverColor="#80DEEA"
-        icon={<Search color={fullWhite} />}
-        onTouchTap={this.loadFromTextInput.bind(this)}
+        <RaisedButton
+          style={{marginLeft:'10px', minWidth: '58px' }}
+          backgroundColor={this.props.backgroundColor}
+          icon={<Search  />}
+          onTouchTap={this.loadFromTextInput.bind(this)}
         />
         </Col>
         </Row>
@@ -556,11 +556,11 @@ render() {
         </InputGroup>
         </Col>
         <Col xs={2} md={1} >
-        <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
-        backgroundColor="#26C6DA"
-        hoverColor="#80DEEA"
-        icon={<Search color={fullWhite} />}
-        onTouchTap={this.runSeedFinderQuery.bind(this)}
+        <RaisedButton
+          style={{marginLeft:'-10px', minWidth: '58px'}}
+          backgroundColor={this.props.backgroundColor}
+          icon={<Search  />}
+          onTouchTap={this.runSeedFinderQuery.bind(this)}
         />
         </Col>
 
@@ -571,5 +571,9 @@ render() {
       );
     }
   }
+
+  SearchTabs.defaultProps = {
+      backgroundColor:"#9A7BB0",
+  };
 
 export default SearchTabs;
