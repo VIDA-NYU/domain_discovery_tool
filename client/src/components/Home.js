@@ -188,10 +188,10 @@ class Home extends Component {
                      icon={<AddBox color={fullWhite} />}
                     />
                     <FlatButton style={{margin:'70px 10px 10px 10px'}}
-                     backgroundColor="#26C6DA"
-                     hoverColor="#80DEEA"
-	                   onTouchTap={this.handleOpenDeleteDomain.bind(this)}
-                     icon={<DeleteForever color={fullWhite} />}
+                    backgroundColor="#26C6DA"
+                    hoverColor="#80DEEA"
+	                  onTouchTap={this.handleOpenDeleteDomain.bind(this)}
+                    icon={<DeleteForever color={fullWhite} />}
                     />
                   </Link>
                   <Dialog
@@ -200,15 +200,15 @@ class Home extends Component {
                    modal={false}
                    open={this.state.openCreateDomain}
                    onRequestClose={this.handleCloseCreateDomain.bind(this)}
-                   >
+                  >
                      <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-                       ref={(input) => { this.textInput = input;}}
-                       value={this.state.newNameDomain}
-                       onChange={this.handleTextChangeNewNameDomain.bind(this)}
-                       onKeyPress={(e) => {(e.key === 'Enter') ? this.createNewDomain(this) : null}}
-                       hintText="Write the name domain."
-                       hintStyle={{ marginLeft:10}}
-                       inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+                      ref={(input) => { this.textInput = input;}}
+                      value={this.state.newNameDomain}
+                      onChange={this.handleTextChangeNewNameDomain.bind(this)}
+                      onKeyPress={(e) => {(e.key === 'Enter') ? this.createNewDomain(this) : null}}
+                      hintText="Write the name domain."
+                      hintStyle={{ marginLeft:10}}
+                      inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
                      />
                    </Dialog>
 
