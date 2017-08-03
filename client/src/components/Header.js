@@ -462,14 +462,14 @@ class Header extends Component {
      var switchDomain = <RaisedButton
                                  label="Switch Domain"
                                  labelStyle={{textTransform: "capitalize"}}
-                                 backgroundColor="#9A7BB0"
+                                 backgroundColor={this.props.backgroundColor}
                                  icon={<SwitchDomain />}
                                  style={{marginRight:"-10px",marginTop:6, height:30}}
                                />;
      var infoCrawlerRunning = <RaisedButton
                                  label="Monitoring"
                                  labelStyle={{textTransform: "capitalize"}}
-                                 backgroundColor="#9A7BB0"
+                                 backgroundColor={this.props.backgroundColor}
                                  icon={<MonitoringIcon />}
                                  style={{marginLeft:"-10px", marginTop:6, height:30}}
                                  onTouchTap={this.handleOpenInfo.bind(this)}
@@ -514,6 +514,10 @@ class Header extends Component {
       );
     }
   }
+
+  Header.defaultProps = {
+      backgroundColor:"#9A7BB0",
+  };
 
  export default Header;
 /*
