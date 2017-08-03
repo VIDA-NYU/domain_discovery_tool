@@ -6,7 +6,6 @@ import { } from 'material-ui/styles/colors';
 
 import IconButton from 'material-ui/IconButton';
 import {Toolbar, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-
 import SwitchDomain from 'material-ui/svg-icons/action/exit-to-app';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
@@ -495,15 +494,13 @@ class Header extends Component {
              <MenuItem value={1} primaryText="Explore Data View" />
              <MenuItem value={2} primaryText="Crawling View" />
           </DropDownMenu>
-   	     <ToolbarSeparator style={{ marginTop:"5px"}} />
    	     {infoCrawlerRunning}
-          <ToolbarSeparator style={{ marginTop:"5px"}} />
           <TextField
-          style={{marginRight:"-15px", marginTop:4, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+          style={{width:"19%", marginRight:"-15px", marginTop:4, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
           floatingLabelFixed={true} floatingLabelText={ <Search color={"silver"} />} floatingLabelStyle={{marginTop:"-8px", marginLeft:3, }}
           hintText="Search ..."
           hintStyle={{marginBottom:"-8px", marginLeft:25}}
-          inputStyle={{ width:"85%", marginTop:0, marginBottom:10, marginLeft:25}} underlineShow={false}
+          inputStyle={{ width:"80%", marginTop:0, marginBottom:10, marginLeft:25}} underlineShow={false}
           value={this.state.term} onKeyPress={(e) => {(e.key === 'Enter') ? this.filterKeyword(this.state.term) : null}} onChange={e => this.setState({ term: e.target.value })}
           />
           <Dialog title=" Model Settings" actions={actionsCreateModel} modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
