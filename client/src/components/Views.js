@@ -902,8 +902,19 @@ class ViewTabSnippets extends React.Component{
         </div>
 
         <div style={{width: "30%", display: "flex", justifyContent: "space-around"}}>
-            <RaisedButton label="Backward" backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", null)}/>
-            <RaisedButton label="Forward" backgroundColor={"#BDBDBD"} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", null)}/>
+          <Button
+            style={{width: "90px", height: "36px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD", marginRight: "4px", paddingTop: "3px"}}
+            onClick={this.crawlNextLevel("Backward", null)}
+          >
+             BACKWARD<br/>LINKS
+          </Button>
+
+          <Button
+            style={{width: "90px", height: "36px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD", paddingTop: "3px"}}
+            onClick={this.crawlNextLevel("Forward", null)}
+          >
+             FORWARD<br/>LINKS
+          </Button>
         </div>
       </div>
     ];
