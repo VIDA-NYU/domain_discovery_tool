@@ -274,6 +274,7 @@ class ViewTabSnippets extends React.Component{
       currentPagination:0,
       allRelevant:false,
       lengthTotalPages:0,
+      lengthPages:0,
       custom_tag_val:"",
       flatKeyBoard:false,
       openMultipleSelection: false,
@@ -291,6 +292,7 @@ class ViewTabSnippets extends React.Component{
     this.check_click_down=false;
     this.availableTags = [];
     this.items= [];
+    this.updatedUrls=false;
   }
 
   getAvailableTags(){
@@ -313,7 +315,7 @@ class ViewTabSnippets extends React.Component{
   componentWillMount(){
     this.getAvailableTags();
     this.setState({
-        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthTotalPages:this.props.lengthTotalPages,
+        session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthPages:this.props.lengthPages, lengthTotalPages:this.props.lengthTotalPages,
     });
     this.updateOnlineClassifier(this.props.session);
     this.keyboardListener();
@@ -342,6 +344,8 @@ class ViewTabSnippets extends React.Component{
 
   componentWillReceiveProps(nextProps, nextState){
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) {
+      if(this.props.internalUpdating){return ;}
+
       if(!this.props.queryFromSearch) $("div").scrollTop(0);
       this.setState({
         session: nextProps.session,
@@ -359,6 +363,7 @@ class ViewTabSnippets extends React.Component{
 
   shouldComponentUpdate(nextProps, nextState) {
     if ( nextState.currentPagination!== this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
+      if(this.props.internalUpdating){return false;}
          return true;
     }
     return false;
@@ -396,7 +401,7 @@ class ViewTabSnippets extends React.Component{
           this.setState({
               accuracyOnlineLearning:accuracy,
           });
-	    this.updateOnlineAccuracy(accuracy);
+	        this.updateOnlineAccuracy(accuracy);
         }
 
     	}.bind(this)
@@ -411,7 +416,7 @@ class ViewTabSnippets extends React.Component{
       {'session': JSON.stringify(session)},
       function(pages) {
         this.newPages=true;
-        this.setState({session:session, pages:pages["data"]["results"], sessionString: JSON.stringify(session), lengthTotalPages:pages['data']['total'], });
+        this.setState({ pages:pages["data"]["results"], lengthPages:Object.keys(pages['data']["results"]).length, });
         this.forceUpdate();
       }.bind(this)
     );
@@ -426,11 +431,16 @@ class ViewTabSnippets extends React.Component{
     let selected = data.selected; //current page (number)
     let offset = Math.ceil(selected * this.perPage);
     this.setState({offset: offset, currentPagination:data.selected, pages:[]});
-      this.props.handlePageClick(offset, data.selected);
+    this.props.handlePageClick(offset, data.selected);
     //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
     var tempSession = JSON.parse(JSON.stringify(this.props.session));
     tempSession["from"] = offset;
     this.getPages(tempSession);
+  }
+
+  //Updating the urls into the current page (pagination) when there is not more urls in that page.
+  updateUrlsIntoPage(currentPage){
+    this.updatedUrls=true;
   }
 
   //Remove or Add tags from elasticSearch
@@ -442,6 +452,15 @@ class ViewTabSnippets extends React.Component{
         //updateing filters Tags
         this.props.reloadFilters();
         this.updateOnlineClassifier(this.props.session);
+        if(this.updatedUrls){
+          let selected = this.state.currentPagination; //current page (number)
+          let offset = Math.ceil(selected * this.perPage);
+          //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
+          var tempSession = JSON.parse(JSON.stringify(this.props.session));
+          tempSession["from"] = offset;
+          this.getPages(tempSession);
+        }
+        this.updatedUrls=false;
         this.forceUpdate();
       }.bind(this)
     );
@@ -489,6 +508,9 @@ class ViewTabSnippets extends React.Component{
         if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
           totalTagRemoved++;
           delete updatedPages[url];
+          this.props.updateTotalUrlsPerPage(this.state.lengthTotalPages - totalTagRemoved);
+          if(Object.keys(updatedPages).length===0)
+            this.updateUrlsIntoPage(this.state.currentPagination);
         }
     }
     this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - totalTagRemoved});
@@ -574,6 +596,9 @@ class ViewTabSnippets extends React.Component{
       if(!this.props.session['selected_tags'].split(",").includes(tag) && this.props.session['selected_tags'] !== "" ){
         this.setState({ pages:updatedPages, lengthTotalPages: this.state.lengthTotalPages - 1});
         delete updatedPages[url];
+        this.props.updateTotalUrlsPerPage(this.state.lengthTotalPages - 1);
+        if(Object.keys(updatedPages).length===0)
+          this.updateUrlsIntoPage(this.state.currentPagination);
       }
 
       //  setTimeout(function(){ $(nameIdButton).css('background-color','silver'); }, 500);
@@ -976,18 +1001,18 @@ class ViewTabSnippets extends React.Component{
               </List>
               <div style={{display: "table", marginRight: "auto", marginLeft: "auto",}}>
               <ReactPaginate previousLabel={"previous"}
-          nextLabel={"next"}
-          initialPage={0}
-          forcePage={this.state.currentPagination}
-          breakLabel={<a >...</a>}
-          breakClassName={"break-me"}
-          pageCount={currentPageCount}
-          marginPagesDisplayed={3}
-          pageRangeDisplayed={8}
-          onPageChange={this.handlePageClick.bind(this)}
-          containerClassName={"pagination"}
-          subContainerClassName={"pages pagination"}
-          activeClassName={"active"} />
+                nextLabel={"next"}
+                initialPage={0}
+                forcePage={this.state.currentPagination}
+                breakLabel={<a >...</a>}
+                breakClassName={"break-me"}
+                pageCount={currentPageCount}
+                marginPagesDisplayed={3}
+                pageRangeDisplayed={8}
+                onPageChange={this.handlePageClick.bind(this)}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"} />
               </div>
               </div>
         <Dialog  title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
@@ -1016,11 +1041,12 @@ class Views extends React.Component {
       sessionString:"",
       session:{},
       chipData: [],
-      lengthPages: 1,
-	lengthTotalPages:0,
-	offset:0,
-	currentPagination:0,
-	accuracyOnlineLearning:0,
+      lengthPages: 0,
+    	lengthTotalPages:0,
+    	offset:0,
+    	currentPagination:0,
+    	accuracyOnlineLearning:0,
+      internalUpdating:false,
     };
     this.newPages = true;
     this.queryFromSearch=true;
@@ -1028,15 +1054,16 @@ class Views extends React.Component {
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
     getPages(session){
-	var tempSession = session;
-	tempSession["from"]=this.state.offset;
-  tempSession['pagesCap'] = "12";
-	$.post(
+  	var tempSession = session;
+  	tempSession["from"]=this.state.offset;
+    tempSession['pagesCap'] = "12";
+  	$.post(
       '/getPages',
       {'session': JSON.stringify(tempSession)},
       function(pages) {
         this.newPages=true;
-        this.setState({session:tempSession, pages:pages["data"]["results"], sessionString: JSON.stringify(tempSession), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'], });
+        this.setState({session:tempSession, pages:pages["data"]["results"], sessionString: JSON.stringify(tempSession), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'],internalUpdating:false });
+        this.forceUpdate();
       }.bind(this)
     );
   }
@@ -1063,9 +1090,14 @@ class Views extends React.Component {
 	this.setState({offset: offset, currentPagination:currentPagination});
   }
   //Update the online accuracy
-    updateOnlineAccuracy(accuracy){
+  updateOnlineAccuracy(accuracy){
 	this.setState({accuracyOnlineLearning: accuracy});
 	this.forceUpdate();
+  }
+  //update the lengthTotalPages.
+  updateTotalUrlsPerPage(updatedTotalUrls){
+    this.setState({lengthTotalPages: updatedTotalUrls, internalUpdating:true});
+  	this.forceUpdate();
   }
 
   //If there are any change in the session like a new filter, then getPages() is called.
@@ -1078,6 +1110,7 @@ class Views extends React.Component {
   	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
       this.newPages = false;
       this.loadPages(nextProps.session);
+
   	}else{
         return;
     }
@@ -1117,9 +1150,9 @@ class Views extends React.Component {
     }
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets
-      handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
-    reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
+    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets internalUpdating={this.state.internalUpdating}
+      handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthPages={this.state.lengthPages} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+    reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)} updateTotalUrlsPerPage={this.updateTotalUrlsPerPage.bind(this)}  />
     : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
 
 /*    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
