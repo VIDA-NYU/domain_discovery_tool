@@ -53,6 +53,7 @@ const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
 
+
 import { stopWordFilter } from '../utils/stopword-filter.js';
 
 
@@ -363,7 +364,7 @@ class ViewTabSnippets extends React.Component{
 
   shouldComponentUpdate(nextProps, nextState) {
     if ( nextState.currentPagination!== this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
-      if(this.props.internalUpdating){return false;}
+      if(this.props.internalUpdating){ return false;}
          return true;
     }
     return false;
@@ -380,7 +381,7 @@ class ViewTabSnippets extends React.Component{
     return currentString;
   }
 
-    updateOnlineClassifier(sessionTemp){
+  updateOnlineClassifier(sessionTemp){
 	console.log("UPDATE ONLINE CLASSIFIER");
     $.post(
     	'/updateOnlineClassifier',
@@ -452,6 +453,7 @@ class ViewTabSnippets extends React.Component{
         //updateing filters Tags
         this.props.reloadFilters();
         this.updateOnlineClassifier(this.props.session);
+        this.forceUpdate();
         if(this.updatedUrls){
           let selected = this.state.currentPagination; //current page (number)
           let offset = Math.ceil(selected * this.perPage);
@@ -461,7 +463,7 @@ class ViewTabSnippets extends React.Component{
           this.getPages(tempSession);
         }
         this.updatedUrls=false;
-        this.forceUpdate();
+
       }.bind(this)
     );
   }
@@ -678,26 +680,25 @@ class ViewTabSnippets extends React.Component{
         this.availableTags.splice(0, 1);
         return;
       }
-        for(var i=0;i<inputURL.length;i++){
-
-          if(this.state.pages[inputURL[i]]["tags"]!== undefined)
-          {
-            if(this.state.pages[inputURL[i]]["tags"].map(k=>k.toLowerCase()).indexOf(val[0].value.toLowerCase())<0){
-              this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
-              this.state.pages[inputURL[i]]["tags"].push(val[0].value);
-              this.removeAddTagElasticSearch(inputURL, val[0].value, true);
-            }
-            else if(this.state.pages[inputURL[i]]["tags"]===undefined){
-              this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
-              this.state.pages[inputURL[i]]["tags"].push(val[0].value);
-              this.removeAddTagElasticSearch(inputURL, val[0].value, true);
-            }
-
+      for(var i=0;i<inputURL.length;i++){
+        if(this.state.pages[inputURL[i]]["tags"]!== undefined)
+        {
+          if(this.state.pages[inputURL[i]]["tags"].map(k=>k.toLowerCase()).indexOf(val[0].value.toLowerCase())<0){
+            this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
+            this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+            this.removeAddTagElasticSearch(inputURL, val[0].value, true);
+          }
         }
-      }
-        this.setState({multi:false,pages:this.state.pages});
-        this.handleCloseMultipleSelection();
-      	this.forceUpdate();
+        else if(this.state.pages[inputURL[i]]["tags"]===undefined){
+                  this.state.pages[inputURL[i]]["tags"] = this.state.pages[inputURL[i]]["tags"] || [];
+                  this.state.pages[inputURL[i]]["tags"].push(val[0].value);
+                  this.removeAddTagElasticSearch(inputURL, val[0].value, true);
+               }
+        }
+
+      this.setState({multi:false,pages:this.state.pages});
+      this.handleCloseMultipleSelection();
+    	this.forceUpdate();
 
       }
     }
@@ -1151,33 +1152,31 @@ class Views extends React.Component {
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
     var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets internalUpdating={this.state.internalUpdating}
-      handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthPages={this.state.lengthPages} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
-    reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)} updateTotalUrlsPerPage={this.updateTotalUrlsPerPage.bind(this)}  />
-    : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
+                    handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthPages={this.state.lengthPages} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+                    reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)} updateTotalUrlsPerPage={this.updateTotalUrlsPerPage.bind(this)}  />
+                    : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
 
-/*    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+    /*    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages === 0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;*/
 
-      var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
+    var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
 
-      // REMOVE ACCURACY HARDCODING
-      return (
-	      <div style={{maxWidth: 1000,}}>
-              <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
-              <div style={styles.headline}>
-	      <div style={{marginBottom:"30px"}}>
+    // REMOVE ACCURACY HARDCODING
+    return (
+      <div style={{maxWidth: 1000,}}>
+        <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
+          <div style={styles.headline}>
+            <div style={{marginBottom:"30px"}}>
               <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
               <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Domain Model Accuracy: {this.state.accuracyOnlineLearning} % </p>
-              </div>
-
-              <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
-              {showPages}
             </div>
-
-          </SwipeableViews>
-        </div>
-      );
+            <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
+            {showPages}
+          </div>
+        </SwipeableViews>
+      </div>
+    );
 
   }
 }
