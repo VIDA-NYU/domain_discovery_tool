@@ -10,12 +10,8 @@ import Highlighter from 'react-highlight-words';
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
-import FileFolder from 'material-ui/svg-icons/file/folder';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import {blue500} from 'material-ui/styles/colors';
-import Toggle from 'material-ui/Toggle';
 import CircularProgress from 'material-ui/CircularProgress';
 import Chip from 'material-ui/Chip';
 import Qicon from '../images/qicon.png';
@@ -27,18 +23,9 @@ import RelevantFace from 'material-ui/svg-icons/action/thumb-up';
 import IrrelevantFace from 'material-ui/svg-icons/action/thumb-down';
 import NeutralFace from 'material-ui/svg-icons/action/thumbs-up-down';
 import FlatButton from 'material-ui/FlatButton';
-import AddBox from 'material-ui/svg-icons/content/add-box';
-import Settings from 'material-ui/svg-icons/action/settings';
-import {fullWhite} from 'material-ui/styles/colors';
-
-import FontIcon from 'material-ui/FontIcon';
-import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
-import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
 import IconButton from 'material-ui/IconButton';
-import ActionHome from 'material-ui/svg-icons/action/home';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import Select from 'react-select';
 
 import '../css/Views.css';
@@ -52,7 +39,6 @@ import Dialog from 'material-ui/Dialog';
 const recentsIcon = <RelevantFace />;
 const favoritesIcon = <IrrelevantFace />;
 const nearbyIcon = <NeutralFace />;
-
 
 import { stopWordFilter } from '../utils/stopword-filter.js';
 
