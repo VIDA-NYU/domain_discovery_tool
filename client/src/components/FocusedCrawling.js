@@ -332,8 +332,8 @@ class FocusedCrawling extends Component {
        function(model_file) {
          var url = model_file;
          var message = (url.indexOf("_model.zip")==-1)?"Model was not created.":"Model created successfully.";
-         if(url.indexOf("_model.zip")>-1) window.open(url,'Download');
-         this.setState({loadingModel:false, disabledCreateModel:false, createModelMessage:message, openMessageModelResult:true,})
+
+         this.setState({modelDownloadURL: model_file, loadingModel:false, disabledCreateModel:false, createModelMessage:message, openMessageModelResult:true})
          this.forceUpdate();
        }.bind(this)
      );
@@ -341,6 +341,11 @@ class FocusedCrawling extends Component {
 
   exportModel(){
     this.getCreatedModel(this.state.session);
+  }
+
+  downloadExportedModel = (event) => {
+    if((this.state.modelDownloadURL || "").indexOf("_model.zip") !== -1)
+      window.open(this.state.modelDownloadURL, 'download')
   }
 
   handleCloseModelResult = () => {
@@ -578,6 +583,12 @@ class FocusedCrawling extends Component {
               onRequestClose={this.handleCloseModelResult.bind(this)}
             >
               {this.state.createModelMessage}
+              <RaisedButton
+                label="Download"
+                style={{margin: 5}}
+                labelStyle={{textTransform: "capitalize"}}
+                onClick={this.downloadExportedModel}
+              />
             </Dialog>
             </div>
          </CardText>
