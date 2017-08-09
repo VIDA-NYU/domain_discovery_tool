@@ -1040,16 +1040,18 @@ class Views extends React.Component {
   }
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
-    getPages(session){
+  getPages(session){
   	var tempSession = session;
-  	tempSession["from"]=this.state.offset;
     tempSession['pagesCap'] = "12";
+    var updatedOffset = (!this.queryFromSearch)?0: this.state.offset;
+    tempSession["from"]=updatedOffset;
+    var updatedCurrentPagination =  (!this.queryFromSearch)?0: this.state.currentPagination;
   	$.post(
       '/getPages',
       {'session': JSON.stringify(tempSession)},
       function(pages) {
         this.newPages=true;
-        this.setState({session:tempSession, pages:pages["data"]["results"], sessionString: JSON.stringify(tempSession), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'],internalUpdating:false });
+        this.setState({session:tempSession, pages:pages["data"]["results"], sessionString: JSON.stringify(tempSession), lengthPages : Object.keys(pages['data']["results"]).length,  lengthTotalPages:pages['data']['total'],internalUpdating:false, offset:updatedOffset, currentPagination:updatedCurrentPagination});
         this.forceUpdate();
       }.bind(this)
     );
@@ -1069,17 +1071,18 @@ class Views extends React.Component {
 
   //Loads pages
   loadPages(session){
-      this.getPages(session);
+    this.getPages(session);
   }
 
   // Update pagination
   handlePageClick(offset, currentPagination){
-	this.setState({offset: offset, currentPagination:currentPagination});
+  	this.setState({offset: offset, currentPagination:currentPagination});
+    this.forceUpdate();
   }
   //Update the online accuracy
   updateOnlineAccuracy(accuracy){
-	this.setState({accuracyOnlineLearning: accuracy});
-	this.forceUpdate();
+  	this.setState({accuracyOnlineLearning: accuracy});
+  	this.forceUpdate();
   }
   //update the lengthTotalPages.
   updateTotalUrlsPerPage(updatedTotalUrls){
