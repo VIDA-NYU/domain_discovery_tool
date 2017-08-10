@@ -4,7 +4,7 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-import { InputGroup, FormControl , DropdownButton,  MenuItem} from 'react-bootstrap';
+import { InputGroup, FormControl , DropdownButton,  MenuItem, input} from 'react-bootstrap';
 import { Col, Row} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
 import {fullWhite} from 'material-ui/styles/colors';
@@ -42,6 +42,7 @@ class SearchTabs extends React.Component {
       "search_engine":"GOOG",
       "valueQuery":"",
     	"valueLoadUrls":"",
+      "nameFile":"",
     	flat:true,
     	openLoadURLs: false,
       openDialogLoadMultiQueries: false,
@@ -213,6 +214,8 @@ class SearchTabs extends React.Component {
     handleFile(event) {
       const reader = new FileReader();
       const file = event.target.files[0];
+      const name = (event.target.files[0]!==undefined)?event.target.files[0].name:"";
+      this.setState({nameFile:name});
       reader.onload = (upload) => {
         this.runLoadUrlsFileQuery(upload.target.result);
       };
@@ -224,7 +227,7 @@ class SearchTabs extends React.Component {
       this.setState({openLoadURLs: true});
     };
     handleCloseLoadURLs = () => {
-	     this.setState({openLoadURLs: false,});
+	     this.setState({openLoadURLs: false, nameFile:""});
     };
 
     // Explicitly focus the text input using the raw DOM API
@@ -344,7 +347,7 @@ render() {
                         		<FlatButton label="Relevant" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addPosURLs.bind(this)}/>,
                         		<FlatButton label="Irrelevant" primary={true} keyboardFocused={true} onTouchTap={this.addNegURLs.bind(this)}/>,
                         		<FlatButton label="Neutral" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addNeutralURLs.bind(this)}/>,
-                            <div style={{float:"left",fontSize: "14px", fontWeight: "500",width: '18%'}}>
+                            <div style={{float:"right",fontSize: "14px", fontWeight: "500",width: '18%', textAlign: "left", marginLeft:15}}>
                               <Select.Creatable
                                 placeholder="Add Tag"
                                 multi={false}
@@ -359,15 +362,22 @@ render() {
                       <FlatButton label="Run" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.runMultiQueriesfromFileAndTextField.bind(this)}/>,
                           ];
 
-  let show_choose_file = (this.fromFile || this.fromFile === undefined)? <Row style={{marginTop:30}}> <p style={{fontSize:12, marginLeft:10}}>"Upload URLs from file"</p> <br />
-                                           <FlatButton style={{marginLeft:'15px'}}
-                                           label="Choose URLs File"
-                                           labelPosition="before"
-                                           containerElement="label">
-                                           <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-                                           </FlatButton>
-                                           </Row>
-                                    	         :<div/>;
+  let show_choose_file = (this.fromFile || this.fromFile === undefined)?<div>
+                                          <div>
+                                            <FlatButton style={{ height:35, marginTop: 0}}
+                                              buttonStyle={{height:35}}
+                                              labelStyle={{textTransform: "capitalize", fontSize:14, color:"white", fontWeight:"normal"}}
+                                              backgroundColor="#26C6DA"
+                                              hoverColor="#80DEEA"
+                                              label="Choose URLs File"
+                                              labelPosition="before"
+                                              containerElement="label"
+                                            >
+                                              <input type="file" id="csvFileInput" placeholder="Choose URLs File" style={{marginTop:10, lineHeight: "1ex"}}  onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt" style={{display:"none",}}/>
+                                            </FlatButton>
+                                            <span style={{position:"absolute", margin:"7px 7px 7px 10px"}}>{this.state.nameFile}</span>
+                                           </div>
+                                          </div> :<div/>;
 
 	return (
     <div>
