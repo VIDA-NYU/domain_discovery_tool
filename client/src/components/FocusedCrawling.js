@@ -91,7 +91,7 @@ class FocusedCrawling extends Component {
       termsList: [],
       accuracyOnlineLearning:0,
       loadingModel:false,
-      createModelMessage:"",
+      modelExportSuccess: false,
       openMessageModelResult:false,
     };
 
@@ -322,15 +322,19 @@ class FocusedCrawling extends Component {
   ///Create a model////
   ////////////////////
   getCreatedModel(session){
-    this.setState({loadingModel:true, disabledCreateModel:true, createModelMessage:"",})
+    this.setState({loadingModel:true, disabledCreateModel:true})
     $.post(
        '/createModel',
        {'session': JSON.stringify(session)},
        function(model_file) {
-         var url = model_file;
-         var message = (url.indexOf("_model.zip")==-1)?"Model was not created.":"Model created successfully.";
 
-         this.setState({modelDownloadURL: model_file, loadingModel:false, disabledCreateModel:false, createModelMessage:message, openMessageModelResult:true})
+         this.setState({
+           modelExportSuccess: (model_file || "".indexOf("_model.zip") !== -1),
+           modelDownloadURL: model_file,
+           loadingModel:false,
+           disabledCreateModel:false,
+           openMessageModelResult:true
+         })
          this.forceUpdate();
        }.bind(this)
      );
@@ -415,10 +419,16 @@ class FocusedCrawling extends Component {
 
     const actionsModelResult = [
       <FlatButton
-        label="Close"
+        label="Download"
         primary={true}
-        onTouchTap={this.handleCloseModelResult.bind(this)}
+        disabled={!this.state.modelExportSuccess}
+        onTouchTap={this.downloadExportedModel}
       />,
+      <FlatButton
+        label="Close"
+        secondary={true}
+        onTouchTap={this.handleCloseModelResult.bind(this)}
+      />
     ];
 
     return (
@@ -552,17 +562,30 @@ class FocusedCrawling extends Component {
             </div>
             <Dialog
               actions={actionsModelResult}
+              actionsContainerStyle={{textAlign: "center"}}
               modal={false}
+              contentStyle={{width: "max-content", fontWeight: "bold"}}
               open={this.state.openMessageModelResult}
               onRequestClose={this.handleCloseModelResult.bind(this)}
             >
-              {this.state.createModelMessage}
-              <RaisedButton
-                label="Download"
-                style={{margin: 5}}
-                labelStyle={{textTransform: "capitalize"}}
-                onClick={this.downloadExportedModel}
-              />
+              {
+                this.state.modelExportSuccess ?
+                  <div>
+                    <img
+                      src={require('../images/tick-success.png')}
+                      style={{width: "30px"}}
+                    />
+                    <span> Model created successfully </span>
+                  </div>
+                  :
+                  <div>
+                    <img
+                      src={require('../images/cross-failure.png')}
+                      style={{width: "30px"}}
+                    />
+                    <span> Model was not created </span>
+                  </div>
+              }
             </Dialog>
             </div>
          </CardText>
