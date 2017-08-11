@@ -329,7 +329,7 @@ class FocusedCrawling extends Component {
        function(model_file) {
 
          this.setState({
-           modelExportSuccess: (model_file || "".indexOf("_model.zip") !== -1),
+           modelExportSuccess: (model_file || "").indexOf("_model.zip") !== -1,
            modelDownloadURL: model_file,
            loadingModel:false,
            disabledCreateModel:false,
