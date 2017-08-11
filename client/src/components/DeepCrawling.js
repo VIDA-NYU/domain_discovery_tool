@@ -44,6 +44,7 @@ class DeepCrawling extends Component {
       resetSelection: false,
       openLoadURLs: false,
       session:"",
+      nameFile:"",
     };
     this.selectedRows = [];
     this.recommendationInterval = null;
@@ -353,6 +354,8 @@ class DeepCrawling extends Component {
   handleFile(event) {
     const reader = new FileReader();
     const file = event.target.files[0];
+    const name = (event.target.files[0]!==undefined)?event.target.files[0].name:"";
+    this.setState({nameFile:name});
     reader.onload = (upload) => {
       this.runLoadUrlsFileQuery(upload.target.result);
     };
@@ -365,7 +368,7 @@ class DeepCrawling extends Component {
     //this.focusTextField();
   };
   handleCloseDialogLoadUrl  = () => {
-    this.setState({openDialogLoadUrl: false, newNameTerm:"",});
+    this.setState({openDialogLoadUrl: false, newNameTerm:"", nameFile:""});
     this.termsFromFile=[]; // Empting the terms from file.
   };
 
@@ -584,13 +587,20 @@ class DeepCrawling extends Component {
            </Row>
            <Row>
              <br />
-             <FlatButton style={{marginLeft:'15px'}}
-               label="Choose URLs File"
-               labelPosition="before"
-               containerElement="label"
-               labelStyle={{textTransform: "capitalize"}}>
-               <input type="file" id="csvFileInput" onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt"/>
-             </FlatButton>
+             <div>
+               <FlatButton style={{ height:35, marginLeft:15, marginTop: 0}}
+                 buttonStyle={{height:35}}
+                 labelStyle={{textTransform: "capitalize", fontSize:14, color:"white", fontWeight:"normal"}}
+                 backgroundColor="#26C6DA"
+                 hoverColor="#80DEEA"
+                 label="Choose URLs File"
+                 labelPosition="before"
+                 containerElement="label"
+               >
+                 <input type="file" id="csvFileInput" placeholder="Load queries from file" style={{marginTop:10, lineHeight: "1ex"}} onChange={this.handleFile.bind(this)} name='file' ref='file' accept=".txt" style={{display:"none",}}/>
+               </FlatButton>
+               <span style={{position:"absolute", margin:"7px 7px 7px 10px"}}>{this.state.nameFile}</span>
+              </div>
            </Row>
          </Dialog>
          </CardText>
