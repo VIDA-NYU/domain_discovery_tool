@@ -43,6 +43,7 @@ class SearchTabs extends React.Component {
       "valueQuery":"",
     	"valueLoadUrls":"",
       "nameFile":"",
+      "nameFileMultiQueries":"",
     	flat:true,
     	openLoadURLs: false,
       openDialogLoadMultiQueries: false,
@@ -249,6 +250,8 @@ class SearchTabs extends React.Component {
     handleFileMultiQueries(event) {
       const reader = new FileReader();
       const file = event.target.files[0];
+      const name = (event.target.files[0]!==undefined)?event.target.files[0].name:"";
+      this.setState({nameFileMultiQueries:name});
       reader.onload = (upload) => {
         this.runLoadMultiQueriesFile(upload.target.result);
       };
@@ -261,7 +264,7 @@ class SearchTabs extends React.Component {
       //this.focusTextField();
     };
     handleCloseDialogLoadMultiQueries  = () => {
-      this.setState({openDialogLoadMultiQueries: false, newMultiQueries:"",});
+      this.setState({openDialogLoadMultiQueries: false, newMultiQueries:"", nameFileMultiQueries:""});
       this.termsFromFile=[]; // Empting the terms from file.
     };
 
@@ -466,13 +469,20 @@ render() {
           </Row>
           <Row>
             <br />
-            <FlatButton style={{marginLeft:'15px'}}
-              label="Load queries from file"
-              labelPosition="before"
-              containerElement="label"
-              labelStyle={{textTransform: "capitalize"}}>
-              <input type="file" id="csvFileInput" onChange={this.handleFileMultiQueries.bind(this)} name='file' ref='file' accept=".txt"/>
-            </FlatButton>
+            <div>
+              <FlatButton style={{ height:35, marginLeft:15, marginTop: 0}}
+                buttonStyle={{height:35}}
+                labelStyle={{textTransform: "capitalize", fontSize:14, color:"white", fontWeight:"normal"}}
+                backgroundColor="#26C6DA"
+                hoverColor="#80DEEA"
+                label="Load queries from file"
+                labelPosition="before"
+                containerElement="label"
+              >
+                <input type="file" id="csvFileInput" placeholder="Load queries from file" style={{marginTop:10, lineHeight: "1ex"}} onChange={this.handleFileMultiQueries.bind(this)} name='file' ref='file' accept=".txt" style={{display:"none",}}/>
+              </FlatButton>
+              <span style={{position:"absolute", margin:"7px 7px 7px 10px"}}>{this.state.nameFileMultiQueries}</span>
+             </div>
           </Row>
         </Dialog>
 
