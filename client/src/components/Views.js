@@ -82,6 +82,7 @@ class ChipViewTab extends React.Component{
         display: 'flex',
         flexWrap: 'wrap',
         maxWidth:'1000px',
+        marginLeft:17,
       },
     };
   }
@@ -934,7 +935,7 @@ class ViewTabSnippets extends React.Component{
       return (
 	      <div  style={{maxWidth:1000}}>
               <p style={{color: "#FFFFFF",}}>-</p>
-              <div style={{  marginLeft:"20px"}} >
+              <div style={{  marginLeft:"23px"}} >
               <ReactPaginate
                 previousLabel={"previous"}
                 nextLabel={"next"}
@@ -949,7 +950,7 @@ class ViewTabSnippets extends React.Component{
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
                 activeClassName={"active"} />
-            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px", marginTop: "20px"}}>
+            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px", marginTop: "20px", marginRight:"-5px"}}>
               <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
               <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
               </div>
@@ -1157,8 +1158,8 @@ class Views extends React.Component {
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
           <div style={styles.headline}>
             <div style={{marginBottom:"30px"}}>
-              <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "72px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
-              <p style={{float:"right", color: "#757575", fontSize: "14px", fontWeight: "500", paddingRight: "20px",}}>  Domain Model Accuracy: {this.state.accuracyOnlineLearning} % </p>
+              <p style={{float:"left", color: "#757575", fontSize: "13px", fontWeight: "500", paddingLeft: "23px",}}> {messageNumberPages}  {this.state.lengthTotalPages} results. </p>
+              <p style={{float:"right", color: "#757575", fontSize: "13px", fontWeight: "500", paddingRight: "20px",}}>  Domain Model Accuracy: {this.state.accuracyOnlineLearning} % </p>
             </div>
             <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
             {showPages}
