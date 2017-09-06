@@ -221,15 +221,15 @@ class Home extends Component {
                    >
         	           <div style={{height:430, overflowY: "scroll",}}>
         	              {Object.keys(mydata).map((k, index)=>{
-                      		     return <Checkbox
-                              			   label={mydata[k].name}
-                              			   value={mydata[k].id}
-                              			   style={styles.checkbox}
-                              		     onClick={this.addDelDomains.bind(this,mydata[k].id,mydata[k].index)}
-                              			   />
-              		       })}
+                		      return <Checkbox
+                            			   label={mydata[k].name}
+                            			   value={mydata[k].id}
+                            			   style={styles.checkbox}
+                		                 onClick={this.addDelDomains.bind(this,mydata[k].id,mydata[k].index)}
+                			           />
+        		            })}
         	            </div>
-                    </Dialog>
+                   </Dialog>
                 </Col>
               </Row>
             </div>
