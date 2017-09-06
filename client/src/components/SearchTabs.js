@@ -4,7 +4,7 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-import { InputGroup, FormControl , DropdownButton,  MenuItem, input} from 'react-bootstrap';
+import { InputGroup, FormControl , DropdownButton, input} from 'react-bootstrap';
 import { Col, Row} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
 import {fullWhite} from 'material-ui/styles/colors';
@@ -14,7 +14,10 @@ import Dialog from 'material-ui/Dialog';
 import Select from 'react-select';
 import RaisedButton from 'material-ui/RaisedButton';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import $ from 'jquery';
+import Divider from 'material-ui/Divider';
 
 const styles = {
   headline: {
@@ -49,6 +52,8 @@ class SearchTabs extends React.Component {
       openDialogLoadMultiQueries: false,
       valueLoadMultiQueriesFromTextField:'',
       valueLoadMultiQueriesFromFile:[],
+      valuePagesSearchEngine:3,
+      pages_search_engine:"100",
 
     };
       uploadTag: "Neutral";
@@ -97,7 +102,7 @@ class SearchTabs extends React.Component {
   RunQuery(){
     var session =this.props.session;
     session['search_engine']=this.state.search_engine;
-    session['pagesCap'] = "100";
+    session['pagesCap'] = this.state.pages_search_engine;
     session = this.resetAllFilters(session);
     this.props.getQueryPages(this.state.valueQuery);
 
@@ -118,7 +123,7 @@ class SearchTabs extends React.Component {
     runSeedFinderQuery(){
     	var session =this.props.session;
     	session['search_engine']=this.state.search_engine;
-      session['pagesCap'] = "100";
+      session['pagesCap'] = this.state.pages_search_engine;;
     	$.post(
           '/runSeedFinder',
           {'terms': this.state.valueQuery,  'session': JSON.stringify(session)},
@@ -192,9 +197,16 @@ class SearchTabs extends React.Component {
     }
 
     // Handling search engine DropdownButton.
-    handleDropdownButton(eventKey){
-      this.setState({"search_engine":eventKey})
+    handleDropdownButton(event, index, valueSearchEngine){
+      var aux_search_engine = (valueSearchEngine==1)?"GOOG":"BING";
+      this.setState({"search_engine":aux_search_engine})
     }
+    // Handling number of pages  for search engine.
+    handleDropdownPages(event, index, valuePagesSearchEngine){
+      var pages_search_engine = (valuePagesSearchEngine==1)?"10":(valuePagesSearchEngine==2)?"50":(valuePagesSearchEngine==3)?"100":(valuePagesSearchEngine==4)?"200":(valuePagesSearchEngine==5)?"1000":"2000";
+      this.setState({"valuePagesSearchEngine":valuePagesSearchEngine, "pages_search_engine":pages_search_engine, })
+    }
+
     //Handling value into webQuery textfield
     handleChangeQuery(e){
       this.setState({ "valueQuery": e.target.value });
@@ -310,7 +322,7 @@ class SearchTabs extends React.Component {
       //Submits a web query for a list of terms, e.g. 'ebola disease'
         var session =this.props.session;
         session['search_engine']=this.state.search_engine;
-        session['pagesCap'] = "100";
+        session['pagesCap'] = this.state.pages_search_engine;
         var concat_valueQuery = (previous_valueQuery!=='')?previous_valueQuery:valueQuery;
         if(updateView==1) {
           session = this.resetAllFilters(session);
@@ -381,8 +393,9 @@ render() {
                                             <span style={{position:"absolute", margin:"7px 7px 7px 10px"}}>{this.state.nameFile}</span>
                                            </div>
                                           </div> :<div/>;
+ var value_search_engine=(this.state.search_engine=="GOOG")?1:2;
+ return (
 
-	return (
     <div>
       <Tabs
       onChange={this.handleChange}
@@ -399,20 +412,29 @@ render() {
       onChangeIndex={this.handleChange}
       >
       <div id={"Web"} style={styles.slide} >
+      <Row style={{marginTop:"-15px", marginLeft:"-30px"}}>
+        <Col xs={4} md={4} >
+        <DropDownMenu onChange={this.handleDropdownButton.bind(this)} value={value_search_engine} autoWidth={false} style={{width:140, marginLeft:20}} anchorOrigin={{ horizontal: 'middle', vertical: 'top' }}  targetOrigin={{ horizontal: 'right', vertical: 'top' }} menuStyle={{marginLeft:20}} underlineStyle={{borderColor:"black"}} labelStyle={{color:"black"}} iconStyle={{fill:"black"}}>
+        <MenuItem value={1} primaryText="Google" />
+        <MenuItem value={2} primaryText="Bing" />
+        </DropDownMenu>
+        </Col>
+        <Col xs={4} md={4} style={{marginLeft:5}}>
+        <DropDownMenu onChange={this.handleDropdownPages.bind(this)} value={this.state.valuePagesSearchEngine}  underlineStyle={{borderColor:"black"}} labelStyle={{color:"black"}} iconStyle={{fill:"black"}}>
+        <MenuItem value={1} primaryText="Pages 10" />
+        <MenuItem value={2} primaryText="Pages 50" />
+        <MenuItem value={3} primaryText="Pages 100" />
+        <MenuItem value={4} primaryText="Pages 200" />
+        <MenuItem value={5} primaryText="Pages 1000" />
+        <MenuItem value={6} primaryText="Pages 2000" />
+        </DropDownMenu>
+          </Col>
+      </Row>
         <Row>
         <Col xs={9} md={9} style={{marginLeft:'0px'}} >
           <InputGroup >
-          <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'177px'}}  />
-          <DropdownButton
-          componentClass={InputGroup.Button}
-          id="input-dropdown-addon"
-          pullRight="split-button-pull-right"
-          onSelect={this.handleDropdownButton.bind(this)}
-          title={this.state.search_engine}
-          >
-          <MenuItem key="0" eventKey='GOOG' >Goog</MenuItem>
-          <MenuItem key="1" eventKey='BING'>Bing</MenuItem>
-          </DropdownButton>
+          <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'265px'}}  />
+
           </InputGroup>
         </Col>
         <Col xs={3} md={3} >
@@ -424,8 +446,10 @@ render() {
           />
         </Col>
         </Row>
-        <Row style={{marginLeft:0, marginTop:20, extAlign: "left"}}> Or </Row>
-        <Row style={{marginLeft:0, marginTop:20,}}>
+        <Row>
+        <Divider style={{marginTop:10, marginRight:120, marginBottom:10, marginLeft:50, color:"#26C6DA", }}/>
+        </Row>
+        <Row style={{marginLeft:47, height:2}}>
 
         <FlatButton style={{height:35, marginTop: 0}}
         buttonStyle={{height:35}}
