@@ -17,7 +17,8 @@ import { Glyphicon } from 'react-bootstrap';
 import $ from "jquery";
 import FlatButton from 'material-ui/FlatButton';
 import {fullWhite} from 'material-ui/styles/colors';
-import AddTermIcon from 'material-ui/svg-icons/content/add-box';
+import AddBoxTermIcon from 'material-ui/svg-icons/content/add-box';
+import AddTermIcon from 'material-ui/svg-icons/content/add';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
@@ -367,23 +368,23 @@ class TermsList extends Component {
                   {terms_array}
                   </svg>
                   </div>
-                  <div style={{ textAlign:"right", margin:"-10px 0px 0px 0px"}}>
-                  {
-                    this.props.fromCrawling?
-                    <RaisedButton disabled={false}
-                      style={{ backgroundColor: "#9575CD", height:24, marginRight: 8, padding:0, minWidth:85, width:85 ,}} labelStyle={{marginTop:2, fontSize:12, textTransform: "capitalize"}}
-                      buttonStyle={{backgroundColor: "#9575CD", height:23, margin:0, padding:0, minWidth:85, width:85,}}
+                  <div style={{ textAlign:"right", margin:"3px 0px 5px 0px"}}>
+                    <RaisedButton
+                      label="Add term"
+                      labelStyle={{textTransform: "capitalize", fontSize:10, marginTop:"-5px", marginLeft:"-5px", marginRight:"-15px"}}
+                      backgroundColor={this.props.backgroundColor}
                       onTouchTap={this.handleOpenAddTerm.bind(this)}
-                      label="Add term" labelPosition="before" containerElement="label" />
-
-                    :
-                  <IconButton tooltip="Add term" onTouchTap={this.handleOpenAddTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} >
-                  <AddTermIcon color={"#9575CD"} />
-                  </IconButton>
-                  }
-                  <IconButton tooltip="Reload terms" onTouchTap={this.handleAutorenewTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} style={{marginLeft: "-20px"}}>
-                  <ActionAutorenew color={"#9575CD"} />
-                  </IconButton>
+                      icon={<AddTermIcon style={{marginTop:"-2px", marginLeft:"-5px", height:15}}/>}
+                      style={{marginRight:"0px",marginTop:0, height:20, width:95}}
+                    />
+                  <RaisedButton
+                    label="Reload"
+                    labelStyle={{textTransform: "capitalize", fontSize:10, marginTop:"-5px", marginLeft:"-5px", marginRight:"-15px"}}
+                    backgroundColor={this.props.backgroundColor}
+                    onTouchTap={this.handleAutorenewTerm.bind(this)}
+                    icon={<ActionAutorenew style={{marginTop:"-2px", marginLeft:"-5px", height:15}}/>}
+                    style={{marginRight:"10px",marginTop:0, height:20, width:85, marginLeft:10}}
+                  />
                   <Dialog title="Adding a term" actions={actionsAddTerm} modal={false} open={this.state.openCreateTerm} onRequestClose={this.handleCloseAddTerm.bind(this)}>
                   <Row>
                       <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}} ref={(input) => { this.textInput = input;}} value={this.state.newNameTerm}
@@ -423,6 +424,7 @@ TermsList.propTypes = {
 TermsList.defaultProps = {
   width: 300,
   height: 300,
+  backgroundColor:"#9A7BB0",
 };
 
 
