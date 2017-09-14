@@ -490,7 +490,7 @@ class Header extends Component {
           <Link to='/'>
           {switchDomain}
           </Link>
-           <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBody.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
+           <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBoby.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
              <MenuItem value={1} primaryText="Explore Data View" />
              <MenuItem value={2} primaryText="Crawling View" />
           </DropDownMenu>
@@ -514,7 +514,7 @@ class Header extends Component {
       );
     }
   }
-  
+
   Header.defaultProps = {
       backgroundColor:"#9A7BB0",
   };
