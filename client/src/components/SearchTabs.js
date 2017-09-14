@@ -439,17 +439,7 @@ render() {
         <Row style={{marginTop:"-10px"}}>
         <Col xs={8} md={8} style={{marginLeft:'5px'}} >
           <InputGroup >
-          <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'178px', marginLeft:4}}  />
-          <DropdownButton
-          componentClass={InputGroup.Button}
-          id="input-dropdown-addon"
-          pullRight="split-button-pull-right"
-          onSelect={this.handleDropdownButton.bind(this)}
-          title={this.state.search_engine}
-          >
-          <MenuItem key="0" eventKey='GOOG' >Goog</MenuItem>
-          <MenuItem key="1" eventKey='BING'>Bing</MenuItem>
-          </DropdownButton>
+          <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'255px'}}  />
           </InputGroup>
         </Col>
         <Col xs={3} md={3} style={{marginLeft:'20px'}}>
