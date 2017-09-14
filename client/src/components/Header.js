@@ -473,41 +473,40 @@ class Header extends Component {
                                   <OpenInNewTab />
                                 </IconButton>;
      return (
-       <AppBar showMenuIconButton={true} style={styles.backgound} title={<span style={styles.titleText}> Domain Discovery Tool </span>}
-        iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40'  />} >
-         <Toolbar style={styles.toolBarHeader}>
-         <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
-         <Link to='/'>
-          <IconButton tooltip="Change Domain" style={{marginLeft:'0px'}} tooltipStyles={{fontSize:14, fontWeight:"bold"}} > <SwitchDomain /> </IconButton>
-         </Link>
-         <ToolbarSeparator style={{ marginTop:"5px"}} />
-          <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBody.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
-            <MenuItem value={1} primaryText="Explore Data View" />
-            <MenuItem value={2} primaryText="Crawling View" />
-         </DropDownMenu>
-
-	     <ToolbarSeparator style={{ marginTop:"5px"}} />
-	     {infoCrawlerRunning}
-             <ToolbarSeparator style={{ marginTop:"5px"}} />
-             <TextField
-             style={{width:'25%',marginRight:'-80px', marginTop:5, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
-             hintText="Search ..." hintStyle={{marginBottom:"-8px", marginLeft:10}} inputStyle={{marginBottom:10, marginLeft:10}} underlineShow={false}
-             value={this.state.term} onKeyPress={(e) => {(e.key === 'Enter') ? this.filterKeyword(this.state.term) : null}} onChange={e => this.setState({ term: e.target.value })}
-             />
-             <IconButton style={{marginRight:'-25px'}} onClick={this.filterKeyword.bind(this, this.state.term)}>
-                <Search />
-             </IconButton>
-             <Dialog title=" Model Settings" actions={actionsCreateModel} modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
-                {checkedTagsPosNeg}
-             </Dialog>
-             <Dialog title="Monitoring processes" actions={actionsShowInfo} modal={false} open={this.state.openInfo} onRequestClose={this.handleCloseInfo.bind(this)}>
-             <Monitoring processes={this.state.processes} updateFilterCrawlerData={this.props.updateFilterCrawlerData.bind(this)} />
-             </Dialog>
-         </Toolbar>
-       </AppBar>
-     );
-   }
- }
+        <AppBar showMenuIconButton={true} style={styles.backgound} title={<span style={styles.titleText}> Domain Discovery Tool </span>}
+         titleStyle={{width:40, margin:0, padding:0,}}  iconElementLeft={<img alt="logo NYU" src={logoNYU}  height='45' width='40'  />} >
+          <Toolbar style={styles.toolBarHeader}>
+          <ToolbarTitle text={this.state.currentDomain} style={styles.tittleCurrentDomain}/>
+          <Link to='/'>
+           <IconButton tooltip="Change Domain" style={{marginLeft:'0px'}} tooltipStyles={{fontSize:14, fontWeight:"bold"}} > <SwitchDomain /> </IconButton>
+          </Link>
+          <ToolbarSeparator style={{ marginTop:"5px"}} />
+           <DropDownMenu value={this.state.valueViewBody} onChange={this.handleChangeViewBoby.bind(this)} style={{marginTop:"-10px",}} iconStyle={{color:"black",}} anchorOrigin={{vertical: 'bottom', horizontal: 'left',}} targetOrigin={{vertical: 'bottom', horizontal: 'left',}}>
+             <MenuItem value={1} primaryText="Explore Data View" />
+             <MenuItem value={2} primaryText="Crawling View" />
+          </DropDownMenu>
+   	     <ToolbarSeparator style={{ marginTop:"5px"}} />
+   	     {infoCrawlerRunning}
+          <ToolbarSeparator style={{ marginTop:"5px"}} />
+          <TextField
+          style={{marginRight:"-15px", marginTop:4, height: 35, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
+          floatingLabelFixed={true} floatingLabelText={ <Search color={"silver"} />} floatingLabelStyle={{marginTop:"-8px", marginLeft:3, }}
+          hintText="Search ..."
+          hintStyle={{marginBottom:"-8px", marginLeft:25}}
+          inputStyle={{ width:"85%", marginTop:0, marginBottom:10, marginLeft:25}} underlineShow={false}
+          value={this.state.term} onKeyPress={(e) => {(e.key === 'Enter') ? this.filterKeyword(this.state.term) : null}} onChange={e => this.setState({ term: e.target.value })}
+          />
+          <Dialog title=" Model Settings" actions={actionsCreateModel} modal={false} open={this.state.openCreateModel} onRequestClose={this.handleCloseCreateModel.bind(this)}>
+             {checkedTagsPosNeg}
+          </Dialog>
+          <Dialog title="Monitoring processes" actions={actionsShowInfo} modal={false} open={this.state.openInfo} onRequestClose={this.handleCloseInfo.bind(this)}>
+          <Monitoring processes={this.state.processes} updateFilterCrawlerData={this.props.updateFilterCrawlerData.bind(this)} />
+          </Dialog>
+          </Toolbar>
+        </AppBar>
+      );
+    }
+  }
 
  export default Header;
 /*
