@@ -514,7 +514,7 @@ class Header extends Component {
       );
     }
   }
-
+  
   Header.defaultProps = {
       backgroundColor:"#9A7BB0",
   };
