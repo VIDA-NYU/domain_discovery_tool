@@ -172,26 +172,26 @@ class Home extends Component {
                     <Subheader style={{color:'black'}}><h2>Domains</h2></Subheader>
                     {Object.keys(mydata).map((k, index)=>{
                       return <Link to={{ pathname: `/domain/{mydata[k].index}`, query: { nameDomain: mydata[k].name, idDomain: mydata[k].id} }}  text={"Machine Learning"}>
-                      <ListItem key={index} style={{textAlign: 'left'}}
-                      primaryText={mydata[k].name}
-                      rightIcon={<Forward />} />
-                      </Link>
+                                <ListItem key={index} style={{textAlign: 'left'}}
+                                primaryText={mydata[k].name}
+                                rightIcon={<Forward />} />
+                              </Link>
                     })}
                   </List>
                 </Col>
                 <Col xs={3} md={3}>
                   <Link to='/'>
                     <FlatButton style={{margin:'70px 10px 10px 10px'}}
-                    backgroundColor="#26C6DA"
-                    hoverColor="#80DEEA"
-                    onTouchTap={this.handleOpenCreateDomain.bind(this)}
-                    icon={<AddBox color={fullWhite} />}
+                     backgroundColor="#26C6DA"
+                     hoverColor="#80DEEA"
+                     onTouchTap={this.handleOpenCreateDomain.bind(this)}
+                     icon={<AddBox color={fullWhite} />}
                     />
                     <FlatButton style={{margin:'70px 10px 10px 10px'}}
-                    backgroundColor="#26C6DA"
-                    hoverColor="#80DEEA"
-	                  onTouchTap={this.handleOpenDeleteDomain.bind(this)}
-                    icon={<DeleteForever color={fullWhite} />}
+                     backgroundColor="#26C6DA"
+                     hoverColor="#80DEEA"
+	                   onTouchTap={this.handleOpenDeleteDomain.bind(this)}
+                     icon={<DeleteForever color={fullWhite} />}
                     />
                   </Link>
                   <Dialog
@@ -200,15 +200,15 @@ class Home extends Component {
                    modal={false}
                    open={this.state.openCreateDomain}
                    onRequestClose={this.handleCloseCreateDomain.bind(this)}
-                  >
+                   >
                      <TextField style={{width:'268px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
-                      ref={(input) => { this.textInput = input;}}
-                      value={this.state.newNameDomain}
-                      onChange={this.handleTextChangeNewNameDomain.bind(this)}
-                      onKeyPress={(e) => {(e.key === 'Enter') ? this.createNewDomain(this) : null}}
-                      hintText="Write the name domain."
-                      hintStyle={{ marginLeft:10}}
-                      inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
+                       ref={(input) => { this.textInput = input;}}
+                       value={this.state.newNameDomain}
+                       onChange={this.handleTextChangeNewNameDomain.bind(this)}
+                       onKeyPress={(e) => {(e.key === 'Enter') ? this.createNewDomain(this) : null}}
+                       hintText="Write the name domain."
+                       hintStyle={{ marginLeft:10}}
+                       inputStyle={{marginBottom:10, marginLeft:10, paddingRight:20}}
                      />
                    </Dialog>
 
@@ -221,15 +221,15 @@ class Home extends Component {
                    >
         	           <div style={{height:430, overflowY: "scroll",}}>
         	              {Object.keys(mydata).map((k, index)=>{
-                		      return <Checkbox
-                            			   label={mydata[k].name}
-                            			   value={mydata[k].id}
-                            			   style={styles.checkbox}
-                		                 onClick={this.addDelDomains.bind(this,mydata[k].id,mydata[k].index)}
-                			           />
-        		            })}
+                      		     return <Checkbox
+                              			   label={mydata[k].name}
+                              			   value={mydata[k].id}
+                              			   style={styles.checkbox}
+                              		     onClick={this.addDelDomains.bind(this,mydata[k].id,mydata[k].index)}
+                              			   />
+              		       })}
         	            </div>
-                   </Dialog>
+                    </Dialog>
                 </Col>
               </Row>
             </div>
