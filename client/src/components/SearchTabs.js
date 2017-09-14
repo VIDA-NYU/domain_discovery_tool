@@ -401,7 +401,7 @@ render() {
       onChange={this.handleChange}
       value={this.state.slideIndex}
       inkBarStyle={{background: '#7940A0' ,height: '4px'}}
-      tabItemContainerStyle={{background: '#9A7BB0' ,height: '30px'}}
+      tabItemContainerStyle={{background: this.props.backgroundColor, height: '30px'}}
       >
         <Tab label={'Web'} value={0}  style={styles.tab} tabItemContainerStyle={{textTransform: "capitalize"}} />
         <Tab label={'Load URLs'} value={1} style={styles.tab} tabItemContainerStyle={{textTransform: "capitalize"}}/>
@@ -412,53 +412,57 @@ render() {
       onChangeIndex={this.handleChange}
       >
       <div id={"Web"} style={styles.slide} >
-      <Row style={{marginTop:"-15px", marginLeft:"-30px"}}>
-        <Col xs={4} md={4} >
-        <DropDownMenu onChange={this.handleDropdownButton.bind(this)} value={value_search_engine} autoWidth={false} style={{width:140, marginLeft:20}} anchorOrigin={{ horizontal: 'middle', vertical: 'top' }}  targetOrigin={{ horizontal: 'right', vertical: 'top' }} menuStyle={{marginLeft:20}} underlineStyle={{borderColor:"black"}} labelStyle={{color:"black"}} iconStyle={{fill:"black"}}>
+      <Row style={{marginTop:"-15px", marginLeft:"-22px", height:40}}>
+        <Col xs={4} md={4} style={{marginBottom:"-16px"}} >
+        <DropDownMenu onChange={this.handleDropdownButton.bind(this)} value={value_search_engine} autoWidth={false}
+        style={{width:122, marginLeft:20, height:40}} anchorOrigin={{ horizontal: 'middle', vertical: 'top' }} targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        menuStyle={{marginLeft:20}} underlineStyle={{borderColor:this.props.backgroundColor}}
+        labelStyle={{color:"#323232", fontSize:13}} selectedMenuItemStyle={{color:"#9A7BB0"}}
+        iconStyle={{fill:this.props.backgroundColor}}>
         <MenuItem value={1} primaryText="Google" />
         <MenuItem value={2} primaryText="Bing" />
         </DropDownMenu>
         </Col>
-        <Col xs={4} md={4} style={{marginLeft:5}}>
-        <DropDownMenu onChange={this.handleDropdownPages.bind(this)} value={this.state.valuePagesSearchEngine}  underlineStyle={{borderColor:"black"}} labelStyle={{color:"black"}} iconStyle={{fill:"black"}}>
-        <MenuItem value={1} primaryText="Pages 10" />
-        <MenuItem value={2} primaryText="Pages 50" />
-        <MenuItem value={3} primaryText="Pages 100" />
-        <MenuItem value={4} primaryText="Pages 200" />
-        <MenuItem value={5} primaryText="Pages 1000" />
-        <MenuItem value={6} primaryText="Pages 2000" />
+        <Col xs={4} md={4} style={{marginLeft:5, marginBottom:"-16px"}}>
+        <DropDownMenu onChange={this.handleDropdownPages.bind(this)} value={this.state.valuePagesSearchEngine}
+        style={{height:40}} underlineStyle={{borderColor:this.props.backgroundColor}}
+        labelStyle={{color:"#323232", fontSize:13}} selectedMenuItemStyle={{color:"#9A7BB0"}}  iconStyle={{fill:this.props.backgroundColor}}>
+        <MenuItem value={1} primaryText="Pages: 10" />
+        <MenuItem value={2} primaryText="Pages: 50" />
+        <MenuItem value={3} primaryText="Pages: 100" />
+        <MenuItem value={4} primaryText="Pages: 200" />
+        <MenuItem value={5} primaryText="Pages: 1000" />
+        <MenuItem value={6} primaryText="Pages: 2000" />
         </DropDownMenu>
           </Col>
       </Row>
-        <Row>
-        <Col xs={9} md={9} style={{marginLeft:'0px'}} >
+        <Row style={{marginTop:"-10px"}}>
+        <Col xs={8} md={8} style={{marginLeft:'5px'}} >
           <InputGroup >
-          <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'265px'}}  />
-
+          <FormControl type="text" value={this.state.valueQuery} onKeyPress={(e) => {(e.key === 'Enter') ? this.RunQuery() : null}} placeholder="write a query ..." onChange={this.handleChangeQuery.bind(this)} style={{width:'255px'}}  />
           </InputGroup>
         </Col>
-        <Col xs={3} md={3} >
-          <FlatButton style={{marginLeft:'0px', minWidth: '58px'}}
-          backgroundColor="#26C6DA"
-          hoverColor="#80DEEA"
-          icon={<Search color={fullWhite} />}
-          onTouchTap={this.RunQuery.bind(this)}
+        <Col xs={3} md={3} style={{marginLeft:'20px'}}>
+          <RaisedButton
+            style={{marginLeft:'0px', minWidth: '58px'}}
+            backgroundColor={this.props.backgroundColor}
+            icon={<Search  />}
+            onTouchTap={this.RunQuery.bind(this)}
           />
         </Col>
         </Row>
         <Row>
-        <Divider style={{marginTop:10, marginRight:120, marginBottom:10, marginLeft:50, color:"#26C6DA", }}/>
+        <Divider style={{height:2, marginTop:20, marginRight:20, marginBottom:20, marginLeft:20, color:"#26C6DA", }}/>
         </Row>
-        <Row style={{marginLeft:47, height:2}}>
-
-        <FlatButton style={{height:35, marginTop: 0}}
-        buttonStyle={{height:35}}
-        labelStyle={{textTransform: "capitalize", fontSize:14, color:"white", fontWeight:"normal"}}
-        backgroundColor="#26C6DA"
-        hoverColor="#80DEEA"
-        label="Run multiple queries"
-        onClick={this.handleOpenDialogLoadMultiQueries.bind(this)}
-        />
+        <Row style={{marginLeft:5}}>
+        <RaisedButton style={{height:35, marginTop: 0}}
+         label="Run multiple queries"
+         labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+         backgroundColor={this.props.backgroundColor}
+         icon={<Search />}
+         style={{height:35, marginTop: 0}}
+         onTouchTap={this.handleOpenDialogLoadMultiQueries.bind(this)}
+       />
         </Row>
 
         <Dialog title="Run multiples queries" actions={actionsLoadMultiQueries} modal={false} open={this.state.openDialogLoadMultiQueries} onRequestClose={this.handleCloseDialogLoadMultiQueries.bind(this)}>
@@ -514,7 +518,7 @@ render() {
       <div id={"Load URls"}  style={styles.slide}>
         <Row>
         <Col xs={10} md={10} style={{marginLeft:'0px'}}>
-        <TextField style={{width:'260px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
+        <TextField style={{width:'267px', fontSize: 12, borderColor: 'gray', borderWidth: 1, background:"white", borderRadius:"1px"}}
         onChange={this.handleTextChangeLoadUrls.bind(this)}
         hintText="Write urls."
         hintStyle={{ marginLeft:10}}
@@ -525,11 +529,11 @@ render() {
         />
         </Col>
         <Col xs={2} md={1} style={{marginLeft:'-35px'}}>
-        <FlatButton style={{marginLeft:'10px', minWidth: '58px' }}
-        backgroundColor="#26C6DA"
-        hoverColor="#80DEEA"
-        icon={<Search color={fullWhite} />}
-        onTouchTap={this.loadFromTextInput.bind(this)}
+        <RaisedButton
+          style={{marginLeft:'10px', minWidth: '58px' }}
+          backgroundColor={this.props.backgroundColor}
+          icon={<Search  />}
+          onTouchTap={this.loadFromTextInput.bind(this)}
         />
         </Col>
         </Row>
@@ -556,11 +560,11 @@ render() {
         </InputGroup>
         </Col>
         <Col xs={2} md={1} >
-        <FlatButton style={{marginLeft:'-10px', minWidth: '58px'}}
-        backgroundColor="#26C6DA"
-        hoverColor="#80DEEA"
-        icon={<Search color={fullWhite} />}
-        onTouchTap={this.runSeedFinderQuery.bind(this)}
+        <RaisedButton
+          style={{marginLeft:'-10px', minWidth: '58px'}}
+          backgroundColor={this.props.backgroundColor}
+          icon={<Search  />}
+          onTouchTap={this.runSeedFinderQuery.bind(this)}
         />
         </Col>
 
@@ -571,5 +575,9 @@ render() {
       );
     }
   }
+
+  SearchTabs.defaultProps = {
+      backgroundColor:"#9A7BB0",
+  };
 
 export default SearchTabs;
