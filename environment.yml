@@ -18,7 +18,8 @@ dependencies:
     - requests
     - ache ==latest
     - functools32
-    - jinja2    
+    - jinja2
     - nodejs
     - futures
     - openjdk
+    - joblib
