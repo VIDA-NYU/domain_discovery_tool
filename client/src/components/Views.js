@@ -27,7 +27,7 @@ import IconButton from 'material-ui/IconButton';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
 import Select from 'react-select';
-
+import RadViz from './RadViz.js';
 import '../css/Views.css';
 
 //const recentsIcon = <RelevantFace />;
@@ -1155,6 +1155,14 @@ class Views extends React.Component {
     // REMOVE ACCURACY HARDCODING
     return (
       <div style={{maxWidth: 1000,}}>
+      <Tabs
+            onChange={this.handleChange}
+            value={this.state.slideIndex}
+            inkBarStyle={{background: '#7940A0' ,height: '4px'}}
+            tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
+              <Tab label="Snippets" value={0} style={styles.tab} />
+              <Tab label="Visualizations" value={1} style={styles.tab} />
+          </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
           <div style={styles.headline}>
             <div style={{marginBottom:"30px"}}>
@@ -1163,6 +1171,9 @@ class Views extends React.Component {
             </div>
             <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
             {showPages}
+          </div>
+          <div style={styles.headline}>
+            <RadViz idDomain={this.props.domainId} nameDomain={this.props.nameDomain} session={this.state.session} />
           </div>
         </SwipeableViews>
       </div>
