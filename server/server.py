@@ -8,6 +8,7 @@ from threading import Lock
 import urlparse
 from domain_discovery_API.models.domain_discovery_model import DomainModel
 from domain_discovery_API.models.crawler_model import CrawlerModel
+from domain_discovery_API.models.RadvizModel import RadvizModel
 
 class DDTServer(Page):
   @staticmethod
@@ -35,9 +36,10 @@ class DDTServer(Page):
     self._ddtModel = DomainModel(path)
     self._crawlerModel = CrawlerModel(path)
     self._ddtModel.setCrawlerModel(self._crawlerModel)
-    models = {"domain": self._ddtModel, "crawler": self._crawlerModel}
+    self._radvizModel = RadvizModel(path)
+    models = {"domain": self._ddtModel, "crawler": self._crawlerModel, "radviz": self._radvizModel}
     super(DDTServer, self).__init__(models, path)
-    
+
   # Access to seed crawler vis.
   @cherrypy.expose
   def seedcrawler(self):
@@ -61,7 +63,7 @@ class DDTServer(Page):
   #   # for res in self._model.queryWeb(terms, 20, session=session):
   #   #   print "\n\n\n SERVER QUERY WEB\n",res,"\n\n\n"
 
-  #   return self._model.queryWeb(terms, 20, session=session)  
+  #   return self._model.queryWeb(terms, 20, session=session)
   # queryWeb._cp_config ={'response.stream':True}
 
   @cherrypy.expose
@@ -75,7 +77,7 @@ class DDTServer(Page):
       yield json.dumps({"first":"World"})
     return content()
   thing._cp_config = {'response.stream': True}
-    
+
 if __name__ == "__main__":
   server = DDTServer()
 
