@@ -267,7 +267,9 @@ class ViewTabSnippets extends React.Component{
       flatKeyBoard:false,
       openMultipleSelection: false,
       click_flag: false,
-      change_color_urls:[]
+      change_color_urls:[],
+      checkedSelectAllPages: false
+
     };
 
     this.state.allSearchQueries = this.buildQueryString(this.state.session);
@@ -281,6 +283,7 @@ class ViewTabSnippets extends React.Component{
     this.availableTags = [];
     this.items= [];
     this.updatedUrls=false;
+    this.setAllPagesTag=true;
   }
 
   getAvailableTags(){
@@ -508,6 +511,21 @@ class ViewTabSnippets extends React.Component{
     return updatedPages;
   }
 
+  //Remove or Add tags from elasticSearch
+  setAllPagesTag_ElasticSearch(urls, current_tag, applyTagFlag ){
+    $.post(
+      '/setAllPagesTag',
+      {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
+      function(message) {
+        //updateing filters Tags
+        this.props.reloadFilters();
+        this.updateOnlineClassifier(this.props.session);
+        this.forceUpdate();
+        console.log("process complete.");
+      }.bind(this)
+    );
+  }
+
   //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
   onTagAllPages(inputTag){
     var arrayInputURL =this.currentUrls;
@@ -518,6 +536,14 @@ class ViewTabSnippets extends React.Component{
     }
     else{
       var updatedPages = this.removeTags(arrayInputURL, tag);
+    }
+    if(this.state.checkedSelectAllPages){
+      if(tag==="Neutral")
+      this.setAllPagesTag_ElasticSearch(arrayInputURL, tag, false );
+      else {
+        this.setAllPagesTag_ElasticSearch(arrayInputURL, tag, true );
+      }
+
     }
   }
   onTagSelectedPages(inputTag){
@@ -687,7 +713,13 @@ class ViewTabSnippets extends React.Component{
       this.handleCloseMultipleSelection();
     	this.forceUpdate();
 
+      if(this.state.checkedSelectAllPages){
+        this.setAllPagesTag_ElasticSearch(inputURL, val[0].value, true );
       }
+
+      }
+
+
     }
 
 
@@ -726,6 +758,17 @@ class ViewTabSnippets extends React.Component{
 
     if(this.state.click_flag)
       this.handleCloseMultipleSelection();
+  }
+
+  //Select all pages in all paginations
+  updateCheckSelectAllPages() {
+    this.setState((oldState) => {
+      return {
+        checkedSelectAllPages: !oldState.checkedSelectAllPages,
+      };
+    });
+    console.log(this.state.checkedSelectAllPages);
+    this.forceUpdate();
   }
 
 
@@ -931,57 +974,68 @@ class ViewTabSnippets extends React.Component{
         </div>
       </div>
     ];
+    var ceil_currentPageCount = Math.ceil(currentPageCount);
+    var messageSelectAllPages = (this.state.checkedSelectAllPages)? <span> All <b> {this.state.lengthTotalPages} </b> results in {ceil_currentPageCount} paginations are selected.</span>:<span/>;
+
 
       return (
 	      <div  style={{maxWidth:1000}}>
               <p style={{color: "#FFFFFF",}}>-</p>
               <div style={{  marginLeft:"23px"}} >
-              <ReactPaginate
-                previousLabel={"previous"}
-                nextLabel={"next"}
-                initialPage={0}
-                forcePage={this.state.currentPagination}
-                breakLabel={<a >...</a>}
-                breakClassName={"break-me"}
-                pageCount={currentPageCount}
-                marginPagesDisplayed={1}
-                pageRangeDisplayed={1}
-                onPageChange={this.handlePageClick.bind(this)}
-                containerClassName={"pagination"}
-                subContainerClassName={"pages pagination"}
-                activeClassName={"active"} />
-            <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px", marginTop: "20px", marginRight:"-5px"}}>
-              <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
-              <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
-              </div>
-              <div style={{float:'right',width:'100px', marginRight: "5px"}}>
-                <Select.Creatable
-                  placeholder="Add Tag"
-                  multi={false}
-                  options={this.availableTags}
-                  onChange={this.addCustomTag.bind(this, this.currentUrls)}
-                  ignoreCase={true}
+                <ReactPaginate
+                  previousLabel={"previous"}
+                  nextLabel={"next"}
+                  initialPage={0}
+                  forcePage={this.state.currentPagination}
+                  breakLabel={<a >...</a>}
+                  breakClassName={"break-me"}
+                  pageCount={currentPageCount}
+                  marginPagesDisplayed={1}
+                  pageRangeDisplayed={1}
+                  onPageChange={this.handlePageClick.bind(this)}
+                  containerClassName={"pagination"}
+                  subContainerClassName={"pages pagination"}
+                  activeClassName={"active"} />
+                  <div style={{display: "flex", alignItems: "center", float:"right", fontSize: "12px", fontWeight: "500", paddingRight: "20px", marginTop: "20px", marginRight:"-5px"}}>
+                  <div style={{display: "inline", fontSize: "16px", marginRight: "10px"}}>
+                  <RaisedButton label="Tag all" disabled={true} labelStyle={{textTransform: "capitalize", color: "#757575"}}  />
+                  </div>
+                  <div style={{float:'right',width:'100px', marginRight: "5px"}}>
+                    <Select.Creatable
+                      placeholder="Add Tag"
+                      multi={false}
+                      options={this.availableTags}
+                      onChange={this.addCustomTag.bind(this, this.currentUrls)}
+                      ignoreCase={true}
+                      />
+                  </div>
+                  <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
+                  <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
+                  <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+
+                  <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD", marginRight: "4px"}}
+                    onClick={this.crawlNextLevel("Backward", this.state.currentUrls)}>
+                     BACKWARD<br/>LINKS
+                  </Button>
+                  <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD"}}
+                    onClick={this.crawlNextLevel("Forward", this.state.currentUrls)}>
+                     FORWARD<br/>LINKS
+                  </Button>
+
+                    {
+                      // <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
+                      // <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
+                    }
+                  </div>
+                  <Checkbox
+                    label={"Select ALL results in "+ceil_currentPageCount + " paginations"}
+                    checked={this.state.checkedSelectAllPages}
+                    onCheck={this.updateCheckSelectAllPages.bind(this)}
+                    style={{marginLeft:"0px", marginTop:"-25px"}}
                   />
-              </div>
-              <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<RelevantFace color={"#4682B4"} />} onClick={this.onTagAllPages.bind(this,"Relevant")}/>
-              <RaisedButton labelPosition="before" backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}}  labelStyle={{textTransform: "capitalize"}} icon={<IrrelevantFace color={"#CD5C5C"}/>} onClick={this.onTagAllPages.bind(this,"Irrelevant")}/>
-              <RaisedButton labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} icon={<NeutralFace  color={"#FAFAFA"}/>} onClick={this.onTagAllPages.bind(this,"Neutral")}/>
+                  {messageSelectAllPages}
+                </div>
 
-              <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD", marginRight: "4px"}}
-                onClick={this.crawlNextLevel("Backward", this.state.currentUrls)}>
-                 BACKWARD<br/>LINKS
-              </Button>
-              <Button style={{width: "80px", height: "38px", fontSize: "10px", fontColor: "#FFFFFF", backgroundColor: "#BDBDBD"}}
-                onClick={this.crawlNextLevel("Forward", this.state.currentUrls)}>
-                 FORWARD<br/>LINKS
-              </Button>
-
-                {
-                  // <RaisedButton label="Backward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Backward", this.currentUrls)} />
-                  // <RaisedButton label="Forward" labelPosition="before"  backgroundColor={"#BDBDBD"} style={{marginRight:4,minWidth: "50px"}} labelStyle={{textTransform: "capitalize"}} onClick={this.crawlNextLevel("Forward", this.currentUrls)} />
-                }
-              </div>
-              </div>
               <div >
               <List>
               {urlsList}
