@@ -65,7 +65,7 @@ class RadViz extends Component {
     console.log("sesion in radviz");
     console.log(session);
     if(!(Object.keys(session).length === 0)){
-    session['pagesCap'] = "200"; 
+    session['pagesCap'] = "200";
     $.post(
         '/getRadvizPoints',
         {'session': JSON.stringify(session), filterByTerm: filterTerm},
@@ -147,14 +147,6 @@ class RadViz extends Component {
       ];
     return (
       <div>
-        <Dialog
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-        >
-        No pages found.
-        </Dialog>
         <RadVizComponent currentDomain={this.props.idDomain} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
       </div>
     );
