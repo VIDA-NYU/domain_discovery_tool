@@ -1277,7 +1277,7 @@ class Views extends React.Component {
 
     // REMOVE ACCURACY HARDCODING
     return (
-      <div style={{maxWidth: 1000,}}>
+      <div >
       <Tabs
             onChange={this.handleChange}
             value={this.state.slideIndex}
