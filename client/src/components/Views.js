@@ -268,11 +268,13 @@ class ViewTabSnippets extends React.Component{
       openMultipleSelection: false,
       click_flag: false,
       change_color_urls:[],
-      checkedSelectAllPages: false
+      checkedSelectAllPages: false,
+      openDialogTagAllPages:false
 
     };
 
     this.state.allSearchQueries = this.buildQueryString(this.state.session);
+    this.updatingCheckSelectAllPages = this.updatingCheckSelectAllPages.bind(this);
     this.perPage=12; //default 12
     this.currentUrls=[];
     this.customTagValue="";
@@ -283,7 +285,9 @@ class ViewTabSnippets extends React.Component{
     this.availableTags = [];
     this.items= [];
     this.updatedUrls=false;
-    this.setAllPagesTag=true;
+    this.temp_inputURL_TagAllPages = [];
+    this.temp_value_TagAllPages = '';
+    this.temp_inputTag_TagAllPages='';
   }
 
   getAvailableTags(){
@@ -527,7 +531,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
-  onTagAllPages(inputTag){
+  onTagAllPages_permission(inputTag){
     var arrayInputURL =this.currentUrls;
     var tag = inputTag;
     if(tag==="Relevant"  || tag==="Irrelevant"){
@@ -545,6 +549,19 @@ class ViewTabSnippets extends React.Component{
       }
 
     }
+  }
+
+  //Handling click event on the tag button. When it is clicked it should update tag of the page in elasticsearch.
+  onTagAllPages(inputTag){
+      if(this.state.checkedSelectAllPages){
+        this.temp_inputURL_TagAllPages=[];
+        this.temp_value_TagAllPages = '';
+        this.temp_inputTag_TagAllPages = inputTag;
+        this.handleOpenDialogTagAllPages();
+      }
+      else {
+        this.onTagAllPages_permission(inputTag);
+      }
   }
   onTagSelectedPages(inputTag){
     this.onTagAllPages(inputTag);
@@ -683,8 +700,30 @@ class ViewTabSnippets extends React.Component{
     this.forceUpdate();
   };
 
+  //Handling open/close 'load url' Dialog
+  handleOpenDialogTagAllPages(){
+    this.setState({openDialogTagAllPages: true});
+    this.forceUpdate();
+  };
+  //Handling open/close 'load url' Dialog
+  handleConfirmTagAllPages = () => {
+    if(this.temp_value_TagAllPages !=='')
+      this.addCustomTag_permission(this.temp_inputURL_TagAllPages, this.temp_value_TagAllPages);
+    else {
+      this.onTagAllPages_permission(this.temp_inputTag_TagAllPages);
+    }
+    this.setState({openDialogTagAllPages: false});
+    this.forceUpdate();
+  };
+  handleCloseDialogTagAllPages  = () => {
+    this.temp_inputURL_TagAllPages=[];
+    this.temp_value_TagAllPages = '';
+    this.temp_inputTag_TagAllPages='';
+    this.setState({openDialogTagAllPages: false});
+    this.forceUpdate();
+  };
 
-  addCustomTag(inputURL, val) {
+  addCustomTag_permission(inputURL, val) {
     if(val.constructor !== Array)
       val = [val];
     var check = false;
@@ -718,8 +757,21 @@ class ViewTabSnippets extends React.Component{
       }
 
       }
+      this.temp_inputURL_TagAllPages=[];
+      this.temp_value_TagAllPages = '';
+    }
 
-
+  addCustomTag(inputURL, val) {
+    console.log("addCustomTag");
+    console.log(val);
+    if(this.state.checkedSelectAllPages){
+      this.temp_inputURL_TagAllPages=inputURL;
+      this.temp_value_TagAllPages = val;
+      this.handleOpenDialogTagAllPages();
+    }
+    else {
+      this.addCustomTag_permission(inputURL, val);
+    }
     }
 
 
@@ -761,12 +813,8 @@ class ViewTabSnippets extends React.Component{
   }
 
   //Select all pages in all paginations
-  updateCheckSelectAllPages() {
-    this.setState((oldState) => {
-      return {
-        checkedSelectAllPages: !oldState.checkedSelectAllPages,
-      };
-    });
+  updatingCheckSelectAllPages(){
+    this.setState({checkedSelectAllPages: !this.state.checkedSelectAllPages });
     console.log(this.state.checkedSelectAllPages);
     this.forceUpdate();
   }
@@ -977,6 +1025,18 @@ class ViewTabSnippets extends React.Component{
     var ceil_currentPageCount = Math.ceil(currentPageCount);
     var messageSelectAllPages = (this.state.checkedSelectAllPages)? <span> All <b> {this.state.lengthTotalPages} </b> results in {ceil_currentPageCount} paginations are selected.</span>:<span/>;
 
+    const actionsDialogTagAllPages = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleCloseDialogTagAllPages}
+      />,
+      <FlatButton
+        label="Confirm"
+        primary={true}
+        onClick={this.handleConfirmTagAllPages}
+      />,
+    ];
 
       return (
 	      <div  style={{maxWidth:1000}}>
@@ -1030,8 +1090,8 @@ class ViewTabSnippets extends React.Component{
                   <Checkbox
                     label={"Select ALL results in "+ceil_currentPageCount + " paginations"}
                     checked={this.state.checkedSelectAllPages}
-                    onCheck={this.updateCheckSelectAllPages.bind(this)}
-                    style={{marginLeft:"0px", marginTop:"-25px"}}
+                    onCheck={this.updatingCheckSelectAllPages}
+                    style={{marginLeft:"0px", marginTop:"-25px", width:300}}
                   />
                   {messageSelectAllPages}
                 </div>
@@ -1059,6 +1119,15 @@ class ViewTabSnippets extends React.Component{
               </div>
         <Dialog  title="Tag Selected?"  actions={actionsCancelMultipleSelection} modal={false} open={this.state.openMultipleSelection} onRequestClose={this.handleCloseMultipleSelection.bind(this)}>
         {popUpButton}
+        </Dialog>
+
+        <Dialog
+          title="Tag confirmation"
+          actions={actionsDialogTagAllPages}
+          modal={true}
+          open={this.state.openDialogTagAllPages}
+        >
+          Are you sure that you want to tag ALL {this.state.lengthTotalPages} results in {ceil_currentPageCount} paginations?.
         </Dialog>
      </div>
   );
