@@ -67,6 +67,7 @@ $(GET_REACT_NPM_INSTALL):
 	python fix_for_npm_child_process_issue.py; \
 	popd
 
+
 $(GET_REACT_NPM_BUILD):
 	source activate ddt; \
 	pushd client; \
