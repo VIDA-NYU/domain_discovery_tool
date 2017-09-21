@@ -13,6 +13,4 @@ echo "ACHE_HOME : $ACHE_HOME"
 # ugly, but DDT doesn't really have a concept of installs
 export PYTHONPATH=$DD_API_HOME/../:$DD_API_HOME:$DD_API_HOME/lib/tsp-solver-master:$DDT_HOME:$DDT_HOME/server:$PYTHONPATH
 echo "PYTHONPATH: $PYTHONPATH"
-#export PYTHONPATH=$DD_API_HOME/../:$DD_API_HOME:$DDT_HOME:$DDT_HOME/lib/tsp-solver-master:$PYTHONPATH
-#echo "PYTHONPATH  : $PYTHONPATH"
 python $DDT_HOME/server/server.py
