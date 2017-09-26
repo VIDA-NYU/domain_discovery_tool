@@ -14,10 +14,10 @@ class ScaleBar extends React.Component{
     return(
       <svg width="360" height="100" viewBox="0 0 460 100" fill="none">
         <g transform="translate(0,10)" font-size="10" font-family="sans-serif" text-anchor="middle">
-          <rect height="8" x="0" width="60" fill="#fff7ec"></rect>
-          <rect height="8" x="60" width="60" fill="#fdd49e"></rect>
-          <rect height="8" x="120" width="60" fill="#fc8d59"></rect>
-          <rect height="8" x="180" width="60" fill="#d7301f"></rect>
+          <rect height="8" x="0" width="60" fill="#F10707"></rect>
+          <rect height="8" x="60" width="60" fill="#E39F4E"></rect>
+          <rect height="8" x="120" width="60" fill="#7FAF68"></rect>
+          <rect height="8" x="180" width="60" fill="#1E8F26"></rect>
           <text x="0" y="-6" fill="#000" text-anchor="start" font-weight="bold">Ratio/Accuracy </text>
           <g transform="translate(20,0)">
             <text fill="#000" y="16" x="0.5" dy="0.71em">Poor</text>
