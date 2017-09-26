@@ -943,18 +943,18 @@ class ViewTabSnippets extends React.Component{
                     <div>
                       <ButtonGroup style={{height: "100%"}}>
                         <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Relevant</Tooltip>}>
-                          <Button style={{height: "100%"}}>
-                             <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
+                          <Button onClick={this.onTagActionClicked.bind(this,url_info[0],"Relevant-"+id)} style={{height: "100%"}}>
+                             <IconButton iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagRelev }} style={{height: 8, margin: "-10px", padding:0,}}><RelevantFace /></IconButton>
                           </Button>
                         </OverlayTrigger>
                         <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Irrelevant</Tooltip>}>
-                          <Button style={{height: "100%"}}>
-                            <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Irrelevant-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
+                          <Button onClick={this.onTagActionClicked.bind(this,url_info[0],"Irrelevant-"+id)}style={{height: "100%"}}>
+                            <IconButton iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagIrrelev }} style={{height: 8, margin: "-10px", padding:0,}}><IrrelevantFace /></IconButton>
                           </Button>
                         </OverlayTrigger>
                         <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip">Neutral</Tooltip>}>
-                          <Button style={{height: "100%"}}>
-                            <IconButton onClick={this.onTagActionClicked.bind(this,url_info[0],"Neutral-"+id)} iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
+                          <Button onClick={this.onTagActionClicked.bind(this,url_info[0],"Neutral-"+id)} style={{height: "100%"}}>
+                            <IconButton  iconStyle={{width:25,height: 25,marginBottom:"-9px", color:colorTagNeutral }} style={{height: 8, margin: "-10px", padding:0,}}><NeutralFace /></IconButton>
                           </Button>
                         </OverlayTrigger>
                       </ButtonGroup>
