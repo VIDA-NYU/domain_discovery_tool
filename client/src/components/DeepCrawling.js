@@ -123,7 +123,7 @@ class DeepCrawling extends Component {
   getCurrentUrlsfromDeepCrawlTag(pages){
     var urlsList = {};
     var urlsList2 =  (Object.keys(pages).length>0)? Object.keys(pages)
-                        .map((k, index)=>{ urlsList[k]="1"; }) : {};
+                        .map((k, index)=>{ urlsList[k]=""; }) : {};
     return Object.keys(urlsList)
               .map(reco => [reco, urlsList[reco]])
               .sort((a, b) => ((a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0)));
