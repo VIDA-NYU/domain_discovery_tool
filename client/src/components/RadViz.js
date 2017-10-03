@@ -31,7 +31,6 @@ class RadViz extends Component {
 
   loadDataFromElasticSearch(session,  filterTerm){
     //var session = this.props.session;
-
     if(!(Object.keys(session).length === 0)){
     //console.log(session);
     session['pagesCap']='1000';
