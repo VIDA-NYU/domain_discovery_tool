@@ -62,8 +62,6 @@ class RadViz extends Component {
 
   loadDataFromElasticSearch(session,  filterTerm){
     //var session = this.props.session;
-    console.log("sesion in radviz");
-    console.log(session);
     if(!(Object.keys(session).length === 0)){
     session['pagesCap'] = "200";
     $.post(
@@ -147,7 +145,7 @@ class RadViz extends Component {
       ];
     return (
       <div>
-        <RadVizComponent currentDomain={this.props.idDomain} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
+        <RadVizComponent session={this.state.session} currentDomain={this.props.idDomain} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
       </div>
     );
   }
