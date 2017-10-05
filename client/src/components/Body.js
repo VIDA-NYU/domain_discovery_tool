@@ -278,6 +278,7 @@ class Body extends Component{
     this.forceUpdate();
     this.setState({update:false});
   };
+
    availableCrawlerButton(isthereModel){
      this.props.availableCrawlerButton(isthereModel);
    }

@@ -10,7 +10,7 @@ import {scaleOrdinal} from 'd3-scale';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RadVizComponent from 'radviz-component';
-
+import FiltersTabs from './FiltersTabs'
 class RadViz extends Component {
 
   constructor(props) {
@@ -130,6 +130,7 @@ class RadViz extends Component {
   filterKeyword(filterTerm){
     this.loadDataFromElasticSearch(this.state.index, filterTerm);
   }
+
   handleOpen = () => {
     this.setState({open: true});
   };
@@ -137,6 +138,9 @@ class RadViz extends Component {
   handleClose = () => {
     this.setState({open: false});
   };
+updateTagColor(){
+  this.props.updateTagColor();
+}
   render() {
     const actions = [
         <FlatButton
@@ -147,7 +151,7 @@ class RadViz extends Component {
       ];
     return (
       <div>
-        <RadVizComponent currentDomain={this.props.idDomain} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
+        <RadVizComponent updateTagColor={this.updateTagColor.bind(this)} currentDomain={this.props.idDomain} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}   filterKeyword={this.filterKeyword.bind(this)} />
       </div>
     );
   }
