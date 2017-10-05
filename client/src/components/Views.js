@@ -1344,8 +1344,13 @@ class Views extends React.Component {
             {showPages}
           </div>
           <div style={styles.headline}>
+<<<<<<< HEAD
             {radviz}
               </div>
+=======
+            <RadViz idDomain={this.props.domainId} nameDomain={this.props.nameDomain} session={this.state.session} updateTagColor={this.updateTagColor.bind(this)}  />
+          </div>
+>>>>>>> Testing updatetagcolor
         </SwipeableViews>
       </div>
     );
