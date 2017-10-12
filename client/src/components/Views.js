@@ -309,6 +309,8 @@ class ViewTabSnippets extends React.Component{
 
   componentWillMount(){
     this.getAvailableTags();
+    console.log("componentWillMount-------------------------");
+    console.log(this.props.pages);
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthPages:this.props.lengthPages, lengthTotalPages:this.props.lengthTotalPages,
     });
@@ -821,6 +823,8 @@ class ViewTabSnippets extends React.Component{
 
 
   render(){
+    console.log('RENDER');
+    console.log(this.props.pages);
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
     var id=0;
     var c=0;
@@ -1296,7 +1300,7 @@ class Views extends React.Component {
             {showPages}
           </div>
           <div style={styles.headline}>
-            <RadViz idDomain={this.props.domainId} nameDomain={this.props.nameDomain} session={this.state.session} />
+            <RadViz  session={this.state.session} lengthTotalPages={this.state.lengthTotalPages} />
           </div>
         </SwipeableViews>
       </div>
