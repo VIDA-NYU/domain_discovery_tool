@@ -16,49 +16,17 @@ class RadViz extends Component {
   constructor(props) {
     super(props);
     this.state = {
-	    idDomain:'',
       flat:0,
       data:undefined,
       colors:undefined,
       originalData:undefined,
       dimNames:[],
       filterTerm:"",
-      index:this.props.nameDomain,
       open:false,
       session:{},
     };
     this.colorTags= [ "#9E9E9E", "#0D47A1", "#C62828"];
   };
-
-  /*consultaQueries: {"search_engine":"GOOG","activeProjectionAlg":"Group by Correlation"
-  ,"domainId":"AVWjx7ciIf40cqEj1ACn","pagesCap":"100","fromDate":null,"toDate":null,
-  "filter":null,"pageRetrievalCriteria":"Most Recent","selected_morelike":"",
-  "model":{"positive":"Relevant","nagative":"Irrelevant"}}*/
-  createSession(domainId){
-    var session = {};
-    session['search_engine'] = "GOOG";
-    session['activeProjectionAlg'] = "Group by Correlation";
-    session['domainId'] = domainId;
-    session['pagesCap'] = "100";
-    session['fromDate'] = null;
-    session['toDate'] = null;
-    session['filter'] = null; //null
-    session['pageRetrievalCriteria'] = "Most Recent";
-    session['selected_morelike'] = "";
-    session['selected_queries']="";
-    session['selected_tlds']="";
-    session['selected_aterms']="";
-    session['selected_tags']="";
-    session['selected_model_tags']="";
-    session['selected_crawled_tags']="";
-    session['model'] = {};
-    session['model']['positive'] = "Relevant";
-    session['model']['negative'] = "Irrelevant";
-
-
-
-    return session;
-  }
 
   loadDataFromElasticSearch(session,  filterTerm){
     //var session = this.props.session;
@@ -112,7 +80,7 @@ class RadViz extends Component {
   componentWillMount(){
     this.loadDataFromElasticSearch(this.props.session, this.state.filterTerm);
     var session = JSON.parse(JSON.stringify(this.props.session));
-    this.setState({idDomain: this.props.idDomain, session:session});
+    this.setState({ session:session});
   };
 
   componentWillReceiveProps  = (newProps, nextState) => {
@@ -120,13 +88,11 @@ class RadViz extends Component {
       return;
     }
       this.loadDataFromElasticSearch(this.props.session, this.state.filterTerm);
-      this.setState({idDomain: this.props.idDomain});
-
   };
 
   //Filter by terms (ex. ebola AND virus)
   filterKeyword(filterTerm){
-    this.loadDataFromElasticSearch(this.state.index, filterTerm);
+    this.loadDataFromElasticSearch(this.props.session, filterTerm);
   }
   handleOpen = () => {
     this.setState({open: true});
@@ -145,7 +111,7 @@ class RadViz extends Component {
       ];
     return (
       <div>
-        <RadVizComponent session={this.state.session} currentDomain={this.props.idDomain} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
+        <RadVizComponent session={this.state.session} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
       </div>
     );
   }
