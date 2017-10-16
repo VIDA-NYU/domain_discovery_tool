@@ -23,15 +23,18 @@ class RadViz extends Component {
       dimNames:[],
       filterTerm:"",
       open:false,
-      session:{},
+      session:"",
+      sessionString:{},
     };
     this.colorTags= [ "#9E9E9E", "#0D47A1", "#C62828"];
   };
 
   loadDataFromElasticSearch(session,  filterTerm){
     //var session = this.props.session;
+
     if(!(Object.keys(session).length === 0)){
-    session['pagesCap'] = "200";
+    //console.log(session);
+    session['pagesCap']='1000';
     $.post(
         '/getRadvizPoints',
         {'session': JSON.stringify(session), filterByTerm: filterTerm},
@@ -45,6 +48,7 @@ class RadViz extends Component {
 
           for (let i = 0; i < data['labels'].length; ++i){
               data['Model Result'][i] = "neutral";
+              data['labels'][i]= data['labels'][i].split(',');
               //colors.push(scaleColor(data['tags'][0]));
               let aux = {};
               for (let j = 0; j < dimNames.length-2; ++j){//except urls and labels
@@ -78,16 +82,19 @@ class RadViz extends Component {
   }
 
   componentWillMount(){
+    //console.log(this.props.session);
     this.loadDataFromElasticSearch(this.props.session, this.state.filterTerm);
-    var session = JSON.parse(JSON.stringify(this.props.session));
-    this.setState({ session:session});
+    //this.setState({ session:this.props.session, sessionString:JSON.stringify(this.props.session)});
   };
 
   componentWillReceiveProps  = (newProps, nextState) => {
-    if(JSON.parse(JSON.stringify(newProps.session)) ===this.state.session){
+    //console.log(this.props.session);
+    //console.log(newProps.session);
+    if(JSON.stringify(newProps.session) ===this.state.sessionString){
       return;
     }
-      this.loadDataFromElasticSearch(this.props.session, this.state.filterTerm);
+    this.setState({ session:newProps.session, sessionString:JSON.stringify(newProps.session)});
+    this.loadDataFromElasticSearch(newProps.session, this.state.filterTerm);
   };
 
   //Filter by terms (ex. ebola AND virus)
@@ -102,19 +109,28 @@ class RadViz extends Component {
     this.setState({open: false});
   };
   render() {
-    const actions = [
-        <FlatButton
-          label="Ok"
-          primary={true}
-          onTouchTap={this.handleClose}
-        />,
-      ];
-    return (
-      <div>
-        <RadVizComponent session={this.state.session} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
-      </div>
-    );
+    if(!(Object.keys(this.state.session).length === 0)){
+      const actions = [
+          <FlatButton
+            label="Ok"
+            primary={true}
+            onTouchTap={this.handleClose}
+          />,
+        ];
+        //console.log(this.state.session);
+      return (
+        <div>
+          <RadVizComponent session={this.state.session} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)}/>
+        </div>
+      );
+    }
+    else {
+      return(
+        <div>
+        </div>
+      );
+    }
   }
-  }
+}
 
   export default RadViz;
