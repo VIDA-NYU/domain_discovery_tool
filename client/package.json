@@ -14,7 +14,7 @@
     "immutable": "^3.8.1",
     "jquery": "^1.11.0",
     "material-ui": "^0.18.6",
-    "radviz-component": "^1.0.27",
+    "radviz-component": "^1.0.29",
     "react": "^15.6.1",
     "react-bootstrap": "^0.30.6",
     "react-checkbox-tree": "^0.5.2",
