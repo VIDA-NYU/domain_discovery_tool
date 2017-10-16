@@ -29,6 +29,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Select from 'react-select';
 import RadViz from './RadViz.js';
 import '../css/Views.css';
+import FiltersTabs from './FiltersTabs.js';
 
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
@@ -1259,7 +1260,10 @@ class Views extends React.Component {
   availableCrawlerButton(isthereModel){
     this.props.availableCrawlerButton(isthereModel);
   };
-
+ updateTagColor(){
+   this.props.reloadFilters();
+   this.forceUpdate();
+ }
 
   render() {
     var searchOtherEngine = "No Pages Found.";

@@ -10,7 +10,7 @@ import {scaleOrdinal} from 'd3-scale';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RadVizComponent from 'radviz-component';
-
+import FiltersTabs from './FiltersTabs'
 class RadViz extends Component {
 
   constructor(props) {
@@ -101,6 +101,7 @@ class RadViz extends Component {
   filterKeyword(filterTerm){
     this.loadDataFromElasticSearch(this.props.session, filterTerm);
   }
+
   handleOpen = () => {
     this.setState({open: true});
   };
@@ -108,6 +109,9 @@ class RadViz extends Component {
   handleClose = () => {
     this.setState({open: false});
   };
+updateTagColor(){
+  this.props.updateTagColor();
+}
   render() {
     if(!(Object.keys(this.state.session).length === 0)){
       const actions = [
