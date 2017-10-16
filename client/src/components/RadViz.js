@@ -84,12 +84,7 @@ class RadViz extends Component {
   componentWillMount(){
     //console.log(this.props.session);
     this.loadDataFromElasticSearch(this.props.session, this.state.filterTerm);
-<<<<<<< HEAD
     //this.setState({ session:this.props.session, sessionString:JSON.stringify(this.props.session)});
-=======
-    var session = JSON.parse(JSON.stringify(this.props.session));
-    this.setState({ session:session});
->>>>>>> Using session info to filter by keyword.
   };
 
   componentWillReceiveProps  = (newProps, nextState) => {
