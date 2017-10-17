@@ -6,7 +6,7 @@ Continuing with our example of the **Ebola** domain, we show here the 3 methods 
 Web Search
 ~~~~~~~~~~
 
-.. image:: query_web.png
+.. image:: figures/query_web.png
    :width: 800px
    :align: center
    :height: 400px
@@ -19,7 +19,7 @@ Upload URLs
 
 If you have a set of URLs of sites you already know, you can add them from the **LOAD** tab. You can upload the list of URLs in the text box as shown in figure below:
 
-.. image:: load_url_text.png
+.. image:: figures/load_url_text.png
    :width: 800px
    :align: center
    :height: 400px
@@ -36,7 +36,7 @@ Instead of making multiple queries to Google/Bing yourself you can trigger autom
 
 To start a SeedFinder search click on the SEEDFINDER tab. 
 
-.. image:: seedfinder_search_new.png
+.. image:: figures/seedfinder_search_new.png
    :width: 800px
    :align: center
    :height: 600px
@@ -46,9 +46,9 @@ Enter the initial search query keywords, for example **ebola treatment**, as sho
 
 You can monitor the status of the SeedFinder in the **Process Monitor** that can be be accessed by clicking on the |pm_icon| on the top as shown below:
 
-.. |pm_icon| image:: pm_icon.png
+.. |pm_icon| image:: figures/pm_icon.png
 
-.. image:: sf_pm.png
+.. image:: figures/sf_pm.png
    :width: 800px
    :align: center
    :height: 600px

@@ -3,7 +3,7 @@ Run Crawler
 
 Once a sufficiently good model is available or pages are uploaded for a deep crawl you can change from Explore Data View to the Crawler View shown below:
 
-.. image:: deep_crawl.png
+.. image:: figures/deep_crawl.png
    :width: 800px
    :align: center
    :height: 400px
@@ -17,7 +17,7 @@ You can see the results of the crawled data in "Crawled Data" in the Filters Tab
 
 The figure below shows the Focused Crawler View:
 
-.. image:: focused_crawl.png
+.. image:: figures/focused_crawl.png
    :width: 800px
    :align: center
    :height: 400px

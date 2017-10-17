@@ -6,7 +6,7 @@ Domain Discovery is the process of acquiring, understanding and exploring data f
 * Help users learn about a domain and how (and where) it is represented on the Web.
 * Acquire a sufficient number of Web pages that capture the user's notion of the domain so that a computational model can be constructed to automatically recognize relevant content.
 
-.. image:: ddt_arch-new.png
+.. image:: figures/ddt_arch-new.png
    :width: 600px
    :align: center
    :height: 300px

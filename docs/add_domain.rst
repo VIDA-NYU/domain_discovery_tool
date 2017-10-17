@@ -1,7 +1,7 @@
 Create Domain
 -------------
 
-.. image:: empty_domain.png
+.. image:: figures/empty_domain.png
    :width: 800px
    :align: center
    :height: 400px
@@ -9,9 +9,9 @@ Create Domain
 
 Begin by adding a domain on the Domains page (initial page), shown in the figure above, by clicking on the |add_domain| button. Domain maintains context of domain discovery. 
 
-.. |add_domain| image:: add_domain_button.png
+.. |add_domain| image:: figures/add_domain_button.png
 
-.. image:: add_ebola_domain.png
+.. image:: figures/add_ebola_domain.png
    :width: 800px
    :align: center
    :height: 400px
@@ -19,7 +19,7 @@ Begin by adding a domain on the Domains page (initial page), shown in the figure
 
 On the **Adding a domain** dialog shown in figure above, enter the name of the domain you would like to create, for example **Ebola**, and click on **Submit** button. You should now see the new domain you added in the list of domains as shown below.
 
-.. image:: new_domain.png
+.. image:: figures/new_domain.png
    :width: 800px
    :align: center
    :height: 400px
@@ -29,9 +29,9 @@ Once domain is added click on domain name in the list of domains to collect, ana
 
 Domains can be deleted by clicking on the |delete_domain| button.
 
-.. |delete_domain| image:: delete_domain_button.png
+.. |delete_domain| image:: figures/delete_domain_button.png
 
-.. image:: delete_domain.png
+.. image:: figures/delete_domain.png
    :width: 800px
    :align: center
    :height: 400px

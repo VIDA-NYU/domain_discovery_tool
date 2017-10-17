@@ -1,7 +1,7 @@
 Extracted Terms Summary
 -----------------------
 
-.. image:: terms.png
+.. image:: figures/terms.png
    :width: 800px
    :align: center
    :height: 400px

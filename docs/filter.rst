@@ -1,7 +1,7 @@
 Explore Data (Filters)
 ----------------------
 
-.. image:: filters.png
+.. image:: figures/filters.png
    :width: 800px
    :align: center
    :height: 400px
@@ -53,7 +53,7 @@ You can expand the **Model Tags** and click the **Upate Model Tags** button that
 Search
 ~~~~~~
 
-.. image:: search.png
+.. image:: figures/search.png
    :width: 800px
    :align: center
    :height: 400px
