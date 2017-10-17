@@ -115,6 +115,9 @@ updateTagColor(){
 reloadFilters(){
     this.props.reloadFilters();
   };
+updateOnlineAccuracy(accuracy){
+  this.props.updateOnlineAccuracy(accuracy);
+};
   render() {
     if(!(Object.keys(this.state.session).length === 0)){
       const actions = [
@@ -127,7 +130,7 @@ reloadFilters(){
         //console.log(this.state.session);
       return (
         <div>
-          <RadVizComponent session={this.state.session} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)} reloadFilters={this.reloadFilters.bind(this)}/>
+          <RadVizComponent session={this.state.session} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)} reloadFilters={this.reloadFilters.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} />
         </div>
       );
     }
