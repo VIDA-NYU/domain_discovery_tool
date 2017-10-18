@@ -104,6 +104,7 @@ class RadViz extends Component {
       }
     }
 
+
     if(JSON.stringify(newProps.session) ===this.state.sessionString){
       if(newProps.queryFromSearch){
         this.setState({ session:newProps.session, sessionString:JSON.stringify(newProps.session)});
