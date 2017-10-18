@@ -88,7 +88,22 @@ class RadViz extends Component {
   };
 
   componentWillReceiveProps  = (newProps, nextState) => {
-    
+    if(newProps.reloadRadViz){
+      var reload = false;
+      for (var i = 0; i < newProps.urlsToRadviz.length; i++) {
+        for (let j = 0; j < this.state.originalData['urls'].length; ++j){
+            if(this.state.originalData['urls'][j] === newProps.urlsToRadviz[i]) {
+              reload = true;
+              break;
+            }
+        }
+      }
+      if(reload){
+        this.setState({ session:newProps.session, sessionString:JSON.stringify(newProps.session)});
+        this.loadDataFromElasticSearch(newProps.session, this.state.filterTerm);
+      }
+    }
+
     if(JSON.stringify(newProps.session) ===this.state.sessionString){
       if(newProps.queryFromSearch){
         this.setState({ session:newProps.session, sessionString:JSON.stringify(newProps.session)});
