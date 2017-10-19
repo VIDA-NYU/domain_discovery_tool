@@ -470,7 +470,7 @@ render() {
           <Col xs={6} md={6} style={{marginLeft:'0px'}}>
             <TextField style={{height:200, width:'340px', fontSize: 12, marginRight:'-80px', marginTop:5, border:'solid',  Color: 'gray', borderWidth: 1, background:"white", borderRadius:"5px"}}
               onChange={this.handleTextChangeLoadMultiQueries.bind(this)}
-              floatingLabelText="Write queries (one by line)."
+              floatingLabelText="Write queries (one per line)."
               hintStyle={{ marginLeft:30}}
               textareaStyle={{marginTop:30,}}
               inputStyle={{ height:180, marginBottom:10, marginLeft:10, paddingRight:20}}
