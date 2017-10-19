@@ -11,7 +11,7 @@ You must have docker installed (`Docker Installation for Mac <https://docs.docke
 Background Mode
 ~~~~~~~~~~~~~~~
 
-You must have docker compose installed to run the background version. For Mac docker-compose is included in the docker installation. For Ubuntu follow instructions in step 3. in `docker compose install for linux <https://docs.docker.com/compose/install/>`_
+You must have docker compose installed to run the background version. For Mac docker-compose is included in the docker installation. For Ubuntu follow instructions under Linux tab in `docker compose install for linux <https://docs.docker.com/compose/install/>`_
 
 In order to run the docker version in background download :download:`docker-compose.yml <../docker-compose.yml>`. Use the following commands to run it:
 
@@ -26,7 +26,7 @@ You can check the output of the DDT tool using:
 
 You will see a message **"ENGINE Bus STARTED"** when DDT is running successfully. You can now use DDT.
 
-`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/use.html>`_
+`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/tutorials.html>`_
 
 To shutdown the processes run:
 
