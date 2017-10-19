@@ -1,7 +1,7 @@
 Acquire Data
 ------------
 
-Continuing with our example of the **Ebola** domain, we show here the 3 methods of uploading data. Expand the Search tab on the left panel. You can add data to the domain in the following ways:
+Continuing with our example of the **Ebola** domain, we show here the methods of uploading data. Expand the Search tab on the left panel. You can add data to the domain in the following ways:
 
 Upload URLs
 ***********

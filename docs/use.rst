@@ -1,5 +1,5 @@
-Features
-========
+How To
+======
 
 Now you should be able to head to http://<hostname>:8084/ to interact with the tool.
 
