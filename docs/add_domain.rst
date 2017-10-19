@@ -26,17 +26,3 @@ On the **Adding a domain** dialog shown in figure above, enter the name of the d
    :alt: alternate text
 
 Once domain is added click on domain name in the list of domains to collect, analyse and annotate web pages.
-
-Domains can be deleted by clicking on the |delete_domain| button.
-
-.. |delete_domain| image:: figures/delete_domain_button.png
-
-.. image:: figures/delete_domain.png
-   :width: 800px
-   :align: center
-   :height: 400px
-   :alt: alternate text
-
-On the **Deleting a domain** dialog select the domains to be deleted in the list of current domains and click on **Submit** button. They will no longer appear on the domains list.
-
-**NOTE: This will delete all the data collected for that domain.**

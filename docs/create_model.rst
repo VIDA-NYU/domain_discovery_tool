@@ -29,7 +29,7 @@ This saved model file contains the ACHE classifier model, the training data for 
 
 
 Annotation
-~~~~~~~~~~
+**********	 
 
 Currently, pages can be annotated as Relevant, Irrelevant or Neutral using the |tag_all| buttons respectively to tag all pages in the current view. |tag_one| buttons can be used to tag individual pages. Annotations are used to build the domain model. 
 

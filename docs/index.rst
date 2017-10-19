@@ -25,6 +25,7 @@ Contents
    :maxdepth: 2
 
    install
+   tutorials
    use
    publication
    contact
