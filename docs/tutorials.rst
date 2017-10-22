@@ -1,7 +1,7 @@
 Getting Started
 ===============
 
-Building Domain Model
+Building Domain Index
 _____________________
 
 To create a domain model that can be used for a focused crawl (broad crawl) do the following steps:
@@ -19,4 +19,10 @@ Step 2
 Step 3
 ~~~~~~
 	     
-.. include:: annotations.rst	     
+.. include:: annotations.rst
+
+Step 4
+~~~~~~
+
+.. include:: run_crawler.rst
+	     
