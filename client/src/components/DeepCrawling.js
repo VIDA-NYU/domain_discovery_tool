@@ -472,6 +472,12 @@ class DeepCrawling extends Component {
         </CardText>
       </Card>
         <Row>
+
+        {
+            this.state.disabledStartCrawler ? <span style={{marginLeft:'15px', marginTop:2}}> <b>Status: </b> Crawler is running.</span> : <span style={{marginLeft:'15px', marginTop:2}}> <b>Status: </b> Crawler is NOT running.</span>
+        }
+        </Row>
+        <Row>
           <Col xs={4} md={4} style={{marginLeft:'0px'}}>
             <RaisedButton
               label="Start Crawler"
