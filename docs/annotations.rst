@@ -56,6 +56,30 @@ Tag All Pages for Current Filter
 
 If you want to tag all pages retrieved for a particular filter (across pagination), then check the **Select ALL results in <total pages> paginations** checkbox below the page list on top left. Then use |tag_all| buttons to tag all the pages.
 		     
+Custom Tag
+<<<<<<<<<<
+
+Custom tags can be added using Add Tag text box as shown below. Enter the custom tag in the Add Tag text box and press **enter** key. This adds the tag as a chip below the page info. This can be applied to individual, selected or all pages similar to relevant and irrelevant tags.
+
+.. image:: figures/add_tag.png
+   :width: 800px
+   :align: center
+   :height: 400px
+   :alt: alternate text
+
+Tag for Deep Crawl
+<<<<<<<<<<<<<<<<<<
+
+Some tags such as **Deep Crawl** are pre-configured. User can tag a page (or group of pages) for deep crawl by choosing the tag from the Add Tag drop-down as shown. For example, if user wants to deep crawl all the uploaded pages then they can tag the pages **Deep Crawl**.
+
+.. image:: figures/deep_crawl_tag.png
+   :width: 800px
+   :align: center
+   :height: 400px
+   :alt: alternate text
+
+
+      
 
 
 
