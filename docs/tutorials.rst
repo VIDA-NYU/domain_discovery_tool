@@ -4,7 +4,10 @@ Getting Started
 Building Domain Index
 _____________________
 
-To create a domain model that can be used for a focused crawl (broad crawl) do the following steps:
+Creating a domain specific index involves:
+
+- Uploading known relevant URL domains from which you would like to collect all URLs belonging to that domain. This is called a deep crawl. Follow steps 1,2 and 4, below, for this.
+- Create a domain model that can be used for a focused crawl (broad crawl). For this follow all the steps 1-4 below.
 
 Step 1
 ~~~~~~
