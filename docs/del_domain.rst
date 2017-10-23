@@ -1,9 +1,7 @@
 Delete Domain
 -------------
 
-Domains can be deleted by clicking on the |delete_domain| button.
-
-.. |delete_domain| image:: figures/delete_domain_button.png
+Domains can be deleted by clicking on the **Delete Domain** button.
 
 .. image:: figures/delete_domain.png
    :width: 800px

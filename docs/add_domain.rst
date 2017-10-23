@@ -7,9 +7,7 @@ Create Domain
    :height: 400px
    :alt: alternate text
 
-Begin by adding a domain on the Domains page (initial page), shown in the figure above, by clicking on the |add_domain| button. Domain maintains context of domain discovery. 
-
-.. |add_domain| image:: figures/add_domain_button.png
+Begin by adding a domain on the Domains page (initial page), shown in the figure above, by clicking on the **Add Domain** button. Domain maintains context of domain discovery. 
 
 .. image:: figures/add_ebola_domain.png
    :width: 800px
