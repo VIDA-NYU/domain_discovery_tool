@@ -523,20 +523,18 @@ class FocusedCrawling extends Component {
               this.state.disabledStartCrawler ?
               <Col xs={7} md={7} style={{marginLeft:'-70px'}}>
                 <RaisedButton
-                  label="Stop Crawler"
-                  labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
-                  backgroundColor={this.props.backgroundColor}
-                  //icon={<Search />}
-                  style={{height:35, marginTop: 0, margin: 12}}
-                  onClick={this.stopFocusedCrawler.bind(this)}
-                />
-                <RaisedButton
                   label="Crawler Monitor"
                   labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
                   backgroundColor={this.props.backgroundColor}
-                  //icon={<Search />}
                   style={{height:35, marginTop: 0, margin: 12}}
                   href={this.props.crawlerServers['focused']+"/monitoring"} target="_blank"
+                />
+                <RaisedButton
+                  label="Stop Crawler"
+                  labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+                  backgroundColor={this.props.backgroundColor}
+                  style={{height:35, marginTop: 0, margin: 12}}
+                  onClick={this.stopFocusedCrawler.bind(this)}
                 />
                 </Col>
               :
