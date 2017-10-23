@@ -47,6 +47,7 @@ class DeepCrawling extends Component {
       openLoadURLs: false,
       session:"",
       nameFile:"",
+      openDialogStatusCrawler:false,
     };
     this.selectedRows = [];
     this.recommendationInterval = null;
@@ -58,6 +59,7 @@ class DeepCrawling extends Component {
 
     this.changeMinURLCount = this.changeMinURLCount.bind(this);
     this.handleOpenDialogLoadUrl = this.handleOpenDialogLoadUrl.bind(this);
+    this.handleCloseDialogStatusCrawler = this.handleCloseDialogStatusCrawler.bind(this);
 
   }
 
@@ -236,14 +238,17 @@ class DeepCrawling extends Component {
           var disableStopCrawlerFlag = false;
           var disableAcheInterfaceFlag = false;
           var disabledStartCrawlerFlag = true;
+          var crawlerIsNotRunningFlag = false;
           if(message.toLowerCase() !== "running"){
             disableStopCrawlerFlag = true;
             disableAcheInterfaceFlag =true;
-            disabledStartCrawlerFlag = true;
+            disabledStartCrawlerFlag = (message === 'Failed to connect to server. Server may not be running')?false:true;
+            crawlerIsNotRunningFlag = (message === 'Failed to connect to server. Server may not be running')?true:false;
           }
-          this.recommendationInterval = setInterval(this.getRecommendations.bind(this), 30000);
-          this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
+          this.setState({disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message, openDialogStatusCrawler:crawlerIsNotRunningFlag});
           this.forceUpdate();
+          this.recommendationInterval = setInterval(this.getRecommendations.bind(this), 30000);
+
         }.bind(this)
     ).fail((error) => {
       // Fail safe interval clearance in case the startCrawler errors out
@@ -375,6 +380,11 @@ class DeepCrawling extends Component {
     this.termsFromFile=[]; // Empting the terms from file.
   };
 
+  //Handling open/close 'status crawler' Dialog
+  handleCloseDialogStatusCrawler  = () => {
+    this.setState({openDialogStatusCrawler: false, });
+  };
+
   //Handling value into 'load urls' textfield
   handleTextChangeLoadUrls(e){
     this.setState({ valueLoadUrlsFromTextField: e.target.value});
@@ -404,6 +414,8 @@ class DeepCrawling extends Component {
                         <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseDialogLoadUrl.bind(this)}/>,
                         <FlatButton label="Add" style={{marginLeft:10}} primary={true} keyboardFocused={true} onTouchTap={this.addURLfromFileAndTextField.bind(this)}/>,
                             ];
+    const actionsStatusCrawler = [
+                        <FlatButton label="Close" primary={true} onTouchTap={this.handleCloseDialogStatusCrawler.bind(this)}/>,  ];
     const heightTableStyle = { height: "10px", padding: "0px"};
 
     return (
@@ -472,12 +484,6 @@ class DeepCrawling extends Component {
         </CardText>
       </Card>
         <Row>
-
-        {
-            this.state.disabledStartCrawler ? <span style={{marginLeft:'15px', marginTop:2}}> <b>Status: </b> Crawler is running.</span> : <span style={{marginLeft:'15px', marginTop:2}}> <b>Status: </b> Crawler is NOT running.</span>
-        }
-        </Row>
-        <Row>
           <Col xs={4} md={4} style={{marginLeft:'0px'}}>
             <RaisedButton
               label="Start Crawler"
@@ -522,9 +528,11 @@ class DeepCrawling extends Component {
                 onClick={this.stopDeepCrawler}
               />
               </Col>
+
             :
             null
           }
+
         </Row>
       </Col>
 
@@ -623,6 +631,9 @@ class DeepCrawling extends Component {
                <span style={{position:"absolute", margin:"7px 7px 7px 10px"}}>{this.state.nameFile}</span>
               </div>
            </Row>
+         </Dialog>
+         <Dialog title="Status crawler" actions={actionsStatusCrawler} modal={true} open={this.state.openDialogStatusCrawler} onRequestClose={this.handleCloseDialogStatusCrawler.bind(this)}>
+           The crawler is NOT runnig.
          </Dialog>
          </CardText>
         </Card>
