@@ -52,7 +52,18 @@ class LoadQueries extends React.Component {
           value: 'seedfinder',
           label: 'SeedFinder Queries',
           children: [],
+      }],
+      flqueryNodes:[{
+          value: 'forwardlink',
+          label: 'ForwardLink Queries',
+          children: [],
+      }],
+      blqueryNodes:[{
+          value: 'backlink',
+          label: 'BackLink Queries',
+          children: [],
       }]
+
     };
   }
 
@@ -144,8 +155,11 @@ class LoadQueries extends React.Component {
 	  nodes.map((node,index)=>{
               if(node.value === "query"){
 		  node.children = [];
-		  Object.keys(this.state.currentQueries).map((query, index)=>{
-		      if(!query.includes("seedfinder")){
+		  Object.keys(this.state.currentQueries)..sort(function (a, b) {
+    return a.toLowerCase().localeCompare(b.toLowerCase());
+}).map((query, index)=>{
+        if(!query.includes("seedfinder") && !query.includes("ForwardLink_") && !query.includes("BackLink_")  ){
+
 			  var labelQuery=  query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
 			  node.children.push({value:query, label:labelQuery});
 		      }
@@ -167,6 +181,18 @@ class LoadQueries extends React.Component {
 	      if(query.includes("seedfinder"))
 		  checked_sf_queries.push(query.replace("seedfinder:",""));
 	  }
+    var checked_fl_queries = [];
+for(var i = 0;i < this.state.checked.length;++i){
+    var query = this.state.checked[i];
+    if(!query.includes("seedfinder"))
+  checked_fl_queries.push(query);
+}
+var checked_bl_queries = [];
+for(var i = 0;i < this.state.checked.length;++i){
+    var query = this.state.checked[i];
+    if(!query.includes("seedfinder"))
+  checked_bl_queries.push(query);
+}
 
 	  var nodes = this.state.sfqueryNodes;
 	  var nodesSFTemp = [];
@@ -185,6 +211,46 @@ class LoadQueries extends React.Component {
               }
               nodesSFTemp.push(node);
 	  });
+    var nodes = this.state.flqueryNodes;
+var nodesFTemp = [];
+var forwardlink_queries_found = false;
+nodes.map((node,index)=>{
+          if(node.value === "forwardlink"){
+  node.children = [];
+  Object.keys(this.state.currentQueries).sort(function (a, b) {
+return a.toLowerCase().localeCompare(b.toLowerCase());
+}).map((query, index)=>{
+      if(query.includes("ForwardLink_")){
+    var trunc_query = query.replace("ForwardLink_", "");
+    var labelQuery=  trunc_query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
+    node.children.push({value:trunc_query, label:labelQuery});
+    forwardlink_queries_found = true;
+      }
+  });
+          }
+          nodesFTemp.push(node);
+});
+
+var nodes = this.state.blqueryNodes;
+var nodesBTemp = [];
+var backlink_queries_found = false;
+nodes.map((node,index)=>{
+          if(node.value === "backlink"){
+  node.children = [];
+  Object.keys(this.state.currentQueries).sort(function (a, b) {
+return a.toLowerCase().localeCompare(b.toLowerCase());
+}).map((query, index)=>{
+      if(query.includes("BackLink_")){
+    var trunc_query = query.replace("BackLink_", "");
+    var labelQuery=  trunc_query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
+    node.children.push({value:trunc_query, label:labelQuery});
+    backlink_queries_found = true;
+      }
+  });
+          }
+          nodesBTemp.push(node);
+});
+
 	  var seedfinder_checkbox_tree = <div />;
 	  if(seedfinder_queries_found){
 	      seedfinder_checkbox_tree = <CheckboxTree
@@ -197,6 +263,31 @@ class LoadQueries extends React.Component {
 					  showNodeIcon={false}
 					  />;
 	  }
+    var forwardLink_checkbox_tree = <div />;
+    if(forwardlink_queries_found){
+	      forwardLink_checkbox_tree = <CheckboxTree
+					  name={"forwardlink"}
+					  nodes={nodesFTemp}
+					  checked={checked_fl_queries}
+					  expanded={this.state.expanded}
+					  onCheck={checked => this.addQuery("forwardlink", {checked})}
+					  onExpand={expanded => this.setState({ expanded })}
+					  showNodeIcon={false}
+					  />;
+          }
+    var backLink_checkbox_tree = <div />;
+    if(backlink_queries_found){
+	      backLink_checkbox_tree = <CheckboxTree
+					  name={"backlink"}
+					  nodes={nodesBTemp}
+					  checked={checked_bl_queries}
+					  expanded={this.state.expanded}
+					  onCheck={checked => this.addQuery("backlink", {checked})}
+					  onExpand={expanded => this.setState({ expanded })}
+					  showNodeIcon={false}
+					  />;
+	  }
+
       return(
               <div >
               <CheckboxTree
@@ -209,6 +300,9 @@ class LoadQueries extends React.Component {
           showNodeIcon={false}
               />
 	      {seedfinder_checkbox_tree}
+        {forwardLink_checkbox_tree}
+        {backLink_checkbox_tree}
+
         </div>
       );
     }
