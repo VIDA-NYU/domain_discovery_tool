@@ -155,7 +155,7 @@ class LoadQueries extends React.Component {
 	  nodes.map((node,index)=>{
               if(node.value === "query"){
 		  node.children = [];
-		  Object.keys(this.state.currentQueries)..sort(function (a, b) {
+		  Object.keys(this.state.currentQueries).sort(function (a, b) {
     return a.toLowerCase().localeCompare(b.toLowerCase());
 }).map((query, index)=>{
         if(!query.includes("seedfinder") && !query.includes("ForwardLink_") && !query.includes("BackLink_")  ){
