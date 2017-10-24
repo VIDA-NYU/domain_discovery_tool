@@ -21,11 +21,74 @@ Step 2
 
 Step 3
 ~~~~~~
-	     
+
 .. include:: annotations.rst
 
+Step 3a
+*******
+
+Tag at least 100 **Relevant** pages for your domain. Refer `How to Annotate`_.
+
+Step 3b
+*******
+
+Tag at least 100 **Irrelevant** pages for your domain. Refer `How to Annotate`_.
+
+
+How to Annotate
+***************
+
+.. include:: how_to_annotate.rst 
+
+Tag Individual Pages
+>>>>>>>>>>>>>>>>>>>>
+
+.. include:: tag_individual.rst
+	     
+Tag Selected Pages
+>>>>>>>>>>>>>>>>>>
+
+.. include:: tag_multiselect.rst
+
+Tag All Pages in View
+>>>>>>>>>>>>>>>>>>>>>
+
+.. include:: tag_all.rst
+
+Tag All Pages for Current Filter
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+.. include:: tag_everything.rst	     
+
+Custom Tag
+>>>>>>>>>>
+
+.. include:: custom.rst
+	     
+Tag for Deep Crawl
+>>>>>>>>>>>>>>>>>>
+
+.. include:: deep_crawl_tag.rst
+   
 Step 4
 ~~~~~~
 
 .. include:: run_crawler.rst
+
+Step 4a
+*******
+
+Deep Crawl
+>>>>>>>>>>
+
+.. include:: deep_crawl.rst
+
+Step 4b
+*******
+
+Focused Crawl
+>>>>>>>>>>>>>
+
+.. include:: focused_crawl.rst
+	     
 	     
