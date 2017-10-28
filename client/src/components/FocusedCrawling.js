@@ -97,6 +97,7 @@ class FocusedCrawling extends Component {
       createModelMessage:"",
       openMessageModelResult:false,
       openDialogStatusCrawler:false,
+      messageErrorCrawler:'',
     };
     this.handleCloseDialogStatusCrawler = this.handleCloseDialogStatusCrawler.bind(this);
 
@@ -270,14 +271,16 @@ class FocusedCrawling extends Component {
         var disableAcheInterfaceFlag = false;
         var disabledStartCrawlerFlag = true;
         var crawlerIsNotRunningFlag = false;
-        if(message.toLowerCase() !== "running"){
+        var messageErrorCrawlerTemp = '';
+        if(message.toLowerCase() === "no regex domain model available" || message.toLowerCase()=== "no page classifier or regex domain model available" || message.toLowerCase()==="no domain model available" || message.toLowerCase()=== "failed to connect to server. server may not be running" || message.toLowerCase()=== "failed to run crawler"){
           disableStopCrawlerFlag = true;
           disableAcheInterfaceFlag =true;
-          disabledStartCrawlerFlag = (message === 'Failed to connect to server. Server may not be running')?false:true;
-          crawlerIsNotRunningFlag = (message === 'Failed to connect to server. Server may not be running')?true:false;
+          disabledStartCrawlerFlag = false;
+          crawlerIsNotRunningFlag = true;
+          messageErrorCrawlerTemp = message;
         }
 
-        this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message, openDialogStatusCrawler:crawlerIsNotRunningFlag});
+        this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message, openDialogStatusCrawler:crawlerIsNotRunningFlag,  messageErrorCrawler:messageErrorCrawlerTemp});
         this.forceUpdate();
       }.bind(this)
     );
@@ -599,7 +602,7 @@ class FocusedCrawling extends Component {
               />
             </Dialog>
             <Dialog title="Status Focused Crawler" actions={actionsStatusCrawler} modal={true} open={this.state.openDialogStatusCrawler} onRequestClose={this.handleCloseDialogStatusCrawler.bind(this)}>
-              The crawler is NOT runnig.
+                {this.state.messageErrorCrawler}
             </Dialog>
             </div>
          </CardText>
