@@ -1,6 +1,3 @@
-Focused Crawl
-<<<<<<<<<<<<<
-
 The figure below shows the Focused Crawler View:
 
 .. image:: figures/focused_crawl.png

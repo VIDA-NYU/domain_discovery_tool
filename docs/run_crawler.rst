@@ -8,13 +8,3 @@ Once a sufficiently good model is available or pages are tagged for a deep crawl
    :align: center
    :height: 400px
    :alt: alternate text
-
-Step 4a
-*******
-
-.. include:: deep_crawl.rst
-
-Step 4b
-*******
-
-.. include:: focused_crawl.rst
