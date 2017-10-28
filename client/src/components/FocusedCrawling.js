@@ -96,7 +96,9 @@ class FocusedCrawling extends Component {
       loadingModel:false,
       createModelMessage:"",
       openMessageModelResult:false,
+      openDialogStatusCrawler:false,
     };
+    this.handleCloseDialogStatusCrawler = this.handleCloseDialogStatusCrawler.bind(this);
 
   }
 
@@ -250,32 +252,34 @@ class FocusedCrawling extends Component {
     var terms = [];
     var pos_terms = [];
     terms = pos_terms = this.state.termsList.map((term)=>{
-	if(term['tags'].indexOf('Positive') !== -1)
-	    return term['word'];
+      if(term['tags'].indexOf('Positive') !== -1)
+      return term['word'];
     }).filter((term)=>{return term !== undefined});
 
     if(pos_terms.length === 0){
-	terms = this.state.termsList.map((term)=>{
-	    return term['word']
-	});
+      terms = this.state.termsList.map((term)=>{
+        return term['word']
+      });
     }
 
     $.post(
-        '/startCrawler',
-        {'session': JSON.stringify(session),'type': type, 'terms': this.state.termsList.join('|')},
-        function(message) {
-          var disableStopCrawlerFlag = false;
-          var disableAcheInterfaceFlag = false;
-          var disabledStartCrawlerFlag = true;
-          if(message.toLowerCase() !== "running"){
-        disableStopCrawlerFlag = true;
-        disableAcheInterfaceFlag =true;
-        disabledStartCrawlerFlag = true;
-          }
+      '/startCrawler',
+      {'session': JSON.stringify(session),'type': type, 'terms': this.state.termsList.join('|')},
+      function(message) {
+        var disableStopCrawlerFlag = false;
+        var disableAcheInterfaceFlag = false;
+        var disabledStartCrawlerFlag = true;
+        var crawlerIsNotRunningFlag = false;
+        if(message.toLowerCase() !== "running"){
+          disableStopCrawlerFlag = true;
+          disableAcheInterfaceFlag =true;
+          disabledStartCrawlerFlag = (message === 'Failed to connect to server. Server may not be running')?false:true;
+          crawlerIsNotRunningFlag = (message === 'Failed to connect to server. Server may not be running')?true:false;
+        }
 
-          this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message});
-          this.forceUpdate();
-        }.bind(this)
+        this.setState({ disableAcheInterfaceSignal: disableAcheInterfaceFlag, disableStopCrawlerSignal:disableStopCrawlerFlag, disabledStartCrawler:disabledStartCrawlerFlag, messageCrawler:message, openDialogStatusCrawler:crawlerIsNotRunningFlag});
+        this.forceUpdate();
+      }.bind(this)
     );
   }
 
@@ -315,6 +319,10 @@ class FocusedCrawling extends Component {
     this.setState({openDialog:false});
     this.forceUpdate();
   }
+  //Handling open/close 'status crawler' Dialog
+  handleCloseDialogStatusCrawler  = () => {
+    this.setState({openDialogStatusCrawler: false, });
+  };
   handleOnRequestChange = (value) => {
     this.setState({
       openMenu: value,
@@ -423,6 +431,8 @@ class FocusedCrawling extends Component {
         onTouchTap={this.handleCloseModelResult.bind(this)}
       />,
     ];
+    const actionsStatusCrawler = [
+      <FlatButton label="Close" primary={true} onTouchTap={this.handleCloseDialogStatusCrawler.bind(this)}/>,  ];
 
     return (
       <div>
@@ -587,6 +597,9 @@ class FocusedCrawling extends Component {
                 labelStyle={{textTransform: "capitalize"}}
                 onClick={this.downloadExportedModel}
               />
+            </Dialog>
+            <Dialog title="Status Focused Crawler" actions={actionsStatusCrawler} modal={true} open={this.state.openDialogStatusCrawler} onRequestClose={this.handleCloseDialogStatusCrawler.bind(this)}>
+              The crawler is NOT runnig.
             </Dialog>
             </div>
          </CardText>
