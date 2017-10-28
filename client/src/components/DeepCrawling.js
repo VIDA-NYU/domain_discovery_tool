@@ -632,7 +632,7 @@ class DeepCrawling extends Component {
               </div>
            </Row>
          </Dialog>
-         <Dialog title="Status crawler" actions={actionsStatusCrawler} modal={true} open={this.state.openDialogStatusCrawler} onRequestClose={this.handleCloseDialogStatusCrawler.bind(this)}>
+         <Dialog title="Status Deep Crawler" actions={actionsStatusCrawler} modal={true} open={this.state.openDialogStatusCrawler} onRequestClose={this.handleCloseDialogStatusCrawler.bind(this)}>
            The crawler is NOT runnig.
          </Dialog>
          </CardText>
