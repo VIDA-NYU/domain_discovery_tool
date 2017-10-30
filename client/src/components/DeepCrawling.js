@@ -426,7 +426,7 @@ class DeepCrawling extends Component {
       <Col xs={6} md={6} style={{marginLeft:'0px'}}>
       <Card>
        <CardHeader
-         title="Domains for crawling"
+         title="DOMAINS FOR CRAWLING"
          actAsExpander={false}
          showExpandableButton={false}
          style={{fontWeight:'bold', marginBottom:"-70px"}}
@@ -476,6 +476,7 @@ class DeepCrawling extends Component {
                 <div>
                   <IconButton onClick={this.handleRemoveUrlFromList.bind(this,row, index )} tooltip="Remove" touch={true} tooltipPosition="bottom-right" tooltipStyles={{marginTop:"-53px",marginLeft:"-73px", fontSize:11,}}>
                     <RemoveURL />
+
                   </IconButton>
                 </div>
               </TableRowColumn>
@@ -542,7 +543,7 @@ class DeepCrawling extends Component {
       <Col xs={6} md={6} style={{marginLeft:'0px'}}>
         <Card id={"Recommendations"} initiallyExpanded={true} >
          <CardHeader
-           title="Recommendations"
+           title="Add urls to deep crawl from recommendations"
            actAsExpander={false}
            showExpandableButton={false}
            style={{fontWeight:'bold', marginBottom:"-70px",}}
@@ -569,7 +570,7 @@ class DeepCrawling extends Component {
             <Divider style={{marginTop:20,}}/>
             <MultiselectTable
               rows={this.state.recommendations}
-              columnHeadings={["DOMAIN", "SCORE, COUNT"]}
+              columnHeadings={["RECOMMENDED DOMAIN", "SCORE, COUNT"]}
               onRowSelection={this.addDomainsOnSelection}
               resetSelection={this.state.resetSelection}
             />
@@ -586,20 +587,21 @@ class DeepCrawling extends Component {
 
         <Card id={"Load external urls"} initiallyExpanded={true} >
          <CardHeader
-           title={<RaisedButton
-             label="Loading external urls"
-             labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
-             backgroundColor={this.props.backgroundColor}
-             icon={<LoadExternalUrls />}
-             style={{height:35, marginTop: 8, marginBottom:"-8px"}}
-             disabled={false}
-             onClick={this.handleOpenDialogLoadUrl}
-           />}
+          title="Add urls to deep crawl from external URLs"
            actAsExpander={false}
            showExpandableButton={false}
-           style={{fontWeight:'bold',}}
+           style={{fontWeight:'bold', marginBottom:"-18px"}}
          />
          <CardText expandable={true} >
+         <RaisedButton
+            label="Loading external urls"
+            labelStyle={{textTransform: "capitalize", fontSize:14, fontWeight:"normal"}}
+            backgroundColor={this.props.backgroundColor}
+            icon={<LoadExternalUrls />}
+            style={{height:35, marginTop: "-15px", marginBottom:"-8px"}}
+            disabled={false}
+            onClick={this.handleOpenDialogLoadUrl}
+          />
          <Dialog title="Adding urls" actions={actionsLoadUrls} modal={false} open={this.state.openDialogLoadUrl} onRequestClose={this.handleCloseDialogLoadUrl.bind(this)}>
            <Row>
            <Col xs={10} md={10} style={{marginLeft:'0px'}}>

@@ -183,6 +183,24 @@ class FocusedCrawling extends Component {
     );
   }
 
+  saveInitialModel() {
+    var session = this.props.session;
+    session['model']['positive'] = this.state.selectedPosTags.slice();
+    session['model']['negative'] = this.state.selectedNegTags.slice();
+    //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    if(session['model']['positive'].length>0 ){
+      this.loadingTerms(session, this.state.selectedPosTags);
+      this.updateOnlineClassifier(session);
+        $.post(
+          '/saveModelTags',
+          {'session': JSON.stringify(session)},
+          function(update){
+            //this.forceUpdate();
+          }.bind(this)
+        );
+    }
+  }
+
   handleSaveTags() {
     var session = this.props.session;
     session['model']['positive'] = this.state.selectedPosTags.slice();
@@ -240,6 +258,7 @@ class FocusedCrawling extends Component {
 
 
   startFocusedCrawler =()=>{
+    this.saveInitialModel();
     this.startCrawler("focused");
     this.forceUpdate();
   }
@@ -509,7 +528,7 @@ class FocusedCrawling extends Component {
        <Col xs={5} md={5} style={{margin:'10px'}}>
        <Card id={"Crawling"} initiallyExpanded={true} >
         <CardHeader
-          title="Crawling"
+          title="CRAWLING"
           actAsExpander={false}
           showExpandableButton={false}
           style={{fontWeight:'bold',}}
@@ -571,7 +590,7 @@ class FocusedCrawling extends Component {
             <p><span style={{marginRight:10,}}>Total Negative: </span>{total_selectedNegTags} </p>
             <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
             <Divider />
-            <div style={{marginLeft:10, marginTop:10,}}>
+            <div style={{marginLeft:10, marginTop:0, marginBottom:"-25px"}}>
               <ScaleBar ratioAccuracy={aux_ratioAccuracy}/>
             </div>
             <div style={{marginTop:"-20px", }}>
