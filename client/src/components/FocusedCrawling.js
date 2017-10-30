@@ -528,7 +528,7 @@ class FocusedCrawling extends Component {
        <Col xs={5} md={5} style={{margin:'10px'}}>
        <Card id={"Crawling"} initiallyExpanded={true} >
         <CardHeader
-          title="Crawling"
+          title="CRAWLING"
           actAsExpander={false}
           showExpandableButton={false}
           style={{fontWeight:'bold',}}
@@ -590,7 +590,7 @@ class FocusedCrawling extends Component {
             <p><span style={{marginRight:10,}}>Total Negative: </span>{total_selectedNegTags} </p>
             <p><span>Domain Model (Accuracy): </span> {this.state.accuracyOnlineLearning} %</p>
             <Divider />
-            <div style={{marginLeft:10, marginTop:10,}}>
+            <div style={{marginLeft:10, marginTop:0, marginBottom:"-25px"}}>
               <ScaleBar ratioAccuracy={aux_ratioAccuracy}/>
             </div>
             <div style={{marginTop:"-20px", }}>
