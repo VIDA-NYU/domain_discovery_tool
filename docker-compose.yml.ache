@@ -1,0 +1,61 @@
+version: '2'
+services:
+  elasticsearch:
+    image: elasticsearch:1.6
+    container_name: elastic
+    environment:
+      - xpack.security.enabled=false
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./data/:/usr/share/elasticsearch/data # elasticsearch data storage
+    ports:
+      - 9200:9200
+  ache_deep:
+    image: vidanyu/ache:latest
+    entrypoint: /ache/bin/ache startServer -c /config/ -d /data
+    container_name: ache_deep_crawl
+    ports:
+      - 8080:8080
+    links:
+      - elasticsearch
+    volumes:
+      - ./data/data-ache:/data
+      - ./:/config
+  ache_focused:
+    image: vidanyu/ache:latest
+    entrypoint: /ache/bin/ache startServer -c /config/ -d /data
+    container_name: ache_focused_crawl
+    ports:
+      - 8081:8080
+    links:
+      - elasticsearch
+      - ache_deep
+    volumes:
+      - ./data/data-ache:/data
+      - ./:/config
+  ddt:
+    image: vidanyu/ddt:latest
+    container_name: dd_tool
+    environment:
+      ELASTICSEARCH_SERVER: elasticsearch
+      ACHE_DEEP_CRAWLER_SERVER: ache_deep
+      ACHE_DEEP_CRAWLER_PORT: 8080
+      ACHE_FOCUSED_CRAWLER_SERVER: ache_focused
+      ACHE_FOCUSED_CRAWLER_PORT: 8080
+      ACHE_DEEP_CRAWLER_MONITOR_SERVER: localhost
+      ACHE_DEEP_CRAWLER_MONITOR_PORT: 8080
+      ACHE_FOCUSED_CRAWLER_MONITOR_SERVER: localhost
+      ACHE_FOCUSED_CRAWLER_MONITOR_PORT: 8081
+    ports:
+      - 8084:8084
+    links:
+      - elasticsearch
+      - ache_deep
+      - ache_focused
+    volumes:
+      - ./data/:/ddt/domain_discovery_tool/server/data # ddt data storage
