@@ -9,17 +9,6 @@ Explore Data (Filters)
 
 Once some pages are loaded into the domain, they can be analyzed and spliced with various filters available in the Filters tab on the left panel. The available filters are:
 
-Search for Keywords
-*******************
-
-.. image:: figures/search.png
-   :width: 800px
-   :align: center
-   :height: 400px
-   :alt: alternate text
-
-Search by keywords within the page content text. This search is available on the top right corner as shown in the figure above. It can be used along with the other filters. The keywords are searched not only in the content of the page but also the title and URL of the page.
-
 Queries
 *******
 
@@ -60,6 +49,17 @@ Crawled Data
 ************
 
 This lists the relevant and irrelevant crawled data. The relevant crawled data, **CD Relevant**, are those crawled pages that are labeled relevant by the domain model. The irrelevant crawled data, **CD Irrelevant**, are those crawled pages that are labeled irrelevant by the domain model.
-  
+
+Search for Keywords
+*******************
+
+.. image:: figures/search.png
+   :width: 800px
+   :align: center
+   :height: 400px
+   :alt: alternate text
+
+Search by keywords within the page content text. This search is available on the top right corner as shown in the figure above. It can be used along with the other filters. The keywords are searched not only in the content of the page but also the title and URL of the page.
+
 
 
