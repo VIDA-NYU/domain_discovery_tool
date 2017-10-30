@@ -1304,7 +1304,7 @@ class Views extends React.Component {
             {showPages}
           </div>
           <div style={styles.headline}>
-            <RadViz idDomain={this.props.domainId} nameDomain={this.props.nameDomain} session={this.state.session} updateTagColor={this.updateTagColor.bind(this)}  />
+            <RadViz  session={this.state.session} lengthTotalPages={this.state.lengthTotalPages} reloadFilters={this.reloadFilters.bind(this)} />
           </div>
         </SwipeableViews>
       </div>
