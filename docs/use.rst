@@ -6,7 +6,8 @@ Now you should be able to head to http://<hostname>:8084/ to interact with the t
 .. include:: add_domain.rst
 .. include:: del_domain.rst	     
 .. include:: load_data.rst
-.. include:: seedfinder.rst			  
+.. include:: seedfinder.rst
+.. include:: crawl_fwd_back.rst			  			  
 .. include:: filter.rst
 .. include:: annotations.rst
 .. include:: how_to_annotate.rst
