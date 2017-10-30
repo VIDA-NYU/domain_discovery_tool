@@ -44,6 +44,27 @@ Tag for Deep Crawl
 
 .. include:: terms_summary.rst
 .. include:: visualization_radviz.rst
+
+Lasso selection in RadViz
+******************
+.. include:: visualization_radviz_lasso_selection.rst
+
+ToolBar RadViz
+******************
+.. include:: visualization_radviz_toolbar.rst
+
+Showing data in RadViz
+******************
+.. include:: visualization_radviz_toolbar_select.rst
+
+Translation in RadViz
+******************
+.. include:: visualization_radviz_toolbar_translation.rst
+
+Find Keyword in RadViz
+******************
+.. include:: visualization_radviz_toolbar_findKeyword.rst
+
 .. include:: run_crawler.rst
 
 Deep Crawl
