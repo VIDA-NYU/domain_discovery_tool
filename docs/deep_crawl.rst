@@ -1,3 +1,5 @@
+In order to run a *Deep Crawl* annotate pages to be crawled with tag *Deep Crawl* as described in `Tag for Deep Crawl <http://domain-discovery-tool.readthedocs.io/en/latest/tutorials.html#tag-for-deep-crawl>`_.
+
 .. image:: figures/deep_crawl.png
    :width: 800px
    :align: center
