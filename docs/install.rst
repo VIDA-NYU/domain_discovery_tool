@@ -17,7 +17,11 @@ In order to run the docker version in background download
 
 **Run only DDT (no crawlers):** Download :download:`docker-compose.yml <../docker-compose.yml>`.
 
-**Run DDT, deep crawler and focused crawler:** Download :download:`docker-compose.yml.ache <../docker-compose.yml.ache>`. Rename the downloaded **docker-compose.yml.ache** to **docker-compose.yml**.
+**Run DDT, deep crawler and focused crawler:** Download the following files in the same directory
+
+:download:`docker-compose.yml.ache <../docker-compose.yml.ache>`. Rename the downloaded **docker-compose.yml.ache** to **docker-compose.yml**.
+
+:download:`ache.yml <../ache.yml>`	  
 
 Use the following commands to run it:
 
