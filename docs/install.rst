@@ -55,7 +55,7 @@ The above script will prompt to enter a directory where you would like to persis
 
 The script will then start DDT. You will see a message **"ENGINE Bus STARTED"** when DDT is running successfully. You can now use DDT.
 
-`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/use.html>`_
+`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/tutorials.html>`_
 
 Trouble Shooting
 ~~~~~~~~~~~~~~~~
@@ -124,5 +124,5 @@ After a successful installation, you can activate the DDT development environmen
 
 >>> ./bin/ddt-dev
 
-`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/use.html>`_
+`Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/tutorials.html>`_
 
