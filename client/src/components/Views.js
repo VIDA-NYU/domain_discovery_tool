@@ -29,6 +29,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Select from 'react-select';
 import RadViz from './RadViz.js';
 import '../css/Views.css';
+import FiltersTabs from './FiltersTabs.js';
 
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
@@ -1255,7 +1256,10 @@ class Views extends React.Component {
   availableCrawlerButton(isthereModel){
     this.props.availableCrawlerButton(isthereModel);
   };
-
+ updateTagColor(){
+   this.props.reloadFilters();
+   this.forceUpdate();
+ }
 
   render() {
     var searchOtherEngine = "No Pages Found.";
@@ -1296,7 +1300,7 @@ class Views extends React.Component {
             {showPages}
           </div>
           <div style={styles.headline}>
-            <RadViz idDomain={this.props.domainId} nameDomain={this.props.nameDomain} session={this.state.session} />
+            <RadViz idDomain={this.props.domainId} nameDomain={this.props.nameDomain} session={this.state.session} updateTagColor={this.updateTagColor.bind(this)}  />
           </div>
         </SwipeableViews>
       </div>
