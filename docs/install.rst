@@ -13,17 +13,17 @@ Background Mode
 
 You must have docker compose installed to run the background version. For Mac docker-compose is included in the docker installation. For Ubuntu follow instructions under Linux tab in `docker compose install for linux <https://docs.docker.com/compose/install/>`_
 
-In order to run the docker version in background download
+In order to run the docker version in background download:
 
-**Run only DDT (no crawlers):** Download :download:`docker-compose.yml <../docker-compose.yml>`.
+**To run only DDT (no crawlers):** Download :download:`docker-compose.yml <../docker-compose.yml>`.
 
-**Run DDT, deep crawler and focused crawler:** Download the following files in the same directory
+**To run DDT, deep crawler and focused crawler:** Download the following files in the same directory
 
 :download:`docker-compose.yml.ache <../docker-compose.yml.ache>`. Rename the downloaded **docker-compose.yml.ache** to **docker-compose.yml**.
 
 :download:`ache.yml <../ache.yml>`	  
 
-Use the following commands to run it:
+Now use the following commands to run DDT (and crawlers if applicable):
 
 >>> cd {path-to-downloaded-docker-compose.yml}
 >>> docker-compose up -d
