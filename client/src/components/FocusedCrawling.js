@@ -183,6 +183,24 @@ class FocusedCrawling extends Component {
     );
   }
 
+  saveInitialModel() {
+    var session = this.props.session;
+    session['model']['positive'] = this.state.selectedPosTags.slice();
+    session['model']['negative'] = this.state.selectedNegTags.slice();
+    //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
+    if(session['model']['positive'].length>0 ){
+      this.loadingTerms(session, this.state.selectedPosTags);
+      this.updateOnlineClassifier(session);
+        $.post(
+          '/saveModelTags',
+          {'session': JSON.stringify(session)},
+          function(update){
+            //this.forceUpdate();
+          }.bind(this)
+        );
+    }
+  }
+
   handleSaveTags() {
     var session = this.props.session;
     session['model']['positive'] = this.state.selectedPosTags.slice();
@@ -240,6 +258,7 @@ class FocusedCrawling extends Component {
 
 
   startFocusedCrawler =()=>{
+    this.saveInitialModel();
     this.startCrawler("focused");
     this.forceUpdate();
   }
