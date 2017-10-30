@@ -49,6 +49,7 @@ Interactive Mode
 To run using the interactive docker version download the script :download:`run_docker_ddt <../bin/run_docker_ddt>` and run it:
 
 >>> cd {path-to-downloaded-run_docker_ddt}
+>>> chmod a+x run_docker_ddt
 >>> ./run_docker_ddt
 
 The above script will prompt to enter a directory where you would like to persist all the web pages for the domains you create. You can enter the path to a directory on the host you are running DDT or just press **Enter** to use the default directory which is {path-to-downloaded-run_docker_ddt}/data. The data is stored in the `elasticsearch <https://www.elastic.co/products/elasticsearch>`_ data format (You can later use this directory as the data directory to any elasticsearch).The script will start elasticsearch with the data directory provided.
