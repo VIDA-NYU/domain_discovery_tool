@@ -46,7 +46,7 @@ To shutdown the processes run:
 Interactive Mode
 ~~~~~~~~~~~~~~~~
 
-To run using the interactive docker version download the script :download:`run_docker_ddt <../bin/run_docker_ddt.zip>` and run it:
+To run using the interactive docker version download the script :download:`run_docker_ddt <../bin/run_docker_ddt>` and run it:
 
 >>> cd {path-to-downloaded-run_docker_ddt}
 >>> ./run_docker_ddt
