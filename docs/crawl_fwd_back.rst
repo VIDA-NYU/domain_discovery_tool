@@ -3,9 +3,9 @@ Crawl Forward and Backward
 
 This allows the user to crawl one level forward or backward for all the selected URLs.
 
-**Forward Links - ** Forward links are all the links contained in a given page. When you crawl one level forward it downloads all the pages corresponding to the links contained in the page.
+**Forward Links -** Forward links are all the links contained in a given page. When you crawl one level forward it downloads all the pages corresponding to the links contained in the page.
 
-**Backward Links - ** Backward links are all the links that contain a link to the given page. When you crawl one level backward it first finds all the links that contain a link to the selected page and then downloads all the pages corresponding to the links contained in the all the backward link pages.
+**Backward Links -** Backward links are all the links that contain a link to the given page. When you crawl one level backward it first finds all the links that contain a link to the selected page and then downloads all the pages corresponding to the links contained in the all the backward link pages.
 
 The motivation for backward and forward crawling is the assumption that links containing the selected pages (back links) and links contained in the selected page (forward links) would be about similar topic as the selected page.
 
