@@ -13,12 +13,18 @@ Background Mode
 
 You must have docker compose installed to run the background version. For Mac docker-compose is included in the docker installation. For Ubuntu follow instructions under Linux tab in `docker compose install for linux <https://docs.docker.com/compose/install/>`_
 
-In order to run the docker version in background download :download:`docker-compose.yml <../docker-compose.yml>`. Use the following commands to run it:
+In order to run the docker version in background download
+
+**Run only DDT (no crawlers):** Download :download:`docker-compose.yml <../docker-compose.yml>`.
+
+**Run DDT, deep crawler and focused crawler:** Download :download:`docker-compose.yml.ache <../docker-compose.yml.ache>`. Rename the downloaded **docker-compose.yml.ache** to **docker-compose.yml**.
+
+Use the following commands to run it:
 
 >>> cd {path-to-downloaded-docker-compose.yml}
 >>> docker-compose up -d
 
-The above commands will start elasticsearch and DDT processes. The elasticsearch and DDT data are stored in the directory {path-to-downloaded-docker-compose.yml}/data.
+The above commands will start elasticsearch and DDT processes (and crawlers if applicable). The elasticsearch and DDT (and crawler if applicable) data are stored in the directory {path-to-downloaded-docker-compose.yml}/data
 
 You can check the output of the DDT tool using:
 
