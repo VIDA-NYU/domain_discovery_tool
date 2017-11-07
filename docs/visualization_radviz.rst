@@ -30,11 +30,7 @@ When the pages are selected, you will observe the following:
 - A WordCloud of all the top keywords contained in the selected pages is generated in the right top corner. The font size of the keyword in the word cloud is proportional to the frequency of occurence of the word
 - Snippets of selected pages are shown at the right bottom corner
 
-.. image:: figures/visualization_toolbar_lassoSelect_result.png
-   :width: 700px
-   :align: center
-   :height: 430px
-   :alt: alternate text
+Pages can be tagged through RadViz as ’Positive’ and ’Negative’, and even Custom Tag, by drawing lasso around any region of interest, which made the selection of a sub-group of pages very easy, and then users can tag the selected pages as ’Positive’, ’Negative’ and Custom Tag.
 
 ToolBar RadViz
 **************
@@ -48,11 +44,32 @@ ToolBar RadViz
 This visualization has five controls to interact with, whose functionlity are described below.
 
 Showing data in RadViz
-******************
+<<<<<<<<<<<<<<<<<<<<<<
+
+.. |toolbar_select| image:: figures/visualization_toolbar_select.png
+
+|toolbar_select| radio buttons, can be used to show or hide data on RadViz.
+
+**Show all:** Show all is selected by default in this visualization. It shows all the pages present in the data collection.
+
+**Hide selected:** This option hides the selected pages of the current view.
+
+**Hide unselected:** This option hides the pages that are not selected.
+
+
+Translation in RadViz
+<<<<<<<<<<<<<<<<<<<<<<
+
+.. |toolbar_translation| image:: figures/visualization_toolbar_transaltion.png
+
+|toolbar_translation|  slider allows to calibrate the degree of denseness or sparseness of the representations of the pages in the visualization.
+
+Find Keyword in RadViz
+<<<<<<<<<<<<<<<<<<<<<<
 
 .. |toolbar_find_keyword| image:: figures/visualization_toolbar_find_keyword.png
 
-|toolbar_find_keyword| auto-complete text-field allows to search a keyword over all keywords highlighting it in the visualization. Blue font color is used to highlight the keyword (see Figure bellow). This functionality is supported by an autocomplete process using all keyword used to create RadViz.
+|toolbar_find_keyword| auto-complete text-field allows to search a keyword over all keywords in the visualization. Blue font color is used to highlight the keyword (shown below). This functionality is supported by an autocomplete process using all keyword used in th current view of RadViz.
 
 .. image:: figures/visualization_toolbar_find_keyword_result.png
    :width: 400px
@@ -61,4 +78,3 @@ Showing data in RadViz
    :alt: alternate text
 
 	 
-Pages can be tagged through RadViz as ’Positive’ and ’Negative’, and even Custom Tag, by drawing lasso around any region of interest, which made the selection of a sub-group of pages very easy, and then users can tag the selected pages as ’Positive’, ’Negative’ and Custom Tag.
