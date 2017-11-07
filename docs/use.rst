@@ -45,13 +45,6 @@ Tag for Deep Crawl
 .. include:: terms_summary.rst
 .. include:: visualization_radviz.rst
 
-Lasso selection in RadViz
-******************
-.. include:: visualization_radviz_lasso_selection.rst
-
-ToolBar RadViz
-******************
-.. include:: visualization_radviz_toolbar.rst
 
 Showing data in RadViz
 ******************
