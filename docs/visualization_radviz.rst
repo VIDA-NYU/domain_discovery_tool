@@ -37,7 +37,7 @@ When the pages are selected, you will observe the following:
    :alt: alternate text
 
 ToolBar RadViz
-******************
+**************
 
 .. image::  figures/visualization_toolbar1.png
    :width: 700px
