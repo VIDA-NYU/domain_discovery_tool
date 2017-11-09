@@ -31,8 +31,6 @@ Select multiple pages by keeping the **ctrl** key pressed and clicking on the pa
 Crawl All Pages
 <<<<<<<<<<<<<<<
 
-.. |tag_all| image:: figures/tag_all.png
-
 Use the |tag_all| buttons at the top of the list of pages to crawl backward or forward links on all pages in the current view.
 
 Crawl All Pages for Current Filter

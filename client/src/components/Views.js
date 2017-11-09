@@ -27,8 +27,9 @@ import IconButton from 'material-ui/IconButton';
 import ReactPaginate from 'react-paginate';
 import RaisedButton from 'material-ui/RaisedButton';
 import Select from 'react-select';
-
+import RadViz from './RadViz.js';
 import '../css/Views.css';
+import FiltersTabs from './FiltersTabs.js';
 
 //const recentsIcon = <RelevantFace />;
 //const favoritesIcon = <IrrelevantFace />;
@@ -309,6 +310,8 @@ class ViewTabSnippets extends React.Component{
 
   componentWillMount(){
     this.getAvailableTags();
+    console.log("componentWillMount-------------------------");
+    //console.log(this.props.pages);
     this.setState({
         session:this.props.session, sessionString: JSON.stringify(this.props.session), pages:this.props.pages, currentPagination:this.props.currentPagination, offset:this.props.offset, lengthPages:this.props.lengthPages, lengthTotalPages:this.props.lengthTotalPages,
     });
@@ -338,8 +341,14 @@ class ViewTabSnippets extends React.Component{
   }
 
   componentWillReceiveProps(nextProps, nextState){
+    if(nextProps.reloadView){
+      var tempSession = JSON.parse(JSON.stringify(this.state.session));
+      tempSession["from"] = this.state.offset;
+      this.getPages(tempSession);
+    }
     if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.props.queryFromSearch) {
-      if(this.props.internalUpdating){return ;}
+
+      if(this.props.internalUpdating){ return ;}
 
       if(!this.props.queryFromSearch) $("div").scrollTop(0);
       this.setState({
@@ -357,7 +366,7 @@ class ViewTabSnippets extends React.Component{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if ( nextState.currentPagination!== this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch ) {
+    if ( nextState.currentPagination!== this.state.currentPagination || nextState.accuracyOnlineLearning !== this.state.accuracyOnlineLearning || JSON.stringify(nextProps.session) !== this.state.sessionString  || nextState.pages !== this.state.pages || this.props.queryFromSearch) {
       if(this.props.internalUpdating){ return false;}
          return true;
     }
@@ -440,11 +449,13 @@ class ViewTabSnippets extends React.Component{
 
   //Remove or Add tags from elasticSearch
   removeAddTagElasticSearch(urls, current_tag, applyTagFlag ){
+    this.urls = urls;
     $.post(
       '/setPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
       function(message) {
         //updateing filters Tags
+        this.props.sentTaggedUrls(this.urls);
         this.props.reloadFilters();
         this.updateOnlineClassifier(this.props.session);
         this.forceUpdate();
@@ -517,11 +528,13 @@ class ViewTabSnippets extends React.Component{
 
   //Remove or Add tags from elasticSearch
   setAllPagesTag_ElasticSearch(urls, current_tag, applyTagFlag ){
+    this.urls=urls;
     $.post(
       '/setAllPagesTag',
       {'pages': urls.join('|'), 'tag': current_tag, 'applyTagFlag': applyTagFlag, 'session':  JSON.stringify(this.props.session)},
       function(message) {
         //updateing filters Tags
+        this.props.sentTaggedUrls(this.urls);
         this.props.reloadFilters();
         this.updateOnlineClassifier(this.props.session);
         this.forceUpdate();
@@ -762,8 +775,6 @@ class ViewTabSnippets extends React.Component{
     }
 
   addCustomTag(inputURL, val) {
-    console.log("addCustomTag");
-    console.log(val);
     if(this.state.checkedSelectAllPages){
       this.temp_inputURL_TagAllPages=inputURL;
       this.temp_value_TagAllPages = val;
@@ -815,12 +826,12 @@ class ViewTabSnippets extends React.Component{
   //Select all pages in all paginations
   updatingCheckSelectAllPages(){
     this.setState({checkedSelectAllPages: !this.state.checkedSelectAllPages });
-    console.log(this.state.checkedSelectAllPages);
     this.forceUpdate();
   }
 
 
   render(){
+    console.log('RENDER');
     const actionsCancelMultipleSelection = [ <FlatButton label="Cancel" primary={true} onTouchTap={this.handleCloseMultipleSelection} />,];
     var id=0;
     var c=0;
@@ -1161,6 +1172,9 @@ class Views extends React.Component {
     };
     this.newPages = true;
     this.queryFromSearch=true;
+    this.reloadView=false;
+    this.reloadRadViz=false;
+    this.urlsToRadviz =[];
   }
 
   //Returns dictionary from server in the format: {url1: {snippet, image_url, title, tags, retrieved}} (tags are a list, potentially empty)
@@ -1221,6 +1235,7 @@ class Views extends React.Component {
   	    this.setState({pages:nextProps.pages, lengthPages : Object.keys(nextProps.pages).length});
   	    this.forceUpdate();
   	}*/
+
   	if (JSON.stringify(nextProps.session) !== this.state.sessionString || this.queryFromSearch) {
       this.newPages = false;
       this.loadPages(nextProps.session);
@@ -1239,7 +1254,7 @@ class Views extends React.Component {
 
   //If the view is changed (snippet, visualization or model) or session is update then we need to rerender.
   shouldComponentUpdate(nextProps, nextState) {
-    this.queryFromSearch = (nextProps.queryFromSearch === undefined)?false:true;
+    this.queryFromSearch = (nextProps.queryFromSearch === undefined)?false:true; // if queryFromSearch==undefined so we should not update ViewTabSnippets
     if ((JSON.stringify(nextProps.session) !== this.state.sessionString && this.newPages) || nextState.slideIndex !== this.state.slideIndex ||this.queryFromSearch ) { //'""' if there is some selected tag.   || JSON.stringify(this.props.session['selected_tags'])!='""'
           return true;
     }
@@ -1252,10 +1267,23 @@ class Views extends React.Component {
     this.props.reloadFilters();
   };
 
+  sentTaggedUrls(urls){
+    this.reloadRadViz=true;
+    this.urlsToRadviz = this.urlsToRadviz.concat(urls);
+  };
+
+  reloadFiltersFromRadViz(){
+    this.props.reloadFilters();
+    this.reloadView=true;
+  };
+
   availableCrawlerButton(isthereModel){
     this.props.availableCrawlerButton(isthereModel);
   };
-
+ updateTagColor(){
+   this.props.reloadFilters();
+   this.forceUpdate();
+ }
 
   render() {
     var searchOtherEngine = "No Pages Found.";
@@ -1264,20 +1292,48 @@ class Views extends React.Component {
     }
     var messageSearch = (this.queryFromSearch)? "Searching..." :searchOtherEngine;
     //if(!this.queryFromSearch && this.state.lengthTotalPages==0)
-    var showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets internalUpdating={this.state.internalUpdating}
-                    handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthPages={this.state.lengthPages} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
-                    reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)} updateTotalUrlsPerPage={this.updateTotalUrlsPerPage.bind(this)}  />
-                    : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
-
+    var showPages = <div> </div>;
+    if(this.reloadView && this.state.slideIndex==0){
+      showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets internalUpdating={this.state.internalUpdating}
+                      handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthPages={this.state.lengthPages} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+                      reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)} updateTotalUrlsPerPage={this.updateTotalUrlsPerPage.bind(this)}  reloadView={true}  sentTaggedUrls={this.sentTaggedUrls.bind(this)} />
+                      : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
+      this.reloadView=false;
+    }
+    else {
+      showPages = (Object.keys(this.state.pages).length>0)?<ViewTabSnippets internalUpdating={this.state.internalUpdating}
+                      handlePageClick={this.handlePageClick.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} accuracyOnlineLearning={this.state.accuracyOnlineLearning} offset={this.state.offset} currentPagination={this.state.currentPagination} lengthPages={this.state.lengthPages} lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
+                      reloadFilters={this.reloadFilters.bind(this)} queryFromSearch={this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)} updateTotalUrlsPerPage={this.updateTotalUrlsPerPage.bind(this)}  reloadView={false} sentTaggedUrls={this.sentTaggedUrls.bind(this)} />
+                      : (this.state.lengthPages===0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;
+    }
     /*    lengthTotalPages={this.state.lengthTotalPages} session={this.state.session} pages={this.state.pages} deletedFilter={this.deletedFilter.bind(this)}
     reloadFilters={this.reloadFilters.bind(this)} queryFromSearch = {this.queryFromSearch} availableCrawlerButton={this.availableCrawlerButton.bind(this)}/>
     : (this.state.lengthPages === 0)? <div style={{paddingTop:"20px", paddingLeft:"8px",}}> {messageSearch}</div> : <CircularProgressSimple />;*/
 
     var messageNumberPages = (this.state.offset===0)?"About " : "Page " + (this.state.currentPagination+1) +" of about ";
+    var radviz = <div> </div>;
+    if(this.reloadRadViz && this.state.slideIndex==1){
+      radviz = <RadViz  session={this.state.session} lengthTotalPages={this.state.lengthTotalPages} reloadFilters={this.reloadFiltersFromRadViz.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} queryFromSearch={this.queryFromSearch}
+      reloadRadViz={this.reloadRadViz} urlsToRadviz={this.urlsToRadviz} />;
+      this.reloadRadViz=false;
+      this.urlsToRadviz= [];
+    }
+    else {
+      radviz = <RadViz  session={this.state.session} lengthTotalPages={this.state.lengthTotalPages} reloadFilters={this.reloadFiltersFromRadViz.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} queryFromSearch={this.queryFromSearch}
+      reloadRadViz={false} urlsToRadviz={[]} />;
+    }
 
     // REMOVE ACCURACY HARDCODING
     return (
-      <div style={{maxWidth: 1000,}}>
+      <div >
+      <Tabs
+            onChange={this.handleChange}
+            value={this.state.slideIndex}
+            inkBarStyle={{background: '#7940A0' ,height: '4px'}}
+            tabItemContainerStyle={{background:'#9A7BB0', height: '40px'}}>
+              <Tab label="Snippets" value={0} style={styles.tab} />
+              <Tab label="Visualizations" value={1} style={styles.tab} />
+          </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}  >
           <div style={styles.headline}>
             <div style={{marginBottom:"30px"}}>
@@ -1287,6 +1343,9 @@ class Views extends React.Component {
             <ChipViewTab  session={this.state.session} deletedFilter={this.deletedFilter.bind(this)}/>
             {showPages}
           </div>
+          <div style={styles.headline}>
+            {radviz}
+              </div>
         </SwipeableViews>
       </div>
     );

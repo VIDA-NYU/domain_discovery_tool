@@ -39,7 +39,7 @@ downloader_app: $(DOWNLOADER_APP_TARGET)
 ## cherrypy_config  : Configure CherryPy (set absolute root environment)
 cherrypy_config: $(CHERRY_PY_CONFIG_TARGET)
 
-## get_nltk_data    : Download NLTK corpus and tokenizers 
+## get_nltk_data    : Download NLTK corpus and tokenizers
 get_nltk_data: $(GET_NLTK_DATA_TARGET)
 
 ## get_react_install : Download react packages
@@ -47,7 +47,6 @@ get_react_install: $(GET_REACT_NPM_INSTALL)
 
 ## get_react_build : Build react packages
 get_react_build: $(GET_REACT_NPM_BUILD)
-
 
 # Actual Target work here
 
@@ -57,7 +56,7 @@ $(CONDA_ENV_TARGET): environment.yml
 $(CHERRY_PY_CONFIG_TARGET): server/config.conf-in
 	sed "s#tools.staticdir.root = .#tools.staticdir.root = ${PWD}/client/build#g" server/config.conf-in > server/config.conf
 
-$(GET_NLTK_DATA_TARGET): 
+$(GET_NLTK_DATA_TARGET):
 	source activate ddt; \
 	python -m nltk.downloader -d ${PWD}/nltk_data stopwords brown punkt averaged_perceptron_tagger
 
@@ -68,6 +67,7 @@ $(GET_REACT_NPM_INSTALL):
 	python fix_for_npm_child_process_issue.py; \
 	popd
 
+
 $(GET_REACT_NPM_BUILD):
 	source activate ddt; \
 	pushd client; \
@@ -75,4 +75,3 @@ $(GET_REACT_NPM_BUILD):
 	cp build/index.html build/domain_discovery_tool.html; \
         cp -rf public/font-awesome-4.7.0 build/static; \
 	popd
-
