@@ -217,17 +217,25 @@ var forwardlink_queries_found = false;
 nodes.map((node,index)=>{
           if(node.value === "forwardlink"){
   node.children = [];
-  Object.keys(this.state.currentQueries).sort(function (a, b) {
-return a.toLowerCase().localeCompare(b.toLowerCase());
-}).map((query, index)=>{
-      if(query.includes("ForwardLink_")){
+  Object.keys(this.state.currentQueries).map((query, index)=>{
+    if(query.includes("ForwardLink_")){
     var trunc_query = query.replace("ForwardLink_", "");
+    if(trunc_query.includes("https://",""))
+      trunc_query = trunc_query.replace("https://")
+    if(trunc_query.includes("http://",""))
+        trunc_query = trunc_query.replace("http://","")
+    if(trunc_query.includes("www."))
+        trunc_query = trunc_query.replace("www.","")
+    if(trunc_query.includes("undefined"))
+        trunc_query = trunc_query.replace("undefined","")
     var labelQuery=  trunc_query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
     node.children.push({value:trunc_query, label:labelQuery});
     forwardlink_queries_found = true;
       }
   });
           }
+          node.children.sort(function (a, b) {
+        return a.value.localeCompare(b.value)});
           nodesFTemp.push(node);
 });
 
@@ -237,17 +245,25 @@ var backlink_queries_found = false;
 nodes.map((node,index)=>{
           if(node.value === "backlink"){
   node.children = [];
-  Object.keys(this.state.currentQueries).sort(function (a, b) {
-return a.toLowerCase().localeCompare(b.toLowerCase());
-}).map((query, index)=>{
+  Object.keys(this.state.currentQueries).map((query, index)=>{
       if(query.includes("BackLink_")){
     var trunc_query = query.replace("BackLink_", "");
+    if(trunc_query.includes("https://",""))
+      trunc_query = trunc_query.replace("https://")
+    if(trunc_query.includes("http://",""))
+        trunc_query = trunc_query.replace("http://","")
+    if(trunc_query.includes("www."))
+        trunc_query = trunc_query.replace("www.","")
+    if(trunc_query.includes("undefined"))
+        trunc_query = trunc_query.replace("undefined","")
     var labelQuery=  trunc_query + " (" + this.state.currentQueries[query] + ")"; //query (ex. blue car) , index (ex. 0,1,2...)
     node.children.push({value:trunc_query, label:labelQuery});
     backlink_queries_found = true;
       }
   });
           }
+          node.children.sort(function (a, b) {
+          return a.value.localeCompare(b.value)});
           nodesBTemp.push(node);
 });
 
