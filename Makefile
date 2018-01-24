@@ -63,6 +63,7 @@ $(GET_NLTK_DATA_TARGET):
 $(GET_REACT_NPM_INSTALL):
 	source activate ddt; \
 	pushd client; \
+	npm install radviz-component@1.0.85; \
 	npm install; \
 	python fix_for_npm_child_process_issue.py; \
 	popd
