@@ -39,6 +39,7 @@ class Home extends Component {
       domains: undefined,
       openCreateDomain: false,
       openDeleteDomain: false,
+      openDuplicateDomainName:false,
       newNameDomain:"",
       delDomains: {}
     };
@@ -66,7 +67,7 @@ class Home extends Component {
   };
 
   handleCloseCreateDomain = () => {
-    this.setState({openCreateDomain: false});
+    this.setState({openCreateDomain: false, openDuplicateDomainName:false, newNameDomain:"" });
   };
 
   handleOpenDeleteDomain = () => {
@@ -75,6 +76,10 @@ class Home extends Component {
 
   handleCloseDeleteDomain = () => {
     this.setState({openDeleteDomain: false});
+  };
+
+  handleCloseDuplicateDomainName = () => {
+    this.setState({openDuplicateDomainName: false});
   };
 
   //Handling changes into TextField newNameDomain (updating TextField).
@@ -91,15 +96,23 @@ class Home extends Component {
   createNewDomain(){
     //createNewDomain
     var nameDomain= this.state.newNameDomain;
-    $.post(
-      '/addDomain',
-      {'index_name': nameDomain},
-      function(domains) {
-        this.setState({openCreateDomain: false, newNameDomain:"" });
-        this.getAvailableDomains();
-        this.forceUpdate();
-      }.bind(this)
-    );
+    var duplicateDomain = false;
+    var mydata = this.state.domains;
+    Object.keys(mydata).map((k, index)=>{ var name = mydata[k].name; if(name.trim().toLowerCase().replace(/\s+/g,"_") === nameDomain.trim().toLowerCase().replace(/\s+/g,"_")){ duplicateDomain = true;} });   // .trim() to remove last and first spaces from a string. 
+    if(!duplicateDomain){
+      $.post(
+        '/addDomain',
+        {'index_name': nameDomain},
+        function(domains) {
+          this.setState({openCreateDomain: false, newNameDomain:"", openDuplicateDomainName:false });
+          this.getAvailableDomains();
+          this.forceUpdate();
+        }.bind(this)
+      );
+    }
+    else{
+      this.setState({openCreateDomain: true, newNameDomain:nameDomain, openDuplicateDomainName:true});
+    }
   };
 
   //Delete selected domains
@@ -153,6 +166,14 @@ class Home extends Component {
       />,
     ];
 
+    const actionsDuplicateDomainName = [
+      <FlatButton
+        label="Ok"
+        primary={true}
+        onTouchTap={this.handleCloseDuplicateDomainName}
+      />,
+    ];
+
     if(this.state.domains!==undefined){
       var mydata = this.state.domains;
       return (
@@ -202,7 +223,7 @@ class Home extends Component {
                   <Dialog
                    title="Adding a domain"
                    actions={actionsCreateDomain}
-                   modal={false}
+                   modal={true}
                    open={this.state.openCreateDomain}
                    onRequestClose={this.handleCloseCreateDomain.bind(this)}
                   >
@@ -220,7 +241,7 @@ class Home extends Component {
                    <Dialog
                     title="Deleting a domain"
                     actions={actionsDeleteDomain}
-                    modal={false}
+                    modal={true}
                     open={this.state.openDeleteDomain}
                     onRequestClose={this.handleCloseDeleteDomain.bind(this)}
                    >
@@ -235,6 +256,15 @@ class Home extends Component {
         		            })}
         	            </div>
                    </Dialog>
+                   <Dialog
+                      title="Duplicate Domain Name"
+                      actions={actionsDuplicateDomainName}
+                      modal={false}
+                      open={this.state.openDuplicateDomainName}
+                      onRequestClose={this.handleCloseDuplicateDomainName.bind(this)}
+                    >
+                      The domain name was already entered. All domain names must be unique. Please try again.
+                    </Dialog>
                 </Col>
               </Row>
             </div>
