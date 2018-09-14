@@ -21,7 +21,7 @@ In order to run the docker version in background download:
 
 :download:`docker-compose.yml.ache <../docker-compose.yml.ache>`. Rename the downloaded **docker-compose.yml.ache** to **docker-compose.yml**.
 
-:download:`ache.yml <../ache.yml>`	  
+:download:`ache.yml <../ache.yml>`
 
 Now use the following commands to run DDT (and crawlers if applicable):
 
@@ -88,7 +88,7 @@ First install `conda <https://conda.io/docs/install/quick.html>`_.
 Install Elasticsearch
 ~~~~~~~~~~~~~~~~~~~~~
 
-Download Elasticsearch 1.6.2 `here <https://www.elastic.co/downloads/past-releases/elasticsearch-1-6-2>`_, extract the file and run Elasticsearch: 
+Download Elasticsearch 1.6.2 `here <https://www.elastic.co/downloads/past-releases/elasticsearch-1-6-2>`_, extract the file and run Elasticsearch:
 
 >>> cd {path-to-installed-Elasticsearch}
 >>> ./bin/elasticsearch
@@ -110,7 +110,7 @@ Add domain_discovery_API to the environment:
 
 Clone the DDT repository and enter it:
 
->>> https://github.com/ViDA-NYU/domain_discovery_tool
+>>> git clone https://github.com/ViDA-NYU/domain_discovery_tool
 >>> cd domain_discovery_tool
 
 Use the `make` command to build ddt and download/install its dependencies.
@@ -126,4 +126,3 @@ After a successful installation, you can activate the DDT development environmen
 >>> ./bin/ddt-dev
 
 `Use Domain Discovery Tool <http://domain-discovery-tool.readthedocs.io/en/latest/tutorials.html>`_
-
