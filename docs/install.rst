@@ -83,7 +83,12 @@ Building and deploying the Domain Discovery Tool can be done using its Makefile 
 Install Conda
 ~~~~~~~~~~~~~~
 
-First install `conda <https://conda.io/docs/install/quick.html>`_.
+First install `conda (anaconda) for python 2.7 <https://www.anaconda.com/download/#macos>`_.
+
+Install Java
+~~~~~~~~~~~~~~
+
+Install `JDK 1.8 <https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html>`_.
 
 Install Elasticsearch
 ~~~~~~~~~~~~~~~~~~~~~
