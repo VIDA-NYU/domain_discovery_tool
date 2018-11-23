@@ -1314,13 +1314,13 @@ class Views extends React.Component {
     var radviz = <div> </div>;
     if(this.reloadRadViz && this.state.slideIndex==1){
       radviz = <RadViz  session={this.state.session} lengthTotalPages={this.state.lengthTotalPages} reloadFilters={this.reloadFiltersFromRadViz.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} queryFromSearch={this.queryFromSearch}
-      reloadRadViz={this.reloadRadViz} urlsToRadviz={this.urlsToRadviz} />;
+      reloadRadViz={this.reloadRadViz} urlsToRadviz={this.urlsToRadviz}  index={this.props.index} currentDomain={this.props.currentDomain} />;
       this.reloadRadViz=false;
       this.urlsToRadviz= [];
     }
     else {
       radviz = <RadViz  session={this.state.session} lengthTotalPages={this.state.lengthTotalPages} reloadFilters={this.reloadFiltersFromRadViz.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} queryFromSearch={this.queryFromSearch}
-      reloadRadViz={false} urlsToRadviz={[]} />;
+	reloadRadViz={false} urlsToRadviz={[]} index={this.props.index} currentDomain={this.props.currentDomain} /> ;
     }
 
     // REMOVE ACCURACY HARDCODING

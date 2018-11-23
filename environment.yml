@@ -19,7 +19,7 @@ dependencies:
     - ache ==latest
     - functools32
     - jinja2
-    - nodejs
+    - nodejs ==8.11.4
     - futures
     - openjdk
     - joblib

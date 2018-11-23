@@ -336,7 +336,7 @@ class Body extends Component{
       <Sidebar {...sidebarProps}>
         <div>
           <Row style={styles.content}>
-            <Views queryFromSearch={this.state.intervalFuncId} domainId={this.state.currentDomain} nameDomain={this.props.nameDomain} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} handlePageClick={this.handlePageClick.bind(this)}/>
+            <Views queryFromSearch={this.state.intervalFuncId} currentDomain={this.state.currentDomain} nameDomain={this.props.nameDomain}  index={this.props.index} session={this.state.sessionBody} deletedFilter={this.deletedFilter.bind(this)} reloadFilters={this.reloadFilters.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} offset={this.state.offset} currentPagination={this.state.currentPagination} handlePageClick={this.handlePageClick.bind(this)}/>
           </Row>
           </div>
           <Snackbar
