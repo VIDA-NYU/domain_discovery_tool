@@ -11,6 +11,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RadVizComponent from 'radviz-component';
 import FiltersTabs from './FiltersTabs'
+
 class Radviz extends Component {
 
   constructor(props) {
@@ -59,13 +60,12 @@ class Radviz extends Component {
     session['model']['positive'] = "Relevant";
     session['model']['negative'] = "Irrelevant";
 
-
-
     return session;
   }
 
     loadDataFromElasticSearch(index, filterTerm, typeRadViz, nroCluster, removeKeywords){
 	var session = this.createSession(this.state.idDomain);
+
     $.post(
         '/getRadvizPoints',
         {'session': JSON.stringify(session), 'filterByTerm': filterTerm, 'typeRadViz': typeRadViz, 'nroCluster': nroCluster, 'removeKeywords':removeKeywords},
@@ -145,9 +145,11 @@ class Radviz extends Component {
       this.loadDataFromElasticSearch(this.state.index, this.state.filterTerm, typeRadViz, this.state.nroCluster, "");
     this.setState({typeRadViz: typeRadViz});
   }
+
   changeNroCluster(nroCluster){
       this.loadDataFromElasticSearch(this.state.index, this.state.filterTerm, this.state.typeRadViz, nroCluster, "");
     this.setState({nroCluster: nroCluster});
+
   }
 
   removeKeywordsRadViz(removeKeywords){
