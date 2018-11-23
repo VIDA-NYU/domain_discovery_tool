@@ -172,7 +172,7 @@ class Home extends Component {
                   <List>
                     <Subheader style={{color:'black'}}><h2>Domains</h2></Subheader>
                     {Object.keys(mydata).map((k, index)=>{
-                      return <Link to={{ pathname: `/domain/{mydata[k].index}`, query: { nameDomain: mydata[k].name, idDomain: mydata[k].id} }}  text={"Machine Learning"}>
+			return <Link to={{ pathname: `/domain/{mydata[k].index}`, query: { nameDomain: mydata[k].name, idDomain: mydata[k].id, index: mydata[k].index} }}  text={"Machine Learning"}>
                                 <ListItem key={index} style={{textAlign: 'left'}}
                                 primaryText={mydata[k].name}
                                 rightIcon={<Forward />} />

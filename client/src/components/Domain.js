@@ -69,7 +69,7 @@ class Domain extends Component {
 	return (
 		<div>
 		<Header deleteKeywordSignal={this.state.deleteKeywordSignal} currentDomain={this.props.location.query.nameDomain} idDomain={this.props.location.query.idDomain} filterKeyword={this.filterKeyword.bind(this)} noModelAvailable={this.state.noModelAvailable} updateFilterCrawlerData={this.updateFilterCrawlerData.bind(this)} selectedViewBody={this.selectedViewBody.bind(this)}/>
-		<Body selectedViewBody={this.state.valueSelectedViewBody} statusCrawlers={this.state.statusCrawlers} updateCrawlerData={this.state.updateCrawlerData} nameDomain={this.props.location.query.nameDomain} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
+		<Body selectedViewBody={this.state.valueSelectedViewBody} statusCrawlers={this.state.statusCrawlers} updateCrawlerData={this.state.updateCrawlerData} nameDomain={this.props.location.query.nameDomain} index={this.props.location.query.index} currentDomain={this.state.idDomain} filterKeyword={this.state.filterKeyword} deletedFilter={this.deletedFilter.bind(this)} availableCrawlerButton={this.availableCrawlerButton.bind(this)} reloadBody={this.state.reloadBody}/>
 		</div>
 	);
     }
