@@ -117,7 +117,7 @@ class FocusedCrawling extends Component {
       var temp_session = this.props.session;
       this.getAvailableTags(this.props.session);
       this.getModelTags(this.props.domainId);
-      this.updateOnlineClassifier(temp_session);
+
 
   }
   componentWillReceiveProps  = (newProps, nextState) => {
@@ -169,7 +169,7 @@ class FocusedCrawling extends Component {
 		session['newPageRetrievalCriteria'] = "one";
 		session['pageRetrievalCriteria'] = "Tags";
 		session['selected_tags']=(tags['positive'].slice()).join(',');
-
+    this.updateClassifierCrawler(session);
 		this.setState({session: session, selectedPosTags: tags['positive'].slice(), selectedNegTags: tags['negative'].slice(), loadTerms:true});
 		this.forceUpdate();
 
@@ -190,7 +190,7 @@ class FocusedCrawling extends Component {
     //this.setState({session: session, selectedPosTags: this.state.selectedPosTags.slice(),});
     if(session['model']['positive'].length>0 ){
       this.loadingTerms(session, this.state.selectedPosTags);
-      this.updateOnlineClassifier(session);
+      this.updateClassifierCrawler(session);
         $.post(
           '/saveModelTags',
           {'session': JSON.stringify(session)},
@@ -212,7 +212,7 @@ class FocusedCrawling extends Component {
     else{
       this.setState({openDialog:true, loadTerms:false});
     }
-    this.updateOnlineClassifier(session);
+    this.updateClassifierCrawler(session);
 
 
       $.post(
@@ -385,9 +385,9 @@ class FocusedCrawling extends Component {
 
   //////////////////////
   /////////////////////
-  updateOnlineClassifier(sessionTemp){
+  updateClassifierCrawler(sessionTemp){
     $.post(
-      '/updateOnlineClassifier',
+      '/updateClassifierCrawler',
       {'session':  JSON.stringify(sessionTemp)},
       function(accuracy) {
           this.setState({accuracyOnlineLearning:accuracy,});

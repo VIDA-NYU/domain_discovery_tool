@@ -31,6 +31,7 @@ class Radviz extends Component {
 	  updatingRadViz:false
       };
       this.colorTags= [ "#9E9E9E", "#0D47A1", "#C62828"];
+
   };
 
   /*consultaQueries: {"search_engine":"GOOG","activeProjectionAlg":"Group by Correlation"
@@ -58,13 +59,12 @@ class Radviz extends Component {
     session['model']['positive'] = "Relevant";
     session['model']['negative'] = "Irrelevant";
 
-
-
     return session;
   }
 
     loadDataFromElasticSearch(index, filterTerm, typeRadViz, nroCluster, removeKeywords){
 	var session = this.createSession(this.state.idDomain);
+
     $.post(
         '/getRadvizPoints',
         {'session': JSON.stringify(session), 'filterByTerm': filterTerm, 'typeRadViz': typeRadViz, 'nroCluster': nroCluster, 'removeKeywords':removeKeywords},
@@ -118,6 +118,7 @@ class Radviz extends Component {
     componentWillMount(){
       this.setState({idDomain: this.props.currentDomain, index: this.props.index, session: this.createSession(this.props.currentDomain)});
       this.loadDataFromElasticSearch(this.state.index, this.state.filterTerm, this.state.typeRadViz, this.state.nroCluster, "");
+
   };
 
       componentWillReceiveProps  = (newProps, nextState) => {
@@ -128,6 +129,15 @@ class Radviz extends Component {
 
   };
 
+  updatePagesCap(newNroPAges){
+
+    var session = JSON.parse(JSON.stringify(this.props.session));
+    session['pagesCap'] = newNroPAges;
+    this.loadDataFromElasticSearch(session, this.state.filterTerm);
+
+  //  this.setState({idDomain: this.props.location.query.idDomain});
+
+  }
   //Filter by terms (ex. ebola AND virus)
   filterKeyword(filterTerm){
       this.loadDataFromElasticSearch(this.state.index, filterTerm, this.state.typeRadViz, this.state.nroCluster, "");
@@ -147,6 +157,7 @@ class Radviz extends Component {
   changeNroCluster(nroCluster){
       this.loadDataFromElasticSearch(this.state.index, this.state.filterTerm, this.state.typeRadViz, nroCluster, "");
     this.setState({nroCluster: nroCluster});
+
   }
 
   removeKeywordsRadViz(removeKeywords){

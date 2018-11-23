@@ -5,6 +5,11 @@ import SwipeableViews from 'react-swipeable-views';
 import CheckboxTree from 'react-checkbox-tree';
 import IconButton from 'material-ui/IconButton';
 import ActionAutorenew from 'material-ui/svg-icons/action/autorenew';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import Export from 'material-ui/svg-icons/file/file-download';
+import Dialog from 'material-ui/Dialog';
+
 import $ from 'jquery';
 
 import CircularProgress from 'material-ui/CircularProgress';
@@ -689,6 +694,10 @@ class LoadModel extends React.Component {
     	checked:[],
     	expanded:[],
     	session: {},
+      disabledGetResultModel:false,
+      loadingGetResultModel:false,
+      createGetResultModelMessage:"",
+      openMessageResultModel:false,
     	modeltagNodes:[
     	    {
     		value: 'modeltag',
@@ -700,25 +709,25 @@ class LoadModel extends React.Component {
       this.callModelTags = false;
   }
 
-    getAvailableModelTags(){
-	this.callModelTags = true;
-	this.props.updateStatusMessage(true, "Applying model to unlabeled pages");
-    $.post(
-      '/getAvailableModelTags',
-      {'session': JSON.stringify(this.props.session)},
-    	function(modelTagDomain) {
-	    this.callModelTags = false;
-	    this.props.updateStatusMessage(false, "Applying model completed");
-    	    var selected_model_tags = [];
-    	    if(this.props.session['selected_model_tags'] !== undefined && this.props.session['selected_model_tags'] !== "" ){
-        		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
-        		    selected_model_tags = this.props.session['selected_model_tags'].split(",");
-        		else selected_model_tags.push(this.props.session['selected_model_tags'])
-    	    }
-    	    this.setState({currentModelTags: modelTagDomain, session:this.props.session, checked:selected_model_tags});
-	    this.forceUpdate();
-       }.bind(this)
-    );
+  getAvailableModelTags(){
+  	this.callModelTags = true;
+  	this.props.updateStatusMessage(true, "Applying model to unlabeled pages");
+      $.post(
+        '/getAvailableModelTags',
+        {'session': JSON.stringify(this.props.session)},
+      	function(modelTagDomain) {
+  	    this.callModelTags = false;
+  	    this.props.updateStatusMessage(false, "Applying model completed");
+      	    var selected_model_tags = [];
+      	    if(this.props.session['selected_model_tags'] !== undefined && this.props.session['selected_model_tags'] !== "" ){
+          		if (this.props.session['selected_model_tags'].indexOf(",") > 0)
+          		    selected_model_tags = this.props.session['selected_model_tags'].split(",");
+          		else selected_model_tags.push(this.props.session['selected_model_tags'])
+      	    }
+      	    this.setState({currentModelTags: modelTagDomain, session:this.props.session, checked:selected_model_tags});
+  	    this.forceUpdate();
+         }.bind(this)
+      );
   }
 
   componentWillReceiveProps(nextProps){
@@ -756,16 +765,65 @@ class LoadModel extends React.Component {
       this.forceUpdate();
   }
 
+  ////////////////////
+  ///Get results model////
+  ////////////////////
+  getResultModel(){
+    this.setState({loadingGetResultModel:true, disabledGetResultModel:true, createGetResultModelMessage:"",});
+    this.forceUpdate();
+    $.post(
+       '/getResultModel',
+       {'session': JSON.stringify(this.props.session)},
+       function(model_file) {
+         var url = model_file;
+         var message = (url.indexOf("_results_model.zip")==-1)?"Data was not classified.":"Data was classified successfully.";
+
+         this.setState({resultModelDownloadURL: model_file, loadingGetResultModel:false, disabledGetResultModel:false, createGetResultModelMessage:message, openMessageResultModel:true})
+         this.forceUpdate();
+       }.bind(this)
+     );
+  }
+
+  exportResultModel(){
+    this.getResultModel();
+  }
+
+  downloadExportedResultModel = (event) => {
+    if((this.state.resultModelDownloadURL || "").indexOf("_results_model.zip") !== -1){
+      window.open(this.state.resultModelDownloadURL, 'download')
+    }
+
+  }
+
+  handleCloseGetResultModel = () => {
+    this.setState({openMessageResultModel: false});
+    this.forceUpdate();
+  };
 
   render(){
       var cursor_waiting = (this.state.expanded.length>0 && this.callModelTags)?<CircularProgressSimple/>:<div/>;
 
-      var show_update_button = (this.state.expanded.length > 0)? <div style={{ textAlign:"right", margin:"-20px 20px -10px 0px"}}>
-	  <IconButton tooltip="Update Model Tags" onTouchTap={this.handleAutorenewTerm.bind(this)} iconStyle={{color:"#26C6DA"}} hoveredStyle={{color:"#80DEEA"}} >
-	  <ActionAutorenew color="#9575CD" />
-	  </IconButton>
-	  </div>
-	  :<div/>;
+      var show_update_button = (this.state.expanded.length > 0)
+      ?
+      <div style={{ textAlign:"right", margin:"3px 0px 5px 0px"}}>
+            <RaisedButton
+              label="Export"
+              labelStyle={{textTransform: "capitalize", fontSize:10, marginTop:"-5px", marginLeft:"-5px", marginRight:"-15px"}}
+              backgroundColor={this.props.backgroundColor}
+              onTouchTap={this.exportResultModel.bind(this)}
+              icon={<Export style={{marginTop:"-2px", marginLeft:"-5px", height:15}}/>}
+              style={{marginRight:"0px",marginTop:0, height:20, width:95}}
+            />
+          <RaisedButton
+            label="Update"
+            labelStyle={{textTransform: "capitalize", fontSize:10, marginTop:"-5px", marginLeft:"-5px", marginRight:"-15px"}}
+            backgroundColor={this.props.backgroundColor}
+            onTouchTap={this.handleAutorenewTerm.bind(this)}
+            icon={<ActionAutorenew style={{marginTop:"-2px", marginLeft:"-5px", height:15}}/>}
+            style={{marginRight:"10px",marginTop:0, height:20, width:85, marginLeft:10}}
+          />
+      	</div>
+	    :<div/>;
 
     if(this.state.currentModelTags!==undefined && Object.keys(this.state.currentModelTags).length > 0){
       var nodes = this.state.modeltagNodes;
@@ -781,19 +839,43 @@ class LoadModel extends React.Component {
          nodesTemp.push(node);
       });
 
+    var loadingModel_signal = (this.state.disabledGetResultModel)?<CircularProgressSimple style={{marginTop:"5px", marginLeft:"-30px"}} size={20} thickness={4} />:<div />;
+    const actionsResultModel = [
+      <FlatButton
+        label="Close"
+        primary={true}
+        onTouchTap={this.handleCloseGetResultModel.bind(this)}
+      />,
+    ];
+
 	return(
-		<div >
-		    <CheckboxTree
-                      nodes={nodesTemp}
-                      checked={this.state.checked}
-                      expanded={this.state.expanded}
-                      onCheck={checked => this.addModelTags({checked})}
-                      onExpand={expanded => this.setState({ expanded })}
-                      showNodeIcon={false}
-		    />
-		    {cursor_waiting}
-	            {show_update_button}
-                </div>
+    <div >
+      <CheckboxTree
+        nodes={nodesTemp}
+        checked={this.state.checked}
+        expanded={this.state.expanded}
+        onCheck={checked => this.addModelTags({checked})}
+        onExpand={expanded => this.setState({ expanded })}
+        showNodeIcon={false}
+      />
+      {cursor_waiting}
+      {show_update_button}
+      {loadingModel_signal}
+      <Dialog
+        actions={actionsResultModel}
+        modal={false}
+        open={this.state.openMessageResultModel}
+        onRequestClose={this.handleCloseGetResultModel.bind(this)}
+      >
+        {this.state.createGetResultModelMessage}
+        <RaisedButton
+          label="Download"
+          style={{margin: 5}}
+          labelStyle={{textTransform: "capitalize"}}
+          onClick={this.downloadExportedResultModel}
+        />
+      </Dialog>
+    </div>
 
 	);
     }
@@ -802,6 +884,17 @@ class LoadModel extends React.Component {
       );
   }
 }
+
+LoadModel.propTypes = {
+    width: React.PropTypes.number.isRequired,
+    height: React.PropTypes.number.isRequired,
+};
+
+LoadModel.defaultProps = {
+  width: 300,
+  height: 300,
+  backgroundColor:"#9A7BB0",
+};
 
 
 class FiltersTabs extends React.Component {

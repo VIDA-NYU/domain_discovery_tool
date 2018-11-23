@@ -16,7 +16,7 @@ dependencies:
     - pyelasticsearch >=1.2
     - cherrypy
     - requests
-    - ache ==latest
+    - ache ==0.9.0
     - functools32
     - jinja2
     - nodejs ==8.11.4
