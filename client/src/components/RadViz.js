@@ -25,9 +25,9 @@ class Radviz extends Component {
 	  dimNames:[],
 	  filterTerm:"",
 	  open:false,
-	  index:'',
-	  idDomain:'',
-	  session:'',
+	  index: this.props.index,
+	  idDomain: this.props.currentDomain,
+	  session: this.createSession(this.props.currentDomain),
 	  typeRadViz:4,
 	  nroCluster:7,
 	  updatingRadViz:false
@@ -65,60 +65,64 @@ class Radviz extends Component {
 
     loadDataFromElasticSearch(index, filterTerm, typeRadViz, nroCluster, removeKeywords){
 	var session = this.createSession(this.state.idDomain);
-
-    $.post(
-        '/getRadvizPoints',
-        {'session': JSON.stringify(session), 'filterByTerm': filterTerm, 'typeRadViz': typeRadViz, 'nroCluster': nroCluster, 'removeKeywords':removeKeywords},
-        function(es) {
-          var data = JSON.parse(es);
-          let numericalData = [];
-          let dimNames = Object.keys(data);
-          let scaleColor = scaleOrdinal(this.colorTags);
-          let colors = [];
-          let cluster_labels = [];
-            data['Model Result'] = [];
-	    console.log(data);
-	    console.log(data['pred_labels']);
-
-          for (let i = 0; i < data['labels'].length; ++i){
-              data['Model Result'][i] = "neutral";
-              data['labels'][i]= data['labels'][i].split(',');
-              if(!(cluster_labels.includes(data['pred_labels'][i]))) cluster_labels.push(data['pred_labels'][i]);
-              //colors.push(scaleColor(data['tags'][0]));
-              let aux = {};
-              for (let j = 0; j < dimNames.length-3; ++j){//except urls and labels and pred_labels
-                  aux[dimNames[j]] = parseFloat(data[dimNames[j]][i]);
-              }
-              numericalData.push(aux);
-          }
-          dimNames.push('Model Result');
-          $.post(
-            '/computeTSP',
-            { },
+	console.log(removeKeywords);
+	console.log(filterTerm);
+	console.log(typeRadViz);
+	console.log(nroCluster);
+	console.log(session);
+	
+	$.post(
+            '/getRadvizPoints',
+            {'session': JSON.stringify(session), 'filterByTerm': filterTerm, 'typeRadViz': typeRadViz, 'nroCluster': nroCluster, 'removeKeywords':removeKeywords},
             function(es) {
-              let numericalDataTSP = [];
-              var orderObj = JSON.parse(es);
-
-              for (let i = 0; i < numericalData.length; ++i){
-                  let aux = {};
-                  for(var j in orderObj.cities){
-                      aux[dimNames[orderObj.cities[j]]] = numericalData[i][dimNames[orderObj.cities[j]]];
-                  }
-                  numericalDataTSP.push(aux);
-              }
-              this.setState({originalData: data, data:numericalDataTSP, colors:colors, flat:1, dimNames: dimNames, filterTerm: filterTerm, updatingRadViz:false});
-              //this.props.setDimNames(dimNames);
+		var data = JSON.parse(es);
+		let numericalData = [];
+		let dimNames = Object.keys(data);
+		let scaleColor = scaleOrdinal(this.colorTags);
+		let colors = [];
+		let cluster_labels = [];
+		data['Model Result'] = [];
+		console.log(data);
+		console.log(data['pred_labels']);
+		
+		for (let i = 0; i < data['labels'].length; ++i){
+		    data['Model Result'][i] = "neutral";
+		    data['labels'][i]= data['labels'][i].split(',');
+		    if(!(cluster_labels.includes(data['pred_labels'][i]))) cluster_labels.push(data['pred_labels'][i]);
+		    //colors.push(scaleColor(data['tags'][0]));
+		    let aux = {};
+		    for (let j = 0; j < dimNames.length-3; ++j){//except urls and labels and pred_labels
+			aux[dimNames[j]] = parseFloat(data[dimNames[j]][i]);
+		    }
+		    numericalData.push(aux);
+		}
+		dimNames.push('Model Result');
+		$.post(
+		    '/computeTSP',
+		    { },
+		    function(es) {
+			let numericalDataTSP = [];
+			var orderObj = JSON.parse(es);
+			
+			for (let i = 0; i < numericalData.length; ++i){
+			    let aux = {};
+			    for(var j in orderObj.cities){
+				aux[dimNames[orderObj.cities[j]]] = numericalData[i][dimNames[orderObj.cities[j]]];
+			    }
+			    numericalDataTSP.push(aux);
+			}
+			this.setState({originalData: data, data:numericalDataTSP, colors:colors, flat:1, dimNames: dimNames, filterTerm: filterTerm, updatingRadViz:false});
+			//this.props.setDimNames(dimNames);
+		    }.bind(this)
+		);
             }.bind(this)
-          );
-        }.bind(this)
-    ).fail(function() {
-              this.setState({open: true});
-              }.bind(this));
-  }
+	).fail(function() {
+            this.setState({open: true});
+        }.bind(this));
+    }
 
     componentWillMount(){
-      this.setState({idDomain: this.props.currentDomain, index: this.props.index, session: this.createSession(this.props.currentDomain)});
-      this.loadDataFromElasticSearch(this.state.index, this.state.filterTerm, this.state.typeRadViz, this.state.nroCluster, "");
+      this.loadDataFromElasticSearch(this.props.index, this.state.filterTerm, this.state.typeRadViz, this.state.nroCluster, "");
   };
 
       componentWillReceiveProps  = (newProps, nextState) => {
