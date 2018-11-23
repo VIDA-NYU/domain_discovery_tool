@@ -25,6 +25,7 @@ class RadViz extends Component {
       open:false,
       session:"",
       sessionString:{},
+
     };
     this.colorTags= [ "#9E9E9E", "#0D47A1", "#C62828"];
   };
@@ -33,8 +34,13 @@ class RadViz extends Component {
     //var session = this.props.session;
 
     if(!(Object.keys(session).length === 0)){
-    //console.log(session);
-    session['pagesCap']='1000';
+      //console.log(session);
+
+        if(session['pagesCap']<100)
+        session['pagesCap']=100;
+
+
+    //session['pagesCap']='1000';
     $.post(
         '/getRadvizPoints',
         {'session': JSON.stringify(session), filterByTerm: filterTerm},
@@ -83,6 +89,9 @@ class RadViz extends Component {
 
   componentWillMount(){
     //console.log(this.props.session);
+    //this.props.session['pagesCap']="100"
+  //  console.log(this.props.session);
+
     this.loadDataFromElasticSearch(this.props.session, this.state.filterTerm);
     //this.setState({ session:this.props.session, sessionString:JSON.stringify(this.props.session)});
   };
@@ -118,6 +127,15 @@ class RadViz extends Component {
     this.loadDataFromElasticSearch(newProps.session, this.state.filterTerm);
   };
 
+  updatePagesCap(newNroPAges){
+
+    var session = JSON.parse(JSON.stringify(this.props.session));
+    session['pagesCap'] = newNroPAges;
+    this.loadDataFromElasticSearch(session, this.state.filterTerm);
+
+  //  this.setState({idDomain: this.props.location.query.idDomain});
+
+  }
   //Filter by terms (ex. ebola AND virus)
   filterKeyword(filterTerm){
     this.loadDataFromElasticSearch(this.props.session, filterTerm);
@@ -151,7 +169,7 @@ updateOnlineAccuracy(accuracy){
         //console.log(this.state.session);
       return (
         <div>
-          <RadVizComponent session={this.state.session} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)} reloadFilters={this.reloadFilters.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} />
+          <RadVizComponent lengthTotalPages={this.props.lengthTotalPages} pagesCap={this.updatePagesCap.bind(this)} session={this.state.session} searchText={this.state.searchText} originalData={this.state.originalData} data={this.state.data} colors={this.state.colors} flat={this.state.flat} dimNames={this.state.dimNames} filterTerm={this.state.filterTerm}  filterKeyword={this.filterKeyword.bind(this)} reloadFilters={this.reloadFilters.bind(this)} updateOnlineAccuracy={this.updateOnlineAccuracy.bind(this)} />
         </div>
       );
     }
