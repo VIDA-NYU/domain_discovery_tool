@@ -12,11 +12,11 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - ./data/:/usr/share/elasticsearch/data # elasticsearch data storage
+      - /Users/yamuna/Memex/elasticsearch-1.5.0/data:/usr/share/elasticsearch/data # elasticsearch data storage
     ports:
       - 9200:9200
   ddt:
-    image: vidanyu/ddt:latest
+    image: vidanyu/ddt:integration_with_radviz
     container_name: dd_tool
     environment:
       ELASTICSEARCH_SERVER: elasticsearch

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+SCRIPT_DIR=$(dirname $SCRIPT_PATH)
+
+# ugly, but portable
+export DD_API_HOME=/ddt/domain_discovery_API
+echo "DD_API_HOME : $DD_API_HOME"
+
+export DDT_HOME=/ddt/domain_discovery_tool
+echo "DDT_HOME  : $DDT_HOME"
+
+export NLTK_DATA=$DDT_HOME/nltk_data
+echo "NLTK_DATA : $NLTK_DATA"
+
+# ugly, but DDT doesn't really have a concept of installs
+export PYTHONPATH=$DD_API_HOME/../:$DD_API_HOME:$DD_API_HOME/lib/tsp-solver-master:$DDT_HOME:$DDT_HOME/server:$PYTHONPATH
+echo "PYTHONPATH: $PYTHONPATH"
+
+#Run DDT
+cd $DDT_HOME
+source activate ddt
+
+export ACHE_HOME=$(dirname $(which ache))/../lib/ache/
+echo "ACHE_HOME : $ACHE_HOME"
+
+python $DDT_HOME/server/server.py
+

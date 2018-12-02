@@ -28,10 +28,10 @@ echo "Removing DD Tool container"
 docker rm dd_tool
 
 echo "Updating DDT Package"
-docker pull vidanyu/ddt:latest
+docker pull vidanyu/ddt:integration_with_radviz
 
 echo "Starting DD Tool container"
-docker run -i  --name=dd_tool -p 8084:8084 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -v $path:/ddt/domain_discovery_tool/server/data -t vidanyu/ddt:latest
+docker run -i  --name=dd_tool -p 8084:8084 -e "ELASTICSEARCH_SERVER=$ELASTIC_IP" -v $path:/ddt/domain_discovery_tool/server/data -t vidanyu/ddt:integration_with_radviz
 
 echo "Stopping elastisearch container"
 docker stop elastic
