@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   elasticsearch:
     image: elasticsearch:1.6
@@ -12,9 +12,10 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - /Users/yamuna/Memex/elasticsearch-1.5.0/data:/usr/share/elasticsearch/data # elasticsearch data storage
+      - ./data:/usr/share/elasticsearch/data # elasticsearch data storage
     ports:
       - 9200:9200
+      - 9300:9300
   ddt:
     image: vidanyu/ddt:integration_with_radviz
     container_name: dd_tool
