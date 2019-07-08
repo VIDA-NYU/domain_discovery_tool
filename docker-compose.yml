@@ -16,6 +16,9 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    logging:
+      options:
+         max-size: "100k"
   ddt:
     image: vidanyu/ddt:integration_with_radviz
     container_name: dd_tool
@@ -28,3 +31,6 @@ services:
       - elasticsearch
     volumes:
       - ./data/:/ddt/domain_discovery_tool/server/data # ddt data storage
+    logging:
+      options:
+         max-size: "100k"
